@@ -21,6 +21,7 @@ import { useUser } from '@/hooks/use-user';
 import type { UserRole } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Logo } from './logo';
+import { Skeleton } from './ui/skeleton';
 
 const navItems = {
   Customer: [
@@ -66,10 +67,23 @@ const navItems = {
   ],
 };
 
+function SidebarSkeleton() {
+  return (
+    <div className="flex-1 overflow-auto py-2">
+      <nav className="grid items-start px-4 text-sm font-medium gap-2">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </nav>
+    </div>
+  )
+}
+
 export function MainSidebar({ className }: { className?: string }) {
   const pathname = usePathname();
-  const { user } = useUser();
-  const currentNavItems = navItems[user.role as UserRole] || [];
+  const { user, isLoading } = useUser();
+  const currentNavItems = user ? navItems[user.role as UserRole] || [] : [];
 
   return (
     <div className={cn("border-r bg-muted/40 md:block", className)}>
@@ -79,6 +93,7 @@ export function MainSidebar({ className }: { className?: string }) {
                 <Logo />
             </Link>
             </div>
+            {isLoading ? <SidebarSkeleton /> : (
             <div className="flex-1 overflow-auto py-2">
             <nav className="grid items-start px-4 text-sm font-medium">
                 {currentNavItems.map(({ href, label, icon: Icon }) => (
@@ -96,6 +111,7 @@ export function MainSidebar({ className }: { className?: string }) {
                 ))}
             </nav>
             </div>
+            )}
         </div>
     </div>
   );

@@ -8,11 +8,16 @@ export type UserRole =
 
 export type User = {
   id: string;
-  name: string;
   email: string;
+  firstName: string;
+  lastName: string;
   role: UserRole;
-  avatar: string;
+  status: string;
+  phoneNumber?: string;
   company?: string;
+  avatar?: string;
+  createdAt: any;
+  updatedAt: any;
 };
 
 export type RfqStatus =
@@ -39,7 +44,7 @@ export type CharterRFQ = {
   pax: number;
   aircraftType: string;
   status: RfqStatus;
-  createdAt: string;
+  createdAt: any;
   bidsCount: number;
   catering?: string;
   specialRequirements?: string;
@@ -56,7 +61,7 @@ export type Bid = {
   aircraftName: string;
   price: number;
   status: 'Submitted' | 'Withdrawn';
-  submittedAt: string;
+  submittedAt: any;
 };
 
 export type Aircraft = {
@@ -80,6 +85,18 @@ export type EmptyLeg = {
   status: 'Pending Approval' | 'Approved' | 'Expired';
 };
 
+export type AccommodationRequest = {
+    id: string;
+    charterRequestId?: string;
+    emptyLegFlightId?: string;
+    hotelPartnerId: string;
+    checkInDate: string;
+    checkOutDate: string;
+    rooms: number;
+    isCrewAccommodation: boolean;
+    status: 'Pending' | 'Confirmed' | 'Declined';
+}
+
 export type HotelPartner = {
   id: string;
   name: string;
@@ -89,7 +106,7 @@ export type HotelPartner = {
 
 export type AuditLog = {
   id: string;
-  timestamp: string;
+  timestamp: any;
   user: string;
   role: UserRole;
   action: string;

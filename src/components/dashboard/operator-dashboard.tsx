@@ -1,23 +1,44 @@
+'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { getMockDataForRole } from "@/lib/data";
-import type { CharterRFQ } from "@/lib/types";
+import type { CharterRFQ, Aircraft, Bid } from "@/lib/types";
 import { MoreHorizontal, Plane, FileText, CheckCircle, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import Link from "next/link";
+import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
+import { Skeleton } from "../ui/skeleton";
 
 export function OperatorDashboard() {
-  const { rfqs, aircrafts, bids } = getMockDataForRole('Operator');
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const rfqsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'charterRequests'), where('status', '==', 'Bidding Open')) : null, [firestore]);
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
+
+  const aircraftsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'operators', user.id, 'aircrafts');
+  }, [firestore, user]);
+  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery);
+
+  const bidsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'quotations'), where('operatorId', '==', user.id));
+  }, [firestore, user]);
+  const { data: bids, isLoading: bidsLoading } = useCollection<Bid>(bidsQuery);
+  
+  const isLoading = rfqsLoading || aircraftsLoading || bidsLoading;
 
   const stats = {
     marketplaceRfqs: rfqs?.length ?? 0,
     activeBids: bids?.filter(b => b.status === 'Submitted').length ?? 0,
     fleetSize: aircrafts?.length ?? 0,
-    totalCrew: 12, // Example value
+    totalCrew: 0, // Crew management not yet implemented
   }
 
   return (
@@ -29,10 +50,10 @@ export function OperatorDashboard() {
       </PageHeader>
       
       <StatsGrid>
-        <StatsCard title="Active RFQs" value={stats.marketplaceRfqs.toString()} icon={FileText} description="RFQs currently open for bidding" />
-        <StatsCard title="Submitted Quotations" value={stats.activeBids.toString()} icon={CheckCircle} description="Your active quotations" />
-        <StatsCard title="Fleet Size" value={stats.fleetSize.toString()} icon={Plane} description="Total aircraft in your fleet" />
-        <StatsCard title="Total Crew" value={stats.totalCrew.toString()} icon={Users} description="Pilots and cabin crew" />
+        <StatsCard title="Active RFQs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.marketplaceRfqs.toString()} icon={FileText} description="RFQs currently open for bidding" />
+        <StatsCard title="Submitted Quotations" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeBids.toString()} icon={CheckCircle} description="Your active quotations" />
+        <StatsCard title="Fleet Size" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.fleetSize.toString()} icon={Plane} description="Total aircraft in your fleet" />
+        <StatsCard title="Total Crew" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.totalCrew.toString()} icon={Users} description="Pilots and cabin crew" />
       </StatsGrid>
 
       <Card>
@@ -43,6 +64,7 @@ export function OperatorDashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+           {isLoading ? <Skeleton className="h-40 w-full" /> : (
             <Table>
                 <TableHeader>
                 <TableRow>
@@ -86,6 +108,7 @@ export function OperatorDashboard() {
                 ))}
                 </TableBody>
             </Table>
+           )}
         </CardContent>
       </Card>
     </>

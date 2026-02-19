@@ -38,6 +38,8 @@ import { verifyCompliance } from "@/ai/flows/verify-compliance";
 import type { ComplianceVerificationOutput } from "@/ai/flows/verify-compliance";
 import { ComplianceCheckResult } from "./compliance-check-result";
 import { useUser } from "@/hooks/use-user";
+import { addDocumentNonBlocking, useFirestore } from "@/firebase";
+import { collection, serverTimestamp } from "firebase/firestore";
 
 const baseRfqSchema = z.object({
   tripType: z.enum(["Onward", "Return", "Multi-City"], { required_error: "Trip type is required." }),
@@ -67,7 +69,8 @@ export function CreateRfqDialog() {
   const [complianceResult, setComplianceResult] = useState<ComplianceVerificationOutput | null>(null);
   const { toast } = useToast();
   const { user } = useUser();
-  const isCtdUser = user.role === 'CTD Admin';
+  const firestore = useFirestore();
+  const isCtdUser = user?.role === 'CTD Admin';
 
   const rfqSchema = useMemo(() => {
     const schema = isCtdUser ? ctdRfqSchema : baseRfqSchema;
@@ -149,10 +152,27 @@ export function CreateRfqDialog() {
   };
 
   const onSubmit = (data: RfqFormValues) => {
-    console.log(data);
+    if (!user || !firestore) {
+      toast({ title: 'Error', description: 'User or database not available.', variant: 'destructive'});
+      return;
+    }
+
+    const rfqData = {
+      ...data,
+      customerId: user.id,
+      customerName: `${user.firstName} ${user.lastName}`,
+      company: user.company || null,
+      status: isCtdUser ? 'Pending Approval' : 'Bidding Open',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      bidsCount: 0,
+    }
+
+    addDocumentNonBlocking(collection(firestore, 'charterRequests'), rfqData);
+    
     toast({
       title: "RFQ Submitted",
-      description: "Your Request for Quotation has been submitted to the marketplace.",
+      description: "Your Request for Quotation has been submitted.",
     });
     setOpen(false);
     form.reset();

@@ -1,3 +1,4 @@
+'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
@@ -8,19 +9,25 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import Link from "next/link";
-
-
-const mockRequests = [
-    { id: 'req_1', tripId: 'rfq_4', guestType: 'Passenger', checkIn: '2024-08-20', checkOut: '2024-08-22', rooms: 5, status: 'Pending'},
-    { id: 'req_2', tripId: 'trip_7', guestType: 'Crew', checkIn: '2024-08-21', checkOut: '2024-08-22', rooms: 2, status: 'Confirmed'},
-    { id: 'req_3', tripId: 'trip_8', guestType: 'Passenger', checkIn: '2024-08-25', checkOut: '2024-08-26', rooms: 1, status: 'Pending'},
-]
+import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
+import { AccommodationRequest } from "@/lib/types";
+import { Skeleton } from "../ui/skeleton";
 
 export function HotelDashboard() {
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const requestsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'accommodationRequests'), where('hotelPartnerId', '==', user.id));
+  }, [firestore, user]);
+  const { data: requests, isLoading } = useCollection<AccommodationRequest>(requestsQuery);
+
   const stats = {
-    pending: mockRequests.filter(r => r.status === 'Pending').length,
-    confirmed: mockRequests.filter(r => r.status === 'Confirmed').length,
-    thisMonth: mockRequests.length
+    pending: requests?.filter(r => r.status === 'Pending').length ?? 0,
+    confirmed: requests?.filter(r => r.status === 'Confirmed').length ?? 0,
+    totalRooms: requests?.reduce((acc, r) => acc + (r.rooms || 0), 0) ?? 0,
   }
 
   return (
@@ -32,9 +39,9 @@ export function HotelDashboard() {
       </PageHeader>
       
       <StatsGrid>
-        <StatsCard title="Pending Requests" value={stats.pending.toString()} icon={Calendar} description="Awaiting your confirmation" />
-        <StatsCard title="Confirmed Stays" value={stats.confirmed.toString()} icon={Check} description="Bookings confirmed" />
-        <StatsCard title="Total Rooms (Month)" value="8" icon={BedDouble} description="Rooms requested this month" />
+        <StatsCard title="Pending Requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pending.toString()} icon={Calendar} description="Awaiting your confirmation" />
+        <StatsCard title="Confirmed Stays" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.confirmed.toString()} icon={Check} description="Bookings confirmed" />
+        <StatsCard title="Total Rooms (Month)" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.totalRooms.toString()} icon={BedDouble} description="Rooms requested this month" />
         <StatsCard title="Response Time" value="~2.5 hrs" icon={Clock} description="Your average response time" />
       </StatsGrid>
 
@@ -51,6 +58,7 @@ export function HotelDashboard() {
             </Button>
         </CardHeader>
         <CardContent>
+           {isLoading ? <Skeleton className="h-40 w-full" /> : (
             <Table>
                 <TableHeader>
                 <TableRow>
@@ -65,14 +73,14 @@ export function HotelDashboard() {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {mockRequests.map((req) => (
+                {requests?.slice(0,5).map((req) => (
                     <TableRow key={req.id}>
                         <TableCell className="font-medium font-code">{req.id}</TableCell>
-                        <TableCell className="font-code">{req.tripId}</TableCell>
+                        <TableCell className="font-code">{req.charterRequestId || req.emptyLegFlightId}</TableCell>
                         <TableCell>
-                            <Badge variant={req.guestType === 'Crew' ? 'outline' : 'secondary'}>{req.guestType}</Badge>
+                            <Badge variant={req.isCrewAccommodation ? 'outline' : 'secondary'}>{req.isCrewAccommodation ? 'Crew' : 'Passenger'}</Badge>
                         </TableCell>
-                        <TableCell>{req.checkIn}</TableCell>
+                        <TableCell>{req.checkInDate}</TableCell>
                         <TableCell>
                             <Badge variant={req.status === 'Pending' ? 'destructive' : req.status === 'Confirmed' ? 'default' : 'secondary'}>{req.status}</Badge>
                         </TableCell>
@@ -108,6 +116,7 @@ export function HotelDashboard() {
                 ))}
                 </TableBody>
             </Table>
+           )}
         </CardContent>
       </Card>
     </>

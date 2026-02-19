@@ -1,10 +1,10 @@
+'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "./customer/create-rfq-dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
-import { getMockDataForRole } from "@/lib/data";
-import type { CharterRFQ, RfqStatus, UserRole } from "@/lib/types";
+import type { CharterRFQ, RfqStatus } from "@/lib/types";
 import { MoreHorizontal, ShieldCheck, Clock, FileText, CheckCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -12,6 +12,9 @@ import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
+import { Skeleton } from "../ui/skeleton";
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
@@ -34,25 +37,32 @@ const getStatusColor = (status: RfqStatus) => {
 
 export function CTDDashboard() {
   const { user } = useUser();
-  const { rfqs } = getMockDataForRole(user.role as UserRole);
+  const firestore = useFirestore();
+
+  const rfqsQuery = useMemoFirebase(() => {
+    if (!firestore || !user?.company) return null;
+    return query(collection(firestore, 'charterRequests'), where('company', '==', user.company));
+  }, [firestore, user]);
+  const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery);
 
   const stats = {
-    pending: rfqs.filter(r => r.status === 'Pending Approval').length,
-    active: rfqs.filter(r => r.status === 'Bidding Open').length,
-    confirmed: rfqs.filter(r => r.status === 'Confirmed').length
+    pending: rfqs?.filter(r => r.status === 'Pending Approval').length ?? 0,
+    active: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
+    confirmed: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
+    total: rfqs?.length ?? 0
   }
 
   return (
     <>
-      <PageHeader title="CTD Admin Dashboard" description={`Manage travel for ${user.company}.`}>
+      <PageHeader title="CTD Admin Dashboard" description={`Manage travel for ${user?.company}.`}>
         <CreateRfqDialog />
       </PageHeader>
       
       <StatsGrid>
-        <StatsCard title="Total Corporate RFQs" value={rfqs.length.toString()} icon={FileText} description="Requests from your organization" />
-        <StatsCard title="Pending Internal Approval" value={stats.pending.toString()} icon={ShieldCheck} description="RFQs awaiting sign-off" />
-        <StatsCard title="Active RFQs" value={stats.active.toString()} icon={Clock} description="Requests open for operator bids" />
-        <StatsCard title="Confirmed Corporate Trips" value={stats.confirmed.toString()} icon={CheckCircle} description="Successfully confirmed charters" />
+        <StatsCard title="Total Corporate RFQs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.total.toString()} icon={FileText} description="Requests from your organization" />
+        <StatsCard title="Pending Internal Approval" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pending.toString()} icon={ShieldCheck} description="RFQs awaiting sign-off" />
+        <StatsCard title="Active RFQs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.active.toString()} icon={Clock} description="Requests open for operator bids" />
+        <StatsCard title="Confirmed Corporate Trips" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.confirmed.toString()} icon={CheckCircle} description="Successfully confirmed charters" />
       </StatsGrid>
 
       <Card>
@@ -63,6 +73,7 @@ export function CTDDashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+            {isLoading ? <Skeleton className="h-40 w-full" /> : (
             <Table>
                 <TableHeader>
                 <TableRow>
@@ -77,7 +88,7 @@ export function CTDDashboard() {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {rfqs.map((rfq: CharterRFQ) => (
+                {rfqs?.map((rfq: CharterRFQ) => (
                     <TableRow key={rfq.id}>
                         <TableCell className="font-medium font-code">{rfq.id}</TableCell>
                         <TableCell>{rfq.customerName}</TableCell>
@@ -108,6 +119,7 @@ export function CTDDashboard() {
                 ))}
                 </TableBody>
             </Table>
+            )}
         </CardContent>
       </Card>
     </>

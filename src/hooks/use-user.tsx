@@ -1,38 +1,41 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext, useState, useMemo } from 'react';
-import type { User, UserRole } from '@/lib/types';
-import { users } from '@/lib/data';
+import React, { createContext, useContext, useMemo, ReactNode } from 'react';
+import { doc } from 'firebase/firestore';
+import { useFirestore, useUser as useAuthUser, useMemoFirebase } from '@/firebase';
+import { useDoc, WithId } from '@/firebase/firestore/use-doc';
+import type { User as AppUser } from '@/lib/types';
 
 interface UserContextType {
-  user: User;
-  setUser: (user: User) => void;
-  availableUsers: User[];
-  switchUserRole: (role: UserRole) => void;
+  user: WithId<AppUser> | null;
+  isLoading: boolean;
+  error: Error | null;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User>(users[0]);
+export function UserProvider({ children }: { children: ReactNode }) {
+  const { user: authUser, isUserLoading: isAuthLoading, userError: authError } = useAuthUser();
+  const firestore = useFirestore();
 
-  const switchUserRole = (role: UserRole) => {
-    const newUser = users.find(u => u.role === role);
-    if (newUser) {
-      setCurrentUser(newUser);
-    }
-  };
+  const userDocRef = useMemoFirebase(() => {
+    if (!firestore || !authUser) return null;
+    return doc(firestore, 'users', authUser.uid);
+  }, [firestore, authUser]);
+
+  const { data: userProfile, isLoading: isProfileLoading, error: profileError } = useDoc<AppUser>(userDocRef);
   
-  const value = useMemo(() => ({
-    user: currentUser,
-    setUser: setCurrentUser,
-    availableUsers: users,
-    switchUserRole
-  }), [currentUser]);
+  const value = useMemo(() => {
+    return {
+      user: userProfile,
+      isLoading: isAuthLoading || isProfileLoading,
+      error: authError || profileError,
+    };
+  }, [userProfile, isAuthLoading, isProfileLoading, authError, profileError]);
 
   return (
     <UserContext.Provider value={value}>
-      {children}
+        {children}
     </UserContext.Provider>
   );
 }

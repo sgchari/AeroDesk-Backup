@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { UserProvider } from '@/hooks/use-user';
 import { Poppins } from 'next/font/google';
+import { FirebaseClientProvider } from '@/firebase';
+import { UserProvider } from '@/hooks/use-user';
 
 export const metadata: Metadata = {
   title: 'AeroDesk',
@@ -39,10 +40,12 @@ export default function RootLayout({
           process.env.NODE_ENV === 'development' ? 'debug-screens' : ''
         )}
       >
-        <UserProvider>
-          {children}
-          <Toaster />
-        </UserProvider>
+        <FirebaseClientProvider>
+          <UserProvider>
+            {children}
+            <Toaster />
+          </UserProvider>
+        </FirebaseClientProvider>
       </body>
     </html>
   );

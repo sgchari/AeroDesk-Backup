@@ -8,11 +8,21 @@ import { CTDDashboard } from '@/components/dashboard/ctd-dashboard';
 import { DistributorDashboard } from '@/components/dashboard/distributor-dashboard';
 import { HotelDashboard } from '@/components/dashboard/hotel-dashboard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function DashboardPage() {
-  const { user } = useUser();
+  const { user, isLoading, error } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, isLoading, router]);
 
   const renderDashboard = () => {
+    if (!user) return null;
     switch (user.role) {
       case 'Customer':
         return <CustomerDashboard />;
@@ -27,13 +37,21 @@ export default function DashboardPage() {
       case 'Hotel Partner':
         return <HotelDashboard />;
       default:
-        return <div className="p-4">Invalid user role.</div>;
+        return <div className="p-4">Invalid user role. Please contact support.</div>;
     }
   };
 
+  if (isLoading || !user) {
+    return <DashboardSkeleton />;
+  }
+
+  if (error) {
+    return <div>Error loading user data. Please try logging in again.</div>
+  }
+
   return (
     <div>
-        {user ? renderDashboard() : <DashboardSkeleton />}
+      {renderDashboard()}
     </div>
   );
 }
@@ -41,14 +59,17 @@ export default function DashboardPage() {
 function DashboardSkeleton() {
     return (
         <div className="space-y-6">
-            <Skeleton className="h-12 w-1/3" />
+            <div className="flex items-center justify-between">
+                <Skeleton className="h-12 w-1/3" />
+                <Skeleton className="h-10 w-32" />
+            </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Skeleton className="h-32" />
                 <Skeleton className="h-32" />
                 <Skeleton className="h-32" />
                 <Skeleton className="h-32" />
             </div>
-            <Skeleton className="h-64" />
+            <Skeleton className="h-96" />
         </div>
     )
 }

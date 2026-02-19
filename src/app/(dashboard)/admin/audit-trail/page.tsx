@@ -1,16 +1,23 @@
+'use client';
+
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { getMockDataForRole } from "@/lib/data";
 import { AuditLog } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { SummarizeLogButton } from "@/components/dashboard/admin/summarize-log-button";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AuditTrailPage() {
-    const { auditLogs } = getMockDataForRole('Admin');
-    const fullLogText = auditLogs.map(log => JSON.stringify(log)).join('\n');
+    const firestore = useFirestore();
+    const auditLogsQuery = useMemoFirebase(() => firestore ? collection(firestore, 'complianceNotes') : null, [firestore]);
+    const { data: auditLogs, isLoading } = useCollection<AuditLog>(auditLogsQuery);
+    
+    const fullLogText = auditLogs?.map(log => JSON.stringify(log)).join('\n') ?? '';
 
     return (
         <>
@@ -29,6 +36,13 @@ export default function AuditTrailPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
+                    {isLoading ? (
+                        <div className="space-y-4">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                        </div>
+                    ) : (
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -41,7 +55,7 @@ export default function AuditTrailPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                        {auditLogs.map((log: AuditLog) => (
+                        {auditLogs?.map((log: AuditLog) => (
                             <TableRow key={log.id}>
                                 <TableCell className="text-xs">{log.timestamp}</TableCell>
                                 <TableCell>{log.user}</TableCell>
@@ -53,6 +67,7 @@ export default function AuditTrailPage() {
                         ))}
                         </TableBody>
                     </Table>
+                    )}
                 </CardContent>
             </Card>
         </>

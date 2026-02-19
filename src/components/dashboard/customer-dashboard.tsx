@@ -1,9 +1,9 @@
+'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "./customer/create-rfq-dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
-import { getMockDataForRole } from "@/lib/data";
 import type { CharterRFQ, RfqStatus, EmptyLeg } from "@/lib/types";
 import { MoreHorizontal, FileText, Clock, CheckCircle, Plane, Hotel } from "lucide-react";
 import { Button } from "../ui/button";
@@ -12,13 +12,17 @@ import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where, collectionGroup } from "firebase/firestore";
+import { Skeleton } from "../ui/skeleton";
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
         case 'Draft': return 'secondary';
         case 'Pending Approval': return 'outline';
         case 'Bidding Open': return 'default';
-        case 'Operator Selected': 'default';
+        case 'Operator Selected': return 'default';
         case 'Confirmed': return 'default';
         default: return 'secondary';
     }
@@ -35,13 +39,29 @@ const getStatusColor = (status: RfqStatus) => {
 
 
 export function CustomerDashboard() {
-  const { rfqs, emptyLegs } = getMockDataForRole('Customer');
+  const { user } = useUser();
+  const firestore = useFirestore();
   const { toast } = useToast();
+
+  const rfqsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'charterRequests'), where('customerId', '==', user.id));
+  }, [firestore, user]);
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
+
+  const emptyLegsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collectionGroup(firestore, 'emptyLegFlights'), where('status', '==', 'Approved'));
+  }, [firestore]);
+  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+
+  const isLoading = rfqsLoading || emptyLegsLoading;
 
   const stats = {
     active: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
     completed: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
     emptyLegs: emptyLegs?.length ?? 0,
+    total: rfqs?.length ?? 0,
   }
 
   const confirmedTrips = rfqs?.filter(r => r.status === 'Confirmed') ?? [];
@@ -59,7 +79,7 @@ export function CustomerDashboard() {
         description: `Your request for seats on flight ${legId} is subject to operator confirmation.`,
     });
   };
-
+  
   return (
     <>
       <PageHeader title="Customer Dashboard" description="Manage your charter requests and view their status.">
@@ -68,10 +88,10 @@ export function CustomerDashboard() {
       
       <div className="grid gap-6">
         <StatsGrid>
-            <StatsCard title="Total RFQs" value={rfqs.length.toString()} icon={FileText} description="All requests submitted" />
-            <StatsCard title="Active Bidding" value={stats.active.toString()} icon={Clock} description="RFQs currently open for bids" />
-            <StatsCard title="Available Empty Legs" value={stats.emptyLegs.toString()} icon={Plane} description="Available one-way flights for seat allocation" />
-            <StatsCard title="Confirmed Trips" value={stats.completed.toString()} icon={CheckCircle} description="Successfully confirmed charters" />
+            <StatsCard title="Total RFQs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.total.toString()} icon={FileText} description="All requests submitted" />
+            <StatsCard title="Active Bidding" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.active.toString()} icon={Clock} description="RFQs currently open for bids" />
+            <StatsCard title="Available Empty Legs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.emptyLegs.toString()} icon={Plane} description="Available one-way flights for seat allocation" />
+            <StatsCard title="Confirmed Trips" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.completed.toString()} icon={CheckCircle} description="Successfully confirmed charters" />
         </StatsGrid>
 
         <Card>
@@ -82,6 +102,7 @@ export function CustomerDashboard() {
             </CardDescription>
             </CardHeader>
             <CardContent>
+                {isLoading ? <Skeleton className="h-40 w-full" /> : (
                 <Table>
                     <TableHeader>
                     <TableRow>
@@ -97,7 +118,7 @@ export function CustomerDashboard() {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {rfqs.map((rfq: CharterRFQ) => (
+                    {rfqs?.map((rfq: CharterRFQ) => (
                         <TableRow key={rfq.id}>
                             <TableCell className="font-medium font-code">{rfq.id}</TableCell>
                             <TableCell>{rfq.departure} to {rfq.arrival}</TableCell>
@@ -129,6 +150,7 @@ export function CustomerDashboard() {
                     ))}
                     </TableBody>
                 </Table>
+                )}
             </CardContent>
         </Card>
         

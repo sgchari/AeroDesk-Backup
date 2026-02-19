@@ -12,16 +12,35 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useUser } from '@/hooks/use-user';
-import { User as UserIcon, Users, LogOut } from 'lucide-react';
+import { useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import { User as UserIcon, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Skeleton } from './ui/skeleton';
 
 export function UserNav() {
-  const { user, availableUsers, switchUserRole } = useUser();
+  const { user, isLoading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
 
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/login');
+  };
+  
+  if (isLoading) {
+    return <Skeleton className="h-9 w-9 rounded-full" />;
+  }
+  
+  if (!user) {
+      return null;
+  }
+
+  const name = `${user.firstName} ${user.lastName}`;
   const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('');
+    const names = name.split(' ');
+    if (names.length === 0 || names[0] === '') return '?';
+    return names.map((n) => n[0]).join('');
   };
 
   return (
@@ -29,15 +48,15 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+            <AvatarImage src={user.avatar} alt={name} />
+            <AvatarFallback>{getInitials(name)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-sm font-medium leading-none">{name}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>
@@ -51,17 +70,7 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>Switch Role (Demo)</DropdownMenuLabel>
-        <DropdownMenuGroup>
-          {availableUsers.map((u) => (
-             <DropdownMenuItem key={u.id} onClick={() => switchUserRole(u.role)}>
-                <Users className="mr-2 h-4 w-4" />
-                <span>{u.role}</span>
-             </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

@@ -1,14 +1,17 @@
+'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { getMockDataForRole } from "@/lib/data";
-import { ShieldCheck, Users, Plane, FileText, Briefcase, Building, CreditCard, ArrowRight } from "lucide-react";
+import { ShieldCheck, Users, Plane, Briefcase, Building, CreditCard, ArrowRight } from "lucide-react";
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
-import { AuditLog } from "@/lib/types";
+import { AuditLog, User, EmptyLeg } from "@/lib/types";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where, limit } from "firebase/firestore";
+import { Skeleton } from "../ui/skeleton";
 
 function ManagementCard({ title, description, link, icon: Icon }: { title: string, description: string, link: string, icon: React.ElementType }) {
   return (
@@ -36,16 +39,25 @@ function ManagementCard({ title, description, link, icon: Icon }: { title: strin
 }
 
 export function AdminDashboard() {
-  const { users, emptyLegs, auditLogs } = getMockDataForRole('Admin');
+  const firestore = useFirestore();
+
+  const usersQuery = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
+  const { data: users, isLoading: usersLoading } = useCollection<User>(usersQuery);
+
+  const emptyLegsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'emptyLegFlights'), where('status', '==', 'Pending Approval')) : null, [firestore]);
+  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+  
+  const auditLogsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'complianceNotes'), limit(5)) : null, [firestore]);
+  const { data: recentLogs, isLoading: logsLoading } = useCollection<AuditLog>(auditLogsQuery);
+
+  const isLoading = usersLoading || emptyLegsLoading || logsLoading;
   
   const stats = {
-    pendingApprovals: emptyLegs?.filter(e => e.status === 'Pending Approval').length ?? 0,
+    pendingApprovals: emptyLegs?.length ?? 0,
     activeUsers: users?.length ?? 0,
     operators: users?.filter(u => u.role === 'Operator').length ?? 0,
     partners: users?.filter(u => u.role === 'Hotel Partner' || u.role === 'Authorized Distributor').length ?? 0,
   }
-
-  const recentLogs = auditLogs?.slice(0, 5) ?? [];
 
   return (
     <>
@@ -53,10 +65,10 @@ export function AdminDashboard() {
       
       <div className="grid gap-6">
         <StatsGrid>
-          <StatsCard title="Pending Approvals" value={stats.pendingApprovals.toString()} icon={ShieldCheck} description="Items awaiting review" />
-          <StatsCard title="Active Users" value={stats.activeUsers.toString()} icon={Users} description="Across all roles" />
-          <StatsCard title="Operators" value={stats.operators.toString()} icon={Plane} description="Verified NSOP operators" />
-          <StatsCard title="Partners" value={stats.partners.toString()} icon={Briefcase} description="Hotels & Distributors" />
+          <StatsCard title="Pending Approvals" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingApprovals.toString()} icon={ShieldCheck} description="Items awaiting review" />
+          <StatsCard title="Active Users" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeUsers.toString()} icon={Users} description="Across all roles" />
+          <StatsCard title="Operators" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.operators.toString()} icon={Plane} description="Verified NSOP operators" />
+          <StatsCard title="Partners" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.partners.toString()} icon={Briefcase} description="Hotels & Distributors" />
         </StatsGrid>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -111,6 +123,7 @@ export function AdminDashboard() {
               </Button>
           </CardHeader>
           <CardContent>
+            {isLoading ? <Skeleton className="h-40 w-full" /> : (
               <Table>
                   <TableHeader>
                   <TableRow>
@@ -122,9 +135,9 @@ export function AdminDashboard() {
                   </TableRow>
                   </TableHeader>
                   <TableBody>
-                  {recentLogs.map((log: AuditLog) => (
+                  {recentLogs?.map((log: AuditLog) => (
                       <TableRow key={log.id}>
-                          <TableCell>{log.timestamp}</TableCell>
+                          <TableCell>{log.timestamp?.toString()}</TableCell>
                           <TableCell>{log.user}</TableCell>
                           <TableCell><Badge variant="secondary">{log.role}</Badge></TableCell>
                           <TableCell className="font-medium">{log.action}</TableCell>
@@ -133,6 +146,7 @@ export function AdminDashboard() {
                   ))}
                   </TableBody>
               </Table>
+            )}
           </CardContent>
         </Card>
       </div>

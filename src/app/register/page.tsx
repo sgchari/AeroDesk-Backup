@@ -26,9 +26,12 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
 import type { UserRole } from '@/lib/types';
+import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, serverTimestamp } from 'firebase/firestore';
 
 
-const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner'];
+const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
 
 const registerSchema = z.object({
     name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -46,6 +49,8 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const auth = useAuth();
+  const firestore = useFirestore();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -57,13 +62,41 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = (data: RegisterFormValues) => {
-    console.log('New user registration:', data);
-    toast({
-        title: "Registration Successful!",
-        description: "You can now log in with your new account. (This is a demo)",
-    });
-    router.push('/login');
+  const onSubmit = async (data: RegisterFormValues) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const user = userCredential.user;
+
+      const [firstName, ...lastNameParts] = data.name.split(' ');
+      const lastName = lastNameParts.join(' ');
+
+      const userProfile = {
+          id: user.uid,
+          email: user.email,
+          firstName: firstName || '',
+          lastName: lastName || '',
+          role: data.role,
+          status: 'Active',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+      };
+      
+      const userDocRef = doc(firestore, 'users', user.uid);
+      setDocumentNonBlocking(userDocRef, userProfile, { merge: false });
+
+      toast({
+          title: "Registration Successful!",
+          description: "You can now log in with your new account.",
+      });
+      router.push('/login');
+    } catch (error: any) {
+      console.error('Registration failed:', error);
+      toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: error.message || "An unexpected error occurred. Please try again.",
+      });
+    }
   };
 
   return (
@@ -157,8 +190,8 @@ export default function RegisterPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Create Account
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Creating Account...' : 'Create Account'}
               </Button>
             </form>
           </Form>
