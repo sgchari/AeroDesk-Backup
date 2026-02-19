@@ -1,15 +1,25 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ArrowRight, CheckCircle, ShieldCheck, Plane } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Logo } from '@/components/logo';
 
 const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <header className="sticky top-0 z-40 w-full border-b bg-background">
+        <div className="container flex h-16 items-center justify-between">
+          <Logo />
+          <Button asChild>
+            <Link href="/login">
+              Access Platform
+            </Link>
+          </Button>
+        </div>
+      </header>
       <main className="flex-1">
         <section className="relative h-[600px] w-full">
           {heroImage && (
