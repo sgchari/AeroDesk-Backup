@@ -30,9 +30,9 @@ export default function LoginPage() {
             <div className="flex justify-center mb-4">
                 <Logo />
             </div>
-          <CardTitle>Welcome to AeroDesk</CardTitle>
+          <CardTitle>AeroDesk Platform Access</CardTitle>
           <CardDescription>
-            This is a demo environment. Select a user role to access the corresponding dashboard.
+            This is a demonstration environment. Select a user persona to access the corresponding role-based console.
           </CardDescription>
         </CardHeader>
         <CardContent>

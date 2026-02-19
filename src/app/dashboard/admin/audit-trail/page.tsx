@@ -14,7 +14,7 @@ export default function AuditTrailPage() {
 
     return (
         <>
-            <PageHeader title="Platform Audit Trail" description="A complete log of all actions performed on the platform.">
+            <PageHeader title="Platform Audit Trail" description="A complete, immutable log of all actions performed across the platform.">
                 <SummarizeLogButton logContent={fullLogText} />
                 <Button variant="outline">
                     <Download className="mr-2 h-4 w-4" />
@@ -25,7 +25,7 @@ export default function AuditTrailPage() {
                 <CardHeader>
                     <CardTitle>All Events</CardTitle>
                     <CardDescription>
-                        Search and filter through all recorded audit events.
+                        Search and filter through all recorded events for governance and compliance review.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

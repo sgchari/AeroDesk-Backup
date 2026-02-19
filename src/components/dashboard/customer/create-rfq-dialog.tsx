@@ -152,7 +152,7 @@ export function CreateRfqDialog() {
     console.log(data);
     toast({
       title: "RFQ Submitted",
-      description: "Your charter request has been submitted for bidding.",
+      description: "Your Request for Quotation has been submitted to the marketplace.",
     });
     setOpen(false);
     form.reset();
@@ -175,10 +175,9 @@ export function CreateRfqDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle>Create New Charter Request (RFQ)</DialogTitle>
+          <DialogTitle>New Charter Request for Quotation</DialogTitle>
           <DialogDescription>
-            Fill in the details for your trip. This will be sent to verified
-            operators for quotations.
+            Complete the form to generate an RFQ. This will be sent to verified operators for quotations.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

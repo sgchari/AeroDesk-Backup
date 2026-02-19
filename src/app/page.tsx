@@ -15,7 +15,7 @@ export default function Home() {
           <Logo />
           <Button asChild>
             <Link href="/login">
-              Access Platform
+              Platform Access
             </Link>
           </Button>
         </div>
@@ -35,11 +35,10 @@ export default function Home() {
           <div className="absolute inset-0 bg-primary/80" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
             <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-              Request a Chartered Flight
+              Digital Infrastructure for Charter Aviation
             </h1>
             <p className="mt-4 max-w-[700px] text-lg md:text-xl">
-              The compliance-first digital infrastructure for non-scheduled
-              charter aviation in India.
+              A compliance-first coordination platform for non-scheduled charter operations in India.
             </p>
             <Button asChild size="lg" className="mt-8">
               <Link href="/login">
@@ -54,15 +53,13 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">
-                  Our Process
+                  Coordination Workflow
                 </div>
                 <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">
-                  A Transparent, Compliant RFQ-Based Flow
+                  A Transparent, Request-Based Protocol
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  We are not a booking platform. We provide the digital rails
-                  for compliant charter procurement between customers,
-                  corporates, and verified operators.
+                  AeroDesk is not a booking platform. We provide the digital rails for compliant charter procurement between customers, corporates, and verified NSOP operators. All actions are request-based and subject to multi-party confirmation.
                 </p>
               </div>
             </div>
@@ -75,8 +72,7 @@ export default function Home() {
                   <h3 className="text-lg font-bold">1. Submit RFQ</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Customers and Corporate Travel Desks create a detailed Request
-                  for Quotation (RFQ) for their charter needs.
+                  Customers and Corporate Travel Desks create a detailed Request for Quotation for their charter requirements.
                 </p>
               </div>
               <div className="grid gap-1">
@@ -87,8 +83,7 @@ export default function Home() {
                   <h3 className="text-lg font-bold">2. Operator Quotations</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Verified NSOP operators submit competitive quotations against
-                  the RFQ through our secure exchange.
+                  Verified NSOP operators submit competitive quotations against the RFQ through the secure platform exchange.
                 </p>
               </div>
               <div className="grid gap-1">
@@ -99,8 +94,7 @@ export default function Home() {
                   <h3 className="text-lg font-bold">3. Select & Confirm</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  After necessary internal approvals, the customer selects the
-                  preferred operator. Confirmation is handled offline.
+                  After internal approvals, the customer selects the preferred operator. Final confirmation is handled offline.
                 </p>
               </div>
             </div>
@@ -114,13 +108,12 @@ export default function Home() {
                 Built for Governance and Auditability
               </h2>
               <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Our platform is designed from the ground up to meet the strict
-                requirements of government procurement and enterprise SaaS.
+                The platform is designed from the ground up with immutable audit trails to meet the strict governance requirements of public and private sector entities.
               </p>
             </div>
             <div className="mx-auto w-full max-w-sm space-y-2">
               <Button asChild size="lg" className="w-full">
-                <Link href="/login">Access the Platform</Link>
+                <Link href="/login">Enter Platform</Link>
               </Button>
               <p className="text-xs text-muted-foreground">
                 By entering the platform, you agree to our terms of service.

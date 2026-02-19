@@ -22,15 +22,15 @@ export function OperatorDashboard() {
 
   return (
     <>
-      <PageHeader title="Operator Dashboard" description="Manage your bids, fleet, and view marketplace activity.">
+      <PageHeader title="Operator Console" description="Manage your quotations, fleet, and view marketplace activity.">
         <Button asChild variant="outline"><Link href="/dashboard/operator/fleet">Manage Fleet</Link></Button>
         <Button asChild variant="outline"><Link href="/dashboard/operator/crew">Manage Crew</Link></Button>
         <Button asChild><Link href="/dashboard/operator/empty-legs">Create Empty Leg</Link></Button>
       </PageHeader>
       
       <StatsGrid>
-        <StatsCard title="RFQ Marketplace" value={stats.marketplaceRfqs.toString()} icon={FileText} description="RFQs currently open for bidding" />
-        <StatsCard title="Active Bids" value={stats.activeBids.toString()} icon={CheckCircle} description="Your submitted bids" />
+        <StatsCard title="Active RFQs" value={stats.marketplaceRfqs.toString()} icon={FileText} description="RFQs currently open for bidding" />
+        <StatsCard title="Submitted Quotations" value={stats.activeBids.toString()} icon={CheckCircle} description="Your active quotations" />
         <StatsCard title="Fleet Size" value={stats.fleetSize.toString()} icon={Plane} description="Total aircraft in your fleet" />
         <StatsCard title="Total Crew" value={stats.totalCrew.toString()} icon={Users} description="Pilots and cabin crew" />
       </StatsGrid>
@@ -39,7 +39,7 @@ export function OperatorDashboard() {
         <CardHeader>
           <CardTitle>RFQ Marketplace</CardTitle>
           <CardDescription>
-            Charter requests currently open for bidding.
+            Charter requests from customers and corporates, open for quotations.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -78,6 +78,7 @@ export function OperatorDashboard() {
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem>View Details</DropdownMenuItem>
                                 <DropdownMenuItem>Submit Quotation</DropdownMenuItem>
+                                <DropdownMenuItem>Withdraw Quotation</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>

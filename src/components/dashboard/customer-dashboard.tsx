@@ -48,15 +48,15 @@ export function CustomerDashboard() {
 
   const handleRequestHotel = (rfqId: string) => {
     toast({
-        title: "Hotel Request Sent",
-        description: `Your request for accommodation for trip ${rfqId} has been sent to partner hotels.`,
+        title: "Hotel Accommodation Request Sent",
+        description: `Your request for trip ${rfqId} has been sent to partner hotels for confirmation.`,
     });
   };
 
   const handleRequestSeats = (legId: string) => {
     toast({
-        title: "Seat Request Sent",
-        description: `Your request for seats on flight ${legId} has been sent to the operator for confirmation.`,
+        title: "Seat Allocation Request Sent",
+        description: `Your request for seats on flight ${legId} is subject to operator confirmation.`,
     });
   };
 
@@ -70,15 +70,15 @@ export function CustomerDashboard() {
         <StatsGrid>
             <StatsCard title="Total RFQs" value={rfqs.length.toString()} icon={FileText} description="All requests submitted" />
             <StatsCard title="Active Bidding" value={stats.active.toString()} icon={Clock} description="RFQs currently open for bids" />
-            <StatsCard title="Available Empty Legs" value={stats.emptyLegs.toString()} icon={Plane} description="Discounted one-way flights" />
+            <StatsCard title="Available Empty Legs" value={stats.emptyLegs.toString()} icon={Plane} description="Available one-way flights for seat allocation" />
             <StatsCard title="Confirmed Trips" value={stats.completed.toString()} icon={CheckCircle} description="Successfully confirmed charters" />
         </StatsGrid>
 
         <Card>
             <CardHeader>
-            <CardTitle>Recent Charter RFQs</CardTitle>
+            <CardTitle>My Charter RFQs</CardTitle>
             <CardDescription>
-                A list of your most recent charter requests.
+                A list of your recent Requests for Quotation and their status.
             </CardDescription>
             </CardHeader>
             <CardContent>
@@ -90,7 +90,7 @@ export function CustomerDashboard() {
                         <TableHead>Departure Date</TableHead>
                         <TableHead>PAX</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Bids</TableHead>
+                        <TableHead>Quotations</TableHead>
                         <TableHead>
                         <span className="sr-only">Actions</span>
                         </TableHead>
@@ -121,7 +121,7 @@ export function CustomerDashboard() {
                                     <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                     <DropdownMenuItem>View Details</DropdownMenuItem>
-                                    <DropdownMenuItem>Compare Bids</DropdownMenuItem>
+                                    <DropdownMenuItem>Compare Quotations</DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </TableCell>
@@ -135,9 +135,9 @@ export function CustomerDashboard() {
         {confirmedTrips.length > 0 && (
             <Card>
                 <CardHeader>
-                    <CardTitle>Confirmed Trips</CardTitle>
+                    <CardTitle>Confirmed Trips & Ancillary Services</CardTitle>
                     <CardDescription>
-                        Your upcoming trips are confirmed. You can now request accommodation.
+                        Your trips are confirmed. You can now request linked services like accommodation.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -159,7 +159,7 @@ export function CustomerDashboard() {
                                     <TableCell className="text-right">
                                         <Button size="sm" variant="outline" onClick={() => handleRequestHotel(trip.id)}>
                                             <Hotel className="mr-2 h-4 w-4" />
-                                            Request Hotel
+                                            Request Accommodation
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -175,7 +175,7 @@ export function CustomerDashboard() {
                 <CardHeader>
                     <CardTitle>Available Empty Legs</CardTitle>
                     <CardDescription>
-                        One-way flights available at a discounted rate. Request a seat now!
+                        One-way flights available. Request seats subject to operator confirmation.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -197,7 +197,7 @@ export function CustomerDashboard() {
                                     <TableCell>{leg.departureTime}</TableCell>
                                     <TableCell className="font-bold text-center">{leg.availableSeats}</TableCell>
                                     <TableCell className="text-right">
-                                        <Button size="sm" onClick={() => handleRequestSeats(leg.id)}>Request Seats</Button>
+                                        <Button size="sm" onClick={() => handleRequestSeats(leg.id)}>Request Seat Allocation</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
