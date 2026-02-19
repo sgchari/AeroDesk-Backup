@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
-import { MoreHorizontal, BedDouble, Calendar, Check, X } from "lucide-react";
+import { MoreHorizontal, BedDouble, Calendar, Check, X, Clock } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { StatsCard } from "./shared/stats-card";
