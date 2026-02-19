@@ -31,14 +31,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FilePlus, Bot, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { verifyCompliance } from "@/ai/flows/verify-compliance";
 import type { ComplianceVerificationOutput } from "@/ai/flows/verify-compliance";
 import { ComplianceCheckResult } from "./compliance-check-result";
+import { useUser } from "@/hooks/use-user";
 
-const rfqSchema = z.object({
+const baseRfqSchema = z.object({
   tripType: z.enum(["Onward", "Return", "Multi-City"], { required_error: "Trip type is required." }),
   departure: z.string().min(3, "Departure location is required."),
   arrival: z.string().min(3, "Arrival location is required."),
@@ -50,24 +51,36 @@ const rfqSchema = z.object({
   aircraftType: z.string().min(1, "Aircraft type is required."),
   catering: z.string().optional(),
   specialRequirements: z.string().optional(),
-}).refine(data => {
-    if (data.tripType === 'Return') {
-        return !!data.returnDate && !isNaN(Date.parse(data.returnDate)) && new Date(data.returnDate) > new Date(data.departureDate);
-    }
-    return true;
-}, {
-    message: "Return date must be after departure date.",
-    path: ["returnDate"],
 });
 
+const ctdRfqSchema = baseRfqSchema.extend({
+  businessPurpose: z.string().min(1, "Business purpose is required."),
+  costCenter: z.string().min(1, "Cost center is required."),
+});
 
-type RfqFormValues = z.infer<typeof rfqSchema>;
+type RfqFormValues = z.infer<typeof ctdRfqSchema>;
+
 
 export function CreateRfqDialog() {
   const [open, setOpen] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [complianceResult, setComplianceResult] = useState<ComplianceVerificationOutput | null>(null);
   const { toast } = useToast();
+  const { user } = useUser();
+  const isCtdUser = user.role.startsWith('CTD');
+
+  const rfqSchema = useMemo(() => {
+    const schema = isCtdUser ? ctdRfqSchema : baseRfqSchema;
+    return schema.refine(data => {
+        if (data.tripType === 'Return') {
+            return !!data.returnDate && !isNaN(Date.parse(data.returnDate)) && new Date(data.returnDate) > new Date(data.departureDate);
+        }
+        return true;
+    }, {
+        message: "Return date must be after departure date.",
+        path: ["returnDate"],
+    });
+  }, [isCtdUser]);
 
   const form = useForm<RfqFormValues>({
     resolver: zodResolver(rfqSchema),
@@ -81,6 +94,7 @@ export function CreateRfqDialog() {
       aircraftType: "Any Light Jet",
       catering: "",
       specialRequirements: "",
+      ...(isCtdUser ? { businessPurpose: "", costCenter: "" } : {}),
     },
   });
 
@@ -109,6 +123,8 @@ export function CreateRfqDialog() {
         ${formData.tripType === 'Return' ? `- Return Date: ${formData.returnDate}`: ''}
         - Passengers: ${formData.pax}
         - Aircraft Preference: ${formData.aircraftType}
+        ${isCtdUser ? `- Business Purpose: ${formData.businessPurpose}` : ''}
+        ${isCtdUser ? `- Cost Center: ${formData.costCenter}` : ''}
         ${formData.catering ? `- Catering: ${formData.catering}` : ''}
         ${formData.specialRequirements ? `- Special Requirements: ${formData.specialRequirements}` : ''}
         ${formData.tripType === 'Multi-City' ? `- Multi-City Details: User has indicated a multi-city trip. Please check special requirements for the full itinerary.` : ''}
@@ -189,6 +205,36 @@ export function CreateRfqDialog() {
                     </FormItem>
                 )}
             />
+            {isCtdUser && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                        control={form.control}
+                        name="businessPurpose"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Business Purpose</FormLabel>
+                                <FormControl>
+                                <Input placeholder="e.g., Client Meeting, Site Visit" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="costCenter"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Cost Center</FormLabel>
+                                <FormControl>
+                                <Input placeholder="e.g., PROJ-FIN-0123" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}

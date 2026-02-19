@@ -45,6 +45,8 @@ export type CharterRFQ = {
   bidsCount: number;
   catering?: string;
   specialRequirements?: string;
+  businessPurpose?: string;
+  costCenter?: string;
 };
 
 export type Bid = {
