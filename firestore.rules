@@ -1,34 +1,9 @@
-/**
- * # Firestore Security Rules
- *
- * ## Core Philosophy
- * This ruleset enforces a robust, multi-tenant security model designed for a complex aviation and enterprise SaaS platform.
- * The primary strategy is "Authorization Independence," where access decisions for a document are made using only the document's own data and the user's authentication token (`request.auth`). This is achieved through pervasive denormalization of owner/stakeholder user IDs (`userId`, `adminUserId`, `requesterId`, etc.) onto the documents themselves, which avoids slow, costly, and sometimes impossible cross-document `get()` calls in rules.
- *
- * ## Data Structure
- * The data is organized into a mix of nested, user-owned subcollections and top-level collections for major business entities.
- * - **User-Owned Data:** User-specific data like `/users/{userId}/customerProfiles` is nested directly under the user's document, providing clear ownership.
- * - **Entity-Owned Data:** Business entities like Operators and Hotel Partners have their own top-level collections (`/operators/{operatorId}`), with their own nested data (e.g., `/aircrafts`). Access to these subcollections is granted by checking ownership on the parent document.
- * - **Transactional Data:** High-traffic transactional collections like `/charterRequests` and `/seatAllocations` are at the top level. They contain denormalized IDs of all stakeholders (e.g., requester, CTD admin, operator) to grant access to multiple parties involved in a transaction.
- *
- * ## Key Security Decisions
- * - **Default Deny:** All paths are closed by default. Access is only granted by explicit `allow` rules.
- * - **Admin Access:** Platform-wide administrative privileges are granted to users with `role: 'Admin'` in their user profile document. The `isAdmin()` helper function checks this field.
- * - **Strict Ownership:** Users can only create, view, and modify their own user profiles and associated sub-collection data. User enumeration is prevented for non-admins.
- * - **Stakeholder-Based Access:** For transactional documents (e.g., CharterRequest, Quotation), access is granted not just to the creator but to all relevant stakeholders (e.g., a corporate travel desk admin, a responding operator, a hotel partner). This is managed via denormalized user IDs on the documents.
- * - **No Client-Side Schema Validation:** In this prototyping mode, rules focus strictly on authorization (who can access what). Data shape and type validation are not enforced, allowing for rapid front-end development. Validation is limited to fields critical for establishing ownership and relational integrity upon creation (e.g., ensuring `requesterId` matches the logged-in user).
- *
- * ## Denormalization for Authorization
- * To create simple and performant rules, user IDs required for authorization are copied (denormalized) directly onto the documents being secured.
- * - Instead of a `/charterRequests` rule needing to `get()` a `/corporateTravelDesks` document to find its admin, the `affiliatedCtdAdminUserId` is denormalized directly onto the `charterRequest` document.
- * - An Operator's `userId` is stored on their `/operators/{operatorId}` document, allowing subcollection rules for `/aircrafts` to efficiently `get()` the parent document to verify the user's identity.
- *
- * ## Structural Segregation
- * Entities with different ownership models or access patterns (e.g., `Operators`, `Distributors`, `HotelPartners`) are kept in separate top-level collections. Sensitive, admin-only data like `ComplianceNote` is isolated in its own collection to simplify and strengthen its security rules.
- */
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+    // This single rule grants open access to all documents and collections for development.
+    // It allows all queries, including collection group queries.
     match /{document=**} {
       allow read, write: if true;
     }
