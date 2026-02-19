@@ -10,7 +10,8 @@ import {
   ShieldCheck,
   BarChart2,
   Settings,
-  GanttChartSquare
+  GanttChartSquare,
+  CreditCard
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -60,7 +61,11 @@ const navItems = {
     { href: '/dashboard', label: 'Overview', icon: Home },
     { href: '/dashboard/admin/approvals', label: 'Platform Approvals', icon: ShieldCheck },
     { href: '/dashboard/admin/users', label: 'User Management', icon: Users },
+    { href: '/dashboard/admin/operators', label: 'Operator Management', icon: Plane },
+    { href: '/dashboard/admin/partners', label: 'Partner Management', icon: Briefcase },
+    { href: '/dashboard/admin/corporates', label: 'Corporate Management', icon: Building },
     { href: '/dashboard/admin/audit-trail', label: 'Audit Trail', icon: FileText },
+    { href: '/dashboard/admin/billing', label: 'Billing Records', icon: CreditCard },
     { href: '/dashboard/admin/settings', label: 'Platform Settings', icon: Settings },
   ],
 };
