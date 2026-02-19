@@ -6,16 +6,13 @@ import { getMockDataForRole } from "@/lib/data";
 import { AuditLog } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
-import { SummarizeLogButton } from "@/components/dashboard/admin/summarize-log-button";
 
 export default function AuditTrailPage() {
     const { auditLogs } = getMockDataForRole('Admin');
-    const fullLogText = auditLogs.map(log => JSON.stringify(log)).join('\n');
 
     return (
         <>
             <PageHeader title="Platform Audit Trail" description="A complete, immutable log of all actions performed across the platform.">
-                <SummarizeLogButton logContent={fullLogText} />
                 <Button variant="outline">
                     <Download className="mr-2 h-4 w-4" />
                     Export as CSV

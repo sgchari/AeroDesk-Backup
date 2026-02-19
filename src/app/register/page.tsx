@@ -26,10 +26,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
 import type { UserRole } from '@/lib/types';
-import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { doc, serverTimestamp } from 'firebase/firestore';
-
 
 const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
 
@@ -49,8 +45,6 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const auth = useAuth();
-  const firestore = useFirestore();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -63,54 +57,12 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
-    if (!firestore) {
-      toast({
-        variant: "destructive",
-        title: "Registration Failed",
-        description: "Database service is not available. Please try again later.",
-      });
-      return;
-    }
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      const user = userCredential.user;
-
-      const actionCodeSettings = {
-        url: `${window.location.origin}/login`,
-        handleCodeInApp: true,
-      };
-      await sendEmailVerification(user, actionCodeSettings);
-
-      const [firstName, ...lastNameParts] = data.name.split(' ');
-      const lastName = lastNameParts.join(' ');
-
-      const userProfile = {
-          id: user.uid,
-          email: user.email,
-          firstName: firstName || '',
-          lastName: lastName || '',
-          role: data.role,
-          status: 'Pending Verification',
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-      };
-      
-      const userDocRef = doc(firestore, 'users', user.uid);
-      setDocumentNonBlocking(userDocRef, userProfile, { merge: false });
-
-      toast({
-          title: "Registration Successful!",
-          description: "A verification email has been sent. Please check your inbox to complete your registration.",
-      });
-      router.push('/login');
-    } catch (error: any) {
-      console.error('Registration failed:', error);
-      toast({
-          variant: "destructive",
-          title: "Registration Failed",
-          description: error.message || "An unexpected error occurred. Please try again.",
-      });
-    }
+    // Mock registration
+    toast({
+        title: "Registration Successful!",
+        description: "You can now log in with your credentials.",
+    });
+    router.push('/login');
   };
 
   return (

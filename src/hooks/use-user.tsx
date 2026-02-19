@@ -1,37 +1,47 @@
 'use client';
 
-import React, { createContext, useContext, useMemo, ReactNode } from 'react';
-import { doc } from 'firebase/firestore';
-import { useFirestore, useUser as useAuthUser, useMemoFirebase } from '@/firebase';
-import { useDoc, WithId } from '@/firebase/firestore/use-doc';
-import type { User as AppUser } from '@/lib/types';
+import React, { createContext, useContext, useMemo, ReactNode, useState } from 'react';
+import type { User, UserRole } from '@/lib/types';
+import { getMockDataForRole } from '@/lib/data';
 
 interface UserContextType {
-  user: WithId<AppUser> | null;
+  user: User | null;
   isLoading: boolean;
   error: Error | null;
+  setUserRole: (role: UserRole) => void;
+  availableRoles: UserRole[];
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const { user: authUser, isUserLoading: isAuthLoading, userError: authError } = useAuthUser();
-  const firestore = useFirestore();
+  const [role, setRole] = useState<UserRole>('Admin');
 
-  const userDocRef = useMemoFirebase(() => {
-    if (!firestore || !authUser) return null;
-    return doc(firestore, 'users', authUser.uid);
-  }, [firestore, authUser]);
+  const user = useMemo(() => {
+    const { users } = getMockDataForRole(role);
+    const mockUser = users.find(u => u.role === role);
+    if(mockUser) return mockUser;
 
-  const { data: userProfile, isLoading: isProfileLoading, error: profileError } = useDoc<AppUser>(userDocRef);
-  
-  const value = useMemo(() => {
+    // Fallback
     return {
-      user: userProfile,
-      isLoading: isAuthLoading || isProfileLoading,
-      error: authError || profileError,
-    };
-  }, [userProfile, isAuthLoading, isProfileLoading, authError, profileError]);
+        id: 'mock-user-01',
+        email: 'mock.user@example.com',
+        firstName: role,
+        lastName: 'User',
+        role: role,
+        status: 'Active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    }
+  }, [role]);
+
+  const value = {
+    user,
+    isLoading: false,
+    error: null,
+    setUserRole: setRole,
+    availableRoles: getMockDataForRole('Admin').users.map(u => u.role) as UserRole[],
+  };
 
   return (
     <UserContext.Provider value={value}>

@@ -9,30 +9,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import Link from "next/link";
-import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
 import { Skeleton } from "../ui/skeleton";
+import { getMockDataForRole } from "@/lib/data";
 
 export function OperatorDashboard() {
-  const { user } = useUser();
-  const firestore = useFirestore();
-
-  const rfqsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'charterRequests'), where('status', '==', 'Bidding Open')) : null, [firestore]);
-  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
-
-  const aircraftsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    return collection(firestore, 'operators', user.id, 'aircrafts');
-  }, [firestore, user]);
-  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery);
-
-  const bidsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    return query(collection(firestore, 'quotations'), where('operatorId', '==', user.id));
-  }, [firestore, user]);
-  const { data: bids, isLoading: bidsLoading } = useCollection<Bid>(bidsQuery);
-  
-  const isLoading = rfqsLoading || aircraftsLoading || bidsLoading;
+  const { rfqs, bids, aircrafts } = getMockDataForRole('Operator');
+  const isLoading = false;
 
   const stats = {
     marketplaceRfqs: rfqs?.length ?? 0,

@@ -9,20 +9,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import Link from "next/link";
-import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
 import { AccommodationRequest } from "@/lib/types";
 import { Skeleton } from "../ui/skeleton";
+import { getMockDataForRole } from "@/lib/data";
 
 export function HotelDashboard() {
-  const { user } = useUser();
-  const firestore = useFirestore();
-
-  const requestsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    return query(collection(firestore, 'accommodationRequests'), where('hotelPartnerId', '==', user.id));
-  }, [firestore, user]);
-  const { data: requests, isLoading } = useCollection<AccommodationRequest>(requestsQuery);
+  const { accommodationRequests: requests } = getMockDataForRole('Hotel Partner');
+  const isLoading = false;
 
   const stats = {
     pending: requests?.filter(r => r.status === 'Pending').length ?? 0,

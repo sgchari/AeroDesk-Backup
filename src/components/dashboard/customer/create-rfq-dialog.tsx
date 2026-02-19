@@ -30,16 +30,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FilePlus, Bot, Loader2 } from "lucide-react";
+import { FilePlus } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { verifyCompliance } from "@/ai/flows/verify-compliance";
-import type { ComplianceVerificationOutput } from "@/ai/flows/verify-compliance";
-import { ComplianceCheckResult } from "./compliance-check-result";
 import { useUser } from "@/hooks/use-user";
-import { addDocumentNonBlocking, useFirestore } from "@/firebase";
-import { collection, serverTimestamp } from "firebase/firestore";
 
 const baseRfqSchema = z.object({
   tripType: z.enum(["Onward", "Return", "Multi-City"], { required_error: "Trip type is required." }),
@@ -65,11 +60,8 @@ type RfqFormValues = z.infer<typeof ctdRfqSchema>;
 
 export function CreateRfqDialog() {
   const [open, setOpen] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [complianceResult, setComplianceResult] = useState<ComplianceVerificationOutput | null>(null);
   const { toast } = useToast();
   const { user } = useUser();
-  const firestore = useFirestore();
   const isCtdUser = user?.role === 'CTD Admin';
 
   const rfqSchema = useMemo(() => {
@@ -103,72 +95,11 @@ export function CreateRfqDialog() {
 
   const tripType = form.watch("tripType");
 
-  const handleVerify = async () => {
-    const isFormValid = await form.trigger();
-    if (!isFormValid) {
-        toast({
-            title: "Invalid Form",
-            description: "Please fill out all required fields correctly before verifying compliance.",
-            variant: "destructive",
-        });
-        return;
-    }
-    
-    setIsVerifying(true);
-    setComplianceResult(null);
-    try {
-      const formData = form.getValues();
-      const itemDetails = `
-        - Trip Type: ${formData.tripType}
-        - Departure: ${formData.departure}
-        - Arrival: ${formData.arrival}
-        - Departure Date: ${formData.departureDate}
-        ${formData.tripType === 'Return' ? `- Return Date: ${formData.returnDate}`: ''}
-        - Passengers: ${formData.pax}
-        - Aircraft Preference: ${formData.aircraftType}
-        ${isCtdUser ? `- Business Purpose: ${formData.businessPurpose}` : ''}
-        ${isCtdUser ? `- Cost Center: ${formData.costCenter}` : ''}
-        ${formData.catering ? `- Catering: ${formData.catering}` : ''}
-        ${formData.specialRequirements ? `- Special Requirements: ${formData.specialRequirements}` : ''}
-        ${formData.tripType === 'Multi-City' ? `- Multi-City Details: User has indicated a multi-city trip. Please check special requirements for the full itinerary.` : ''}
-      `;
-
-      const result = await verifyCompliance({
-        itemDetails: itemDetails,
-        context:
-          "Verifying a new charter flight request (RFQ) from a customer against Indian NSOP regulations and internal policies.",
-      });
-      setComplianceResult(result);
-    } catch (error) {
-      console.error("Compliance verification failed:", error);
-      toast({
-        title: "Verification Failed",
-        description: "Could not run compliance check. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsVerifying(false);
-    }
-  };
-
   const onSubmit = (data: RfqFormValues) => {
-    if (!user || !firestore) {
-      toast({ title: 'Error', description: 'User or database not available.', variant: 'destructive'});
+    if (!user) {
+      toast({ title: 'Error', description: 'User not available.', variant: 'destructive'});
       return;
     }
-
-    const rfqData = {
-      ...data,
-      customerId: user.id,
-      customerName: `${user.firstName} ${user.lastName}`,
-      company: user.company || null,
-      status: isCtdUser ? 'Pending Approval' : 'Bidding Open',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      bidsCount: 0,
-    }
-
-    addDocumentNonBlocking(collection(firestore, 'charterRequests'), rfqData);
     
     toast({
       title: "RFQ Submitted",
@@ -176,7 +107,6 @@ export function CreateRfqDialog() {
     });
     setOpen(false);
     form.reset();
-    setComplianceResult(null);
   };
 
   return (
@@ -184,7 +114,6 @@ export function CreateRfqDialog() {
         setOpen(isOpen);
         if (!isOpen) {
             form.reset();
-            setComplianceResult(null);
         }
     }}>
       <DialogTrigger asChild>
@@ -384,14 +313,7 @@ export function CreateRfqDialog() {
               )}
             />
 
-
-            {complianceResult && <ComplianceCheckResult result={complianceResult} />}
-
             <DialogFooter className="pt-4">
-                <Button type="button" variant="outline" onClick={handleVerify} disabled={isVerifying}>
-                    {isVerifying ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Bot className="mr-2 h-4 w-4" />}
-                    Verify Compliance
-                </Button>
                 <Button type="submit">Submit RFQ</Button>
             </DialogFooter>
           </form>

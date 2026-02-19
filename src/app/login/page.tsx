@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { signInWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
-import { useEffect } from 'react';
 
 import {
   Form,
@@ -21,7 +19,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
-import { useAuth, useUser as useAuthUser } from '@/firebase';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -33,14 +30,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const auth = useAuth();
-  const { user: authUser, isUserLoading } = useAuthUser();
-
-  useEffect(() => {
-    if (!isUserLoading && authUser) { // Removed emailVerified check for development
-      router.push('/dashboard');
-    }
-  }, [authUser, isUserLoading, router]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -51,35 +40,13 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      
-      // The logic to check for email verification and redirect happens in the useEffect hook now.
-      // This allows login to proceed, and the useEffect will handle the redirect.
-      // For development, the emailVerified check in the useEffect is also removed.
-
-      toast({
-        title: 'Login Successful!',
-        description: 'Redirecting to your dashboard...',
-      });
-    } catch (error: any) {
-      console.error('Login failed:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: error.message || 'An unexpected error occurred. Please try again.',
-      });
-    }
+    // Mock login logic
+    toast({
+      title: 'Login Successful!',
+      description: 'Redirecting to your dashboard...',
+    });
+    router.push('/dashboard');
   };
-  
-  if (isUserLoading || authUser) { // Removed emailVerified check for development
-      return (
-        <div className="flex min-h-screen flex-col items-center justify-center">
-            <p>Loading...</p>
-        </div>
-      )
-  }
-
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">

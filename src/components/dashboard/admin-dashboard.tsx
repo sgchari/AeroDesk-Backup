@@ -9,9 +9,8 @@ import { AuditLog, User, EmptyLeg } from "@/lib/types";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where, limit, collectionGroup } from "firebase/firestore";
 import { Skeleton } from "../ui/skeleton";
+import { getMockDataForRole } from "@/lib/data";
 
 function ManagementCard({ title, description, link, icon: Icon }: { title: string, description: string, link: string, icon: React.ElementType }) {
   return (
@@ -39,21 +38,11 @@ function ManagementCard({ title, description, link, icon: Icon }: { title: strin
 }
 
 export function AdminDashboard() {
-  const firestore = useFirestore();
-
-  const usersQuery = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
-  const { data: users, isLoading: usersLoading } = useCollection<User>(usersQuery);
-
-  const emptyLegsQuery = useMemoFirebase(() => firestore ? query(collectionGroup(firestore, 'emptyLegFlights'), where('status', '==', 'Pending Approval')) : null, [firestore]);
-  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
-  
-  const auditLogsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'complianceNotes'), limit(5)) : null, [firestore]);
-  const { data: recentLogs, isLoading: logsLoading } = useCollection<AuditLog>(auditLogsQuery);
-
-  const isLoading = usersLoading || emptyLegsLoading || logsLoading;
+  const { users, emptyLegs, auditLogs: recentLogs } = getMockDataForRole('Admin');
+  const isLoading = false;
   
   const stats = {
-    pendingApprovals: emptyLegs?.length ?? 0,
+    pendingApprovals: emptyLegs?.filter(e => e.status === 'Pending Approval').length ?? 0,
     activeUsers: users?.length ?? 0,
     operators: users?.filter(u => u.role === 'Operator').length ?? 0,
     partners: users?.filter(u => u.role === 'Hotel Partner' || u.role === 'Authorized Distributor').length ?? 0,
@@ -135,7 +124,7 @@ export function AdminDashboard() {
                   </TableRow>
                   </TableHeader>
                   <TableBody>
-                  {recentLogs?.map((log: AuditLog) => (
+                  {recentLogs?.slice(0,5).map((log: AuditLog) => (
                       <TableRow key={log.id}>
                           <TableCell>{log.timestamp?.toString()}</TableCell>
                           <TableCell>{log.user}</TableCell>

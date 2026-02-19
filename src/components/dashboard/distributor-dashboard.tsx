@@ -8,17 +8,12 @@ import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collectionGroup, query, where } from "firebase/firestore";
 import { Skeleton } from "../ui/skeleton";
+import { getMockDataForRole } from "@/lib/data";
 
 export function DistributorDashboard() {
-  const firestore = useFirestore();
-  const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collectionGroup(firestore, 'emptyLegFlights'), where('status', '==', 'Approved'));
-  }, [firestore]);
-  const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+  const { emptyLegs } = getMockDataForRole('Authorized Distributor');
+  const isLoading = false;
 
   return (
     <>

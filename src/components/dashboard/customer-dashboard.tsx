@@ -13,9 +13,8 @@ import { StatsGrid } from "./shared/stats-grid";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where, collectionGroup } from "firebase/firestore";
 import { Skeleton } from "../ui/skeleton";
+import { getMockDataForRole } from "@/lib/data";
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
@@ -40,22 +39,9 @@ const getStatusColor = (status: RfqStatus) => {
 
 export function CustomerDashboard() {
   const { user } = useUser();
-  const firestore = useFirestore();
   const { toast } = useToast();
-
-  const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    return query(collection(firestore, 'charterRequests'), where('customerId', '==', user.id));
-  }, [firestore, user]);
-  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
-
-  const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collectionGroup(firestore, 'emptyLegFlights'), where('status', '==', 'Approved'));
-  }, [firestore]);
-  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
-
-  const isLoading = rfqsLoading || emptyLegsLoading;
+  const { rfqs, emptyLegs } = getMockDataForRole('Customer');
+  const isLoading = false;
 
   const stats = {
     active: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,

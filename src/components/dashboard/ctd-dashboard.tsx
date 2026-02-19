@@ -12,9 +12,8 @@ import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
 import { Skeleton } from "../ui/skeleton";
+import { getMockDataForRole } from "@/lib/data";
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
@@ -37,13 +36,8 @@ const getStatusColor = (status: RfqStatus) => {
 
 export function CTDDashboard() {
   const { user } = useUser();
-  const firestore = useFirestore();
-
-  const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore || !user?.company) return null;
-    return query(collection(firestore, 'charterRequests'), where('company', '==', user.company));
-  }, [firestore, user]);
-  const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery);
+  const { rfqs } = getMockDataForRole('CTD Admin');
+  const isLoading = false;
 
   const stats = {
     pending: rfqs?.filter(r => r.status === 'Pending Approval').length ?? 0,

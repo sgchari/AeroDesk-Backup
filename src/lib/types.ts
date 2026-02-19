@@ -16,8 +16,8 @@ export type User = {
   phoneNumber?: string;
   company?: string;
   avatar?: string;
-  createdAt: any;
-  updatedAt: any;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type RfqStatus =
@@ -44,12 +44,13 @@ export type CharterRFQ = {
   pax: number;
   aircraftType: string;
   status: RfqStatus;
-  createdAt: any;
+  createdAt: string;
   bidsCount: number;
   catering?: string;
   specialRequirements?: string;
   businessPurpose?: string;
   costCenter?: string;
+  company?: string;
 };
 
 export type Bid = {
@@ -61,7 +62,7 @@ export type Bid = {
   aircraftName: string;
   price: number;
   status: 'Submitted' | 'Withdrawn';
-  submittedAt: any;
+  submittedAt: string;
 };
 
 export type Aircraft = {
@@ -89,11 +90,13 @@ export type AccommodationRequest = {
     id: string;
     charterRequestId?: string;
     emptyLegFlightId?: string;
-    hotelPartnerId: string;
-    checkInDate: string;
-    checkOutDate: string;
+    hotelPartnerId?: string;
+    tripId?: string;
+    guestType?: 'Passenger' | 'Crew';
+    checkIn: string;
+    checkOut: string;
     rooms: number;
-    isCrewAccommodation: boolean;
+    isCrewAccommodation?: boolean;
     status: 'Pending' | 'Confirmed' | 'Declined';
 }
 
@@ -106,7 +109,7 @@ export type HotelPartner = {
 
 export type AuditLog = {
   id: string;
-  timestamp: any;
+  timestamp: string;
   user: string;
   role: UserRole;
   action: string;
