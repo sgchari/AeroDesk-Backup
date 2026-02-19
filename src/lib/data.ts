@@ -62,6 +62,7 @@ export const getMockDataForRole = (role: UserRole) => {
         case 'Customer':
             return {
                 rfqs: rfqs.filter(r => r.customerId === 'usr_1'),
+                emptyLegs: emptyLegs.filter(e => e.status === 'Approved'),
             };
         case 'Operator':
             return {

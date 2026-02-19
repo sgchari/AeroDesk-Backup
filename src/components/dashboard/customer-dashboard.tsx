@@ -4,8 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
 import { getMockDataForRole } from "@/lib/data";
-import type { CharterRFQ, RfqStatus } from "@/lib/types";
-import { MoreHorizontal, FileText, Clock, CheckCircle } from "lucide-react";
+import type { CharterRFQ, RfqStatus, EmptyLeg } from "@/lib/types";
+import { MoreHorizontal, FileText, Clock, CheckCircle, Plane } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { StatsCard } from "./shared/stats-card";
@@ -34,12 +34,12 @@ const getStatusColor = (status: RfqStatus) => {
 
 
 export function CustomerDashboard() {
-  const { rfqs } = getMockDataForRole('Customer');
+  const { rfqs, emptyLegs } = getMockDataForRole('Customer');
 
   const stats = {
-    active: rfqs.filter(r => r.status === 'Bidding Open').length,
-    pending: rfqs.filter(r => r.status === 'Pending Approval' || r.status === 'Operator Selected').length,
-    completed: rfqs.filter(r => r.status === 'Confirmed').length
+    active: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
+    completed: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
+    emptyLegs: emptyLegs?.length ?? 0,
   }
 
   return (
@@ -51,7 +51,7 @@ export function CustomerDashboard() {
       <StatsGrid>
         <StatsCard title="Total RFQs" value={rfqs.length.toString()} icon={FileText} description="All requests submitted" />
         <StatsCard title="Active Bidding" value={stats.active.toString()} icon={Clock} description="RFQs currently open for bids" />
-        <StatsCard title="Awaiting Action" value={stats.pending.toString()} icon={Clock} description="RFQs pending your selection" />
+        <StatsCard title="Available Empty Legs" value={stats.emptyLegs.toString()} icon={Plane} description="Discounted one-way flights" />
         <StatsCard title="Confirmed Trips" value={stats.completed.toString()} icon={CheckCircle} description="Successfully confirmed charters" />
       </StatsGrid>
 
@@ -112,6 +112,43 @@ export function CustomerDashboard() {
             </Table>
         </CardContent>
       </Card>
+      
+      {emptyLegs && emptyLegs.length > 0 && (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Available Empty Legs</CardTitle>
+                    <CardDescription>
+                        One-way flights available at a discounted rate. Book a seat now!
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Flight ID</TableHead>
+                                <TableHead>Route</TableHead>
+                                <TableHead>Departure</TableHead>
+                                <TableHead>Available Seats</TableHead>
+                                <TableHead className="text-right">Action</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {emptyLegs.map((leg: EmptyLeg) => (
+                                <TableRow key={leg.id}>
+                                    <TableCell className="font-medium font-code">{leg.id}</TableCell>
+                                    <TableCell>{leg.departure} to {leg.arrival}</TableCell>
+                                    <TableCell>{leg.departureTime}</TableCell>
+                                    <TableCell className="font-bold text-center">{leg.availableSeats}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Button size="sm">Book Seats</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        )}
     </>
   );
 }
