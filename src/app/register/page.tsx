@@ -75,7 +75,11 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
 
-      await sendEmailVerification(user);
+      const actionCodeSettings = {
+        url: `${window.location.origin}/login`,
+        handleCodeInApp: true,
+      };
+      await sendEmailVerification(user, actionCodeSettings);
 
       const [firstName, ...lastNameParts] = data.name.split(' ');
       const lastName = lastNameParts.join(' ');
@@ -96,7 +100,7 @@ export default function RegisterPage() {
 
       if (data.role === 'Admin') {
         const adminRoleDocRef = doc(firestore, 'roles_admin', user.uid);
-        setDocumentNonBlocking(adminRoleDocRef, {}, { merge: false });
+        setDocumentNonBlocking(adminRoleDocRef, { uid: user.uid }, { merge: false });
       }
 
       toast({

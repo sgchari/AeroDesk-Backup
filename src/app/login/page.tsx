@@ -55,7 +55,11 @@ export default function LoginPage() {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
       
       if (!userCredential.user.emailVerified) {
-        await sendEmailVerification(userCredential.user);
+        const actionCodeSettings = {
+          url: `${window.location.origin}/login`,
+          handleCodeInApp: true,
+        };
+        await sendEmailVerification(userCredential.user, actionCodeSettings);
         await signOut(auth);
         toast({
           variant: 'destructive',
