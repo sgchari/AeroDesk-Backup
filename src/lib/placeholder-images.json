@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "hero-background",
-      "description": "The interior of a luxurious private jet.",
-      "imageUrl": "https://images.unsplash.com/photo-1607343752247-9033d5942475",
-      "imageHint": "jet interior"
+      "description": "The interior of a luxurious private jet cabin.",
+      "imageUrl": "https://images.unsplash.com/photo-1519710889408-a681e037511e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "jet cabin"
     },
     {
       "id": "aircraft-1",
