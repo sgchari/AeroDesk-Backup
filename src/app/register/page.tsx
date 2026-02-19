@@ -63,6 +63,14 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
+    if (!firestore) {
+      toast({
+        variant: "destructive",
+        title: "Registration Failed",
+        description: "Database service is not available. Please try again later.",
+      });
+      return;
+    }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
@@ -83,6 +91,11 @@ export default function RegisterPage() {
       
       const userDocRef = doc(firestore, 'users', user.uid);
       setDocumentNonBlocking(userDocRef, userProfile, { merge: false });
+
+      if (data.role === 'Admin') {
+        const adminRoleDocRef = doc(firestore, 'roles_admin', user.uid);
+        setDocumentNonBlocking(adminRoleDocRef, {}, { merge: false });
+      }
 
       toast({
           title: "Registration Successful!",
