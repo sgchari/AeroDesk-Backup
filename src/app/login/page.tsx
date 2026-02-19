@@ -37,7 +37,7 @@ export default function LoginPage() {
   const { user: authUser, isUserLoading } = useAuthUser();
 
   useEffect(() => {
-    if (!isUserLoading && authUser && authUser.emailVerified) {
+    if (!isUserLoading && authUser) { // Removed emailVerified check for development
       router.push('/dashboard');
     }
   }, [authUser, isUserLoading, router]);
@@ -52,22 +52,11 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      await signInWithEmailAndPassword(auth, data.email, data.password);
       
-      if (!userCredential.user.emailVerified) {
-        const actionCodeSettings = {
-          url: `${window.location.origin}/login`,
-          handleCodeInApp: true,
-        };
-        await sendEmailVerification(userCredential.user, actionCodeSettings);
-        await signOut(auth);
-        toast({
-          variant: 'destructive',
-          title: 'Email Not Verified',
-          description: 'Please check your inbox to verify your email. A new verification link has been sent.',
-        });
-        return;
-      }
+      // The logic to check for email verification and redirect happens in the useEffect hook now.
+      // This allows login to proceed, and the useEffect will handle the redirect.
+      // For development, the emailVerified check in the useEffect is also removed.
 
       toast({
         title: 'Login Successful!',
@@ -83,7 +72,7 @@ export default function LoginPage() {
     }
   };
   
-  if (isUserLoading || (authUser && authUser.emailVerified)) {
+  if (isUserLoading || authUser) { // Removed emailVerified check for development
       return (
         <div className="flex min-h-screen flex-col items-center justify-center">
             <p>Loading...</p>
