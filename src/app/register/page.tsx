@@ -98,11 +98,6 @@ export default function RegisterPage() {
       const userDocRef = doc(firestore, 'users', user.uid);
       setDocumentNonBlocking(userDocRef, userProfile, { merge: false });
 
-      if (data.role === 'Admin') {
-        const adminRoleDocRef = doc(firestore, 'roles_admin', user.uid);
-        setDocumentNonBlocking(adminRoleDocRef, { uid: user.uid }, { merge: false });
-      }
-
       toast({
           title: "Registration Successful!",
           description: "A verification email has been sent. Please check your inbox to complete your registration.",
