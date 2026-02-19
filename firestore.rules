@@ -109,7 +109,9 @@ service cloud.firestore {
      * @principle Restricts access to a user's own data tree.
      */
     match /users/{userId} {
-      allow get, update, create: if isOwner(userId) || isAdmin();
+      allow get, update: if isOwner(userId) || isAdmin();
+      // Anyone can create a user profile during registration
+      allow create: if isSignedIn();
       allow list, delete: if isAdmin();
     }
 
@@ -132,7 +134,7 @@ service cloud.firestore {
      * @principle Enforces document ownership for writes via a denormalized `userId` field.
      */
     match /operators/{operatorId} {
-      allow get, list: if isSignedIn() || isAdmin();
+      allow get, list: if isSignedIn();
       allow create: if isCreatedWithOwner() || isAdmin();
       allow update: if (isOwner(resource.data.userId) && request.resource.data.userId == resource.data.userId) || isAdmin();
       allow delete: if isOwner(resource.data.userId) || isAdmin();
@@ -172,10 +174,7 @@ service cloud.firestore {
       allow get: if isSignedIn() || isAdmin();
       allow create, update, delete: if isOperatorOwner(operatorId) || isAdmin();
     }
-
-    /**
-     * @description Collection group rule for listing empty-leg flights across all operators.
-     */
+    
     match /{path=**}/emptyLegFlights/{emptyLegFlightId} {
         allow list: if isSignedIn();
     }
