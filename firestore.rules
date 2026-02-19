@@ -126,15 +126,17 @@ service cloud.firestore {
     }
 
     /**
-     * @description A read-only collection for determining admin roles.
+     * @description A collection for determining admin roles. Admin status is granted by document existence.
      * @path /roles_admin/{userId}
      * @allow (get) An admin checking for the existence of another admin's role document.
-     * @deny (get, list, create, update, delete) Any non-admin user attempting any operation.
+     * @allow (create) A user can be granted admin privileges during registration.
+     * @deny (list, update, delete) Only admins can manage roles.
      * @principle Provides a secure, existence-based mechanism for role management.
      */
     match /roles_admin/{userId} {
       allow get: if isAdmin();
-      allow list, create, update, delete: if false;
+      allow create: if isOwner(userId) || isAdmin();
+      allow list, update, delete: if isAdmin();
     }
 
     /**
