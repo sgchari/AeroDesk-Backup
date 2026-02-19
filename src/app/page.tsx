@@ -1,10 +1,29 @@
 import { Button } from '@/components/ui/button';
-import { Layers, ShieldCheck, GanttChartSquare } from 'lucide-react';
+import { Layers, ShieldCheck, GanttChartSquare, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-import { LandingHero } from '@/components/landing-hero';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
+
+function FullScreenSection({ imageUrl, imageHint, children, className }: { imageUrl: string, imageHint: string, children: React.ReactNode, className?: string }) {
+  return (
+    <section className={cn("relative w-full min-h-screen flex flex-col justify-center items-center py-12 md:py-24 lg:py-32", className)}>
+      <Image
+        src={imageUrl}
+        alt="Background"
+        fill
+        className="object-cover"
+        data-ai-hint={imageHint}
+      />
+      <div className="absolute inset-0 bg-black/60" />
+      <div className="container relative z-10 mx-auto px-4 md:px-6">
+        {children}
+      </div>
+    </section>
+  );
+}
+
 
 export default function Home() {
   return (
@@ -25,85 +44,84 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1">
-        <LandingHero />
-
-        <section id="features" className="relative w-full py-12 md:py-24 lg:py-32">
-          <Image
-            src="https://picsum.photos/seed/jetexterior/1920/1080"
-            alt="Private jet on tarmac"
-            fill
-            className="object-cover"
-            data-ai-hint="jet exterior"
-          />
-          <div className="absolute inset-0 bg-black/70" />
-          <div className="container relative z-10 mx-auto px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-3">
-                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-primary">
-                  The AeroDesk Advantage
-                </div>
-                <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl text-primary-foreground">
-                  Unified Aviation Infrastructure
-                </h2>
-                <p className="max-w-[900px] text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  AeroDesk provides a secure, compliant, and efficient digital ecosystem for all stakeholders in the non-scheduled charter market. From RFQ to final confirmation, our platform streamlines every step.
-                </p>
+        
+        <FullScreenSection imageUrl="https://picsum.photos/seed/jet-cabin-lux/1920/1080" imageHint="jet interior">
+            <div className="text-center">
+              <div className="bg-black/30 backdrop-blur-sm p-8 rounded-xl max-w-4xl mx-auto">
+                  <h1 className="font-headline text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+                  Digital Infrastructure for Charter Aviation
+                  </h1>
+                  <p className="mt-6 max-w-[750px] text-lg text-primary-foreground/80 md:text-xl mx-auto">
+                  A compliance-first coordination platform for non-scheduled charter operations in India.
+                  </p>
               </div>
+              <Button asChild size="lg" className="mt-8">
+                <Link href="/login">
+                  Login <ArrowRight className="ml-2" />
+                </Link>
+              </Button>
             </div>
-            <div className="mx-auto grid max-w-7xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-16 mt-12">
-              <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
-                <CardHeader>
-                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
-                    <GanttChartSquare className="h-8 w-8" />
-                  </div>
-                  <CardTitle className="text-xl">Centralized Marketplace</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Access a transparent marketplace for RFQs, connecting customers with a network of verified NSOP operators.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
-                <CardHeader>
-                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
-                    <ShieldCheck className="h-8 w-8" />
-                  </div>
-                  <CardTitle className="text-xl">Compliance First</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Built-in verification and immutable audit trails ensure every action meets stringent regulatory requirements.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
-                <CardHeader>
-                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
-                    <Layers className="h-8 w-8" />
-                  </div>
-                  <CardTitle className="text-xl">Integrated Ecosystem</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Seamlessly coordinate ancillary services, including hotel and ground transport, through a single platform interface.
-                  </p>
-                </CardContent>
-              </Card>
+        </FullScreenSection>
+
+        <FullScreenSection imageUrl="https://picsum.photos/seed/jet-tarmac-view/1920/1080" imageHint="jet exterior">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="space-y-3">
+              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-primary">
+                The AeroDesk Advantage
+              </div>
+              <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl text-primary-foreground">
+                Unified Aviation Infrastructure
+              </h2>
+              <p className="max-w-[900px] text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                AeroDesk provides a secure, compliant, and efficient digital ecosystem for all stakeholders in the non-scheduled charter market. From RFQ to final confirmation, our platform streamlines every step.
+              </p>
             </div>
           </div>
-        </section>
+          <div className="mx-auto grid max-w-7xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-16 mt-12">
+            <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
+              <CardHeader>
+                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
+                  <GanttChartSquare className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-xl">Centralized Marketplace</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Access a transparent marketplace for RFQs, connecting customers with a network of verified NSOP operators.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
+              <CardHeader>
+                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
+                  <ShieldCheck className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-xl">Compliance First</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Built-in verification and immutable audit trails ensure every action meets stringent regulatory requirements.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
+              <CardHeader>
+                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
+                  <Layers className="h-8 w-8" />
+                </div>
+                <CardTitle className="text-xl">Integrated Ecosystem</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Seamlessly coordinate ancillary services, including hotel and ground transport, through a single platform interface.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </FullScreenSection>
 
-        <section className="relative w-full py-12 md:py-24 lg:py-32">
-            <Image
-                src="https://picsum.photos/seed/jetcockpit/1920/1080"
-                alt="Cockpit of a private jet"
-                fill
-                className="object-cover"
-                data-ai-hint="jet cockpit"
-            />
-            <div className="absolute inset-0 bg-black/60" />
-          <div className="container relative z-10 mx-auto grid items-center justify-center gap-4 px-4 text-center md:px-6">
+        <FullScreenSection imageUrl="https://picsum.photos/seed/cockpit-sunset/1920/1080" imageHint="jet cockpit">
+          <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
               <h2 className="font-headline text-3xl font-bold tracking-tighter md:text-4xl/tight text-primary-foreground">
                 Ready to Streamline Your Operations?
@@ -121,7 +139,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-        </section>
+        </FullScreenSection>
       </main>
       <footer className="relative z-10 flex w-full shrink-0 flex-col items-center gap-2 border-t px-4 py-6 sm:flex-row md:px-6 bg-background/80 backdrop-blur-sm">
         <p className="text-xs text-muted-foreground">
