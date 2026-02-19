@@ -8,7 +8,7 @@ import {
   EmptyLeg,
 } from '@/lib/types';
 import { PlaceHolderImages } from './placeholder-images';
-import { subDays, format } from 'date-fns';
+import { subDays, format, addDays } from 'date-fns';
 
 const avatar1 = PlaceHolderImages.find((img) => img.id === 'avatar-1')?.imageUrl ?? '';
 const avatar2 = PlaceHolderImages.find((img) => img.id === 'avatar-2')?.imageUrl ?? '';
@@ -32,11 +32,11 @@ export const aircrafts: Aircraft[] = [
 ];
 
 export const rfqs: CharterRFQ[] = [
-  { id: 'rfq_1', customerId: 'usr_1', customerName: 'Ananya Sharma', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: format(new Date(), 'yyyy-MM-dd'), pax: 5, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: format(subDays(new Date(), 1), 'yyyy-MM-dd HH:mm'), bidsCount: 2 },
-  { id: 'rfq_2', customerId: 'usr_4', customerName: 'Rohan Mehta (Tata Steel)', departure: 'Jamshedpur (VEJS)', arrival: 'Kolkata (VECC)', departureDate: format(subDays(new Date(), -2), 'yyyy-MM-dd'), pax: 3, aircraftType: 'Any Turboprop', status: 'Pending Approval', createdAt: format(subDays(new Date(), 2), 'yyyy-MM-dd HH:mm'), bidsCount: 0 },
-  { id: 'rfq_3', customerId: 'usr_1', customerName: 'Ananya Sharma', departure: 'Bengaluru (VOBL)', arrival: 'Hyderabad (VOHS)', departureDate: format(subDays(new Date(), -5), 'yyyy-MM-dd'), pax: 8, aircraftType: 'Any Mid-size Jet', status: 'Operator Selected', createdAt: format(subDays(new Date(), 7), 'yyyy-MM-dd HH:mm'), bidsCount: 4 },
-  { id: 'rfq_4', customerId: 'usr_6', customerName: 'Amit Desai (Infosys)', departure: 'Pune (VAPO)', arrival: 'Chennai (VOMM)', departureDate: format(subDays(new Date(), -10), 'yyyy-MM-dd'), pax: 12, aircraftType: 'Any Heavy Jet', status: 'Confirmed', createdAt: format(subDays(new Date(), 15), 'yyyy-MM-dd HH:mm'), bidsCount: 3 },
-  { id: 'rfq_5', customerId: 'usr_1', customerName: 'Ananya Sharma', departure: 'Goa (VOGO)', arrival: 'Mumbai (VABB)', departureDate: format(subDays(new Date(), -3), 'yyyy-MM-dd'), pax: 2, aircraftType: 'Any', status: 'Draft', createdAt: format(new Date(), 'yyyy-MM-dd HH:mm'), bidsCount: 0 },
+  { id: 'rfq_1', customerId: 'usr_1', customerName: 'Ananya Sharma', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: format(addDays(new Date(), 2), 'yyyy-MM-dd'), pax: 5, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: format(subDays(new Date(), 1), 'yyyy-MM-dd HH:mm'), bidsCount: 2, specialRequirements: 'Wheelchair assistance required for one passenger.' },
+  { id: 'rfq_2', customerId: 'usr_4', customerName: 'Rohan Mehta (Tata Steel)', tripType: 'Return', departure: 'Jamshedpur (VEJS)', arrival: 'Kolkata (VECC)', departureDate: format(addDays(new Date(), 3), 'yyyy-MM-dd'), returnDate: format(addDays(new Date(), 5), 'yyyy-MM-dd'), pax: 3, aircraftType: 'Any Turboprop', status: 'Pending Approval', createdAt: format(subDays(new Date(), 2), 'yyyy-MM-dd HH:mm'), bidsCount: 0 },
+  { id: 'rfq_3', customerId: 'usr_1', customerName: 'Ananya Sharma', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Hyderabad (VOHS)', departureDate: format(addDays(new Date(), 5), 'yyyy-MM-dd'), pax: 8, aircraftType: 'Any Mid-size Jet', status: 'Operator Selected', createdAt: format(subDays(new Date(), 7), 'yyyy-MM-dd HH:mm'), bidsCount: 4, catering: 'Vegetarian lunch boxes required.' },
+  { id: 'rfq_4', customerId: 'usr_6', customerName: 'Amit Desai (Infosys)', tripType: 'Multi-City', departure: 'Pune (VAPO)', arrival: 'Chennai (VOMM)', departureDate: format(addDays(new Date(), 10), 'yyyy-MM-dd'), pax: 12, aircraftType: 'Any Heavy Jet', status: 'Confirmed', createdAt: format(subDays(new Date(), 15), 'yyyy-MM-dd HH:mm'), bidsCount: 3, specialRequirements: 'Multi-city trip: Pune -> Hyderabad -> Chennai over 3 days.' },
+  { id: 'rfq_5', customerId: 'usr_1', customerName: 'Ananya Sharma', tripType: 'Onward', departure: 'Goa (VOGO)', arrival: 'Mumbai (VABB)', departureDate: format(addDays(new Date(), 1), 'yyyy-MM-dd'), pax: 2, aircraftType: 'Any', status: 'Draft', createdAt: format(new Date(), 'yyyy-MM-dd HH:mm'), bidsCount: 0 },
 ];
 
 export const bids: Bid[] = [
@@ -45,8 +45,8 @@ export const bids: Bid[] = [
 ];
 
 export const emptyLegs: EmptyLeg[] = [
-    { id: 'el_1', operatorId: 'usr_2', aircraftId: 'ac_2', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureTime: format(subDays(new Date(), -1), 'yyyy-MM-dd') + ' 14:00', availableSeats: 8, status: 'Approved'},
-    { id: 'el_2', operatorId: 'usr_2', aircraftId: 'ac_3', departure: 'Chennai (VOMM)', arrival: 'Bengaluru (VOBL)', departureTime: format(subDays(new Date(), -2), 'yyyy-MM-dd') + ' 10:00', availableSeats: 5, status: 'Pending Approval'},
+    { id: 'el_1', operatorId: 'usr_2', aircraftId: 'ac_2', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureTime: format(addDays(new Date(), 1), 'yyyy-MM-dd') + ' 14:00', availableSeats: 8, status: 'Approved'},
+    { id: 'el_2', operatorId: 'usr_2', aircraftId: 'ac_3', departure: 'Chennai (VOMM)', arrival: 'Bengaluru (VOBL)', departureTime: format(addDays(new Date(), 2), 'yyyy-MM-dd') + ' 10:00', availableSeats: 5, status: 'Pending Approval'},
 ];
 
 export const auditLogs: AuditLog[] = [

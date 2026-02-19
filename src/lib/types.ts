@@ -27,18 +27,24 @@ export type RfqStatus =
   | 'Confirmed'
   | 'Cancelled';
 
+export type TripType = 'Onward' | 'Return' | 'Multi-City';
+
 export type CharterRFQ = {
   id: string;
   customerId: string;
   customerName: string;
+  tripType: TripType;
   departure: string;
   arrival: string;
   departureDate: string;
+  returnDate?: string;
   pax: number;
   aircraftType: string;
   status: RfqStatus;
   createdAt: string;
   bidsCount: number;
+  catering?: string;
+  specialRequirements?: string;
 };
 
 export type Bid = {
