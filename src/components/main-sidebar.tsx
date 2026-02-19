@@ -31,6 +31,7 @@ const navItems = {
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/dashboard/operator/rfq-marketplace', label: 'RFQ Marketplace', icon: GanttChartSquare },
     { href: '/dashboard/operator/fleet', label: 'My Fleet', icon: Plane },
+    { href: '/dashboard/operator/crew', label: 'Manage Crew', icon: Users },
     { href: '/dashboard/operator/empty-legs', label: 'Empty Legs', icon: Plane },
   ],
   'Authorized Distributor': [

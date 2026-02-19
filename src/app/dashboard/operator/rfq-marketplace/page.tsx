@@ -1,46 +1,38 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getMockDataForRole } from "@/lib/data";
 import type { CharterRFQ } from "@/lib/types";
-import { MoreHorizontal, Plane, FileText, CheckCircle, Users } from "lucide-react";
-import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { StatsCard } from "./shared/stats-card";
-import { StatsGrid } from "./shared/stats-grid";
-import Link from "next/link";
+import { MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
-export function OperatorDashboard() {
-  const { rfqs, aircrafts, bids } = getMockDataForRole('Operator');
-
-  const stats = {
-    marketplaceRfqs: rfqs?.length ?? 0,
-    activeBids: bids?.filter(b => b.status === 'Submitted').length ?? 0,
-    fleetSize: aircrafts?.length ?? 0,
-    totalCrew: 12, // Example value
-  }
+export default function RfqMarketplacePage() {
+  const { rfqs } = getMockDataForRole('Operator');
 
   return (
     <>
-      <PageHeader title="Operator Dashboard" description="Manage your bids, fleet, and view marketplace activity.">
-        <Button asChild variant="outline"><Link href="/dashboard/operator/fleet">Manage Fleet</Link></Button>
-        <Button asChild variant="outline"><Link href="/dashboard/operator/crew">Manage Crew</Link></Button>
-        <Button asChild><Link href="/dashboard/operator/empty-legs">Create Empty Leg</Link></Button>
-      </PageHeader>
-      
-      <StatsGrid>
-        <StatsCard title="RFQ Marketplace" value={stats.marketplaceRfqs.toString()} icon={FileText} description="RFQs currently open for bidding" />
-        <StatsCard title="Active Bids" value={stats.activeBids.toString()} icon={CheckCircle} description="Your submitted bids" />
-        <StatsCard title="Fleet Size" value={stats.fleetSize.toString()} icon={Plane} description="Total aircraft in your fleet" />
-        <StatsCard title="Total Crew" value={stats.totalCrew.toString()} icon={Users} description="Pilots and cabin crew" />
-      </StatsGrid>
-
+      <PageHeader title="RFQ Marketplace" description="View all active charter requests and submit your quotations." />
       <Card>
         <CardHeader>
-          <CardTitle>RFQ Marketplace</CardTitle>
-          <CardDescription>
-            Charter requests currently open for bidding.
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Bidding Open</CardTitle>
+              <CardDescription>
+                Charter requests currently open for bidding.
+              </CardDescription>
+            </div>
+            <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                    type="search"
+                    placeholder="Search by route or ID..."
+                    className="pl-8 sm:w-[300px]"
+                />
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
             <Table>
@@ -64,7 +56,7 @@ export function OperatorDashboard() {
                         <TableCell>{rfq.customerName}</TableCell>
                         <TableCell>{rfq.departure} to {rfq.arrival}</TableCell>
                         <TableCell>{rfq.departureDate}</TableCell>
-                        <TableCell>{rfq.pax}</TableCell>
+                        <TableCell className="text-center">{rfq.pax}</TableCell>
                         <TableCell>{rfq.aircraftType}</TableCell>
                         <TableCell>
                             <DropdownMenu>
