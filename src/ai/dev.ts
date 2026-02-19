@@ -1,1 +1,6 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/verify-compliance.ts';
+import '@/ai/flows/generate-rfq-draft.ts';
+import '@/ai/flows/summarize-audit-log.ts';

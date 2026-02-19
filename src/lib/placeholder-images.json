@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "A business jet on a tarmac at dusk.",
+      "imageUrl": "https://images.unsplash.com/photo-1661954864180-e61dea14208a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxidXNpbmVzcyUyMGpldHxlbnwwfHx8fDE3NzE0Nzc3Njd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business jet"
+    },
+    {
+      "id": "aircraft-1",
+      "description": "A modern turboprop aircraft on the runway.",
+      "imageUrl": "https://images.unsplash.com/photo-1727640024516-ae12e5b9e90d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx0dXJib3Byb3AlMjBhaXJjcmFmdHxlbnwwfHx8fDE3NzE0Nzc3NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "turboprop aircraft"
+    },
+    {
+      "id": "aircraft-2",
+      "description": "The interior cabin of a light business jet.",
+      "imageUrl": "https://images.unsplash.com/photo-1754481387410-7c8c9350372c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE0Nzc3NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jet interior"
+    },
+    {
+      "id": "hotel-1",
+      "description": "The exterior of a modern luxury hotel.",
+      "imageUrl": "https://images.unsplash.com/photo-1630587148265-761cbd139043?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsdXh1cnklMjBob3RlbHxlbnwwfHx8fDE3NzE0NjU1NjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "luxury hotel"
+    },
+    {
+      "id": "avatar-1",
+      "description": "Avatar for a male user.",
+      "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NzEzNjk5MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "avatar-2",
+      "description": "Avatar for a female user.",
+      "imageUrl": "https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc3MTQyNzc1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    }
+  ]
 }
