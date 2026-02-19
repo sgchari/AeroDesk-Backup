@@ -44,7 +44,7 @@ export function LandingHero() {
           />
         </div>
       )}
-      <div className="absolute inset-0 bg-background/80" />
+      <div className="absolute inset-0 bg-black/70" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
         <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
           Digital Infrastructure for Charter Aviation
