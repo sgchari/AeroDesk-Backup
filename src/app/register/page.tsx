@@ -27,7 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
 import type { UserRole } from '@/lib/types';
 import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, serverTimestamp } from 'firebase/firestore';
 
 
@@ -75,6 +75,8 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
 
+      await sendEmailVerification(user);
+
       const [firstName, ...lastNameParts] = data.name.split(' ');
       const lastName = lastNameParts.join(' ');
 
@@ -84,7 +86,7 @@ export default function RegisterPage() {
           firstName: firstName || '',
           lastName: lastName || '',
           role: data.role,
-          status: 'Active',
+          status: 'Pending Verification',
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
       };
@@ -99,7 +101,7 @@ export default function RegisterPage() {
 
       toast({
           title: "Registration Successful!",
-          description: "You can now log in with your new account.",
+          description: "A verification email has been sent. Please check your inbox to complete your registration.",
       });
       router.push('/login');
     } catch (error: any) {

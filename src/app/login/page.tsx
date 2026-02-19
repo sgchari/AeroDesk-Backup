@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
 import { useEffect } from 'react';
 
 import {
@@ -37,7 +37,7 @@ export default function LoginPage() {
   const { user: authUser, isUserLoading } = useAuthUser();
 
   useEffect(() => {
-    if (!isUserLoading && authUser) {
+    if (!isUserLoading && authUser && authUser.emailVerified) {
       router.push('/dashboard');
     }
   }, [authUser, isUserLoading, router]);
@@ -52,7 +52,19 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      
+      if (!userCredential.user.emailVerified) {
+        await sendEmailVerification(userCredential.user);
+        await signOut(auth);
+        toast({
+          variant: 'destructive',
+          title: 'Email Not Verified',
+          description: 'Please check your inbox to verify your email. A new verification link has been sent.',
+        });
+        return;
+      }
+
       toast({
         title: 'Login Successful!',
         description: 'Redirecting to your dashboard...',
@@ -67,7 +79,7 @@ export default function LoginPage() {
     }
   };
   
-  if (isUserLoading || authUser) {
+  if (isUserLoading || (authUser && authUser.emailVerified)) {
       return (
         <div className="flex min-h-screen flex-col items-center justify-center">
             <p>Loading...</p>
