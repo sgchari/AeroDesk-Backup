@@ -65,13 +65,13 @@ const navItems = {
   ],
 };
 
-export function MainSidebar() {
+export function MainSidebar({ className }: { className?: string }) {
   const pathname = usePathname();
   const { user } = useUser();
   const currentNavItems = navItems[user.role as UserRole] || [];
 
   return (
-    <div className="hidden border-r bg-muted/40 md:block">
+    <div className={cn("border-r bg-muted/40 md:block", className)}>
         <div className="flex h-full max-h-screen flex-col gap-2">
             <div className="flex h-16 items-center border-b px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">

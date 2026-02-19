@@ -8,6 +8,7 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  SheetTitle,
 } from '@/components/ui/sheet'
 import { MainSidebar } from './main-sidebar';
 import { Menu } from 'lucide-react';
@@ -27,6 +28,7 @@ export function Header() {
                 </Button>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col p-0">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 <MainSidebar />
             </SheetContent>
         </Sheet>
