@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "hero-background",
-      "description": "Abstract background with aqua and green tones.",
-      "imageUrl": "https://images.unsplash.com/photo-1519671482727-33f7aa3c209e?q=80&w=2070&auto=format&fit=crop",
-      "imageHint": "abstract background"
+      "description": "Luxurious interior of a private jet cabin.",
+      "imageUrl": "https://images.unsplash.com/photo-1614218279326-0780f2d488f7?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "jet cabin"
     },
     {
       "id": "aircraft-1",
