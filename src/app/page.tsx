@@ -32,7 +32,7 @@ export default function Home() {
               charter aviation in India.
             </p>
             <Button asChild size="lg" className="mt-8">
-              <Link href="/dashboard">
+              <Link href="/login">
                 Enter Platform <ArrowRight className="ml-2" />
               </Link>
             </Button>
@@ -110,7 +110,7 @@ export default function Home() {
             </div>
             <div className="mx-auto w-full max-w-sm space-y-2">
               <Button asChild size="lg" className="w-full">
-                <Link href="/dashboard">Access the Platform</Link>
+                <Link href="/login">Access the Platform</Link>
               </Button>
               <p className="text-xs text-muted-foreground">
                 By entering the platform, you agree to our terms of service.
