@@ -120,7 +120,7 @@ export default function Home() {
           </div>
         </FullScreenSection>
 
-        <FullScreenSection imageUrl="https://images.unsplash.com/photo-1582220191490-334336338006?q=80&w=1920&auto=format&fit=crop" imageHint="jet cockpit">
+        <FullScreenSection imageUrl="https://storage.googleapis.com/stablestudio-a2925.appspot.com/assets/26335133-c827-4c4f-a492-34b8c9d1c991/tmp-893155702.png" imageHint="jet flying">
           <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
               <h2 className="font-headline text-3xl font-bold tracking-tighter md:text-4xl/tight text-primary-foreground">
