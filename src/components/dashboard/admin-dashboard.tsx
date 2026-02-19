@@ -10,7 +10,7 @@ import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where, limit } from "firebase/firestore";
+import { collection, query, where, limit, collectionGroup } from "firebase/firestore";
 import { Skeleton } from "../ui/skeleton";
 
 function ManagementCard({ title, description, link, icon: Icon }: { title: string, description: string, link: string, icon: React.ElementType }) {
@@ -44,7 +44,7 @@ export function AdminDashboard() {
   const usersQuery = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
   const { data: users, isLoading: usersLoading } = useCollection<User>(usersQuery);
 
-  const emptyLegsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'emptyLegFlights'), where('status', '==', 'Pending Approval')) : null, [firestore]);
+  const emptyLegsQuery = useMemoFirebase(() => firestore ? query(collectionGroup(firestore, 'emptyLegFlights'), where('status', '==', 'Pending Approval')) : null, [firestore]);
   const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
   
   const auditLogsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'complianceNotes'), limit(5)) : null, [firestore]);

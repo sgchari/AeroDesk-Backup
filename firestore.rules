@@ -109,8 +109,7 @@ service cloud.firestore {
      * @principle Restricts access to a user's own data tree.
      */
     match /users/{userId} {
-      allow get, update: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId);
+      allow get, update, create: if isOwner(userId) || isAdmin();
       allow list, delete: if isAdmin();
     }
 
@@ -169,8 +168,16 @@ service cloud.firestore {
      * @principle Allows public reads for discovery but restricts writes to the document owner.
      */
     match /operators/{operatorId}/emptyLegFlights/{emptyLegFlightId} {
-      allow get, list: if isSignedIn() || isAdmin();
+      // allow get for direct reads, list is handled by the collection group rule
+      allow get: if isSignedIn() || isAdmin();
       allow create, update, delete: if isOperatorOwner(operatorId) || isAdmin();
+    }
+
+    /**
+     * @description Collection group rule for listing empty-leg flights across all operators.
+     */
+    match /{path=**}/emptyLegFlights/{emptyLegFlightId} {
+        allow list: if isSignedIn();
     }
 
     /**
