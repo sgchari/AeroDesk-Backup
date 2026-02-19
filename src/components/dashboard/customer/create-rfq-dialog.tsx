@@ -67,7 +67,7 @@ export function CreateRfqDialog() {
   const [complianceResult, setComplianceResult] = useState<ComplianceVerificationOutput | null>(null);
   const { toast } = useToast();
   const { user } = useUser();
-  const isCtdUser = user.role.startsWith('CTD');
+  const isCtdUser = user.role === 'CTD Admin';
 
   const rfqSchema = useMemo(() => {
     const schema = isCtdUser ? ctdRfqSchema : baseRfqSchema;

@@ -20,8 +20,6 @@ export default function DashboardPage() {
         return <OperatorDashboard />;
       case 'Admin':
         return <AdminDashboard />;
-      case 'CTD Requester':
-      case 'CTD Approver':
       case 'CTD Admin':
         return <CTDDashboard />;
       case 'Authorized Distributor':

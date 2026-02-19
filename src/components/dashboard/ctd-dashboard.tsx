@@ -42,16 +42,10 @@ export function CTDDashboard() {
     confirmed: rfqs.filter(r => r.status === 'Confirmed').length
   }
 
-  const roleBasedTitle = {
-    'CTD Requester': 'CTD Requester Dashboard',
-    'CTD Approver': 'CTD Approver Dashboard',
-    'CTD Admin': 'CTD Admin Dashboard',
-  }
-
   return (
     <>
-      <PageHeader title={roleBasedTitle[user.role as keyof typeof roleBasedTitle]} description={`Manage travel for ${user.company}.`}>
-        { (user.role === 'CTD Requester' || user.role === 'CTD Admin') && <CreateRfqDialog />}
+      <PageHeader title="CTD Admin Dashboard" description={`Manage travel for ${user.company}.`}>
+        <CreateRfqDialog />
       </PageHeader>
       
       <StatsGrid>
@@ -105,7 +99,7 @@ export function CTDDashboard() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                { (user.role === 'CTD Approver' || user.role === 'CTD Admin') && rfq.status === 'Pending Approval' && <DropdownMenuItem>Approve/Reject</DropdownMenuItem>}
+                                { rfq.status === 'Pending Approval' && <DropdownMenuItem>Approve/Reject</DropdownMenuItem>}
                                 <DropdownMenuItem>View Details</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

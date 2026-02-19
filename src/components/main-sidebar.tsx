@@ -38,15 +38,6 @@ const navItems = {
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/dashboard/distributor/empty-legs', label: 'Approved Empty Legs', icon: Plane },
   ],
-  'CTD Requester': [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/dashboard/ctd/requests', label: 'My Requests', icon: FileText },
-  ],
-  'CTD Approver': [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/dashboard/ctd/approvals', label: 'Pending Approvals', icon: ShieldCheck },
-    { href: '/dashboard/ctd/analytics', label: 'Analytics', icon: BarChart2 },
-  ],
   'CTD Admin': [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/dashboard/ctd/approvals', label: 'All Requests', icon: GanttChartSquare },

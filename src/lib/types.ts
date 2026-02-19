@@ -2,8 +2,6 @@ export type UserRole =
   | 'Customer'
   | 'Operator'
   | 'Authorized Distributor'
-  | 'CTD Requester'
-  | 'CTD Approver'
   | 'CTD Admin'
   | 'Hotel Partner'
   | 'Admin';
