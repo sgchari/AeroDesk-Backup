@@ -10,7 +10,9 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/80 backdrop-blur-sm">
         <div className="container flex h-16 items-center justify-between">
-          <Logo />
+          <Link href="/">
+            <Logo />
+          </Link>
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost">
                 <Link href="/login">Login</Link>

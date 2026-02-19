@@ -13,6 +13,7 @@ import {
 import { Users } from 'lucide-react';
 import type { UserRole } from '@/lib/types';
 import { Logo } from '@/components/logo';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const { availableUsers, switchUserRole } = useUser();
@@ -28,7 +29,9 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
+              <Link href="/">
                 <Logo />
+              </Link>
             </div>
           <CardTitle>Login to AeroDesk</CardTitle>
           <CardDescription>
