@@ -1,11 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, CheckCircle, ShieldCheck, Plane } from 'lucide-react';
-import Image from 'next/image';
+import { CheckCircle, ShieldCheck, Plane } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-
-const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
+import { LandingHero } from '@/components/landing-hero';
 
 export default function Home() {
   return (
@@ -21,32 +18,7 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1">
-        <section className="relative h-[600px] w-full">
-          {heroImage && (
-            <Image
-              src={heroImage.imageUrl}
-              alt={heroImage.description}
-              fill
-              className="object-cover"
-              data-ai-hint={heroImage.imageHint}
-              priority
-            />
-          )}
-          <div className="absolute inset-0 bg-primary/80" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
-            <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-              Digital Infrastructure for Charter Aviation
-            </h1>
-            <p className="mt-4 max-w-[700px] text-lg md:text-xl">
-              A compliance-first coordination platform for non-scheduled charter operations in India.
-            </p>
-            <Button asChild size="lg" className="mt-8">
-              <Link href="/login">
-                Enter Platform <ArrowRight className="ml-2" />
-              </Link>
-            </Button>
-          </div>
-        </section>
+        <LandingHero />
 
         <section id="process" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container mx-auto px-4 md:px-6">
