@@ -2,10 +2,114 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // This single rule grants open access to all documents and collections for development.
-    // It allows all queries, including collection group queries.
-    match /{document=**} {
-      allow read, write: if true;
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function getUserData(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && getUserData(request.auth.uid).role == 'Admin';
+    }
+    
+    function isRole(role) {
+      return isSignedIn() && getUserData(request.auth.uid).role == role;
+    }
+
+    // User profiles can be read by themselves or an admin.
+    // They can only be updated by themselves.
+    // New users can create their own profile document.
+    match /users/{userId} {
+      allow read, update: if isOwner(userId) || isAdmin();
+      allow create: if isSignedIn(); // Allow user creation on signup
+      allow list: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Charter requests can be created by any signed-in user.
+    // They can be read/updated by their creator or an admin.
+    // Operators can list them to bid.
+    match /charterRequests/{requestId} {
+      allow create: if isSignedIn() && request.resource.data.customerId == request.auth.uid;
+      allow read, update: if resource.data.customerId == request.auth.uid || isAdmin();
+      allow list: if isRole('Operator') || isAdmin(); // Operators can list all open requests
+    }
+
+    // Quotations can be created by operators.
+    // Read by the operator who made it, the customer who requested the charter, or an admin.
+    match /quotations/{quotationId} {
+      allow create: if isRole('Operator') && request.resource.data.operatorId == request.auth.uid;
+      allow read: if resource.data.operatorId == request.auth.uid 
+                    || get(/databases/$(database)/documents/charterRequests/$(resource.data.charterRequestId)).data.customerId == request.auth.uid 
+                    || isAdmin();
+      allow update: if resource.data.operatorId == request.auth.uid || isAdmin();
+    }
+    
+    // Operators and their subcollections can only be managed by the operator's linked user or an admin.
+    match /operators/{operatorId} {
+      allow read, write: if get(/databases/$(database)/documents/operators/$(operatorId)).data.userId == request.auth.uid || isAdmin();
+      
+      // Empty legs can be created/managed by the operator.
+      // Approved empty legs can be read by any signed-in user.
+      match /emptyLegFlights/{flightId} {
+         allow create, update, delete: if get(/databases/$(database)/documents/operators/$(operatorId)).data.userId == request.auth.uid || isAdmin();
+         allow read: if isSignedIn(); // Allow any signed in user to read individual empty leg docs
+      }
+
+      // Other operator subcollections
+      match /aircrafts/{aircraftId} {
+        allow read, write: if get(/databases/$(database)/documents/operators/$(operatorId)).data.userId == request.auth.uid || isAdmin();
+      }
+    }
+    
+    // Collection group query for empty legs for the marketplace.
+    // Any signed-in user can list these. The app should filter by 'Approved' status.
+    match /{path=**}/emptyLegFlights/{flightId} {
+      allow list, read: if isSignedIn();
+    }
+
+    // Rules for other top-level collections
+    match /distributors/{distributorId} {
+      allow read, write: if get(/databases/$(database)/documents/distributors/$(distributorId)).data.userId == request.auth.uid || isAdmin();
+    }
+    
+    match /corporateTravelDesks/{ctdId} {
+       allow read, write: if get(/databases/$(database)/documents/corporateTravelDesks/$(ctdId)).data.adminUserId == request.auth.uid || isAdmin();
+    }
+
+    match /hotelPartners/{hotelPartnerId} {
+      allow read, write: if get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.userId == request.auth.uid || isAdmin();
+      
+      match /properties/{propertyId} {
+        allow read, write: if get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.userId == request.auth.uid || isAdmin();
+      }
+    }
+    
+    match /accommodationRequests/{accommodationRequestId} {
+        allow create: if isSignedIn();
+        allow read, write: if resource.data.requesterId == request.auth.uid || isAdmin(); // Simplified for now
+    }
+    
+    // Admin-only collections
+    match /complianceNotes/{noteId} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /approvals/{approvalId} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /featureFlags/{flagId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
     }
   }
 }
