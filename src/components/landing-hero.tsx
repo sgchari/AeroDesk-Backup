@@ -30,19 +30,15 @@ export function LandingHero() {
   return (
     <section className="relative h-[80vh] md:h-[600px] w-full overflow-hidden">
       {heroImage && (
-        <div
-          className="absolute inset-0 transition-transform duration-200 ease-out"
+        <Image
+          src={heroImage.imageUrl}
+          alt={heroImage.description}
+          fill
+          className="object-cover transition-transform duration-200 ease-out"
           style={{ transform: `scale(${scale})` }}
-        >
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill
-            className="object-cover"
-            data-ai-hint={heroImage.imageHint}
-            priority
-          />
-        </div>
+          data-ai-hint={heroImage.imageHint}
+          priority
+        />
       )}
       <div className="absolute inset-0 bg-background/50" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
