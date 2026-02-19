@@ -1,54 +1,28 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { Badge } from "../ui/badge";
-import { MoreHorizontal, BedDouble, Calendar, Check, Clock } from "lucide-react";
-import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "../ui/dropdown-menu";
-import { StatsCard } from "./shared/stats-card";
-import { StatsGrid } from "./shared/stats-grid";
-import Link from "next/link";
-
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 const mockRequests = [
     { id: 'req_1', tripId: 'rfq_4', guestType: 'Passenger', checkIn: '2024-08-20', checkOut: '2024-08-22', rooms: 5, status: 'Pending'},
     { id: 'req_2', tripId: 'trip_7', guestType: 'Crew', checkIn: '2024-08-21', checkOut: '2024-08-22', rooms: 2, status: 'Confirmed'},
     { id: 'req_3', tripId: 'trip_8', guestType: 'Passenger', checkIn: '2024-08-25', checkOut: '2024-08-26', rooms: 1, status: 'Pending'},
-]
+    { id: 'req_4', tripId: 'el_1', guestType: 'Passenger', checkIn: '2024-08-28', checkOut: '2024-08-29', rooms: 3, status: 'Declined'},
+];
 
-export function HotelDashboard() {
-  const stats = {
-    pending: mockRequests.filter(r => r.status === 'Pending').length,
-    confirmed: mockRequests.filter(r => r.status === 'Confirmed').length,
-    thisMonth: mockRequests.length
-  }
-
+export default function HotelRequestsPage() {
   return (
     <>
-      <PageHeader title="Hotel Partner Console" description="Manage accommodation requests for approved trips.">
-        <Button asChild variant="outline">
-            <Link href="/dashboard/hotel/properties">Manage Properties</Link>
-        </Button>
-      </PageHeader>
-      
-      <StatsGrid>
-        <StatsCard title="Pending Requests" value={stats.pending.toString()} icon={Calendar} description="Awaiting your confirmation" />
-        <StatsCard title="Confirmed Stays" value={stats.confirmed.toString()} icon={Check} description="Bookings confirmed" />
-        <StatsCard title="Total Rooms (Month)" value="8" icon={BedDouble} description="Rooms requested this month" />
-        <StatsCard title="Response Time" value="~2.5 hrs" icon={Clock} description="Your average response time" />
-      </StatsGrid>
-
+      <PageHeader title="Accommodation Requests" description="Manage all incoming accommodation requests for your properties." />
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-                <CardTitle>Recent Accommodation Requests</CardTitle>
-                <CardDescription>
-                    The latest requests linked to confirmed charter flights or empty legs.
-                </CardDescription>
-            </div>
-            <Button asChild variant="outline">
-                <Link href="/dashboard/hotel/requests">View All</Link>
-            </Button>
+        <CardHeader>
+          <CardTitle>All Requests</CardTitle>
+          <CardDescription>
+            Requests linked to confirmed charter flights or empty legs.
+          </CardDescription>
         </CardHeader>
         <CardContent>
             <Table>
@@ -58,6 +32,8 @@ export function HotelDashboard() {
                     <TableHead>Trip ID</TableHead>
                     <TableHead>Guest Type</TableHead>
                     <TableHead>Check-in</TableHead>
+                    <TableHead>Check-out</TableHead>
+                    <TableHead>Rooms</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>
                     <span className="sr-only">Actions</span>
@@ -73,6 +49,8 @@ export function HotelDashboard() {
                             <Badge variant={req.guestType === 'Crew' ? 'outline' : 'secondary'}>{req.guestType}</Badge>
                         </TableCell>
                         <TableCell>{req.checkIn}</TableCell>
+                        <TableCell>{req.checkOut}</TableCell>
+                        <TableCell>{req.rooms}</TableCell>
                         <TableCell>
                             <Badge variant={req.status === 'Pending' ? 'destructive' : req.status === 'Confirmed' ? 'default' : 'secondary'}>{req.status}</Badge>
                         </TableCell>
@@ -91,7 +69,7 @@ export function HotelDashboard() {
                                     <>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem>Accept</DropdownMenuItem>
-                                        <DropdownMenuItem disabled>Propose Alternate</DropdownMenuItem>
+                                        <DropdownMenuItem>Propose Alternate</DropdownMenuItem>
                                         <DropdownMenuItem>Decline (with reason)</DropdownMenuItem>
                                     </>
                                 )}
