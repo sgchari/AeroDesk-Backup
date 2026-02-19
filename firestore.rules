@@ -58,10 +58,10 @@ service cloud.firestore {
       allow read, write: if get(/databases/$(database)/documents/operators/$(operatorId)).data.userId == request.auth.uid || isAdmin();
       
       // Empty legs can be created/managed by the operator.
-      // Approved empty legs can be read by any signed-in user.
+      // Reading a single document is allowed for any signed-in user.
       match /emptyLegFlights/{flightId} {
          allow create, update, delete: if get(/databases/$(database)/documents/operators/$(operatorId)).data.userId == request.auth.uid || isAdmin();
-         allow read: if isSignedIn(); // Allow any signed in user to read individual empty leg docs
+         allow get: if isSignedIn(); // Allow any signed in user to get individual empty leg docs
       }
 
       // Other operator subcollections
@@ -71,9 +71,9 @@ service cloud.firestore {
     }
     
     // Collection group query for empty legs for the marketplace.
-    // Any signed-in user can list these. The app should filter by 'Approved' status.
+    // Any signed-in user can list these.
     match /{path=**}/emptyLegFlights/{flightId} {
-      allow list, read: if isSignedIn();
+      allow list: if isSignedIn();
     }
 
     // Rules for other top-level collections
