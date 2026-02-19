@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { UserProvider } from '@/hooks/use-user';
 
 export const metadata: Metadata = {
-  title: 'SkyRoute Compliance',
+  title: 'AeroDesk',
   description:
     'A compliance-first digital aviation infrastructure platform for non-scheduled charter operations (NSOP) in India.',
 };

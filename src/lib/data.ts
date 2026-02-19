@@ -22,7 +22,7 @@ export const users: User[] = [
   { id: 'usr_5', name: 'Sonia Gupta', email: 'sonia.gupta@tatasteel.com', role: 'CTD Approver', avatar: avatar1, company: 'Tata Steel' },
   { id: 'usr_6', name: 'Amit Desai', email: 'amit.desai@infosys.com', role: 'CTD Admin', avatar: avatar2, company: 'Infosys' },
   { id: 'usr_7', name: 'Nisha Agarwal', email: 'nisha.agarwal@tajhotels.com', role: 'Hotel Partner', avatar: avatar1, company: 'Taj Hotels' },
-  { id: 'usr_8', name: 'Arjun Verma', email: 'arjun.verma@skyroute.gov', role: 'Admin', avatar: avatar2, company: 'SkyRoute Compliance' },
+  { id: 'usr_8', name: 'Arjun Verma', email: 'arjun.verma@aerodesk.gov', role: 'Admin', avatar: avatar2, company: 'AeroDesk' },
 ];
 
 export const aircrafts: Aircraft[] = [

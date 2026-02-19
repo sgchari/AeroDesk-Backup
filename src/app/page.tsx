@@ -121,7 +121,7 @@ export default function Home() {
       </main>
       <footer className="flex w-full shrink-0 flex-col items-center gap-2 border-t px-4 py-6 sm:flex-row md:px-6">
         <p className="text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} SkyRoute Compliance. All rights
+          &copy; {new Date().getFullYear()} AeroDesk. All rights
           reserved.
         </p>
         <nav className="flex gap-4 sm:ml-auto sm:gap-6">
