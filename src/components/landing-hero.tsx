@@ -52,7 +52,7 @@ export function LandingHero() {
         <p className="mt-4 max-w-[700px] text-lg md:text-xl">
           A compliance-first coordination platform for non-scheduled charter operations in India.
         </p>
-        <Button asChild size="lg" className="mt-8">
+        <Button asChild size="lg" className="mt-8 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" variant="outline">
           <Link href="/login">
             Enter Platform <ArrowRight className="ml-2" />
           </Link>
