@@ -5,12 +5,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Badge } from "../ui/badge";
 import { getMockDataForRole } from "@/lib/data";
 import type { CharterRFQ, RfqStatus } from "@/lib/types";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, FileText, Clock, CheckCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
-import { FileText, Clock, CheckCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
