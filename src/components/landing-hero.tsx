@@ -44,9 +44,9 @@ export function LandingHero() {
           />
         </div>
       )}
-      <div className="absolute inset-0 bg-background/60" />
+      <div className="absolute inset-0 bg-background/40" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
-        <div className="bg-black/30 backdrop-blur-sm p-8 rounded-xl max-w-4xl">
+        <div className="bg-black/20 backdrop-blur-sm p-8 rounded-xl max-w-4xl">
             <h1 className="font-headline text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl md:text-6xl lg:text-7xl">
             Digital Infrastructure for Charter Aviation
             </h1>
@@ -56,7 +56,7 @@ export function LandingHero() {
         </div>
         <Button asChild size="lg" className="mt-8">
           <Link href="/login">
-            Enter Platform <ArrowRight className="ml-2" />
+            Login <ArrowRight className="ml-2" />
           </Link>
         </Button>
       </div>

@@ -11,9 +11,14 @@ export default function Home() {
       <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/80 backdrop-blur-sm">
         <div className="container flex h-16 items-center justify-between">
           <Logo />
-          <Button asChild variant="outline">
-            <Link href="/login">Platform Access</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="ghost">
+                <Link href="/login">Login</Link>
+            </Button>
+            <Button asChild>
+                <Link href="/register">Register</Link>
+            </Button>
+          </div>
         </div>
       </header>
       <main className="flex-1">
@@ -90,7 +95,7 @@ export default function Home() {
             </div>
             <div className="mx-auto w-full max-w-sm space-y-2">
               <Button asChild size="lg" className="w-full">
-                <Link href="/login">Enter Platform</Link>
+                <Link href="/login">Login</Link>
               </Button>
               <p className="text-xs text-muted-foreground">
                 By entering the platform, you agree to our terms of service.
