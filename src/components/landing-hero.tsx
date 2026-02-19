@@ -28,7 +28,7 @@ export function LandingHero() {
   }, []);
 
   return (
-    <section className="relative h-[600px] w-full overflow-hidden">
+    <section className="relative h-[80vh] md:h-[600px] w-full overflow-hidden">
       {heroImage && (
         <div
           className="absolute inset-0 transition-transform duration-200 ease-out"
@@ -44,12 +44,12 @@ export function LandingHero() {
           />
         </div>
       )}
-      <div className="absolute inset-0 bg-black/70" />
-      <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
-        <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+      <div className="absolute inset-0 bg-black/60" />
+      <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center text-primary-foreground">
+        <h1 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
           Digital Infrastructure for Charter Aviation
         </h1>
-        <p className="mt-4 max-w-[700px] text-lg md:text-xl">
+        <p className="mt-4 max-w-[700px] text-base text-primary-foreground/90 md:text-xl">
           A compliance-first coordination platform for non-scheduled charter operations in India.
         </p>
         <Button asChild size="lg" className="mt-8 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10" variant="outline">
