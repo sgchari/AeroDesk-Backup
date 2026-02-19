@@ -3,7 +3,7 @@
     {
       "id": "hero-background",
       "description": "The interior of a luxurious private jet.",
-      "imageUrl": "https://storage.googleapis.com/aifire-421713.appspot.com/users%2Fclwkz5qcr00003b6k9v3f9jwe%2Fprojects%2Fclx05o3oi000d3b6kr4536jhz%2Ffiles%2Flanding-page.png",
+      "imageUrl": "https://images.unsplash.com/photo-1608735342921-019a1835b0b1",
       "imageHint": "jet interior"
     },
     {
@@ -33,7 +33,7 @@
     {
       "id": "avatar-2",
       "description": "Avatar for a female user.",
-      "imageUrl": "https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc3MTQyNzc1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8fDE3NzE0MjY3NTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman portrait"
     }
   ]
