@@ -97,6 +97,19 @@ service cloud.firestore {
       return isSignedIn() && hotelData.userId == request.auth.uid;
     }
     
+    // Collection Group Rules
+    // ---
+
+    /**
+     * @description Allows any signed-in user to list all empty leg flights across all operators.
+     * @path /{path=**}/emptyLegFlights/{emptyLegFlightId}
+     * @allow (list) Any authenticated user for marketplace discovery.
+     * @principle Enables collection group queries for marketplace features.
+     */
+    match /{path=**}/emptyLegFlights/{emptyLegFlightId} {
+      allow list: if isSignedIn();
+    }
+
 
     // Collection Rules
     // ---
@@ -170,8 +183,7 @@ service cloud.firestore {
      * @principle Allows public reads for discovery but restricts writes to the document owner.
      */
     match /operators/{operatorId}/emptyLegFlights/{emptyLegFlightId} {
-      // allow get for direct reads, and list for collection group queries.
-      allow get, list: if isSignedIn();
+      allow get: if isSignedIn();
       allow create, update, delete: if isOperatorOwner(operatorId) || isAdmin();
     }
     
