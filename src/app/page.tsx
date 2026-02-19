@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { LandingHero } from '@/components/landing-hero';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -26,23 +27,31 @@ export default function Home() {
       <main className="flex-1">
         <LandingHero />
 
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container mx-auto px-4 md:px-6">
+        <section id="features" className="relative w-full py-12 md:py-24 lg:py-32">
+          <Image
+            src="https://picsum.photos/seed/jetexterior/1920/1080"
+            alt="Private jet on tarmac"
+            fill
+            className="object-cover"
+            data-ai-hint="jet exterior"
+          />
+          <div className="absolute inset-0 bg-black/70" />
+          <div className="container relative z-10 mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-3">
                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-primary">
                   The AeroDesk Advantage
                 </div>
-                <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">
+                <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl text-primary-foreground">
                   Unified Aviation Infrastructure
                 </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   AeroDesk provides a secure, compliant, and efficient digital ecosystem for all stakeholders in the non-scheduled charter market. From RFQ to final confirmation, our platform streamlines every step.
                 </p>
               </div>
             </div>
             <div className="mx-auto grid max-w-7xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-16 mt-12">
-              <Card className="grid gap-2 text-center bg-card/50 border-border/50">
+              <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
                 <CardHeader>
                   <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
                     <GanttChartSquare className="h-8 w-8" />
@@ -55,7 +64,7 @@ export default function Home() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="grid gap-2 text-center bg-card/50 border-border/50">
+              <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
                 <CardHeader>
                   <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
                     <ShieldCheck className="h-8 w-8" />
@@ -68,7 +77,7 @@ export default function Home() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="grid gap-2 text-center bg-card/50 border-border/50">
+              <Card className="grid gap-2 text-center bg-card/70 border-border/50 backdrop-blur-sm">
                 <CardHeader>
                   <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mx-auto">
                     <Layers className="h-8 w-8" />
@@ -85,13 +94,21 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-full bg-secondary/30 py-12 md:py-24 lg:py-32">
-          <div className="container mx-auto grid items-center justify-center gap-4 px-4 text-center md:px-6">
+        <section className="relative w-full py-12 md:py-24 lg:py-32">
+            <Image
+                src="https://picsum.photos/seed/jetcockpit/1920/1080"
+                alt="Cockpit of a private jet"
+                fill
+                className="object-cover"
+                data-ai-hint="jet cockpit"
+            />
+            <div className="absolute inset-0 bg-black/60" />
+          <div className="container relative z-10 mx-auto grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
-              <h2 className="font-headline text-3xl font-bold tracking-tighter md:text-4xl/tight">
+              <h2 className="font-headline text-3xl font-bold tracking-tighter md:text-4xl/tight text-primary-foreground">
                 Ready to Streamline Your Operations?
               </h2>
-              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              <p className="mx-auto max-w-[600px] text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 Join the future of digital aviation infrastructure. Access the platform to see how AeroDesk can transform your charter procurement process.
               </p>
             </div>
@@ -106,7 +123,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="flex w-full shrink-0 flex-col items-center gap-2 border-t px-4 py-6 sm:flex-row md:px-6">
+      <footer className="relative z-10 flex w-full shrink-0 flex-col items-center gap-2 border-t px-4 py-6 sm:flex-row md:px-6 bg-background/80 backdrop-blur-sm">
         <p className="text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} AeroDesk. All rights reserved.
         </p>
