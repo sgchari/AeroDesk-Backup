@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
@@ -11,11 +12,25 @@ import { StatsGrid } from "./shared/stats-grid";
 import Link from "next/link";
 import { AccommodationRequest } from "@/lib/types";
 import { Skeleton } from "../ui/skeleton";
-import { getMockDataForRole } from "@/lib/data";
+import { useUser } from "@/hooks/use-user";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where, limit } from "firebase/firestore";
 
 export function HotelDashboard() {
-  const { accommodationRequests: requests } = getMockDataForRole('Hotel Partner');
-  const isLoading = false;
+  const { user, isLoading: isUserLoading } = useUser();
+  const firestore = useFirestore();
+
+  const requestsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(
+        collection(firestore, 'accommodationRequests'), 
+        where('hotelPartnerId', '==', user.id),
+        limit(5)
+    );
+  }, [firestore, user]);
+  const { data: requests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery);
+
+  const isLoading = isUserLoading || requestsLoading;
 
   const stats = {
     pending: requests?.filter(r => r.status === 'Pending').length ?? 0,
@@ -34,7 +49,7 @@ export function HotelDashboard() {
       <StatsGrid>
         <StatsCard title="Pending Requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pending.toString()} icon={Calendar} description="Awaiting your confirmation" />
         <StatsCard title="Confirmed Stays" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.confirmed.toString()} icon={Check} description="Bookings confirmed" />
-        <StatsCard title="Total Rooms (Month)" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.totalRooms.toString()} icon={BedDouble} description="Rooms requested this month" />
+        <StatsCard title="Total Rooms (Recent)" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.totalRooms.toString()} icon={BedDouble} description="Rooms in recent requests" />
         <StatsCard title="Response Time" value="~2.5 hrs" icon={Clock} description="Your average response time" />
       </StatsGrid>
 
@@ -66,14 +81,14 @@ export function HotelDashboard() {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {requests?.slice(0,5).map((req) => (
+                {requests?.map((req) => (
                     <TableRow key={req.id}>
                         <TableCell className="font-medium font-code">{req.id}</TableCell>
                         <TableCell className="font-code">{req.charterRequestId || req.emptyLegFlightId}</TableCell>
                         <TableCell>
                             <Badge variant={req.isCrewAccommodation ? 'outline' : 'secondary'}>{req.isCrewAccommodation ? 'Crew' : 'Passenger'}</Badge>
                         </TableCell>
-                        <TableCell>{req.checkInDate}</TableCell>
+                        <TableCell>{req.checkIn}</TableCell>
                         <TableCell>
                             <Badge variant={req.status === 'Pending' ? 'destructive' : req.status === 'Confirmed' ? 'default' : 'secondary'}>{req.status}</Badge>
                         </TableCell>

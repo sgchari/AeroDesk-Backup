@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "./customer/create-rfq-dialog";
@@ -13,7 +14,8 @@ import { StatsGrid } from "./shared/stats-grid";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
 import { Skeleton } from "../ui/skeleton";
-import { getMockDataForRole } from "@/lib/data";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
@@ -33,11 +35,18 @@ const getStatusColor = (status: RfqStatus) => {
     }
 }
 
-
 export function CTDDashboard() {
-  const { user } = useUser();
-  const { rfqs } = getMockDataForRole('CTD Admin');
-  const isLoading = false;
+  const { user, isLoading: isUserLoading } = useUser();
+  const firestore = useFirestore();
+
+  const rfqsQuery = useMemoFirebase(() => {
+    if (!firestore || !user || !user.company) return null;
+    // This query assumes a 'company' field is stored on the RFQ document for corporate RFQs.
+    return query(collection(firestore, 'charterRFQs'), where('company', '==', user.company));
+  }, [firestore, user]);
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
+
+  const isLoading = isUserLoading || rfqsLoading;
 
   const stats = {
     pending: rfqs?.filter(r => r.status === 'Pending Approval').length ?? 0,

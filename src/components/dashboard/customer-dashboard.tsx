@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "./customer/create-rfq-dialog";
@@ -14,7 +15,8 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { Skeleton } from "../ui/skeleton";
-import { getMockDataForRole } from "@/lib/data";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
@@ -36,12 +38,24 @@ const getStatusColor = (status: RfqStatus) => {
     }
 }
 
-
 export function CustomerDashboard() {
-  const { user } = useUser();
+  const { user, isLoading: isUserLoading } = useUser();
+  const firestore = useFirestore();
   const { toast } = useToast();
-  const { rfqs, emptyLegs } = getMockDataForRole('Customer');
-  const isLoading = false;
+
+  const rfqsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'charterRFQs'), where('customerId', '==', user.id));
+  }, [firestore, user]);
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
+
+  const emptyLegsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
+  }, [firestore]);
+  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+
+  const isLoading = isUserLoading || rfqsLoading || emptyLegsLoading;
 
   const stats = {
     active: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
@@ -202,7 +216,7 @@ export function CustomerDashboard() {
                                 <TableRow key={leg.id}>
                                     <TableCell className="font-medium font-code">{leg.id}</TableCell>
                                     <TableCell>{leg.departure} to {leg.arrival}</TableCell>
-                                    <TableCell>{leg.departureTime}</TableCell>
+                                    <TableCell>{new Date(leg.departureTime).toLocaleString()}</TableCell>
                                     <TableCell className="font-bold text-center">{leg.availableSeats}</TableCell>
                                     <TableCell className="text-right">
                                         <Button size="sm" onClick={() => handleRequestSeats(leg.id)}>Request Seat Allocation</Button>

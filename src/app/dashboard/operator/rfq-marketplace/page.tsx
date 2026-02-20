@@ -1,16 +1,25 @@
+
+'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getMockDataForRole } from "@/lib/data";
 import type { CharterRFQ } from "@/lib/types";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RfqMarketplacePage() {
-  const { rfqs } = getMockDataForRole('Operator');
+  const firestore = useFirestore();
+  const rfqsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
+  }, [firestore]);
+  const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery);
 
   return (
     <>
@@ -35,6 +44,7 @@ export default function RfqMarketplacePage() {
           </div>
         </CardHeader>
         <CardContent>
+            {isLoading ? <Skeleton className="h-64 w-full" /> : (
             <Table>
                 <TableHeader>
                 <TableRow>
@@ -77,6 +87,7 @@ export default function RfqMarketplacePage() {
                 ))}
                 </TableBody>
             </Table>
+            )}
         </CardContent>
       </Card>
     </>

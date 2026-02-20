@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
@@ -10,11 +11,33 @@ import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
-import { getMockDataForRole } from "@/lib/data";
+import { useUser } from "@/hooks/use-user";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, collectionGroup, query, where } from "firebase/firestore";
 
 export function OperatorDashboard() {
-  const { rfqs, bids, aircrafts } = getMockDataForRole('Operator');
-  const isLoading = false;
+  const { user, isLoading: isUserLoading } = useUser();
+  const firestore = useFirestore();
+
+  const rfqsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
+  }, [firestore]);
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
+
+  const bidsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(collectionGroup(firestore, 'quotations'), where('operatorId', '==', user.id));
+  }, [firestore, user]);
+  const { data: bids, isLoading: bidsLoading } = useCollection<Bid>(bidsQuery);
+  
+  const aircraftsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'operators', user.id, 'aircrafts');
+  }, [firestore, user]);
+  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery);
+
+  const isLoading = isUserLoading || rfqsLoading || bidsLoading || aircraftsLoading;
 
   const stats = {
     marketplaceRfqs: rfqs?.length ?? 0,

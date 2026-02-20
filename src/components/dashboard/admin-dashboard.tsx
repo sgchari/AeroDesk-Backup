@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
@@ -5,12 +6,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { ShieldCheck, Users, Plane, Briefcase, Building, CreditCard, ArrowRight } from "lucide-react";
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
-import { AuditLog, User, EmptyLeg } from "@/lib/types";
+import { AuditLog } from "@/lib/types";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
-import { getMockDataForRole } from "@/lib/data";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where, orderBy, limit } from "firebase/firestore";
 
 function ManagementCard({ title, description, link, icon: Icon }: { title: string, description: string, link: string, icon: React.ElementType }) {
   return (
@@ -38,14 +40,45 @@ function ManagementCard({ title, description, link, icon: Icon }: { title: strin
 }
 
 export function AdminDashboard() {
-  const { users, emptyLegs, auditLogs: recentLogs } = getMockDataForRole('Admin');
-  const isLoading = false;
+  const firestore = useFirestore();
+
+  const pendingLegsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval'));
+  }, [firestore]);
+  const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery);
+  
+  const usersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'customers'); // Simplified: just counting customers for now
+  }, [firestore]);
+  const { data: users, isLoading: usersLoading } = useCollection(usersQuery);
+
+  const operatorsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'operators');
+  }, [firestore]);
+  const { data: operators, isLoading: operatorsLoading } = useCollection(operatorsQuery);
+  
+  const partnersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'hotelPartners'); // Simplified: just hotel partners
+  }, [firestore]);
+  const { data: partners, isLoading: partnersLoading } = useCollection(partnersQuery);
+
+  const auditLogsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5));
+  }, [firestore]);
+  const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery);
+  
+  const isLoading = pendingLegsLoading || usersLoading || operatorsLoading || partnersLoading || auditLogsLoading;
   
   const stats = {
-    pendingApprovals: emptyLegs?.filter(e => e.status === 'Pending Approval').length ?? 0,
-    activeUsers: users?.length ?? 0,
-    operators: users?.filter(u => u.role === 'Operator').length ?? 0,
-    partners: users?.filter(u => u.role === 'Hotel Partner' || u.role === 'Authorized Distributor').length ?? 0,
+    pendingApprovals: pendingLegs?.length ?? 0,
+    activeUsers: users?.length ?? 0, // Note: This is a simplified count
+    operators: operators?.length ?? 0,
+    partners: partners?.length ?? 0, // Note: This is a simplified count
   }
 
   return (
@@ -124,13 +157,13 @@ export function AdminDashboard() {
                   </TableRow>
                   </TableHeader>
                   <TableBody>
-                  {recentLogs?.slice(0,5).map((log: AuditLog) => (
+                  {recentLogs?.map((log: AuditLog) => (
                       <TableRow key={log.id}>
-                          <TableCell>{log.timestamp?.toString()}</TableCell>
+                          <TableCell>{new Date(log.timestamp).toLocaleString()}</TableCell>
                           <TableCell>{log.user}</TableCell>
                           <TableCell><Badge variant="secondary">{log.role}</Badge></TableCell>
                           <TableCell className="font-medium">{log.action}</TableCell>
-                          <TableCell className="font-code">{log.targetId}</TableCell>
+                          <TableCell className="font-code text-xs">{log.targetId}</TableCell>
                       </TableRow>
                   ))}
                   </TableBody>

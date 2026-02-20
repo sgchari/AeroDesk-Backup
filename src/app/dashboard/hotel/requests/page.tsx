@@ -1,3 +1,5 @@
+
+'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -5,15 +7,27 @@ import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { AccommodationRequest } from "@/lib/types";
+import { useUser } from "@/hooks/use-user";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const mockRequests = [
-    { id: 'req_1', tripId: 'rfq_4', guestType: 'Passenger', checkIn: '2024-08-20', checkOut: '2024-08-22', rooms: 5, status: 'Pending'},
-    { id: 'req_2', tripId: 'trip_7', guestType: 'Crew', checkIn: '2024-08-21', checkOut: '2024-08-22', rooms: 2, status: 'Confirmed'},
-    { id: 'req_3', tripId: 'trip_8', guestType: 'Passenger', checkIn: '2024-08-25', checkOut: '2024-08-26', rooms: 1, status: 'Pending'},
-    { id: 'req_4', tripId: 'el_1', guestType: 'Passenger', checkIn: '2024-08-28', checkOut: '2024-08-29', rooms: 3, status: 'Declined'},
-];
 
 export default function HotelRequestsPage() {
+    const { user, isLoading: isUserLoading } = useUser();
+    const firestore = useFirestore();
+
+    const requestsQuery = useMemoFirebase(() => {
+        if (!firestore || !user) return null;
+        // This assumes the hotel partner's user ID is their hotelPartnerId.
+        // A more robust solution might involve a profile lookup.
+        return query(collection(firestore, 'accommodationRequests'), where('hotelPartnerId', '==', user.id));
+    }, [firestore, user]);
+    const { data: accommodationRequests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery);
+
+    const isLoading = isUserLoading || requestsLoading;
+
   return (
     <>
       <PageHeader title="Accommodation Requests" description="Manage all incoming accommodation requests for your properties." />
@@ -25,6 +39,7 @@ export default function HotelRequestsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+            {isLoading ? <Skeleton className="h-64 w-full" /> : (
             <Table>
                 <TableHeader>
                 <TableRow>
@@ -41,7 +56,7 @@ export default function HotelRequestsPage() {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {mockRequests.map((req) => (
+                {accommodationRequests?.map((req) => (
                     <TableRow key={req.id}>
                         <TableCell className="font-medium font-code">{req.id}</TableCell>
                         <TableCell className="font-code">{req.tripId}</TableCell>
@@ -86,6 +101,7 @@ export default function HotelRequestsPage() {
                 ))}
                 </TableBody>
             </Table>
+            )}
         </CardContent>
       </Card>
     </>

@@ -1,14 +1,24 @@
+
+'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getMockDataForRole } from "@/lib/data";
 import type { EmptyLeg } from "@/lib/types";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DistributorEmptyLegsPage() {
-  const { emptyLegs } = getMockDataForRole('Authorized Distributor');
+  const firestore = useFirestore();
+  const emptyLegsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
+  }, [firestore]);
+  const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+
 
   return (
     <>
@@ -21,6 +31,7 @@ export default function DistributorEmptyLegsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+            {isLoading ? <Skeleton className="h-64 w-full" /> : (
             <Table>
                 <TableHeader>
                 <TableRow>
@@ -38,7 +49,7 @@ export default function DistributorEmptyLegsPage() {
                     <TableRow key={leg.id}>
                         <TableCell className="font-medium font-code">{leg.id}</TableCell>
                         <TableCell>{leg.departure} to {leg.arrival}</TableCell>
-                        <TableCell>{leg.departureTime}</TableCell>
+                        <TableCell>{new Date(leg.departureTime).toLocaleString()}</TableCell>
                         <TableCell className="font-bold">{leg.availableSeats}</TableCell>
                         <TableCell>
                             <DropdownMenu>
@@ -59,6 +70,7 @@ export default function DistributorEmptyLegsPage() {
                 ))}
                 </TableBody>
             </Table>
+            )}
         </CardContent>
       </Card>
     </>

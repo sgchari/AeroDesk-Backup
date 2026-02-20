@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,9 @@ import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useUser } from "@/hooks/use-user";
+import { addDocumentNonBlocking, useFirestore } from "@/firebase";
+import { collection } from "firebase/firestore";
+import { CharterRFQ } from "@/lib/types";
 
 const baseRfqSchema = z.object({
   tripType: z.enum(["Onward", "Return", "Multi-City"], { required_error: "Trip type is required." }),
@@ -62,6 +66,7 @@ export function CreateRfqDialog() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useUser();
+  const firestore = useFirestore();
   const isCtdUser = user?.role === 'CTD Admin';
 
   const rfqSchema = useMemo(() => {
@@ -96,10 +101,36 @@ export function CreateRfqDialog() {
   const tripType = form.watch("tripType");
 
   const onSubmit = (data: RfqFormValues) => {
-    if (!user) {
-      toast({ title: 'Error', description: 'User not available.', variant: 'destructive'});
+    if (!user || !firestore) {
+      toast({ title: 'Error', description: 'User or database not available.', variant: 'destructive'});
       return;
     }
+
+    const rfqData: Omit<CharterRFQ, 'id'> = {
+        customerId: user.id,
+        customerName: `${user.firstName} ${user.lastName}`,
+        tripType: data.tripType,
+        departure: data.departure,
+        arrival: data.arrival,
+        departureDate: data.departureDate,
+        pax: data.pax,
+        aircraftType: data.aircraftType,
+        status: isCtdUser ? 'Pending Approval' : 'Bidding Open',
+        createdAt: new Date().toISOString(),
+        bidsCount: 0,
+        // Optional fields
+        ...(data.returnDate && { returnDate: data.returnDate }),
+        ...(data.catering && { catering: data.catering }),
+        ...(data.specialRequirements && { specialRequirements: data.specialRequirements }),
+    };
+
+    if (isCtdUser) {
+        rfqData.businessPurpose = data.businessPurpose;
+        rfqData.costCenter = data.costCenter;
+        rfqData.company = user.company;
+    }
+    
+    addDocumentNonBlocking(collection(firestore, 'charterRFQs'), rfqData);
     
     toast({
       title: "RFQ Submitted",

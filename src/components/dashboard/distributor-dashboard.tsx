@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
@@ -9,11 +10,16 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import { Skeleton } from "../ui/skeleton";
-import { getMockDataForRole } from "@/lib/data";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
 
 export function DistributorDashboard() {
-  const { emptyLegs } = getMockDataForRole('Authorized Distributor');
-  const isLoading = false;
+  const firestore = useFirestore();
+  const emptyLegsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
+  }, [firestore]);
+  const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
 
   return (
     <>
@@ -52,7 +58,7 @@ export function DistributorDashboard() {
                     <TableRow key={leg.id}>
                         <TableCell className="font-medium font-code">{leg.id}</TableCell>
                         <TableCell>{leg.departure} to {leg.arrival}</TableCell>
-                        <TableCell>{leg.departureTime}</TableCell>
+                        <TableCell>{new Date(leg.departureTime).toLocaleString()}</TableCell>
                         <TableCell className="font-bold">{leg.availableSeats}</TableCell>
                         <TableCell>
                             <DropdownMenu>
