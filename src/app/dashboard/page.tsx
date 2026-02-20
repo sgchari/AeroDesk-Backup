@@ -16,10 +16,12 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    // Only redirect if loading is complete, there is no user, AND there was no error.
+    // This prevents redirecting when the profile is still loading or if there was a specific profile loading error.
+    if (!isLoading && !user && !error) {
       router.replace('/login');
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, error, router]);
 
   const renderDashboard = () => {
     if (!user) return null;
@@ -41,12 +43,21 @@ export default function DashboardPage() {
     }
   };
 
-  if (isLoading || !user) {
+  if (isLoading || (!user && !error)) {
     return <DashboardSkeleton />;
   }
 
   if (error) {
-    return <div>Error loading user data. Please try logging in again.</div>
+    return (
+        <div className="p-4 rounded-md border border-destructive bg-destructive/10 text-destructive-foreground">
+            <h3 className="font-bold">Error Loading Profile</h3>
+            <p>There was a problem loading your user data. This can happen if your user profile is not correctly configured in the database.</p>
+            <p className="text-xs mt-2">Details: {error.message}</p>
+            <Button variant="link" onClick={() => router.replace('/login')} className="p-0 mt-2 text-destructive-foreground">
+              Return to Login
+            </Button>
+        </div>
+    )
   }
 
   return (
