@@ -1,0 +1,475 @@
+/**
+ * # Firestore Security Rules
+ *
+ * ## Core Philosophy
+ * This ruleset enforces a multi-tenant security model with distinct user roles (Customers, Operators, Distributors, Hotel Partners, Corporate Travel Desk users, and Platform Admins). The primary authorization mechanism is document ownership, where a user's authenticated UID is matched against an `externalAuthId` field (or a similar role-specific ID like `operatorId` or `requesterExternalAuthId`) within the document they are trying to access. A global Platform Admin role grants overarching read/write access for administrative purposes.
+ *
+ * ## Data Structure
+ * The data is organized into top-level collections representing major entities (e.g., /customers, /operators, /charterRFQs) and nested subcollections for tightly related data (e.g., /operators/{operatorId}/aircrafts). This structure allows for both direct access to primary records and logically grouped, owned data.
+ *
+ * ## Key Security Decisions
+ * - **Strict Ownership**: By default, users can only read or write their own data. For example, an Operator can only manage aircraft under their own `/operators/{operatorId}` path.
+ * - **Denormalization for Authorization**: To ensure performant and secure rules, authorization-critical data (like owner IDs) is denormalized and stored directly on the documents being secured. This avoids slow and costly `get()` calls to parent documents in most cases.
+ * - **Role-Based Access**: A user's role is determined by their existence in a specific collection (e.g., a document in `/platformAdmins` makes a user an admin). This allows for powerful, context-aware rules.
+ * - **Shared Data with Granular Control**: Collections like `/charterRFQs` are visible to a wider audience (e.g., all signed-in users can list them for bidding), but write access is strictly limited to the document's original creator.
+ * - **Admin-Only and System-Only Collections**: Critical system collections like `/auditTrails` and `/systemJobLogs` are configured to be read-only for Platform Admins and completely immutable for all other users, preventing client-side tampering.
+ * - **Prototyping Flexibility**: These rules focus on *who* can access *what*, but are intentionally flexible on the *shape* of the data being written. This allows for rapid application development without needing to update security rules for every schema change, while still maintaining strong authorization.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    //-------------------------------------------------------------------------
+    // Helper Functions
+    //-------------------------------------------------------------------------
+
+    /**
+     * Checks if the current user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the current user's UID matches the provided userId.
+     * This is the primary mechanism for verifying document ownership.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks if the document being accessed already exists.
+     * Crucial for protecting against writes to non-existent paths.
+     */
+    function isExistingDoc() {
+      return resource != null;
+    }
+
+    /**
+     * Checks if the current user is a Platform Administrator.
+     * Admins are identified by their UID being a document ID in the platformAdmins collection.
+     */
+    function isPlatformAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/platformAdmins/$(request.auth.uid));
+    }
+    
+    /**
+     * Checks if the user is an administrator of a specific Corporate Travel Desk.
+     */
+    function isCTDAdmin(ctdId) {
+        return isSignedIn() && get(/databases/$(database)/documents/corporateTravelDesks/$(ctdId)).data.adminExternalAuthId == request.auth.uid;
+    }
+    
+    /**
+     * Checks if the user who created a Charter RFQ is the current user.
+     */
+    function isRfqOwner(rfqId) {
+        return isSignedIn() && get(/databases/$(database)/documents/charterRFQs/$(rfqId)).data.requesterExternalAuthId == request.auth.uid;
+    }
+
+    //-------------------------------------------------------------------------
+    // User & Organization Root Collections
+    //-------------------------------------------------------------------------
+
+    /**
+     * @description Manages Customer profiles. Users can create, read, and update their own profile.
+     * @path /customers/{customerId}
+     * @allow (create) An authenticated user creating their own customer profile.
+     * @deny (update) A user trying to modify another user's customer profile.
+     * @principle Enforces self-service profile management based on document ownership.
+     */
+    match /customers/{customerId} {
+      allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+      allow list: if isPlatformAdmin();
+      allow create: if isOwner(request.resource.data.externalAuthId);
+      allow update: if isOwner(resource.data.externalAuthId) && isExistingDoc();
+      allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+    }
+
+    /**
+     * @description Manages Operator profiles and their associated subcollections.
+     * @path /operators/{operatorId}
+     * @allow (get) An operator viewing their own company profile.
+     * @deny (list) Any user, including other operators, listing all operators.
+     * @principle Restricts access to an operator's own data tree.
+     */
+    match /operators/{operatorId} {
+      allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+      allow list: if isPlatformAdmin();
+      allow create: if isOwner(request.resource.data.externalAuthId);
+      allow update: if isOwner(resource.data.externalAuthId) && isExistingDoc();
+      allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+
+      /**
+       * @description Manages aircraft belonging to an operator.
+       * @path /operators/{operatorId}/aircrafts/{aircraftId}
+       * @allow (create) An operator adding a new aircraft to their fleet.
+       * @deny (update) An operator trying to modify an aircraft belonging to another operator.
+       * @principle Enforces inherited ownership from the parent operator document.
+       */
+      match /aircrafts/{aircraftId} {
+        allow get, list: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) || isPlatformAdmin();
+        allow create: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && request.resource.data.operatorId == operatorId;
+        allow update: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && isExistingDoc() && request.resource.data.operatorId == resource.data.operatorId;
+        allow delete: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+
+        /**
+         * @description Manages blackout dates for a specific aircraft.
+         * @path /operators/{operatorId}/aircrafts/{aircraftId}/blackoutDates/{blackoutDateId}
+         * @allow (create) An operator defining an unavailability period for their aircraft.
+         * @deny (delete) A different operator trying to remove a blackout date.
+         * @principle Enforces deeply inherited ownership from the grandparent operator document.
+         */
+        match /blackoutDates/{blackoutDateId} {
+          allow get, list: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) || isPlatformAdmin();
+          allow create: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && request.resource.data.aircraftId == aircraftId;
+          allow update: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && isExistingDoc() && request.resource.data.aircraftId == resource.data.aircraftId;
+          allow delete: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+        }
+      }
+
+      /**
+       * @description Manages performance metrics for an operator. Read-only for clients.
+       * @path /operators/{operatorId}/performanceMetrics/{metricId}
+       * @allow (get) An operator viewing their own performance metrics.
+       * @deny (create) Any client attempting to create a performance metric record.
+       * @principle Protects system-generated data from client modification.
+       */
+      match /performanceMetrics/{metricId} {
+        allow get, list: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) || isPlatformAdmin();
+        allow create: if false;
+        allow update: if false;
+        allow delete: if false;
+      }
+    }
+
+    /**
+     * @description Manages Distributor profiles.
+     * @path /distributors/{distributorId}
+     * @allow (get) A distributor viewing their own company profile.
+     * @deny (list) Any user listing all distributors.
+     * @principle Restricts access to a distributor's own data.
+     */
+    match /distributors/{distributorId} {
+      allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+      allow list: if isPlatformAdmin();
+      allow create: if isOwner(request.resource.data.externalAuthId);
+      allow update: if isOwner(resource.data.externalAuthId) && isExistingDoc();
+      allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+    }
+    
+    /**
+     * @description Manages Hotel Partner profiles and their associated properties.
+     * @path /hotelPartners/{hotelPartnerId}
+     * @allow (get) A hotel partner viewing their own company profile.
+     * @deny (list) Any user listing all hotel partners.
+     * @principle Restricts access to a hotel partner's own data tree.
+     */
+    match /hotelPartners/{hotelPartnerId} {
+      allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+      allow list: if isPlatformAdmin();
+      allow create: if isOwner(request.resource.data.externalAuthId);
+      allow update: if isOwner(resource.data.externalAuthId) && isExistingDoc();
+      allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+
+      /**
+       * @description Manages hotel properties belonging to a Hotel Partner.
+       * @path /hotelPartners/{hotelPartnerId}/properties/{propertyId}
+       * @allow (create) A hotel partner adding a new property they manage.
+       * @deny (update) A hotel partner trying to modify a property belonging to another partner.
+       * @principle Enforces inherited ownership from the parent Hotel Partner document.
+       */
+      match /properties/{propertyId} {
+        allow get, list: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
+        allow create: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && request.resource.data.hotelPartnerId == hotelPartnerId;
+        allow update: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && isExistingDoc() && request.resource.data.hotelPartnerId == resource.data.hotelPartnerId;
+        allow delete: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+
+        /**
+         * @description Manages room categories for a specific hotel property.
+         * @path /hotelPartners/{hotelPartnerId}/properties/{propertyId}/roomCategories/{roomCategoryId}
+         * @allow (create) A hotel partner defining a room type for their property.
+         * @deny (delete) A different hotel partner trying to remove a room category.
+         * @principle Enforces deeply inherited ownership.
+         */
+        match /roomCategories/{roomCategoryId} {
+          allow get, list: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
+          allow create: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && request.resource.data.propertyId == propertyId;
+          allow update: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && isExistingDoc() && request.resource.data.propertyId == resource.data.propertyId;
+          allow delete: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+        }
+      }
+
+      /**
+       * @description Manages response time metrics for a hotel partner. Read-only for clients.
+       * @path /hotelPartners/{hotelPartnerId}/responseTimeMetrics/{metricId}
+       * @allow (get) A hotel partner viewing their own response metrics.
+       * @deny (create) Any client attempting to create a metric record.
+       * @principle Protects system-generated data from client modification.
+       */
+      match /responseTimeMetrics/{metricId} {
+        allow get, list: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
+        allow create: if false;
+        allow update: if false;
+        allow delete: if false;
+      }
+    }
+
+    /**
+     * @description Manages Corporate Travel Desk (CTD) profiles and their associated configurations.
+     * @path /corporateTravelDesks/{ctdId}
+     * @allow (get) A CTD Admin viewing their own CTD profile.
+     * @deny (list) Any user listing all CTDs.
+     * @principle Access is restricted to the designated CTD Admin or a Platform Admin.
+     */
+    match /corporateTravelDesks/{ctdId} {
+      allow get: if isCTDAdmin(ctdId) || isPlatformAdmin();
+      allow list: if isPlatformAdmin();
+      allow create: if isOwner(request.resource.data.adminExternalAuthId);
+      allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
+      allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
+
+      /**
+       * @description Manages users within a CTD.
+       * @path /corporateTravelDesks/{ctdId}/users/{ctdUserId}
+       * @allow (get) A CTD user viewing their own profile, or a CTD admin viewing any user in their CTD.
+       * @deny (update) A regular CTD user trying to modify another user's profile.
+       * @principle Granular access control within a corporate entity.
+       */
+      match /users/{ctdUserId} {
+        allow get: if isCTDAdmin(ctdId) || isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+        allow list: if isCTDAdmin(ctdId) || isPlatformAdmin();
+        allow create: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
+        allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
+        allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
+      }
+      
+      /**
+       * @description Manages approval rules for a CTD. Only CTD Admins can modify.
+       * @path /corporateTravelDesks/{ctdId}/approvalRules/{ruleId}
+       * @allow (create) A CTD Admin creating a new approval workflow rule.
+       * @deny (update) A regular CTD user trying to change an approval rule.
+       * @principle Secures administrative configuration to authorized personnel.
+       */
+      match /approvalRules/{ruleId} {
+        allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
+        allow create: if isCTDAdmin(ctdId) && request.resource.data.ctdId == ctdId;
+        allow update: if isCTDAdmin(ctdId) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
+        allow delete: if isCTDAdmin(ctdId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      }
+
+      /**
+       * @description Manages approval logs for a CTD. Read-only for most, writeable by involved parties.
+       * @path /corporateTravelDesks/{ctdId}/approvalLogs/{logId}
+       * @allow (get) A CTD admin viewing any approval log in their CTD.
+       * @deny (update) Any user modifying a historical approval log entry.
+       * @principle Ensures audit trail integrity.
+       */
+      match /approvalLogs/{logId} {
+        allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
+        allow create: if isOwner(request.resource.data.approverExternalAuthId) && request.resource.data.ctdId == ctdId;
+        allow update: if false; // Logs should be immutable
+        allow delete: if false;
+      }
+      
+      /**
+       * @description Manages travel policies for a CTD. Only CTD Admins can modify.
+       * @path /corporateTravelDesks/{ctdId}/policyFlags/{policyFlagId}
+       * @allow (create) A CTD Admin creating a new travel policy.
+       * @deny (update) A regular CTD user trying to change a policy.
+       * @principle Secures administrative configuration to authorized personnel.
+       */
+      match /policyFlags/{policyFlagId} {
+        allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
+        allow create: if isCTDAdmin(ctdId) && request.resource.data.ctdId == ctdId;
+        allow update: if isCTDAdmin(ctdId) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
+        allow delete: if isCTDAdmin(ctdId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      }
+
+      /**
+       * @description Manages approval performance metrics for a CTD. Read-only for clients.
+       * @path /corporateTravelDesks/{ctdId}/approvalPerformanceMetrics/{metricId}
+       * @allow (get) A CTD Admin viewing their organization's performance metrics.
+       * @deny (create) Any client attempting to create a performance metric record.
+       * @principle Protects system-generated data from client modification.
+       */
+      match /approvalPerformanceMetrics/{metricId} {
+        allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
+        allow create: if false;
+        allow update: if false;
+        allow delete: if false;
+      }
+    }
+
+    //-------------------------------------------------------------------------
+    // Core Business Logic Collections
+    //-------------------------------------------------------------------------
+
+    /**
+     * @description Manages Charter Requests for Quotation (RFQs).
+     * @path /charterRFQs/{rfqId}
+     * @allow (create) An authenticated user creating an RFQ for themselves.
+     * @deny (update) A user trying to modify an RFQ they did not create.
+     * @principle Allows broad visibility for bidding while restricting writes to the owner.
+     */
+    match /charterRFQs/{rfqId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create: if isOwner(request.resource.data.requesterExternalAuthId);
+      allow update: if isOwner(resource.data.requesterExternalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      allow delete: if isOwner(resource.data.requesterExternalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+
+      /**
+       * @description Manages quotations submitted by operators for an RFQ.
+       * @path /charterRFQs/{rfqId}/quotations/{quotationId}
+       * @allow (create) An operator submitting a quote for an RFQ.
+       * @deny (get) An operator viewing a competing operator's quotation.
+       * @principle Enforces confidentiality between competing bidders (operators) while allowing the RFQ owner to see all bids.
+       */
+      match /quotations/{quotationId} {
+        allow get: if isRfqOwner(rfqId) || isOwner(resource.data.operatorId) || isPlatformAdmin();
+        allow list: if isRfqOwner(rfqId) || isPlatformAdmin();
+        allow create: if isOwner(request.resource.data.operatorId) && request.resource.data.rfqId == rfqId;
+        allow update: if isOwner(resource.data.operatorId) && isExistingDoc() && request.resource.data.rfqId == resource.data.rfqId;
+        allow delete: if isOwner(resource.data.operatorId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      }
+    }
+
+    /**
+     * @description Manages Empty Leg flight listings.
+     * @path /emptyLegs/{emptyLegId}
+     * @allow (list) Any authenticated user listing approved empty leg flights.
+     * @deny (create) A customer trying to create an empty leg flight.
+     * @principle Public read for approved listings, with writes restricted to the owning operator.
+     */
+    match /emptyLegs/{emptyLegId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create: if isOwner(request.resource.data.operatorId);
+      allow update: if isOwner(resource.data.operatorId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      allow delete: if isOwner(resource.data.operatorId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+
+      /**
+       * @description Manages requests for seats on an Empty Leg flight.
+       * @path /emptyLegs/{emptyLegId}/seatAllocationRequests/{requestId}
+       * @allow (create) A distributor or customer requesting seats on an empty leg.
+       * @deny (get) A user viewing a seat request made by another user.
+       * @principle Restricts visibility of requests to the involved parties (requester, operator, admin).
+       */
+      match /seatAllocationRequests/{requestId} {
+        allow get: if isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/emptyLegs/$(emptyLegId)).data.operatorId) || isPlatformAdmin();
+        allow list: if isOwner(get(/databases/$(database)/documents/emptyLegs/$(emptyLegId)).data.operatorId) || isPlatformAdmin();
+        allow create: if isOwner(request.resource.data.requesterExternalAuthId) && request.resource.data.emptyLegId == emptyLegId;
+        allow update: if (isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/emptyLegs/$(emptyLegId)).data.operatorId) || isPlatformAdmin()) && isExistingDoc();
+        allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      }
+    }
+
+    /**
+     * @description Manages accommodation requests for passengers.
+     * @path /accommodationRequests/{accommodationRequestId}
+     * @allow (create) A customer/distributor creating a hotel request linked to a trip.
+     * @deny (get) A hotel partner viewing a request not assigned to them.
+     * @principle Secures requests between the requester and the assigned hotel partner.
+     */
+    match /accommodationRequests/{accommodationRequestId} {
+      allow get: if isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
+      allow list: if isPlatformAdmin();
+      allow create: if isOwner(request.resource.data.requesterExternalAuthId);
+      allow update: if (isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
+    }
+    
+    /**
+     * @description Manages accommodation requests for flight crew.
+     * @path /crewAccommodationRequests/{crewAccommodationRequestId}
+     * @allow (create) An operator creating a hotel request for their crew.
+     * @deny (get) A customer viewing a crew accommodation request.
+     * @principle Secures requests between the operator and the assigned hotel partner.
+     */
+    match /crewAccommodationRequests/{crewAccommodationRequestId} {
+      allow get: if isOwner(get(/databases/$(database)/documents/operators/$(resource.data.operatorId)).data.externalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
+      allow list: if isPlatformAdmin();
+      allow create: if isOwner(get(/databases/$(database)/documents/operators/$(request.resource.data.operatorId)).data.externalAuthId);
+      allow update: if (isOwner(get(/databases/$(database)/documents/operators/$(resource.data.operatorId)).data.externalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      allow delete: if (isOwner(get(/databases/$(database)/documents/operators/$(resource.data.operatorId)).data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
+    }
+
+    //-------------------------------------------------------------------------
+    // System & Admin Collections
+    //-------------------------------------------------------------------------
+
+    /**
+     * @description Manages Platform Administrator profiles. This collection defines who is an admin.
+     * @path /platformAdmins/{adminId}
+     * @allow (get) Any signed-in user can check if another user is an admin.
+     * @deny (create) A non-admin user trying to make themselves an admin.
+     * @principle Secures the admin role definition. Only existing admins can add new ones.
+     */
+    match /platformAdmins/{adminId} {
+      allow get: if isSignedIn();
+      allow list: if isPlatformAdmin();
+      allow create: if isPlatformAdmin() && request.auth.uid != adminId; // Admins can add other admins
+      allow update: if isOwner(adminId); // Admins can update their own info
+      allow delete: if isPlatformAdmin() && request.auth.uid != adminId;
+    }
+    
+    /**
+     * @description Manages system-wide feature flags. Read-only for most, writeable by admins.
+     * @path /featureFlags/{flagId}
+     * @allow (get) Any authenticated user can read feature flags to adjust client-side behavior.
+     * @deny (update) A non-admin user attempting to enable or disable a feature.
+     * @principle Allows for safe, dynamic feature toggling controlled by administrators.
+     */
+    match /featureFlags/{flagId} {
+      allow get, list: if isSignedIn();
+      allow create: if isPlatformAdmin();
+      allow update: if isPlatformAdmin() && isExistingDoc();
+      allow delete: if isPlatformAdmin() && isExistingDoc();
+    }
+
+    /**
+     * @description Stores internal compliance notes. Restricted to Platform Admins.
+     * @path /complianceNotes/{noteId}
+     * @allow (get) A Platform Admin viewing a compliance note.
+     * @deny (get) Any non-admin user attempting to read sensitive internal notes.
+     * @principle Enforces strict confidentiality for internal administrative data.
+     */
+    match /complianceNotes/{noteId} {
+      allow get, list: if isPlatformAdmin();
+      allow create: if isPlatformAdmin() && isOwner(request.resource.data.adminExternalAuthId);
+      allow update: if isPlatformAdmin() && isOwner(resource.data.adminExternalAuthId) && isExistingDoc();
+      allow delete: if isPlatformAdmin() && isExistingDoc();
+    }
+    
+    /**
+     * @description Stores logs from automated system jobs. Read-only for admins.
+     * @path /systemJobLogs/{logId}
+     * @allow (get) A Platform Admin reviewing the logs of a background job.
+     * @deny (create) Any client attempting to create a fake system log entry.
+     * @principle Ensures the integrity of system-generated logs by making them immutable from the client.
+     */
+    match /systemJobLogs/{logId} {
+      allow get, list: if isPlatformAdmin();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Stores a comprehensive audit trail of system and user actions. Read-only for admins.
+     * @path /auditTrails/{trailId}
+     * @allow (get) A Platform Admin reviewing the audit trail for compliance purposes.
+     * @deny (create) Any client attempting to create a fake audit trail entry.
+     * @principle Ensures the integrity of the audit trail by making it immutable from the client.
+     */
+    match /auditTrails/{trailId} {
+      allow get, list: if isPlatformAdmin();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+  }
+}

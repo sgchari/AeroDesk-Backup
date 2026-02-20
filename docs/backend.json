@@ -1,0 +1,2058 @@
+{
+  "entities": {
+    "Customer": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Customer",
+      "type": "object",
+      "description": "Represents an individual or corporate user who requests charter flights.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Customer entity."
+        },
+        "externalAuthId": {
+          "type": "string",
+          "description": "Reference to the unique identifier from the external authentication system for this customer."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of customer, either 'Individual' or 'Corporate'."
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The name of the company, if the customer is 'Corporate'."
+        },
+        "gstin": {
+          "type": "string",
+          "description": "Goods and Services Tax Identification Number (GSTIN) for corporate customers in India."
+        },
+        "address": {
+          "type": "string",
+          "description": "Physical address of the customer or corporate entity."
+        },
+        "contactNumber": {
+          "type": "string",
+          "description": "Contact phone number for the customer."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the customer record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the customer record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "externalAuthId",
+        "type"
+      ]
+    },
+    "Operator": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Operator",
+      "type": "object",
+      "description": "Represents an NSOP (Non-Scheduled Operator Permit) holder in India, capable of quoting for charter flights and managing aircraft.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Operator entity."
+        },
+        "externalAuthId": {
+          "type": "string",
+          "description": "Reference to the unique identifier from the external authentication system for this operator."
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The registered name of the operator company."
+        },
+        "nsopLicenseNumber": {
+          "type": "string",
+          "description": "The unique license number for Non-Scheduled Operator Permit."
+        },
+        "contactPersonName": {
+          "type": "string",
+          "description": "Name of the primary contact person for the operator."
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "Email address of the primary contact person.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "Phone number of the primary contact person."
+        },
+        "address": {
+          "type": "string",
+          "description": "Registered physical address of the operator."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the operator (e.g., 'Pending Approval', 'Approved', 'Suspended')."
+        },
+        "mouAcceptedAt": {
+          "type": "string",
+          "description": "Timestamp when the mandatory Memorandum of Understanding (MoU) was accepted by the operator.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the operator record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the operator record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "externalAuthId",
+        "companyName",
+        "nsopLicenseNumber",
+        "status",
+        "mouAcceptedAt"
+      ]
+    },
+    "Aircraft": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Aircraft",
+      "type": "object",
+      "description": "Details of an aircraft managed by an Operator.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Aircraft entity."
+        },
+        "operatorId": {
+          "type": "string",
+          "description": "Reference to the Operator who owns or manages this aircraft. (Relationship: Operator 1:N Aircraft)"
+        },
+        "tailNumber": {
+          "type": "string",
+          "description": "The unique registration number of the aircraft (e.g., VT-ABC)."
+        },
+        "type": {
+          "type": "string",
+          "description": "General classification of the aircraft (e.g., 'Turboprop', 'Light Jet', 'Mid-size Jet', 'Heavy Jet')."
+        },
+        "model": {
+          "type": "string",
+          "description": "Specific model of the aircraft (e.g., 'Cessna Citation XLS+')."
+        },
+        "make": {
+          "type": "string",
+          "description": "Manufacturer of the aircraft (e.g., 'Cessna', 'Bombardier')."
+        },
+        "seatingCapacity": {
+          "type": "number",
+          "description": "Maximum number of passengers the aircraft can carry."
+        },
+        "rangeKm": {
+          "type": "number",
+          "description": "Maximum flight range of the aircraft in kilometers."
+        },
+        "cruisingSpeedKmh": {
+          "type": "number",
+          "description": "Typical cruising speed of the aircraft in kilometers per hour."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current operational status of the aircraft (e.g., 'Active', 'Under Maintenance', 'Inactive')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the aircraft record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the aircraft record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "operatorId",
+        "tailNumber",
+        "type",
+        "model",
+        "seatingCapacity",
+        "status"
+      ]
+    },
+    "AircraftBlackoutDate": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AircraftBlackoutDate",
+      "type": "object",
+      "description": "Represents a period when a specific aircraft is unavailable for charter operations due to maintenance or other reasons.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AircraftBlackoutDate entity."
+        },
+        "aircraftId": {
+          "type": "string",
+          "description": "Reference to the Aircraft that is blacked out. (Relationship: Aircraft 1:N AircraftBlackoutDate)"
+        },
+        "startDate": {
+          "type": "string",
+          "description": "The start date of the blackout period.",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "The end date of the blackout period.",
+          "format": "date"
+        },
+        "reason": {
+          "type": "string",
+          "description": "The reason for the aircraft blackout (e.g., 'Scheduled Maintenance', 'Crew Unavailable')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the blackout date record was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "aircraftId",
+        "startDate",
+        "endDate",
+        "reason"
+      ]
+    },
+    "CharterRFQ": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CharterRFQ",
+      "type": "object",
+      "description": "Represents a Request For Quotation (RFQ) for a charter flight, initiated by a customer or a Corporate Travel Desk.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CharterRFQ entity."
+        },
+        "customerId": {
+          "type": "string",
+          "description": "Reference to the Customer who initiated this RFQ. (Relationship: Customer 1:N CharterRFQ)"
+        },
+        "requesterExternalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the user who created this RFQ."
+        },
+        "flightType": {
+          "type": "string",
+          "description": "The type of flight requested (e.g., 'One-way', 'Round-trip', 'Multi-leg')."
+        },
+        "departureLocation": {
+          "type": "string",
+          "description": "The desired departure location for the flight."
+        },
+        "destinationLocation": {
+          "type": "string",
+          "description": "The desired destination location for the flight."
+        },
+        "departureDateTime": {
+          "type": "string",
+          "description": "The requested date and time for departure.",
+          "format": "date-time"
+        },
+        "returnDateTime": {
+          "type": "string",
+          "description": "The requested date and time for return, if applicable for a round-trip.",
+          "format": "date-time"
+        },
+        "numberOfPassengers": {
+          "type": "number",
+          "description": "The total number of passengers for the flight."
+        },
+        "aircraftPreference": {
+          "type": "string",
+          "description": "Any specific preference for aircraft type (e.g., 'Light Jet', 'Any')."
+        },
+        "specialRequests": {
+          "type": "string",
+          "description": "Any additional special requests (e.g., 'In-flight catering', 'Medical assistance')."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the RFQ (e.g., 'Draft', 'Submitted', 'Pending Approval', 'Approved', 'Confirmed', 'Cancelled', 'Expired')."
+        },
+        "submittedAt": {
+          "type": "string",
+          "description": "Timestamp when the RFQ was submitted.",
+          "format": "date-time"
+        },
+        "quotationDeadline": {
+          "type": "string",
+          "description": "The deadline for operators to submit quotations for this RFQ.",
+          "format": "date-time"
+        },
+        "selectedQuotationId": {
+          "type": "string",
+          "description": "Reference to the Quotation selected by the customer/CTD. (Relationship: Quotation 1:1 CharterRFQ)"
+        },
+        "isCorporateRFQ": {
+          "type": "boolean",
+          "description": "Indicates if the RFQ was created by a Corporate Travel Desk."
+        },
+        "ctdId": {
+          "type": "string",
+          "description": "Reference to the CorporateTravelDesk if this is a corporate RFQ. (Relationship: CorporateTravelDesk 1:N CharterRFQ)"
+        },
+        "corporateApprovalStatus": {
+          "type": "string",
+          "description": "The internal approval status within the corporate travel desk if it is a corporate RFQ (e.g., 'Pending', 'Approved', 'Rejected')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the RFQ record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the RFQ record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "customerId",
+        "requesterExternalAuthId",
+        "flightType",
+        "departureLocation",
+        "destinationLocation",
+        "departureDateTime",
+        "numberOfPassengers",
+        "status",
+        "submittedAt"
+      ]
+    },
+    "Quotation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Quotation",
+      "type": "object",
+      "description": "Represents a bid submitted by an Operator in response to a Charter RFQ.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Quotation entity."
+        },
+        "rfqId": {
+          "type": "string",
+          "description": "Reference to the CharterRFQ this quotation is for. (Relationship: CharterRFQ 1:N Quotation)"
+        },
+        "operatorId": {
+          "type": "string",
+          "description": "Reference to the Operator who submitted this quotation. (Relationship: Operator 1:N Quotation)"
+        },
+        "aircraftId": {
+          "type": "string",
+          "description": "Reference to the specific Aircraft being offered for the charter. (Relationship: Aircraft 1:N Quotation)"
+        },
+        "quotedPrice": {
+          "type": "number",
+          "description": "The price quoted by the operator for the charter flight."
+        },
+        "priceDetails": {
+          "type": "string",
+          "description": "Detailed breakdown or inclusions of the quoted price (e.g., 'includes fuel, crew, landing fees')."
+        },
+        "termsAndConditions": {
+          "type": "string",
+          "description": "Specific terms and conditions for this quotation."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the quotation (e.g., 'Submitted', 'Withdrawn', 'Selected', 'Rejected', 'Expired')."
+        },
+        "submittedAt": {
+          "type": "string",
+          "description": "Timestamp when the quotation was submitted by the operator.",
+          "format": "date-time"
+        },
+        "validUntil": {
+          "type": "string",
+          "description": "The date and time until which this quotation is valid.",
+          "format": "date-time"
+        },
+        "operatorRemarks": {
+          "type": "string",
+          "description": "Any additional remarks or notes from the operator regarding the quotation."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the quotation record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the quotation record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "rfqId",
+        "operatorId",
+        "aircraftId",
+        "quotedPrice",
+        "status",
+        "submittedAt",
+        "validUntil"
+      ]
+    },
+    "EmptyLeg": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "EmptyLeg",
+      "type": "object",
+      "description": "Represents an empty leg flight created by an Operator, available for seat allocation.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the EmptyLeg entity."
+        },
+        "operatorId": {
+          "type": "string",
+          "description": "Reference to the Operator offering this empty leg. (Relationship: Operator 1:N EmptyLeg)"
+        },
+        "aircraftId": {
+          "type": "string",
+          "description": "Reference to the specific Aircraft operating the empty leg. (Relationship: Aircraft 1:N EmptyLeg)"
+        },
+        "departureLocation": {
+          "type": "string",
+          "description": "The departure location of the empty leg flight."
+        },
+        "destinationLocation": {
+          "type": "string",
+          "description": "The destination location of the empty leg flight."
+        },
+        "departureDateTime": {
+          "type": "string",
+          "description": "The date and time of departure for the empty leg flight.",
+          "format": "date-time"
+        },
+        "availableSeats": {
+          "type": "number",
+          "description": "The number of seats available on this empty leg."
+        },
+        "estimatedPricePerSeat": {
+          "type": "number",
+          "description": "An estimated conceptual price per seat for the empty leg (not a firm booking price)."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the empty leg (e.g., 'Draft', 'Pending Admin Approval', 'Approved', 'Cancelled', 'Expired')."
+        },
+        "adminApprovalStatus": {
+          "type": "string",
+          "description": "The approval status by a platform administrator (e.g., 'Pending', 'Approved', 'Rejected')."
+        },
+        "approvedByAdminExternalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the Admin user who approved/rejected the empty leg."
+        },
+        "adminApprovalNotes": {
+          "type": "string",
+          "description": "Notes from the administrator regarding the approval or rejection of the empty leg."
+        },
+        "autoExpiresAt": {
+          "type": "string",
+          "description": "Timestamp when this empty leg listing will automatically expire if not allocated.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the empty leg record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the empty leg record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "operatorId",
+        "aircraftId",
+        "departureLocation",
+        "destinationLocation",
+        "departureDateTime",
+        "availableSeats",
+        "status",
+        "adminApprovalStatus",
+        "autoExpiresAt"
+      ]
+    },
+    "EmptyLegSeatAllocationRequest": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "EmptyLegSeatAllocationRequest",
+      "type": "object",
+      "description": "Represents a request for seats on an Empty Leg flight.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the EmptyLegSeatAllocationRequest entity."
+        },
+        "emptyLegId": {
+          "type": "string",
+          "description": "Reference to the EmptyLeg this request is for. (Relationship: EmptyLeg 1:N EmptyLegSeatAllocationRequest)"
+        },
+        "distributorId": {
+          "type": "string",
+          "description": "Reference to the Distributor making the request. (Relationship: Distributor 1:N EmptyLegSeatAllocationRequest)"
+        },
+        "requesterExternalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the user who initiated this seat request."
+        },
+        "numberOfSeats": {
+          "type": "number",
+          "description": "The number of seats requested."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the seat allocation request (e.g., 'Requested', 'Pending Approval', 'Approved', 'Rejected', 'Confirmed', 'Cancelled')."
+        },
+        "requestDateTime": {
+          "type": "string",
+          "description": "Timestamp when the seat allocation request was made.",
+          "format": "date-time"
+        },
+        "approvedByExternalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the user (e.g., CTD Approver or Admin) who approved this request."
+        },
+        "approvalNotes": {
+          "type": "string",
+          "description": "Notes from the approver regarding the request."
+        },
+        "isCorporateRequest": {
+          "type": "boolean",
+          "description": "Indicates if the empty leg seat request was made on behalf of a corporate employee via CTD."
+        },
+        "ctdId": {
+          "type": "string",
+          "description": "Reference to the CorporateTravelDesk if this is a corporate request. (Relationship: CorporateTravelDesk 1:N EmptyLegSeatAllocationRequest)"
+        },
+        "corporateApprovalStatus": {
+          "type": "string",
+          "description": "The internal approval status within the corporate travel desk if it is a corporate request (e.g., 'Pending', 'Approved', 'Rejected')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the seat allocation request record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the seat allocation request record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "emptyLegId",
+        "distributorId",
+        "requesterExternalAuthId",
+        "numberOfSeats",
+        "status",
+        "requestDateTime"
+      ]
+    },
+    "Distributor": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Distributor",
+      "type": "object",
+      "description": "Represents an Authorized Distributor for empty leg seat allocations.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Distributor entity."
+        },
+        "externalAuthId": {
+          "type": "string",
+          "description": "Reference to the unique identifier from the external authentication system for this distributor."
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The registered name of the distributor company."
+        },
+        "contactPersonName": {
+          "type": "string",
+          "description": "Name of the primary contact person for the distributor."
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "Email address of the primary contact person.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "Phone number of the primary contact person."
+        },
+        "address": {
+          "type": "string",
+          "description": "Registered physical address of the distributor."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the distributor (e.g., 'Pending Approval', 'Approved', 'Suspended')."
+        },
+        "maxSeatCapPerMonth": {
+          "type": "number",
+          "description": "The maximum number of empty leg seats this distributor can allocate per month."
+        },
+        "mouAcceptedAt": {
+          "type": "string",
+          "description": "Timestamp when the mandatory Memorandum of Understanding (MoU) was accepted by the distributor.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the distributor record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the distributor record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "externalAuthId",
+        "companyName",
+        "status",
+        "maxSeatCapPerMonth",
+        "mouAcceptedAt"
+      ]
+    },
+    "HotelPartner": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "HotelPartner",
+      "type": "object",
+      "description": "Represents a verified hotel partner providing accommodation services.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the HotelPartner entity."
+        },
+        "externalAuthId": {
+          "type": "string",
+          "description": "Reference to the unique identifier from the external authentication system for this hotel partner's admin user."
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The registered name of the hotel's operating company."
+        },
+        "contactPersonName": {
+          "type": "string",
+          "description": "Name of the primary contact person for the hotel partner."
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "Email address of the primary contact person.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "Phone number of the primary contact person."
+        },
+        "address": {
+          "type": "string",
+          "description": "Registered physical address of the hotel partner's main office."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the hotel partner (e.g., 'Pending Approval', 'Approved', 'Suspended')."
+        },
+        "mouAcceptedAt": {
+          "type": "string",
+          "description": "Timestamp when the mandatory Memorandum of Understanding (MoU) was accepted by the hotel partner.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the hotel partner record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the hotel partner record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "externalAuthId",
+        "companyName",
+        "status",
+        "mouAcceptedAt"
+      ]
+    },
+    "Property": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Property",
+      "type": "object",
+      "description": "Details of a specific hotel property managed by a Hotel Partner.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Property entity."
+        },
+        "hotelPartnerId": {
+          "type": "string",
+          "description": "Reference to the HotelPartner managing this property. (Relationship: HotelPartner 1:N Property)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the hotel property (e.g., 'The Grand Hotel Mumbai')."
+        },
+        "address": {
+          "type": "string",
+          "description": "Full physical address of the hotel property."
+        },
+        "city": {
+          "type": "string",
+          "description": "City where the hotel property is located."
+        },
+        "state": {
+          "type": "string",
+          "description": "State where the hotel property is located."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country where the hotel property is located."
+        },
+        "pincode": {
+          "type": "string",
+          "description": "Postal code of the hotel property's location."
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "Contact email for the hotel property.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "Contact phone number for the hotel property."
+        },
+        "status": {
+          "type": "string",
+          "description": "Operational status of the property (e.g., 'Active', 'Inactive', 'Under Renovation')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the property record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the property record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "hotelPartnerId",
+        "name",
+        "address",
+        "city",
+        "country",
+        "status"
+      ]
+    },
+    "RoomCategory": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "RoomCategory",
+      "type": "object",
+      "description": "Defines available room types and their rate ranges for a hotel property.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the RoomCategory entity."
+        },
+        "propertyId": {
+          "type": "string",
+          "description": "Reference to the Property this room category belongs to. (Relationship: Property 1:N RoomCategory)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the room category (e.g., 'Deluxe King Room', 'Executive Suite')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the room category, including amenities."
+        },
+        "maxOccupancy": {
+          "type": "number",
+          "description": "Maximum number of guests allowed in this room category."
+        },
+        "baseRateMin": {
+          "type": "number",
+          "description": "Minimum base rate for this room category, without currency assumption."
+        },
+        "baseRateMax": {
+          "type": "number",
+          "description": "Maximum base rate for this room category, without currency assumption."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the room category record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the room category record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "propertyId",
+        "name",
+        "maxOccupancy",
+        "baseRateMin",
+        "baseRateMax"
+      ]
+    },
+    "AccommodationRequest": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AccommodationRequest",
+      "type": "object",
+      "description": "Represents a request for passenger hotel accommodation linked to an approved trip.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AccommodationRequest entity."
+        },
+        "tripReferenceId": {
+          "type": "string",
+          "description": "Reference to the approved trip (CharterRFQ.id or EmptyLegSeatAllocationRequest.id) this accommodation request is for."
+        },
+        "tripType": {
+          "type": "string",
+          "description": "The type of trip ('Charter' or 'EmptyLeg') to identify the source of tripReferenceId."
+        },
+        "hotelPartnerId": {
+          "type": "string",
+          "description": "Reference to the HotelPartner invited for this request. (Relationship: HotelPartner 1:N AccommodationRequest)"
+        },
+        "propertyId": {
+          "type": "string",
+          "description": "Reference to the specific Property requested for accommodation. (Relationship: Property 1:N AccommodationRequest)"
+        },
+        "checkInDate": {
+          "type": "string",
+          "description": "The requested check-in date.",
+          "format": "date"
+        },
+        "checkOutDate": {
+          "type": "string",
+          "description": "The requested check-out date.",
+          "format": "date"
+        },
+        "numberOfRooms": {
+          "type": "number",
+          "description": "The number of rooms requested."
+        },
+        "roomCategoryPreference": {
+          "type": "string",
+          "description": "Preference for room category (e.g., 'Any', 'Deluxe King')."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the accommodation request (e.g., 'Requested', 'Proposed Alternate', 'Confirmed', 'Declined', 'Cancelled', 'Completed')."
+        },
+        "requesterExternalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the user who made the request."
+        },
+        "confirmationVoucherUri": {
+          "type": "string",
+          "description": "URI to the uploaded confirmation voucher from the hotel.",
+          "format": "uri"
+        },
+        "requestDateTime": {
+          "type": "string",
+          "description": "Timestamp when the accommodation request was initiated.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the accommodation request record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the accommodation request record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "tripReferenceId",
+        "tripType",
+        "hotelPartnerId",
+        "propertyId",
+        "checkInDate",
+        "checkOutDate",
+        "numberOfRooms",
+        "status",
+        "requesterExternalAuthId"
+      ]
+    },
+    "CrewAccommodationRequest": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CrewAccommodationRequest",
+      "type": "object",
+      "description": "Represents a request for crew hotel accommodation, distinct from passenger stays and visible only to relevant parties.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CrewAccommodationRequest entity."
+        },
+        "operatorId": {
+          "type": "string",
+          "description": "Reference to the Operator who flagged this crew accommodation requirement. (Relationship: Operator 1:N CrewAccommodationRequest)"
+        },
+        "rfqId": {
+          "type": "string",
+          "description": "Reference to the CharterRFQ this crew accommodation is linked to. (Relationship: CharterRFQ 1:N CrewAccommodationRequest)"
+        },
+        "hotelPartnerId": {
+          "type": "string",
+          "description": "Reference to the HotelPartner invited for this crew request. (Relationship: HotelPartner 1:N CrewAccommodationRequest)"
+        },
+        "propertyId": {
+          "type": "string",
+          "description": "Reference to the specific Property requested for crew accommodation. (Relationship: Property 1:N CrewAccommodationRequest)"
+        },
+        "checkInDate": {
+          "type": "string",
+          "description": "The requested check-in date for the crew.",
+          "format": "date"
+        },
+        "checkOutDate": {
+          "type": "string",
+          "description": "The requested check-out date for the crew.",
+          "format": "date"
+        },
+        "numberOfCrewMembers": {
+          "type": "number",
+          "description": "The number of crew members requiring accommodation."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the crew accommodation request (e.g., 'Requested', 'Confirmed', 'Declined', 'Completed')."
+        },
+        "requestDateTime": {
+          "type": "string",
+          "description": "Timestamp when the crew accommodation request was initiated.",
+          "format": "date-time"
+        },
+        "confirmationVoucherUri": {
+          "type": "string",
+          "description": "URI to the uploaded confirmation voucher for crew accommodation from the hotel.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the crew accommodation request record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the crew accommodation request record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "operatorId",
+        "rfqId",
+        "hotelPartnerId",
+        "propertyId",
+        "checkInDate",
+        "checkOutDate",
+        "numberOfCrewMembers",
+        "status"
+      ]
+    },
+    "CorporateTravelDesk": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CorporateTravelDesk",
+      "type": "object",
+      "description": "Represents a corporate entity's travel desk, managing employee travel requests and approvals.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CorporateTravelDesk entity."
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The name of the corporate entity operating this CTD."
+        },
+        "adminExternalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the primary Corporate Admin user for this CTD."
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "General contact email for the CTD.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "General contact phone number for the CTD."
+        },
+        "address": {
+          "type": "string",
+          "description": "Physical address of the corporate travel desk."
+        },
+        "status": {
+          "type": "string",
+          "description": "Operational status of the CTD (e.g., 'Active', 'Inactive', 'Pending Setup')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the CTD record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the CTD record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "companyName",
+        "adminExternalAuthId",
+        "status"
+      ]
+    },
+    "CTDUser": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CTDUser",
+      "type": "object",
+      "description": "Represents a specific user within a Corporate Travel Desk, with defined roles and permissions.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CTDUser entity."
+        },
+        "externalAuthId": {
+          "type": "string",
+          "description": "Reference to the unique identifier from the external authentication system for this CTD user."
+        },
+        "ctdId": {
+          "type": "string",
+          "description": "Reference to the CorporateTravelDesk this user belongs to. (Relationship: CorporateTravelDesk 1:N CTDUser)"
+        },
+        "role": {
+          "type": "string",
+          "description": "The specific role of the user within the CTD (e.g., 'Requester', 'Approver', 'Corporate Admin')."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the CTD user account (e.g., 'Active', 'Inactive')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the CTD user record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the CTD user record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "externalAuthId",
+        "ctdId",
+        "role",
+        "status"
+      ]
+    },
+    "CTDApprovalRule": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CTDApprovalRule",
+      "type": "object",
+      "description": "Defines rules for multi-level approvals within a Corporate Travel Desk, potentially based on cost thresholds.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CTDApprovalRule entity."
+        },
+        "ctdId": {
+          "type": "string",
+          "description": "Reference to the CorporateTravelDesk this rule applies to. (Relationship: CorporateTravelDesk 1:N CTDApprovalRule)"
+        },
+        "minCostThreshold": {
+          "type": "number",
+          "description": "The minimum cost (inclusive) for a request to fall under this approval rule."
+        },
+        "maxCostThreshold": {
+          "type": "number",
+          "description": "The maximum cost (exclusive) for a request to fall under this approval rule."
+        },
+        "approverRole": {
+          "type": "string",
+          "description": "The internal corporate role required for approval (e.g., 'Manager', 'Director', 'VP')."
+        },
+        "requiredApprovals": {
+          "type": "number",
+          "description": "The number of approvals required from users with the specified 'approverRole' at this level."
+        },
+        "order": {
+          "type": "number",
+          "description": "The sequential order for multi-level approval processes, lower numbers being earlier stages."
+        },
+        "appliesToEmptyLeg": {
+          "type": "boolean",
+          "description": "Indicates if this rule applies to Empty Leg seat allocation requests."
+        },
+        "appliesToCharterRFQ": {
+          "type": "boolean",
+          "description": "Indicates if this rule applies to Charter RFQ requests."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the approval rule record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the approval rule record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ctdId",
+        "minCostThreshold",
+        "maxCostThreshold",
+        "approverRole",
+        "requiredApprovals",
+        "order",
+        "appliesToEmptyLeg",
+        "appliesToCharterRFQ"
+      ]
+    },
+    "CTDApprovalLog": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CTDApprovalLog",
+      "type": "object",
+      "description": "Records the approval trail for corporate travel requests, including timestamps and remarks.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CTDApprovalLog entity."
+        },
+        "ctdId": {
+          "type": "string",
+          "description": "Reference to the CorporateTravelDesk relevant to this approval log. (Relationship: CorporateTravelDesk 1:N CTDApprovalLog)"
+        },
+        "rfqId": {
+          "type": "string",
+          "description": "Reference to the CharterRFQ if the approval is for a charter. (Relationship: CharterRFQ 1:N CTDApprovalLog)"
+        },
+        "emptyLegSeatAllocationRequestId": {
+          "type": "string",
+          "description": "Reference to the EmptyLegSeatAllocationRequest if the approval is for an empty leg. (Relationship: EmptyLegSeatAllocationRequest 1:N CTDApprovalLog)"
+        },
+        "approverExternalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the user who performed the approval action."
+        },
+        "action": {
+          "type": "string",
+          "description": "The action taken by the approver (e.g., 'Submitted', 'Approved', 'Rejected', 'Requested Revision')."
+        },
+        "remarks": {
+          "type": "string",
+          "description": "Any comments or remarks provided by the approver."
+        },
+        "actionDateTime": {
+          "type": "string",
+          "description": "Timestamp when the approval action was performed.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the approval log record was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ctdId",
+        "approverExternalAuthId",
+        "action",
+        "actionDateTime"
+      ]
+    },
+    "ComplianceNote": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ComplianceNote",
+      "type": "object",
+      "description": "Internal administrative notes for audit and compliance purposes, linked to specific entities.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ComplianceNote entity."
+        },
+        "entityType": {
+          "type": "string",
+          "description": "The type of entity this compliance note refers to (e.g., 'Operator', 'Distributor', 'EmptyLeg', 'CharterRFQ')."
+        },
+        "entityId": {
+          "type": "string",
+          "description": "The unique ID of the entity this compliance note is associated with."
+        },
+        "adminExternalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the Admin user who added the note."
+        },
+        "note": {
+          "type": "string",
+          "description": "The content of the compliance note."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the compliance note was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the compliance note was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "entityType",
+        "entityId",
+        "adminExternalAuthId",
+        "note"
+      ]
+    },
+    "FeatureFlag": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FeatureFlag",
+      "type": "object",
+      "description": "Manages system-wide feature toggles, allowing administrators to enable or disable functionalities.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the FeatureFlag entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "A unique, programmatic name for the feature flag (e.g., 'EmptyLegAutoExpiry', 'RFQPDFExport')."
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "description": "Boolean indicating whether the feature is currently enabled or disabled."
+        },
+        "description": {
+          "type": "string",
+          "description": "A clear description of what the feature flag controls."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the feature flag record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the feature flag record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "isEnabled",
+        "description"
+      ]
+    },
+    "PlatformAdmin": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PlatformAdmin",
+      "type": "object",
+      "description": "Represents a platform administrator with full control over the SkyRoute Compliance system.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the PlatformAdmin entity."
+        },
+        "externalAuthId": {
+          "type": "string",
+          "description": "Reference to the unique identifier from the external authentication system for this platform admin."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name of the platform administrator."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name of the platform administrator."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the platform administrator.",
+          "format": "email"
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the admin account (e.g., 'Active', 'Suspended')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the platform admin record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the platform admin record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "externalAuthId",
+        "firstName",
+        "lastName",
+        "email",
+        "status"
+      ]
+    },
+    "SystemJobLog": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SystemJobLog",
+      "type": "object",
+      "description": "Logs automated system jobs and processes, such as expiry checks and data synchronization.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the SystemJobLog entity."
+        },
+        "jobName": {
+          "type": "string",
+          "description": "The name of the automated job (e.g., 'EmptyLegAutoExpiry', 'QuotationExpiryCheck')."
+        },
+        "status": {
+          "type": "string",
+          "description": "The execution status of the job (e.g., 'Success', 'Failed', 'Running', 'Scheduled')."
+        },
+        "startTime": {
+          "type": "string",
+          "description": "Timestamp when the job started execution.",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "Timestamp when the job finished execution.",
+          "format": "date-time"
+        },
+        "details": {
+          "type": "string",
+          "description": "Detailed information about the job's execution, including any errors or results."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the system job log record was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "jobName",
+        "status",
+        "startTime"
+      ]
+    },
+    "AuditTrail": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AuditTrail",
+      "type": "object",
+      "description": "Comprehensive log of all significant user and system activities for audit and compliance purposes.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AuditTrail entry."
+        },
+        "entityType": {
+          "type": "string",
+          "description": "The type of entity that was affected by the action (e.g., 'RFQ', 'Operator', 'Quotation')."
+        },
+        "entityId": {
+          "type": "string",
+          "description": "The unique ID of the specific entity instance that was affected."
+        },
+        "actionType": {
+          "type": "string",
+          "description": "The type of action performed (e.g., 'Create', 'Update', 'Delete', 'Status Change', 'Login', 'View')."
+        },
+        "externalAuthId": {
+          "type": "string",
+          "description": "Reference to the external authentication ID of the user who performed the action. Can be 'System' for automated actions."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The exact date and time when the action occurred.",
+          "format": "date-time"
+        },
+        "oldValues": {
+          "type": "string",
+          "description": "A JSON string representing the state of the entity before the action, if applicable."
+        },
+        "newValues": {
+          "type": "string",
+          "description": "A JSON string representing the state of the entity after the action, if applicable."
+        },
+        "ipAddress": {
+          "type": "string",
+          "description": "IP address from which the action originated."
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "User agent string of the client performing the action."
+        }
+      },
+      "required": [
+        "id",
+        "entityType",
+        "entityId",
+        "actionType",
+        "externalAuthId",
+        "timestamp"
+      ]
+    },
+    "PolicyFlag": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PolicyFlag",
+      "type": "object",
+      "description": "Defines corporate travel policies within a CTD, which can be advisory or enforced.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the PolicyFlag entity."
+        },
+        "ctdId": {
+          "type": "string",
+          "description": "Reference to the CorporateTravelDesk this policy belongs to. (Relationship: CorporateTravelDesk 1:N PolicyFlag)"
+        },
+        "name": {
+          "type": "string",
+          "description": "A descriptive name for the policy (e.g., 'PreferredOperatorPolicy', 'TravelClassPolicy')."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the policy and its purpose."
+        },
+        "isEnforced": {
+          "type": "boolean",
+          "description": "If true, non-compliance with this policy is blocking; if false, it serves as a warning."
+        },
+        "policyDetails": {
+          "type": "string",
+          "description": "A JSON string containing specific parameters or rules for this policy (e.g., list of preferred operator IDs)."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the policy flag record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the policy flag record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ctdId",
+        "name",
+        "description",
+        "isEnforced"
+      ]
+    },
+    "OperatorPerformanceMetric": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OperatorPerformanceMetric",
+      "type": "object",
+      "description": "Captures performance metrics for operators, used for internal analytics and auditing.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the OperatorPerformanceMetric entry."
+        },
+        "operatorId": {
+          "type": "string",
+          "description": "Reference to the Operator whose performance is being measured. (Relationship: Operator 1:N OperatorPerformanceMetric)"
+        },
+        "metricDate": {
+          "type": "string",
+          "description": "The date for which these metrics are aggregated (e.g., the first day of the month for monthly metrics).",
+          "format": "date"
+        },
+        "quotationResponseTimeHours": {
+          "type": "number",
+          "description": "Average time taken by the operator to respond to RFQs, in hours."
+        },
+        "quotationAcceptanceRate": {
+          "type": "number",
+          "description": "Percentage of the operator's submitted quotations that were selected by customers/CTDs."
+        },
+        "tripCompletionRate": {
+          "type": "number",
+          "description": "Percentage of confirmed charter trips successfully completed by the operator."
+        },
+        "emptyLegConversionRate": {
+          "type": "number",
+          "description": "Percentage of empty legs listed by the operator that resulted in seat allocations."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the performance metric record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the performance metric record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "operatorId",
+        "metricDate"
+      ]
+    },
+    "CTDApprovalPerformanceMetric": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CTDApprovalPerformanceMetric",
+      "type": "object",
+      "description": "Captures performance metrics for Corporate Travel Desks related to their approval workflows.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CTDApprovalPerformanceMetric entry."
+        },
+        "ctdId": {
+          "type": "string",
+          "description": "Reference to the CorporateTravelDesk whose approval performance is being measured. (Relationship: CorporateTravelDesk 1:N CTDApprovalPerformanceMetric)"
+        },
+        "metricDate": {
+          "type": "string",
+          "description": "The date for which these metrics are aggregated.",
+          "format": "date"
+        },
+        "avgApprovalTimeHours": {
+          "type": "number",
+          "description": "Average time taken for requests to be approved by the CTD, in hours."
+        },
+        "approvalRate": {
+          "type": "number",
+          "description": "Percentage of submitted requests that receive final approval from the CTD."
+        },
+        "rejectionRate": {
+          "type": "number",
+          "description": "Percentage of submitted requests that are rejected by the CTD."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the performance metric record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the performance metric record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ctdId",
+        "metricDate"
+      ]
+    },
+    "HotelResponseTimeMetric": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "HotelResponseTimeMetric",
+      "type": "object",
+      "description": "Captures performance metrics for hotel partners, specifically their response times to accommodation requests.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the HotelResponseTimeMetric entry."
+        },
+        "hotelPartnerId": {
+          "type": "string",
+          "description": "Reference to the HotelPartner whose response time is being measured. (Relationship: HotelPartner 1:N HotelResponseTimeMetric)"
+        },
+        "metricDate": {
+          "type": "string",
+          "description": "The date for which these metrics are aggregated.",
+          "format": "date"
+        },
+        "avgResponseTimeHours": {
+          "type": "number",
+          "description": "Average time taken by the hotel partner to respond to accommodation requests, in hours."
+        },
+        "acceptanceRate": {
+          "type": "number",
+          "description": "Percentage of accommodation requests that are accepted or proposed an alternate by the hotel partner."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the performance metric record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the performance metric record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "hotelPartnerId",
+        "metricDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/customers/{customerId}",
+        "definition": {
+          "entityName": "Customer",
+          "schema": {
+            "$ref": "#/backend/entities/Customer"
+          },
+          "description": "Root collection for individual and corporate customers. Authorization relies on `request.auth.uid` matching the document's `externalAuthId`."
+        }
+      },
+      {
+        "path": "/operators/{operatorId}",
+        "definition": {
+          "entityName": "Operator",
+          "schema": {
+            "$ref": "#/backend/entities/Operator"
+          },
+          "description": "Root collection for NSOP (Non-Scheduled Operator Permit) holders. Authorization relies on `request.auth.uid` matching the document's `externalAuthId`."
+        }
+      },
+      {
+        "path": "/operators/{operatorId}/aircrafts/{aircraftId}",
+        "definition": {
+          "entityName": "Aircraft",
+          "schema": {
+            "$ref": "#/backend/entities/Aircraft"
+          },
+          "description": "Subcollection for aircrafts owned or managed by a specific Operator. Includes denormalized 'operatorId' for authorization independence.",
+          "params": [
+            {
+              "name": "operatorId",
+              "description": "Unique identifier of the Operator."
+            },
+            {
+              "name": "aircraftId",
+              "description": "Unique identifier of the Aircraft."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/operators/{operatorId}/aircrafts/{aircraftId}/blackoutDates/{blackoutDateId}",
+        "definition": {
+          "entityName": "AircraftBlackoutDate",
+          "schema": {
+            "$ref": "#/backend/entities/AircraftBlackoutDate"
+          },
+          "description": "Subcollection for blackout dates for a specific Aircraft. Includes denormalized 'aircraftId' (and implicitly 'operatorId') for authorization independence.",
+          "params": [
+            {
+              "name": "operatorId",
+              "description": "Unique identifier of the owning Operator."
+            },
+            {
+              "name": "aircraftId",
+              "description": "Unique identifier of the Aircraft."
+            },
+            {
+              "name": "blackoutDateId",
+              "description": "Unique identifier for the AircraftBlackoutDate."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/charterRFQs/{rfqId}",
+        "definition": {
+          "entityName": "CharterRFQ",
+          "schema": {
+            "$ref": "#/backend/entities/CharterRFQ"
+          },
+          "description": "Root collection for all Charter Request For Quotations. Includes denormalized 'customerId' and 'requesterExternalAuthId' for authorization independence. Accessible by customers/CTD who created it and operators who can bid."
+        }
+      },
+      {
+        "path": "/charterRFQs/{rfqId}/quotations/{quotationId}",
+        "definition": {
+          "entityName": "Quotation",
+          "schema": {
+            "$ref": "#/backend/entities/Quotation"
+          },
+          "description": "Subcollection for quotations submitted for a specific Charter RFQ. Includes denormalized 'rfqId' and 'operatorId' for authorization independence.",
+          "params": [
+            {
+              "name": "rfqId",
+              "description": "Unique identifier of the Charter RFQ."
+            },
+            {
+              "name": "quotationId",
+              "description": "Unique identifier for the Quotation."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/emptyLegs/{emptyLegId}",
+        "definition": {
+          "entityName": "EmptyLeg",
+          "schema": {
+            "$ref": "#/backend/entities/EmptyLeg"
+          },
+          "description": "Root collection for Empty Leg flights. Includes denormalized 'operatorId' and 'adminApprovalStatus' for authorization independence and listing visibility."
+        }
+      },
+      {
+        "path": "/emptyLegs/{emptyLegId}/seatAllocationRequests/{requestId}",
+        "definition": {
+          "entityName": "EmptyLegSeatAllocationRequest",
+          "schema": {
+            "$ref": "#/backend/entities/EmptyLegSeatAllocationRequest"
+          },
+          "description": "Subcollection for seat allocation requests on an Empty Leg. Includes denormalized 'emptyLegId', 'distributorId', 'requesterExternalAuthId', and 'ctdId' for authorization independence.",
+          "params": [
+            {
+              "name": "emptyLegId",
+              "description": "Unique identifier of the Empty Leg flight."
+            },
+            {
+              "name": "requestId",
+              "description": "Unique identifier for the EmptyLegSeatAllocationRequest."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/distributors/{distributorId}",
+        "definition": {
+          "entityName": "Distributor",
+          "schema": {
+            "$ref": "#/backend/entities/Distributor"
+          },
+          "description": "Root collection for Authorized Distributors. Authorization relies on `request.auth.uid` matching the document's `externalAuthId`."
+        }
+      },
+      {
+        "path": "/hotelPartners/{hotelPartnerId}",
+        "definition": {
+          "entityName": "HotelPartner",
+          "schema": {
+            "$ref": "#/backend/entities/HotelPartner"
+          },
+          "description": "Root collection for verified Hotel Partners. Authorization relies on `request.auth.uid` matching the document's `externalAuthId`."
+        }
+      },
+      {
+        "path": "/hotelPartners/{hotelPartnerId}/properties/{propertyId}",
+        "definition": {
+          "entityName": "Property",
+          "schema": {
+            "$ref": "#/backend/entities/Property"
+          },
+          "description": "Subcollection for hotel properties managed by a specific Hotel Partner. Includes denormalized 'hotelPartnerId' for authorization independence.",
+          "params": [
+            {
+              "name": "hotelPartnerId",
+              "description": "Unique identifier of the Hotel Partner."
+            },
+            {
+              "name": "propertyId",
+              "description": "Unique identifier of the Property."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/hotelPartners/{hotelPartnerId}/properties/{propertyId}/roomCategories/{roomCategoryId}",
+        "definition": {
+          "entityName": "RoomCategory",
+          "schema": {
+            "$ref": "#/backend/entities/RoomCategory"
+          },
+          "description": "Subcollection for room categories offered by a specific Hotel Property. Includes denormalized 'propertyId' (and implicitly 'hotelPartnerId') for authorization independence.",
+          "params": [
+            {
+              "name": "hotelPartnerId",
+              "description": "Unique identifier of the owning Hotel Partner."
+            },
+            {
+              "name": "propertyId",
+              "description": "Unique identifier of the Hotel Property."
+            },
+            {
+              "name": "roomCategoryId",
+              "description": "Unique identifier for the RoomCategory."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/accommodationRequests/{accommodationRequestId}",
+        "definition": {
+          "entityName": "AccommodationRequest",
+          "schema": {
+            "$ref": "#/backend/entities/AccommodationRequest"
+          },
+          "description": "Root collection for passenger hotel accommodation requests. Includes denormalized 'requesterExternalAuthId', 'hotelPartnerId', 'propertyId', 'tripReferenceId', and 'tripType' for authorization independence."
+        }
+      },
+      {
+        "path": "/crewAccommodationRequests/{crewAccommodationRequestId}",
+        "definition": {
+          "entityName": "CrewAccommodationRequest",
+          "schema": {
+            "$ref": "#/backend/entities/CrewAccommodationRequest"
+          },
+          "description": "Root collection for crew hotel accommodation requests. Includes denormalized 'operatorId', 'rfqId', 'hotelPartnerId', and 'propertyId' for authorization independence."
+        }
+      },
+      {
+        "path": "/corporateTravelDesks/{ctdId}",
+        "definition": {
+          "entityName": "CorporateTravelDesk",
+          "schema": {
+            "$ref": "#/backend/entities/CorporateTravelDesk"
+          },
+          "description": "Root collection for Corporate Travel Desks. Authorization relies on `request.auth.uid` matching the document's 'adminExternalAuthId'."
+        }
+      },
+      {
+        "path": "/corporateTravelDesks/{ctdId}/users/{ctdUserId}",
+        "definition": {
+          "entityName": "CTDUser",
+          "schema": {
+            "$ref": "#/backend/entities/CTDUser"
+          },
+          "description": "Subcollection for users belonging to a specific Corporate Travel Desk. Includes denormalized 'ctdId' and 'externalAuthId' for authorization independence, and 'role' for fine-grained access.",
+          "params": [
+            {
+              "name": "ctdId",
+              "description": "Unique identifier of the Corporate Travel Desk."
+            },
+            {
+              "name": "ctdUserId",
+              "description": "Unique identifier of the CTDUser."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/corporateTravelDesks/{ctdId}/approvalRules/{ruleId}",
+        "definition": {
+          "entityName": "CTDApprovalRule",
+          "schema": {
+            "$ref": "#/backend/entities/CTDApprovalRule"
+          },
+          "description": "Subcollection for approval rules configured for a specific Corporate Travel Desk. Includes denormalized 'ctdId' for authorization independence.",
+          "params": [
+            {
+              "name": "ctdId",
+              "description": "Unique identifier of the Corporate Travel Desk."
+            },
+            {
+              "name": "ruleId",
+              "description": "Unique identifier for the CTDApprovalRule."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/corporateTravelDesks/{ctdId}/approvalLogs/{logId}",
+        "definition": {
+          "entityName": "CTDApprovalLog",
+          "schema": {
+            "$ref": "#/backend/entities/CTDApprovalLog"
+          },
+          "description": "Subcollection for approval logs within a specific Corporate Travel Desk. Includes denormalized 'ctdId', 'approverExternalAuthId', 'rfqId', and 'emptyLegSeatAllocationRequestId' for authorization independence.",
+          "params": [
+            {
+              "name": "ctdId",
+              "description": "Unique identifier of the Corporate Travel Desk."
+            },
+            {
+              "name": "logId",
+              "description": "Unique identifier for the CTDApprovalLog."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/complianceNotes/{noteId}",
+        "definition": {
+          "entityName": "ComplianceNote",
+          "schema": {
+            "$ref": "#/backend/entities/ComplianceNote"
+          },
+          "description": "Root collection for internal administrative compliance notes. Includes denormalized 'adminExternalAuthId', 'entityType', and 'entityId' for authorization independence and context. Primarily for Platform Admin access."
+        }
+      },
+      {
+        "path": "/featureFlags/{flagId}",
+        "definition": {
+          "entityName": "FeatureFlag",
+          "schema": {
+            "$ref": "#/backend/entities/FeatureFlag"
+          },
+          "description": "Root collection for system-wide feature toggles. Restricted to Platform Admin access."
+        }
+      },
+      {
+        "path": "/platformAdmins/{adminId}",
+        "definition": {
+          "entityName": "PlatformAdmin",
+          "schema": {
+            "$ref": "#/backend/entities/PlatformAdmin"
+          },
+          "description": "Root collection for Platform Administrators. This collection serves as the DBAC mechanism for identifying admin users via `request.auth.uid` matching the document's `externalAuthId`."
+        }
+      },
+      {
+        "path": "/systemJobLogs/{logId}",
+        "definition": {
+          "entityName": "SystemJobLog",
+          "schema": {
+            "$ref": "#/backend/entities/SystemJobLog"
+          },
+          "description": "Root collection for automated system job logs. Primarily read-only for Platform Admins."
+        }
+      },
+      {
+        "path": "/auditTrails/{trailId}",
+        "definition": {
+          "entityName": "AuditTrail",
+          "schema": {
+            "$ref": "#/backend/entities/AuditTrail"
+          },
+          "description": "Root collection for comprehensive audit logs of user and system activities. Includes denormalized 'externalAuthId', 'entityType', and 'entityId' for authorization independence and context. Primarily read-only for Platform Admins."
+        }
+      },
+      {
+        "path": "/corporateTravelDesks/{ctdId}/policyFlags/{policyFlagId}",
+        "definition": {
+          "entityName": "PolicyFlag",
+          "schema": {
+            "$ref": "#/backend/entities/PolicyFlag"
+          },
+          "description": "Subcollection for corporate travel policies defined within a specific Corporate Travel Desk. Includes denormalized 'ctdId' for authorization independence.",
+          "params": [
+            {
+              "name": "ctdId",
+              "description": "Unique identifier of the Corporate Travel Desk."
+            },
+            {
+              "name": "policyFlagId",
+              "description": "Unique identifier for the PolicyFlag."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/operators/{operatorId}/performanceMetrics/{metricId}",
+        "definition": {
+          "entityName": "OperatorPerformanceMetric",
+          "schema": {
+            "$ref": "#/backend/entities/OperatorPerformanceMetric"
+          },
+          "description": "Subcollection for performance metrics of a specific Operator. Includes denormalized 'operatorId' for authorization independence. Accessible by the owning operator and Platform Admins.",
+          "params": [
+            {
+              "name": "operatorId",
+              "description": "Unique identifier of the Operator."
+            },
+            {
+              "name": "metricId",
+              "description": "Unique identifier for the OperatorPerformanceMetric."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/corporateTravelDesks/{ctdId}/approvalPerformanceMetrics/{metricId}",
+        "definition": {
+          "entityName": "CTDApprovalPerformanceMetric",
+          "schema": {
+            "$ref": "#/backend/entities/CTDApprovalPerformanceMetric"
+          },
+          "description": "Subcollection for approval performance metrics of a specific Corporate Travel Desk. Includes denormalized 'ctdId' for authorization independence. Accessible by CTD Admins and Platform Admins.",
+          "params": [
+            {
+              "name": "ctdId",
+              "description": "Unique identifier of the Corporate Travel Desk."
+            },
+            {
+              "name": "metricId",
+              "description": "Unique identifier for the CTDApprovalPerformanceMetric."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/hotelPartners/{hotelPartnerId}/responseTimeMetrics/{metricId}",
+        "definition": {
+          "entityName": "HotelResponseTimeMetric",
+          "schema": {
+            "$ref": "#/backend/entities/HotelResponseTimeMetric"
+          },
+          "description": "Subcollection for response time metrics of a specific Hotel Partner. Includes denormalized 'hotelPartnerId' for authorization independence. Accessible by the hotel partner admin and Platform Admins.",
+          "params": [
+            {
+              "name": "hotelPartnerId",
+              "description": "Unique identifier of the Hotel Partner."
+            },
+            {
+              "name": "metricId",
+              "description": "Unique identifier for the HotelResponseTimeMetric."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed following the CORE DESIGN PRINCIPLES and DESIGN STRATEGY MANDATES to ensure a secure, scalable, and debuggable system.Authorization Independence is achieved primarily through pervasive denormalization and the judicious use of hierarchical paths. For any subcollection (e.g., 'aircrafts' under 'operators', 'quotations' under 'charterRFQs'), the relevant parent IDs (e.g., 'operatorId', 'rfqId') are explicitly included in the subcollection path. Critically, these parent IDs, along with other essential authorization context like `requesterExternalAuthId`, `approverExternalAuthId`, `hotelPartnerId`, `distributorId`, `ctdId`, and `adminExternalAuthId`, are also denormalized by being stored directly within the documents themselves. This design eliminates the need for security rules to perform `get()` operations on parent documents to determine access rights, thereby avoiding complex, non-atomic rule evaluations and simplifying debugging. For instance, a 'Quotation' document explicitly contains `operatorId` and `rfqId`, allowing direct validation against `request.auth.uid` without querying the parent 'CharterRFQ' or 'Operator' documents.\n\nQAPs (Rules are not Filters) are addressed through a combination of Structural Segregation and the consistent use of denormalized authorization fields. By segregating data based on its security posture (e.g., `/platformAdmins` for global roles, `/charterRFQs` for all RFQs discoverable by operators but controlled by `requesterExternalAuthId`, and `/operators/{operatorId}/aircrafts` for strictly owned data), we ensure that all documents within a given collection or subcollection share homogenous access requirements. This enables efficient and secure `list` operations. For example, an operator can query `/operators/{operatorId}/aircrafts` or `/emptyLegs` with a `where('operatorId', '==', request.auth.uid)` clause. Similarly, a customer can query `/charterRFQs` with `where('customerId', '==', request.auth.uid)`. Because the `operatorId`, `customerId`, `requesterExternalAuthId`, `distributorId`, `hotelPartnerId`, `ctdId`, and `adminExternalAuthId` are consistently present as document fields, security rules can enforce that a user can only list documents where these fields match their `request.auth.uid`. This prevents rules from acting as implicit filters, which is inefficient and insecure, and instead allows the database to perform efficient, indexed queries that are pre-filtered by the application's authorization requirements."
+  }
+}
