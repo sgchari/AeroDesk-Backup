@@ -106,7 +106,7 @@ service cloud.firestore {
       allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
-      allow update: if isOwner(resource.data.externalAuthId) && isExistingDoc();
+      allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
       allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
 
       /**
