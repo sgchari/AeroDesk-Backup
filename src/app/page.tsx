@@ -29,7 +29,6 @@ function FullScreenSection({ imageUrl, imageHint, children, className }: { image
 export default function Home() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
   const featuresImage = PlaceHolderImages.find(img => img.id === 'landing-features');
-  const ctaImage = PlaceHolderImages.find(img => img.id === 'landing-cta');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -50,7 +49,7 @@ export default function Home() {
       </header>
       <main className="flex-1">
         
-        <FullScreenSection imageUrl={heroImage?.imageUrl || '/placeholder.svg'} imageHint={heroImage?.imageHint || 'jet interior'}>
+        <FullScreenSection imageUrl={heroImage?.imageUrl || 'https://picsum.photos/seed/lp-hero/1920/1080'} imageHint={heroImage?.imageHint || 'jet interior'}>
             <div className="text-center">
               <div className="bg-black/30 backdrop-blur-sm p-8 rounded-xl max-w-4xl mx-auto">
                   <h1 className="font-headline text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl md:text-6xl lg:text-7xl">
@@ -68,7 +67,7 @@ export default function Home() {
             </div>
         </FullScreenSection>
 
-        <FullScreenSection imageUrl={featuresImage?.imageUrl || '/placeholder.svg'} imageHint={featuresImage?.imageHint || 'jet exterior'}>
+        <FullScreenSection imageUrl={featuresImage?.imageUrl || 'https://picsum.photos/seed/lp-features/1920/1080'} imageHint={featuresImage?.imageHint || 'jet exterior'}>
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-3">
               <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-primary">
@@ -123,10 +122,7 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
-        </FullScreenSection>
-
-        <FullScreenSection imageUrl={ctaImage?.imageUrl || '/placeholder.svg'} imageHint={ctaImage?.imageHint || 'jet flying'}>
-          <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6">
+          <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6 mt-16">
             <div className="space-y-3">
               <h2 className="font-headline text-3xl font-bold tracking-tighter md:text-4xl/tight text-primary-foreground">
                 Ready to Streamline Your Operations?
