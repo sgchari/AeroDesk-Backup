@@ -36,7 +36,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setProfileError(null);
       const uid = authUser.uid;
 
-      // Define collections to search in order of likelihood
       const collectionsToSearch: Array<{ name: string, role: UserRole }> = [
         { name: 'platformAdmins', role: 'Admin' },
         { name: 'customers', role: 'Customer' },
@@ -46,7 +45,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       ];
 
       try {
-        // 1. Check standard top-level collections first.
+        // 1. Check all standard top-level collections first.
         for (const { name, role } of collectionsToSearch) {
           const docRef = doc(firestore, name, uid);
           const docSnap = await getDoc(docRef);
@@ -58,23 +57,36 @@ export function UserProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        // 2. If not found, check if it's a CTD User (this query can fail for non-admins).
+        // 2. If not found in top-level collections, it might be a CTD user.
+        // This query requires special permissions that non-admins/non-CTD users won't have.
+        // We wrap it in a try-catch to handle the expected permission-denied error.
         try {
           const ctdUsersQuery = query(collectionGroup(firestore, 'users'), where('externalAuthId', '==', uid));
           const ctdUsersSnap = await getDocs(ctdUsersQuery);
           if (!ctdUsersSnap.empty) {
             const userDoc = ctdUsersSnap.docs[0];
             const profileData = { ...userDoc.data(), id: uid } as AppUser;
+            
+            // For CTD users, we also fetch the company name from the parent desk.
+            if (profileData.role === 'Corporate Admin' && (profileData as any).ctdId) {
+                const ctdDocRef = doc(firestore, 'corporateTravelDesks', (profileData as any).ctdId);
+                const ctdDocSnap = await getDoc(ctdDocRef);
+                if (ctdDocSnap.exists()) {
+                    profileData.company = ctdDocSnap.data().companyName;
+                }
+            }
+            
             setAppUser(profileData);
             setProfileLoading(false);
-            return; // Profile found, we're done.
+            return; // CTD profile found, we're done.
           }
         } catch (e: any) {
+          // If a 'permission-denied' error occurs, it's expected for non-admin users.
+          // We can safely ignore it and proceed to the final error state.
           if (e.code !== 'permission-denied') {
-            throw e; // Re-throw unexpected errors.
+            throw e; // Re-throw any other unexpected errors.
           }
-          // This permission error is expected for non-admin users. We can ignore it and proceed.
-          console.warn("Permission denied for CTD user search; this is expected for non-CTD/non-admin roles.");
+           console.warn("Permission denied for CTD user search, which is expected for non-admin/non-CTD roles. Continuing.");
         }
         
         // 3. If we've reached here, the profile was not found in any location.
