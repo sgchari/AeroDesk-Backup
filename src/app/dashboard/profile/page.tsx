@@ -5,17 +5,19 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { PageHeader } from '@/components/dashboard/shared/page-header';
 import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth, useFirestore, updateDocumentNonBlocking } from '@/firebase';
+import { useAuth, useFirestore, updateDocumentNonBlocking, useStorage } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { updateProfile } from 'firebase/auth';
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage';
+import { Upload } from 'lucide-react';
 
 const profileSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
@@ -30,7 +32,11 @@ export default function ProfilePage() {
   const { user, isLoading, error } = useUser();
   const auth = useAuth();
   const firestore = useFirestore();
+  const storage = useStorage();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -50,6 +56,7 @@ export default function ProfilePage() {
         phoneNumber: user.phoneNumber || (user as any).contactNumber || '',
         avatar: user.avatar || '',
       });
+      setLocalAvatarPreview(null);
     }
   }, [user, form]);
 
@@ -67,6 +74,30 @@ export default function ProfilePage() {
               return null;
       }
   };
+  
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setLocalAvatarPreview(previewUrl);
+    } else {
+      setLocalAvatarPreview(null);
+    }
+  };
+  
+  const uploadAvatar = async (file: File): Promise<string> => {
+    if (!user) throw new Error('User not authenticated for upload.');
+    setIsUploading(true);
+    try {
+      const avatarRef = storageRef(storage, `avatars/${user.id}/${file.name}`);
+      const snapshot = await uploadBytes(avatarRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      return downloadURL;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
 
   const onSubmit = async (data: ProfileFormValues) => {
     if (!user || !firestore || !auth.currentUser) {
@@ -74,36 +105,44 @@ export default function ProfilePage() {
       return;
     }
 
-    const collectionPath = getCollectionPathForRole(user.role, (user as any).ctdId);
-
-    if (!collectionPath) {
-      toast({ title: 'Error', description: 'Cannot determine user profile collection.', variant: 'destructive' });
-      return;
-    }
-
-    const userDocRef = doc(firestore, collectionPath, user.id);
-
     try {
+        let newAvatarUrl = data.avatar;
+        const file = fileInputRef.current?.files?.[0];
+
+        if (file) {
+            newAvatarUrl = await uploadAvatar(file);
+            form.setValue('avatar', newAvatarUrl);
+        }
+
+        const collectionPath = getCollectionPathForRole(user.role, (user as any).ctdId);
+
+        if (!collectionPath) {
+        toast({ title: 'Error', description: 'Cannot determine user profile collection.', variant: 'destructive' });
+        return;
+        }
+
+        const userDocRef = doc(firestore, collectionPath, user.id);
+
         await updateProfile(auth.currentUser, {
             displayName: `${data.firstName} ${data.lastName}`,
-            photoURL: data.avatar,
+            photoURL: newAvatarUrl,
         });
 
         const profileUpdateData: any = {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          avatar: data.avatar || null,
-          phoneNumber: data.phoneNumber || null,
-          updatedAt: new Date().toISOString(),
+        firstName: data.firstName,
+        lastName: data.lastName,
+        avatar: newAvatarUrl || null,
+        phoneNumber: data.phoneNumber || null,
+        updatedAt: new Date().toISOString(),
         };
 
         // Handle role-specific field names
         if (['Operator', 'Distributor', 'Hotel Partner'].includes(user.role)) {
-          profileUpdateData.contactPersonName = `${data.firstName} ${data.lastName}`;
-          profileUpdateData.contactPhone = data.phoneNumber || null;
+        profileUpdateData.contactPersonName = `${data.firstName} ${data.lastName}`;
+        profileUpdateData.contactPhone = data.phoneNumber || null;
         }
         if (user.role === 'Customer') {
-          profileUpdateData.contactNumber = data.phoneNumber || null;
+        profileUpdateData.contactNumber = data.phoneNumber || null;
         }
 
         updateDocumentNonBlocking(userDocRef, profileUpdateData);
@@ -112,6 +151,7 @@ export default function ProfilePage() {
             title: 'Profile Updated',
             description: 'Your profile has been successfully updated.',
         });
+        setLocalAvatarPreview(null);
     } catch (e: any) {
         toast({
             title: 'Update Failed',
@@ -148,6 +188,8 @@ export default function ProfilePage() {
       return <div>Error loading user profile. {error.message}</div>
   }
 
+  const avatarSrc = localAvatarPreview || form.watch('avatar');
+
   return (
     <>
       <PageHeader title="My Profile" description="Manage your personal and contact information." />
@@ -163,22 +205,27 @@ export default function ProfilePage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="flex items-center gap-4">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src={form.watch('avatar')} alt={user.firstName} />
+                  <AvatarImage src={avatarSrc} alt={user.firstName} />
                   <AvatarFallback>{user.firstName?.[0]}{user.lastName?.[0]}</AvatarFallback>
                 </Avatar>
-                <FormField
-                  control={form.control}
-                  name="avatar"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Profile Picture URL</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/image.png" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="flex-1 space-y-2">
+                    <FormLabel>Profile Picture</FormLabel>
+                     <div className='flex items-center gap-2'>
+                        <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                            <Upload className="mr-2 h-4 w-4" />
+                            Upload Image
+                        </Button>
+                        {localAvatarPreview && fileInputRef.current?.files?.[0] && <span className='text-sm text-muted-foreground'>{fileInputRef.current.files[0].name}</span>}
+                    </div>
+                    <Input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept="image/png, image/jpeg, image/gif"
+                        onChange={handleFileChange}
+                    />
+                     <FormDescription>Upload a new image from your device.</FormDescription>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -225,8 +272,8 @@ export default function ProfilePage() {
               />
 
               <div className="flex justify-end">
-                <Button type="submit" disabled={form.formState.isSubmitting}>
-                  {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+                <Button type="submit" disabled={form.formState.isSubmitting || isUploading}>
+                  {isUploading ? 'Uploading...' : form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
             </form>
