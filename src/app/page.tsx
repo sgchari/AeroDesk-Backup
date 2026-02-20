@@ -27,8 +27,8 @@ function FullScreenSection({ imageUrl, imageHint, children, className }: { image
 
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
-  const featuresImage = PlaceHolderImages.find(img => img.id === 'landing-features');
+  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero-1');
+  const featuresImage = PlaceHolderImages.find(img => img.id === 'landing-hero-2');
   
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -51,11 +51,11 @@ export default function Home() {
         
         <FullScreenSection imageUrl={heroImage?.imageUrl || ''} imageHint={heroImage?.imageHint || 'jet interior'}>
             <div className="text-center">
-              <div className="bg-black/80 backdrop-blur-xl p-6 rounded-lg max-w-3xl mx-auto">
-                  <h1 className="font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl md:text-4xl">
+              <div className="bg-black/30 backdrop-blur-xl p-6 rounded-lg max-w-3xl mx-auto">
+                  <h1 className="font-headline text-xl font-bold tracking-tight text-primary-foreground sm:text-2xl md:text-3xl">
                   Digital Infrastructure for Charter Aviation
                   </h1>
-                  <p className="mt-4 max-w-[750px] text-sm text-primary-foreground/80 md:text-base mx-auto">
+                  <p className="mt-4 max-w-[750px] text-xs text-primary-foreground/80 sm:text-sm md:text-base mx-auto">
                   A compliance-first coordination platform for non-scheduled charter operations in India.
                   </p>
               </div>
