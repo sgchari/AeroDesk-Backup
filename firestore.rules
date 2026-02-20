@@ -20,6 +20,14 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     //-------------------------------------------------------------------------
+    // Collection Group Rules
+    //-------------------------------------------------------------------------
+
+    match /{path=**}/quotations/{quotationId} {
+      allow read: if isPlatformAdmin() || isOwner(resource.data.operatorId) || isRfqOwner(resource.data.rfqId);
+    }
+
+    //-------------------------------------------------------------------------
     // Helper Functions
     //-------------------------------------------------------------------------
 
@@ -328,8 +336,6 @@ service cloud.firestore {
        * @principle Enforces confidentiality between competing bidders (operators) while allowing the RFQ owner to see all bids.
        */
       match /quotations/{quotationId} {
-        allow get: if isRfqOwner(rfqId) || isOwner(resource.data.operatorId) || isPlatformAdmin();
-        allow list: if isRfqOwner(rfqId) || isPlatformAdmin();
         allow create: if isOwner(request.resource.data.operatorId) && request.resource.data.rfqId == rfqId;
         allow update: if isOwner(resource.data.operatorId) && isExistingDoc() && request.resource.data.rfqId == resource.data.rfqId;
         allow delete: if isOwner(resource.data.operatorId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
@@ -374,8 +380,7 @@ service cloud.firestore {
      * @principle Secures requests between the requester and the assigned hotel partner.
      */
     match /accommodationRequests/{accommodationRequestId} {
-      allow get: if isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
-      allow list: if isPlatformAdmin();
+      allow read: if isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
       allow create: if isOwner(request.resource.data.requesterExternalAuthId);
       allow update: if (isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
       allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
