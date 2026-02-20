@@ -49,13 +49,13 @@ export default function Home() {
       </header>
       <main className="flex-1">
         
-        <FullScreenSection imageUrl={heroImage?.imageUrl || 'https://picsum.photos/seed/lp-hero/1920/1080'} imageHint={heroImage?.imageHint || 'jet interior'}>
+        <FullScreenSection imageUrl={heroImage?.imageUrl || ''} imageHint={heroImage?.imageHint || 'jet interior'}>
             <div className="text-center">
-              <div className="bg-black/50 backdrop-blur-md p-8 rounded-xl max-w-4xl mx-auto">
-                  <h1 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl md:text-5xl">
+              <div className="bg-black/80 backdrop-blur-xl p-6 rounded-lg max-w-3xl mx-auto">
+                  <h1 className="font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl md:text-4xl">
                   Digital Infrastructure for Charter Aviation
                   </h1>
-                  <p className="mt-6 max-w-[750px] text-base text-primary-foreground/80 md:text-lg mx-auto">
+                  <p className="mt-4 max-w-[750px] text-sm text-primary-foreground/80 md:text-base mx-auto">
                   A compliance-first coordination platform for non-scheduled charter operations in India.
                   </p>
               </div>
@@ -67,7 +67,7 @@ export default function Home() {
             </div>
         </FullScreenSection>
 
-        <FullScreenSection imageUrl={featuresImage?.imageUrl || 'https://picsum.photos/seed/lp-features/1920/1080'} imageHint={featuresImage?.imageHint || 'jet exterior'}>
+        <FullScreenSection imageUrl={featuresImage?.imageUrl || ''} imageHint={featuresImage?.imageHint || 'jet exterior'}>
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-3">
               <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-primary">
