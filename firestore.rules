@@ -117,23 +117,23 @@ service cloud.firestore {
        * @principle Enforces inherited ownership from the parent operator document.
        */
       match /aircrafts/{aircraftId} {
-        allow get, list: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) || isPlatformAdmin();
-        allow create: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && request.resource.data.operatorId == operatorId;
-        allow update: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && isExistingDoc() && request.resource.data.operatorId == resource.data.operatorId;
-        allow delete: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+        allow get, list: if isOwner(operatorId) || isPlatformAdmin();
+        allow create: if isOwner(operatorId) && request.resource.data.operatorId == operatorId;
+        allow update: if isOwner(operatorId) && isExistingDoc() && request.resource.data.operatorId == resource.data.operatorId;
+        allow delete: if (isOwner(operatorId) || isPlatformAdmin()) && isExistingDoc();
 
         /**
          * @description Manages blackout dates for a specific aircraft.
          * @path /operators/{operatorId}/aircrafts/{aircraftId}/blackoutDates/{blackoutDateId}
          * @allow (create) An operator defining an unavailability period for their aircraft.
          * @deny (delete) A different operator trying to remove a blackout date.
-         * @principle Enforces deeply inherited ownership from the grandparent operator document.
+         * @principle Enforces deeply inherited ownership.
          */
         match /blackoutDates/{blackoutDateId} {
-          allow get, list: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) || isPlatformAdmin();
-          allow create: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && request.resource.data.aircraftId == aircraftId;
-          allow update: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && isExistingDoc() && request.resource.data.aircraftId == resource.data.aircraftId;
-          allow delete: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+          allow get, list: if isOwner(operatorId) || isPlatformAdmin();
+          allow create: if isOwner(operatorId) && request.resource.data.aircraftId == aircraftId;
+          allow update: if isOwner(operatorId) && isExistingDoc() && request.resource.data.aircraftId == resource.data.aircraftId;
+          allow delete: if (isOwner(operatorId) || isPlatformAdmin()) && isExistingDoc();
         }
       }
 
@@ -145,7 +145,7 @@ service cloud.firestore {
        * @principle Protects system-generated data from client modification.
        */
       match /performanceMetrics/{metricId} {
-        allow get, list: if isOwner(get(/databases/$(database)/documents/operators/$(operatorId)).data.externalAuthId) || isPlatformAdmin();
+        allow get, list: if isOwner(operatorId) || isPlatformAdmin();
         allow create: if false;
         allow update: if false;
         allow delete: if false;
@@ -189,10 +189,10 @@ service cloud.firestore {
        * @principle Enforces inherited ownership from the parent Hotel Partner document.
        */
       match /properties/{propertyId} {
-        allow get, list: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
-        allow create: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && request.resource.data.hotelPartnerId == hotelPartnerId;
-        allow update: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && isExistingDoc() && request.resource.data.hotelPartnerId == resource.data.hotelPartnerId;
-        allow delete: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+        allow get, list: if isOwner(hotelPartnerId) || isPlatformAdmin();
+        allow create: if isOwner(hotelPartnerId) && request.resource.data.hotelPartnerId == hotelPartnerId;
+        allow update: if isOwner(hotelPartnerId) && isExistingDoc() && request.resource.data.hotelPartnerId == resource.data.hotelPartnerId;
+        allow delete: if (isOwner(hotelPartnerId) || isPlatformAdmin()) && isExistingDoc();
 
         /**
          * @description Manages room categories for a specific hotel property.
@@ -202,10 +202,10 @@ service cloud.firestore {
          * @principle Enforces deeply inherited ownership.
          */
         match /roomCategories/{roomCategoryId} {
-          allow get, list: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
-          allow create: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && request.resource.data.propertyId == propertyId;
-          allow update: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && isExistingDoc() && request.resource.data.propertyId == resource.data.propertyId;
-          allow delete: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+          allow get, list: if isOwner(hotelPartnerId) || isPlatformAdmin();
+          allow create: if isOwner(hotelPartnerId) && request.resource.data.propertyId == propertyId;
+          allow update: if isOwner(hotelPartnerId) && isExistingDoc() && request.resource.data.propertyId == resource.data.propertyId;
+          allow delete: if (isOwner(hotelPartnerId) || isPlatformAdmin()) && isExistingDoc();
         }
       }
 
@@ -217,7 +217,7 @@ service cloud.firestore {
        * @principle Protects system-generated data from client modification.
        */
       match /responseTimeMetrics/{metricId} {
-        allow get, list: if isOwner(get(/databases/$(database)/documents/hotelPartners/$(hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
+        allow get, list: if isOwner(hotelPartnerId) || isPlatformAdmin();
         allow create: if false;
         allow update: if false;
         allow delete: if false;
