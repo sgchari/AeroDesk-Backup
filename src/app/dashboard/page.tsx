@@ -1,15 +1,17 @@
+
 'use client';
 
 import { useUser } from '@/hooks/use-user';
 import { CustomerDashboard } from '@/components/dashboard/customer-dashboard';
 import { OperatorDashboard } from '@/components/dashboard/operator-dashboard';
-import { AdminDashboard } from '@/components/dashboard/admin-dashboard';
+import { AdminDashboard } from './admin-dashboard';
 import { CTDDashboard } from '@/components/dashboard/ctd-dashboard';
 import { DistributorDashboard } from '@/components/dashboard/distributor-dashboard';
 import { HotelDashboard } from '@/components/dashboard/hotel-dashboard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 
 export default function DashboardPage() {
   const { user, isLoading, error } = useUser();
