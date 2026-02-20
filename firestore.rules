@@ -24,9 +24,11 @@ service cloud.firestore {
     //-------------------------------------------------------------------------
 
     match /{path=**}/quotations/{quotationId} {
-      // This rule supports collection group queries. It CANNOT use `get()` or `exists()`.
-      // This allows an operator to query for their own quotations across all RFQs.
-      allow read: if isPlatformAdmin() || isOwner(resource.data.operatorId);
+      // This rule allows an operator to get their own quotations.
+      // LIST is disabled on this collection group to prevent crashes from invalid queries.
+      // A feature using a collection group query on 'quotations' must be re-implemented with a valid, secure rule.
+      allow get: if isPlatformAdmin() || isOwner(resource.data.operatorId);
+      allow list: if false;
     }
 
     //-------------------------------------------------------------------------
@@ -402,13 +404,13 @@ service cloud.firestore {
     match /crewAccommodationRequests/{crewAccommodationRequestId} {
       allow read: if isPlatformAdmin()
                     || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)
-                    || (resource.data.hotelPartnerId != null && request.auth.uid == resource.data.hotelPartnerId);
+                    || (resource.data.hotelPartnerId != null && isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId));
 
       allow create: if request.auth.uid == request.resource.data.operatorId;
 
       allow update: if (isPlatformAdmin()
                     || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)
-                    || (resource.data.hotelPartnerId != null && request.auth.uid == resource.data.hotelPartnerId))
+                    || (resource.data.hotelPartnerId != null && isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId)))
                     && isExistingDoc();
 
       allow delete: if (isPlatformAdmin() || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)) && isExistingDoc();
