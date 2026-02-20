@@ -29,7 +29,7 @@ function FullScreenSection({ imageUrl, imageHint, children, className }: { image
 export default function Home() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
   const featuresImage = PlaceHolderImages.find(img => img.id === 'landing-features');
-
+  
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/80 backdrop-blur-sm">
@@ -51,11 +51,11 @@ export default function Home() {
         
         <FullScreenSection imageUrl={heroImage?.imageUrl || 'https://picsum.photos/seed/lp-hero/1920/1080'} imageHint={heroImage?.imageHint || 'jet interior'}>
             <div className="text-center">
-              <div className="bg-black/30 backdrop-blur-sm p-8 rounded-xl max-w-4xl mx-auto">
-                  <h1 className="font-headline text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+              <div className="bg-black/50 backdrop-blur-md p-8 rounded-xl max-w-4xl mx-auto">
+                  <h1 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl md:text-5xl">
                   Digital Infrastructure for Charter Aviation
                   </h1>
-                  <p className="mt-6 max-w-[750px] text-lg text-primary-foreground/80 md:text-xl mx-auto">
+                  <p className="mt-6 max-w-[750px] text-base text-primary-foreground/80 md:text-lg mx-auto">
                   A compliance-first coordination platform for non-scheduled charter operations in India.
                   </p>
               </div>
