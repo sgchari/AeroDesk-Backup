@@ -1,52 +1,17 @@
 'use client';
 
-import { Bell, Search, Users } from 'lucide-react';
+import { Bell, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserNav } from '@/components/user-nav';
-import { Logo } from './logo';
-import Link from 'next/link';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
   SheetTitle,
-} from '@/components/ui/sheet'
+} from '@/components/ui/sheet';
 import { MainSidebar } from './main-sidebar';
 import { Menu } from 'lucide-react';
-import { useUser } from '@/hooks/use-user';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-import type { UserRole } from '@/lib/types';
-
-
-function RoleSwitcher() {
-    const { user, setUserRole, availableRoles } = useUser();
-    if (!user) return null;
-
-    return (
-        <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-muted-foreground" />
-            <Select onValueChange={(role: UserRole) => setUserRole(role)} defaultValue={user.role}>
-                <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent>
-                    {availableRoles.map(role => (
-                        <SelectItem key={role} value={role}>
-                            {role}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-        </div>
-    )
-}
 
 export function Header() {
   return (
@@ -78,7 +43,6 @@ export function Header() {
                 />
                 </div>
             </form>
-            <RoleSwitcher />
             <Button variant="ghost" size="icon" className="rounded-full">
                 <Bell className="h-5 w-5" />
                 <span className="sr-only">Toggle notifications</span>
