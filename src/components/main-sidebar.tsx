@@ -1,6 +1,5 @@
 'use client';
 import {
-  Bell,
   Home,
   Users,
   Plane,
@@ -16,12 +15,10 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { cn } from '@/lib/utils';
 import { useUser } from '@/hooks/use-user';
 import type { UserRole } from '@/lib/types';
-import { Button } from '@/components/ui/button';
 import { Logo } from './logo';
-import { Skeleton } from './ui/skeleton';
+import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSkeleton } from '@/components/ui/sidebar';
 
 const navItems = {
   Customer: [
@@ -68,16 +65,17 @@ const navItems = {
 };
 
 function SidebarSkeleton() {
-  return (
-    <div className="flex-1 overflow-auto py-2">
-      <nav className="grid items-start px-4 text-sm font-medium gap-2">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-      </nav>
-    </div>
-  )
+    return (
+      <div className="flex-1 overflow-auto py-2 px-2">
+        <div className="grid items-start text-sm font-medium gap-1">
+          <SidebarMenuSkeleton showIcon />
+          <SidebarMenuSkeleton showIcon />
+          <SidebarMenuSkeleton showIcon />
+          <SidebarMenuSkeleton showIcon />
+          <SidebarMenuSkeleton showIcon />
+        </div>
+      </div>
+    )
 }
 
 export function MainSidebar({ className }: { className?: string }) {
@@ -86,33 +84,33 @@ export function MainSidebar({ className }: { className?: string }) {
   const currentNavItems = user ? navItems[user.role as UserRole] || [] : [];
 
   return (
-    <div className={cn("border-r bg-muted/40 md:block", className)}>
-        <div className="flex h-full max-h-screen flex-col gap-2">
-            <div className="flex h-16 items-center border-b px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-                <Logo />
-            </Link>
-            </div>
-            {isLoading ? <SidebarSkeleton /> : (
-            <div className="flex-1 overflow-auto py-2">
-            <nav className="grid items-start px-4 text-sm font-medium">
-                {currentNavItems.map(({ href, label, icon: Icon }) => (
-                <Link
-                    key={href}
-                    href={href}
-                    className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-                    pathname === href && 'bg-muted text-primary'
-                    )}
+    <>
+      <SidebarHeader className="flex h-16 items-center border-b px-4">
+        <Link href="/" className="flex items-center gap-2 font-semibold">
+            <Logo />
+        </Link>
+      </SidebarHeader>
+      
+      <SidebarContent>
+        {isLoading ? <SidebarSkeleton /> : (
+          <SidebarMenu>
+            {currentNavItems.map(({ href, label, icon: Icon }) => (
+              <SidebarMenuItem key={href}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === href || (href !== '/dashboard' && pathname.startsWith(href))}
+                  tooltip={label}
                 >
-                    <Icon className="h-4 w-4" />
-                    {label}
-                </Link>
-                ))}
-            </nav>
-            </div>
-            )}
-        </div>
-    </div>
+                  <Link href={href}>
+                    <Icon />
+                    <span>{label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        )}
+      </SidebarContent>
+    </>
   );
 }

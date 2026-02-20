@@ -23,6 +23,12 @@ export default {
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        sidebar: 'hsl(var(--background))',
+        'sidebar-foreground': 'hsl(var(--foreground))',
+        'sidebar-border': 'hsl(var(--border))',
+        'sidebar-ring': 'hsl(var(--ring))',
+        'sidebar-accent': 'hsl(var(--accent))',
+        'sidebar-accent-foreground': 'hsl(var(--accent-foreground))',
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
