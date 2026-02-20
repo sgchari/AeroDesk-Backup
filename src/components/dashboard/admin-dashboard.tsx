@@ -1,16 +1,16 @@
 
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ShieldCheck, Users, Plane, Briefcase, GanttChartSquare } from "lucide-react";
 import { StatsCard } from "./shared/stats-card";
 import { StatsGrid } from "./shared/stats-grid";
 import { AuditLog } from "@/lib/types";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where, orderBy, limit } from "firebase/firestore";
 
@@ -73,7 +73,7 @@ export function AdminDashboard() {
             <StatsCard title="Active Users" href="/dashboard/admin/users" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeUsers.toString()} icon={Users} description="Across all roles" />
             <StatsCard title="Operators" href="/dashboard/admin/operators" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.operators.toString()} icon={Plane} description="Verified NSOP operators" />
             <StatsCard title="Partners" href="/dashboard/admin/partners" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.partners.toString()} icon={Briefcase} description="Hotels & Distributors" />
-            <StatsCard title="Active RFQs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeRfqs.toString()} icon={GanttChartSquare} description="Open for bidding" />
+            <StatsCard title="Active RFQs" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeRfqs.toString()} icon={GanttChartSquare} description="Open for bidding" />
         </StatsGrid>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
