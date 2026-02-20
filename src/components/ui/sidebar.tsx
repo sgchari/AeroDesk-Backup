@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -650,9 +651,12 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean
   }
 >(({ className, showIcon = false, ...props }, ref) => {
-  // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
+  const [width, setWidth] = React.useState<string | undefined>(undefined)
+
+  React.useEffect(() => {
+    // This effect runs only on the client, after the initial render,
+    // which prevents a hydration mismatch.
+    setWidth(`${Math.floor(Math.random() * 40) + 50}%`)
   }, [])
 
   return (
@@ -673,7 +677,9 @@ const SidebarMenuSkeleton = React.forwardRef<
         data-sidebar="menu-skeleton-text"
         style={
           {
-            "--skeleton-width": width,
+            // Use a default width on the server and during the initial client render.
+            // The random width is applied only on the client after hydration.
+            "--skeleton-width": width ?? "85%",
           } as React.CSSProperties
         }
       />
