@@ -27,7 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
 import type { UserRole } from '@/lib/types';
 import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { doc } from 'firebase/firestore';
 
 const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
@@ -75,6 +75,7 @@ export default function RegisterPage() {
         const user = userCredential.user;
 
         await updateProfile(user, { displayName: data.name });
+        await sendEmailVerification(user);
 
         const [firstName, ...lastNameParts] = data.name.split(' ');
         const lastName = lastNameParts.join(' ');
@@ -147,7 +148,7 @@ export default function RegisterPage() {
         
         toast({
             title: "Registration Successful!",
-            description: "You can now log in with your credentials.",
+            description: "A verification email has been sent. Please check your inbox.",
         });
         router.push('/login');
     } catch (error: any) {
