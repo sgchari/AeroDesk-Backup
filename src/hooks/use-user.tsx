@@ -33,8 +33,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setProfileError(null);
       const uid = authUser.uid;
 
-      // Defines the mapping from a user role to its Firestore collection.
-      // Note: 'CTD Admin' and other CTD roles are handled separately as they are in a subcollection.
       const roleCollections: { [key in UserRole]?: string } = {
         'Admin': 'platformAdmins',
         'Customer': 'customers',
@@ -50,8 +48,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
           const docRef = doc(firestore, collectionName, uid);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            // The role is implicit from the collection it was found in.
-            // We add it to the user object for use throughout the app.
             const profileData = { ...docSnap.data(), id: uid, role: role as UserRole } as AppUser;
             setAppUser(profileData);
             setProfileLoading(false);
@@ -60,16 +56,24 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }
 
         // 2. If not found, check for a CTD User profile in the 'users' subcollection group.
-        // This query is efficient as it searches across all `corporateTravelDesks/*/users`.
-        const ctdUsersQuery = query(collectionGroup(firestore, 'users'), where('externalAuthId', '==', uid));
-        const ctdUsersSnap = await getDocs(ctdUsersQuery);
-        if (!ctdUsersSnap.empty) {
-          const userDoc = ctdUsersSnap.docs[0];
-          // The role is part of the document data for CTD users.
-          const profileData = { ...userDoc.data(), id: uid } as AppUser;
-          setAppUser(profileData);
-          setProfileLoading(false);
-          return;
+        try {
+            const ctdUsersQuery = query(collectionGroup(firestore, 'users'), where('externalAuthId', '==', uid));
+            const ctdUsersSnap = await getDocs(ctdUsersQuery);
+            if (!ctdUsersSnap.empty) {
+              const userDoc = ctdUsersSnap.docs[0];
+              const profileData = { ...userDoc.data(), id: uid } as AppUser;
+              setAppUser(profileData);
+              setProfileLoading(false);
+              return;
+            }
+        } catch (e: any) {
+            // This permission error is expected for non-admin users who don't have
+            // access to the collection group. We can ignore it and proceed.
+            if (e.code === 'permission-denied') {
+                console.warn("Permission denied for CTD user search, this is expected for non-admin roles.");
+            } else {
+                throw e; // Re-throw other unexpected errors
+            }
         }
         
         // 3. If no profile is found in any designated collection.
