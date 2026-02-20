@@ -72,19 +72,16 @@ export function useCollection<T = any>(
         setIsLoading(false);
       },
       (error: FirestoreError) => {
-        let path = 'unknown-path';
-        try {
-            // This is a safe way to get the path for most queries, but will fail for collectionGroup queries
-            if (memoizedTargetRefOrQuery.type === 'collection') {
-                path = (memoizedTargetRefOrQuery as CollectionReference).path;
-            } else if ((memoizedTargetRefOrQuery as any)._query?.path) {
-                path = (memoizedTargetRefOrQuery as any)._query.path.canonicalString();
-            } else {
-                path = 'collectionGroup-query';
-            }
-        } catch (e) {
-            // If path extraction fails, we still proceed with a placeholder path
-            console.warn("Could not determine query path for error reporting.", e);
+        let path: string;
+        // A CollectionReference has a .path property.
+        // A Query does not have a public path property, so we must differentiate.
+        if (memoizedTargetRefOrQuery.type === 'collection') {
+            path = (memoizedTargetRefOrQuery as CollectionReference).path;
+        } else {
+            // This is a more complex query (e.g., with where, orderBy, or collectionGroup).
+            // There's no universal, public property on a Query object to get its path.
+            // Using a placeholder is the safest option to avoid relying on internal, unstable properties.
+            path = '[Unavailable for complex query]';
         }
 
         const contextualError = new FirestorePermissionError({
