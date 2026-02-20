@@ -7,16 +7,18 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
-function FullScreenSection({ imageUrl, imageHint, children, className }: { imageUrl: string, imageHint: string, children: React.ReactNode, className?: string }) {
+function FullScreenSection({ imageUrl, imageHint, children, className }: { imageUrl?: string, imageHint?: string, children: React.ReactNode, className?: string }) {
   return (
     <section className={cn("relative w-full min-h-screen flex flex-col justify-center items-center py-12 md:py-24 lg:py-32", className)}>
-      <Image
-        src={imageUrl}
-        alt="Background"
-        fill
-        className="object-cover"
-        data-ai-hint={imageHint}
-      />
+      {imageUrl && (
+        <Image
+          src={imageUrl}
+          alt="Background"
+          fill
+          className="object-cover"
+          data-ai-hint={imageHint || ''}
+        />
+      )}
       <div className="absolute inset-0 bg-black/60" />
       <div className="container relative z-10 mx-auto px-4 md:px-6">
         {children}
@@ -27,8 +29,8 @@ function FullScreenSection({ imageUrl, imageHint, children, className }: { image
 
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero-1');
-  const featuresImage = PlaceHolderImages.find(img => img.id === 'landing-hero-2');
+  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
+  const featuresImage = PlaceHolderImages.find(img => img.id === 'landing-features');
   
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -49,7 +51,7 @@ export default function Home() {
       </header>
       <main className="flex-1">
         
-        <FullScreenSection imageUrl={heroImage?.imageUrl || ''} imageHint={heroImage?.imageHint || 'jet interior'}>
+        <FullScreenSection imageUrl={heroImage?.imageUrl} imageHint={heroImage?.imageHint}>
             <div className="text-center">
               <div className="bg-black/30 backdrop-blur-xl p-6 rounded-lg max-w-3xl mx-auto">
                   <h1 className="font-headline text-xl font-bold tracking-tight text-primary-foreground sm:text-2xl md:text-3xl">
@@ -67,7 +69,7 @@ export default function Home() {
             </div>
         </FullScreenSection>
 
-        <FullScreenSection imageUrl={featuresImage?.imageUrl || ''} imageHint={featuresImage?.imageHint || 'jet exterior'}>
+        <FullScreenSection imageUrl={featuresImage?.imageUrl} imageHint={featuresImage?.imageHint}>
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-3">
               <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-primary">
