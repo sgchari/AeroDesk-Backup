@@ -20,6 +20,21 @@ export type User = {
   updatedAt: string;
 };
 
+export type Operator = {
+  id: string;
+  externalAuthId: string;
+  companyName: string;
+  nsopLicenseNumber: string;
+  contactPersonName: string;
+  contactEmail: string;
+  contactPhone?: string;
+  address?: string;
+  status: 'Pending Approval' | 'Approved' | 'Suspended' | 'Rejected';
+  mouAcceptedAt: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type RfqStatus =
   | 'Draft'
   | 'Submitted'

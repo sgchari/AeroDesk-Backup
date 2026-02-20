@@ -71,7 +71,7 @@ export function AdminDashboard() {
         <StatsGrid>
             <StatsCard title="Pending Approvals" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingApprovals.toString()} icon={ShieldCheck} description="Items awaiting review" />
             <StatsCard title="Active Users" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeUsers.toString()} icon={Users} description="Across all roles" />
-            <StatsCard title="Operators" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.operators.toString()} icon={Plane} description="Verified NSOP operators" />
+            <StatsCard title="Operators" href="/dashboard/admin/operators" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.operators.toString()} icon={Plane} description="Verified NSOP operators" />
             <StatsCard title="Partners" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.partners.toString()} icon={Briefcase} description="Hotels & Distributors" />
             <StatsCard title="Active RFQs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeRfqs.toString()} icon={GanttChartSquare} description="Open for bidding" />
         </StatsGrid>
