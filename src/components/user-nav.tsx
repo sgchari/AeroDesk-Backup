@@ -17,6 +17,7 @@ import { signOut } from 'firebase/auth';
 import { User as UserIcon, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from './ui/skeleton';
+import Link from 'next/link';
 
 export function UserNav() {
   const { user, isLoading } = useUser();
@@ -39,8 +40,10 @@ export function UserNav() {
   const name = `${user.firstName} ${user.lastName}`;
   const getInitials = (name: string) => {
     const names = name.split(' ');
-    if (names.length === 0 || names[0] === '') return '?';
-    return names.map((n) => n[0]).join('');
+    if (names.length === 0 || !names[0]) return '?';
+    const firstInitial = names[0][0];
+    const lastInitial = names.length > 1 ? names[names.length - 1][0] : '';
+    return `${firstInitial}${lastInitial}`.toUpperCase();
   };
 
   return (
@@ -64,10 +67,12 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <UserIcon className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-          </DropdownMenuItem>
+          <Link href="/dashboard/profile" passHref>
+            <DropdownMenuItem>
+              <UserIcon className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>

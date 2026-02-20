@@ -100,19 +100,19 @@ export default function RegisterPage() {
                 break;
             case 'Customer':
                 collectionPath = 'customers';
-                userProfileData = { ...commonData, id: user.uid, type: 'Individual' };
+                userProfileData = { ...commonData, id: user.uid, type: 'Individual', firstName, lastName: lastName || 'User' };
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval' };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval' };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval' };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
                 break;
             case 'CTD Admin':
                 // For CTD Admin, we create a new CorporateTravelDesk and a CTDUser
@@ -135,6 +135,8 @@ export default function RegisterPage() {
                     ctdId: ctdId,
                     role: 'Corporate Admin',
                     status: 'Active',
+                    firstName,
+                    lastName: lastName || 'User',
                     createdAt: now,
                     updatedAt: now,
                 };
