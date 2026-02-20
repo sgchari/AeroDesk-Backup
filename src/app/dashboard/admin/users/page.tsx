@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking, deleteDocumentNonBlocking, errorEmitter, FirestorePermissionError } from "@/firebase";
 import { UserRole } from "@/lib/types";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
@@ -80,9 +80,16 @@ export default function UserManagementPage() {
                     });
                 });
                 setCtdUsers(allUsersData);
-            } catch (error) {
-                console.error("Error fetching CTD users:", error);
-                // Not setting an error state to avoid UI disruption, but logging it.
+            } catch (error: any) {
+                if (error.code === 'permission-denied') {
+                    const contextualError = new FirestorePermissionError({
+                        path: 'corporateTravelDesks/[ctdId]/users', // Generic path as we don't know which one failed
+                        operation: 'list'
+                    });
+                    errorEmitter.emit('permission-error', contextualError);
+                } else {
+                    console.error("Error fetching CTD users:", error);
+                }
             } finally {
                 setCtdUsersLoading(false);
             }

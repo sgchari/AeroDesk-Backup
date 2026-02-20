@@ -1,7 +1,8 @@
+
 'use client';
 
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { useUser as useFirebaseAuthUser, useFirestore } from '@/firebase';
+import { useUser as useFirebaseAuthUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
 import type { User as AppUser, UserRole } from '@/lib/types';
 import { doc, getDoc, collectionGroup, query, where, getDocs } from 'firebase/firestore';
 
@@ -93,6 +94,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
         throw new Error("User profile not found. Please complete your registration or contact support.");
 
       } catch (e: any) {
+        if (e.code === 'permission-denied') {
+            const contextualError = new FirestorePermissionError({
+                path: '[unknown during profile fetch]',
+                operation: 'get' // or list
+            });
+            errorEmitter.emit('permission-error', contextualError);
+        }
         console.error("Error fetching user profile:", e);
         setProfileError(e);
         setAppUser(null);
