@@ -19,6 +19,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
+import { useAuth } from '@/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -30,6 +32,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const auth = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -40,12 +43,20 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    // Mock login logic
-    toast({
-      title: 'Login Successful!',
-      description: 'Redirecting to your dashboard...',
-    });
-    router.push('/dashboard');
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      toast({
+        title: 'Login Successful!',
+        description: 'Redirecting to your dashboard...',
+      });
+      router.push('/dashboard');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: error.message || 'An unexpected error occurred.',
+      });
+    }
   };
 
   return (

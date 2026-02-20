@@ -26,6 +26,9 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
 import type { UserRole } from '@/lib/types';
+import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc } from 'firebase/firestore';
 
 const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
 
@@ -45,6 +48,8 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const auth = useAuth();
+  const firestore = useFirestore();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -57,12 +62,30 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
-    // Mock registration
-    toast({
-        title: "Registration Successful!",
-        description: "You can now log in with your credentials.",
-    });
-    router.push('/login');
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+        const user = userCredential.user;
+
+        await updateProfile(user, { displayName: data.name });
+
+        // For this step, we are only creating the user in Firebase Auth.
+        // A full implementation would create a corresponding user profile in Firestore.
+        // Example:
+        // const userDocRef = doc(firestore, 'users', user.uid);
+        // setDocumentNonBlocking(userDocRef, { role: data.role, name: data.name }, { merge: true });
+
+        toast({
+            title: "Registration Successful!",
+            description: "You can now log in with your credentials.",
+        });
+        router.push('/login');
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Registration Failed",
+            description: error.message,
+        });
+    }
   };
 
   return (

@@ -1,11 +1,12 @@
 'use client';
 
 import React, { createContext, useContext, useMemo, ReactNode, useState } from 'react';
-import type { User, UserRole } from '@/lib/types';
+import { useUser as useFirebaseAuthUser } from '@/firebase'; // Renamed to avoid conflict
+import type { User as AppUser, UserRole } from '@/lib/types';
 import { getMockDataForRole } from '@/lib/data';
 
 interface UserContextType {
-  user: User | null;
+  user: AppUser | null;
   isLoading: boolean;
   error: Error | null;
   setUserRole: (role: UserRole) => void;
@@ -15,30 +16,44 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
+  const { user: authUser, isUserLoading, userError } = useFirebaseAuthUser();
   const [role, setRole] = useState<UserRole>('Admin');
 
+  // The user object now combines real auth data with mock profile data for the demo.
   const user = useMemo(() => {
-    const { users } = getMockDataForRole(role);
-    const mockUser = users.find(u => u.role === role);
-    if(mockUser) return mockUser;
+    if (!authUser) return null;
 
-    // Fallback
+    const mockUserForRole = getMockDataForRole(role).users.find(u => u.role === role);
+
+    if (mockUserForRole) {
+      return {
+        ...mockUserForRole,
+        id: authUser.uid,
+        email: authUser.email || mockUserForRole.email,
+        firstName: authUser.displayName?.split(' ')[0] || mockUserForRole.firstName,
+        lastName: authUser.displayName?.split(' ')[1] || mockUserForRole.lastName,
+        avatar: authUser.photoURL || mockUserForRole.avatar,
+        role, // The role is determined by the switcher
+      };
+    }
+
+    // Fallback if no specific mock user for the role
     return {
-        id: 'mock-user-01',
-        email: 'mock.user@example.com',
+        id: authUser.uid,
+        email: authUser.email || 'user@example.com',
         firstName: role,
         lastName: 'User',
         role: role,
         status: 'Active',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-    }
-  }, [role]);
+    } as AppUser;
+  }, [authUser, role]);
 
   const value = {
     user,
-    isLoading: false,
-    error: null,
+    isLoading: isUserLoading,
+    error: userError,
     setUserRole: setRole,
     availableRoles: getMockDataForRole('Admin').users.map(u => u.role) as UserRole[],
   };
