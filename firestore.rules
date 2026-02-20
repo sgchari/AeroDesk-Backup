@@ -24,7 +24,9 @@ service cloud.firestore {
     //-------------------------------------------------------------------------
 
     match /{path=**}/quotations/{quotationId} {
-      allow read: if isPlatformAdmin() || isOwner(resource.data.operatorId) || isRfqOwner(resource.data.rfqId);
+      // This rule supports collection group queries. It CANNOT use `get()` or `exists()`.
+      // This allows an operator to query for their own quotations across all RFQs.
+      allow read: if isPlatformAdmin() || isOwner(resource.data.operatorId);
     }
 
     //-------------------------------------------------------------------------
@@ -325,8 +327,8 @@ service cloud.firestore {
       allow get: if isSignedIn();
       allow list: if isSignedIn();
       allow create: if isOwner(request.resource.data.requesterExternalAuthId);
-      allow update: if isOwner(resource.data.requesterExternalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
-      allow delete: if isOwner(resource.data.requesterExternalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      allow update: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
 
       /**
        * @description Manages quotations submitted by operators for an RFQ.
@@ -336,6 +338,10 @@ service cloud.firestore {
        * @principle Enforces confidentiality between competing bidders (operators) while allowing the RFQ owner to see all bids.
        */
       match /quotations/{quotationId} {
+        // This specific path allows get() for checking ownership of the parent RFQ.
+        // It allows the RFQ owner to see all quotations for their RFQ.
+        allow get: if isPlatformAdmin() || isRfqOwner(rfqId) || isOwner(resource.data.operatorId);
+        allow list: if isPlatformAdmin() || isRfqOwner(rfqId);
         allow create: if isOwner(request.resource.data.operatorId) && request.resource.data.rfqId == rfqId;
         allow update: if isOwner(resource.data.operatorId) && isExistingDoc() && request.resource.data.rfqId == resource.data.rfqId;
         allow delete: if isOwner(resource.data.operatorId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
@@ -380,9 +386,9 @@ service cloud.firestore {
      * @principle Secures requests between the requester and the assigned hotel partner.
      */
     match /accommodationRequests/{accommodationRequestId} {
-      allow read: if isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
+      allow read: if isPlatformAdmin() || isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId));
       allow create: if isOwner(request.resource.data.requesterExternalAuthId);
-      allow update: if (isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      allow update: if (isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId)) || isPlatformAdmin()) && isExistingDoc();
       allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
     }
     
