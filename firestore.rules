@@ -393,18 +393,25 @@ service cloud.firestore {
     }
     
     /**
-     * @description Manages accommodation requests for flight crew.
+     * @description Manages accommodation requests for flight crew. Secured by checking against the UID of the operator or hotel partner stored on the document.
      * @path /crewAccommodationRequests/{crewAccommodationRequestId}
-     * @allow (create) An operator creating a hotel request for their crew.
-     * @deny (get) A customer viewing a crew accommodation request.
-     * @principle Secures requests between the operator and the assigned hotel partner.
+     * @allow (read) An operator, hotel partner, or admin can read if their UID is on the document.
+     * @deny (create) Anyone but the Operator assigned to the request trying to create it.
+     * @principle Secures requests between the operator and the assigned hotel partner by checking denormalized UIDs, avoiding costly and insecure `get` calls.
      */
     match /crewAccommodationRequests/{crewAccommodationRequestId} {
-      allow get: if isOwner(get(/databases/$(database)/documents/operators/$(resource.data.operatorId)).data.externalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin();
-      allow list: if isPlatformAdmin();
-      allow create: if isOwner(get(/databases/$(database)/documents/operators/$(request.resource.data.operatorId)).data.externalAuthId);
-      allow update: if (isOwner(get(/databases/$(database)/documents/operators/$(resource.data.operatorId)).data.externalAuthId) || isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(get(/databases/$(database)/documents/operators/$(resource.data.operatorId)).data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      allow read: if isPlatformAdmin()
+                    || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)
+                    || (resource.data.hotelPartnerId != null && request.auth.uid == resource.data.hotelPartnerId);
+
+      allow create: if request.auth.uid == request.resource.data.operatorId;
+
+      allow update: if (isPlatformAdmin()
+                    || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)
+                    || (resource.data.hotelPartnerId != null && request.auth.uid == resource.data.hotelPartnerId))
+                    && isExistingDoc();
+
+      allow delete: if (isPlatformAdmin() || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)) && isExistingDoc();
     }
 
     //-------------------------------------------------------------------------
