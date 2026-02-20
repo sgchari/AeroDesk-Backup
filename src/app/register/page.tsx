@@ -28,7 +28,7 @@ import { Logo } from '@/components/logo';
 import type { UserRole } from '@/lib/types';
 import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
-import { doc } from 'firebase/firestore';
+import { doc, collection } from 'firebase/firestore';
 
 const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
 
@@ -75,7 +75,8 @@ export default function RegisterPage() {
         const user = userCredential.user;
 
         await updateProfile(user, { displayName: data.name });
-        await sendEmailVerification(user);
+        // Not waiting for email verification to complete
+        sendEmailVerification(user);
 
         const [firstName, ...lastNameParts] = data.name.split(' ');
         const lastName = lastNameParts.join(' ');
@@ -101,10 +102,65 @@ export default function RegisterPage() {
             case 'Customer':
                 collectionPath = 'customers';
                 userProfileData = { ...commonData, id: user.uid, type: 'Individual', firstName, lastName: lastName || 'User' };
+
+                // Seed a sample RFQ
+                const rfqCollectionRef = collection(firestore, 'charterRFQs');
+                const rfqId = doc(rfqCollectionRef).id;
+                const sampleRfq = {
+                    id: rfqId,
+                    customerId: user.uid,
+                    customerName: data.name,
+                    tripType: 'Onward',
+                    departure: 'Mumbai (VABB)',
+                    arrival: 'Goa (VOGO)',
+                    departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // a week from now
+                    pax: 4,
+                    aircraftType: 'Any Light Jet',
+                    status: 'Bidding Open',
+                    createdAt: now,
+                    bidsCount: 0,
+                };
+                setDocumentNonBlocking(doc(rfqCollectionRef, rfqId), sampleRfq, { merge: true });
                 break;
             case 'Operator':
                 collectionPath = 'operators';
                 userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
+                
+                // Seed a sample aircraft
+                const aircraftCollectionRef = collection(firestore, 'operators', user.uid, 'aircrafts');
+                const aircraftId = doc(aircraftCollectionRef).id;
+                const sampleAircraft = {
+                    id: aircraftId,
+                    operatorId: user.uid,
+                    name: 'Citation XLS+',
+                    model: 'Citation XLS+',
+                    type: 'Mid-size Jet',
+                    tailNumber: 'VT-XYZ',
+                    registration: 'VT-XYZ',
+                    seatingCapacity: 8,
+                    paxCapacity: 8,
+                    homeBase: 'VABB',
+                    status: 'Active'
+                };
+                setDocumentNonBlocking(doc(aircraftCollectionRef, aircraftId), sampleAircraft, { merge: true });
+
+                // Seed a sample approved empty leg from this operator
+                const emptyLegsCollectionRef = collection(firestore, 'emptyLegs');
+                const emptyLegId = doc(emptyLegsCollectionRef).id;
+                const sampleEmptyLeg = {
+                    id: emptyLegId,
+                    operatorId: user.uid,
+                    aircraftId: aircraftId,
+                    departure: 'Delhi (VIDP)',
+                    arrival: 'Jaipur (VIJP)',
+                    departureTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days from now
+                    availableSeats: 6,
+                    status: 'Approved',
+                    adminApprovalStatus: 'Approved',
+                    createdAt: now,
+                    updatedAt: now,
+                };
+                setDocumentNonBlocking(doc(emptyLegsCollectionRef, emptyLegId), sampleEmptyLeg, { merge: true });
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
@@ -113,6 +169,37 @@ export default function RegisterPage() {
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
                 userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
+                
+                // Seed a sample property and room category
+                const propertiesCollectionRef = collection(firestore, 'hotelPartners', user.uid, 'properties');
+                const propertyId = doc(propertiesCollectionRef).id;
+                const sampleProperty = {
+                    id: propertyId,
+                    hotelPartnerId: user.uid,
+                    name: 'The Grand Lighthouse',
+                    address: '123 Ocean View Drive',
+                    city: 'Mumbai',
+                    country: 'India',
+                    status: 'Active',
+                    createdAt: now,
+                    updatedAt: now
+                };
+                setDocumentNonBlocking(doc(propertiesCollectionRef, propertyId), sampleProperty, { merge: true });
+
+                const roomCategoriesCollectionRef = collection(firestore, `hotelPartners/${user.uid}/properties/${propertyId}/roomCategories`);
+                const roomCategoryId = doc(roomCategoriesCollectionRef).id;
+                const sampleRoomCategory = {
+                    id: roomCategoryId,
+                    propertyId: propertyId,
+                    name: 'Ocean View Suite',
+                    description: 'A luxurious suite with a stunning view of the Arabian Sea.',
+                    maxOccupancy: 2,
+                    baseRateMin: 15000,
+                    baseRateMax: 25000,
+                    createdAt: now,
+                    updatedAt: now
+                };
+                setDocumentNonBlocking(doc(roomCategoriesCollectionRef, roomCategoryId), sampleRoomCategory, { merge: true });
                 break;
             case 'CTD Admin':
                 // For CTD Admin, we create a new CorporateTravelDesk and a CTDUser
@@ -129,10 +216,12 @@ export default function RegisterPage() {
                 setDocumentNonBlocking(ctdDocRef, ctdData, { merge: true });
                 
                 collectionPath = `corporateTravelDesks/${ctdId}/users`;
+                docId = user.uid; // The admin user's doc id is their own uid
                 userProfileData = {
                     id: user.uid,
                     externalAuthId: user.uid,
                     ctdId: ctdId,
+                    email: user.email,
                     role: 'Corporate Admin',
                     status: 'Active',
                     firstName,
@@ -140,6 +229,23 @@ export default function RegisterPage() {
                     createdAt: now,
                     updatedAt: now,
                 };
+
+                // Seed a second 'Requester' user for the same corporate desk
+                const ctdUsersCollectionRef = collection(firestore, `corporateTravelDesks/${ctdId}/users`);
+                const requesterId = doc(ctdUsersCollectionRef).id;
+                const requesterData = {
+                    id: requesterId,
+                    externalAuthId: `requester_${requesterId}`, // dummy auth id
+                    ctdId: ctdId,
+                    email: 'employee@example.com',
+                    role: 'Requester',
+                    status: 'Active',
+                    firstName: 'Rahul',
+                    lastName: 'Verma',
+                    createdAt: now,
+                    updatedAt: now,
+                };
+                setDocumentNonBlocking(doc(ctdUsersCollectionRef, requesterId), requesterData, { merge: true });
                 break;
         }
 
