@@ -1,7 +1,7 @@
 
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
-import { CreateRfqDialog } from "./customer/create-rfq-dialog";
+import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +9,8 @@ import type { CharterRFQ, RfqStatus, EmptyLeg } from "@/lib/types";
 import { MoreHorizontal, FileText, Clock, CheckCircle, Plane, Hotel } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { StatsCard } from "./shared/stats-card";
-import { StatsGrid } from "./shared/stats-grid";
+import { StatsCard } from "@/components/dashboard/shared/stats-card";
+import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
