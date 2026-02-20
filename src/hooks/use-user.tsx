@@ -21,8 +21,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [profileError, setProfileError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (isAuthLoading || !firestore) return;
-    if (!authUser) {
+    if (isAuthLoading) {
+      setProfileLoading(true);
+      return;
+    }
+    if (!authUser || !firestore) {
       setAppUser(null);
       setProfileLoading(false);
       return;
@@ -33,50 +36,48 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setProfileError(null);
       const uid = authUser.uid;
 
-      const roleCollections: { [key in UserRole]?: string } = {
-        'Admin': 'platformAdmins',
-        'Customer': 'customers',
-        'Operator': 'operators',
-        'Authorized Distributor': 'distributors',
-        'Hotel Partner': 'hotelPartners',
-      };
+      // Define collections to search in order of likelihood
+      const collectionsToSearch: Array<{ name: string, role: UserRole }> = [
+        { name: 'platformAdmins', role: 'Admin' },
+        { name: 'customers', role: 'Customer' },
+        { name: 'operators', role: 'Operator' },
+        { name: 'distributors', role: 'Authorized Distributor' },
+        { name: 'hotelPartners', role: 'Hotel Partner' },
+      ];
 
       try {
-        // 1. Check standard top-level collections for user profile
-        for (const [role, collectionName] of Object.entries(roleCollections)) {
-          if (!collectionName) continue;
-          const docRef = doc(firestore, collectionName, uid);
+        // 1. Check standard top-level collections first.
+        for (const { name, role } of collectionsToSearch) {
+          const docRef = doc(firestore, name, uid);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            const profileData = { ...docSnap.data(), id: uid, role: role as UserRole } as AppUser;
+            const profileData = { ...docSnap.data(), id: uid, role: role } as AppUser;
             setAppUser(profileData);
             setProfileLoading(false);
-            return;
+            return; // Profile found, we're done.
           }
         }
 
-        // 2. If not found, check for a CTD User profile in the 'users' subcollection group.
+        // 2. If not found, check if it's a CTD User (this query can fail for non-admins).
         try {
-            const ctdUsersQuery = query(collectionGroup(firestore, 'users'), where('externalAuthId', '==', uid));
-            const ctdUsersSnap = await getDocs(ctdUsersQuery);
-            if (!ctdUsersSnap.empty) {
-              const userDoc = ctdUsersSnap.docs[0];
-              const profileData = { ...userDoc.data(), id: uid } as AppUser;
-              setAppUser(profileData);
-              setProfileLoading(false);
-              return;
-            }
+          const ctdUsersQuery = query(collectionGroup(firestore, 'users'), where('externalAuthId', '==', uid));
+          const ctdUsersSnap = await getDocs(ctdUsersQuery);
+          if (!ctdUsersSnap.empty) {
+            const userDoc = ctdUsersSnap.docs[0];
+            const profileData = { ...userDoc.data(), id: uid } as AppUser;
+            setAppUser(profileData);
+            setProfileLoading(false);
+            return; // Profile found, we're done.
+          }
         } catch (e: any) {
-            // This permission error is expected for non-admin users who don't have
-            // access to the collection group. We can ignore it and proceed.
-            if (e.code === 'permission-denied') {
-                console.warn("Permission denied for CTD user search, this is expected for non-admin roles.");
-            } else {
-                throw e; // Re-throw other unexpected errors
-            }
+          if (e.code !== 'permission-denied') {
+            throw e; // Re-throw unexpected errors.
+          }
+          // This permission error is expected for non-admin users. We can ignore it and proceed.
+          console.warn("Permission denied for CTD user search; this is expected for non-CTD/non-admin roles.");
         }
         
-        // 3. If no profile is found in any designated collection.
+        // 3. If we've reached here, the profile was not found in any location.
         throw new Error("User profile not found. Please complete your registration or contact support.");
 
       } catch (e: any) {
