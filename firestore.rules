@@ -410,7 +410,7 @@ service cloud.firestore {
     match /platformAdmins/{adminId} {
       allow get: if isSignedIn();
       allow list: if isPlatformAdmin();
-      allow create: if isPlatformAdmin() && request.auth.uid != adminId; // Admins can add other admins
+      allow create: if isOwner(adminId) && request.resource.data.externalAuthId == request.auth.uid;
       allow update: if isOwner(adminId); // Admins can update their own info
       allow delete: if isPlatformAdmin() && request.auth.uid != adminId;
     }

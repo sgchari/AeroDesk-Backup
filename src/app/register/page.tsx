@@ -62,18 +62,89 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
+    if (!firestore) {
+        toast({
+            variant: "destructive",
+            title: "Registration Failed",
+            description: "Database service is not available.",
+        });
+        return;
+    }
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
         const user = userCredential.user;
 
         await updateProfile(user, { displayName: data.name });
 
-        // For this step, we are only creating the user in Firebase Auth.
-        // A full implementation would create a corresponding user profile in Firestore.
-        // Example:
-        // const userDocRef = doc(firestore, 'users', user.uid);
-        // setDocumentNonBlocking(userDocRef, { role: data.role, name: data.name }, { merge: true });
+        const [firstName, ...lastNameParts] = data.name.split(' ');
+        const lastName = lastNameParts.join(' ');
+        const now = new Date().toISOString();
+        
+        let collectionPath = '';
+        let docId = user.uid;
+        let userProfileData: any = {};
+        
+        const commonData = {
+            externalAuthId: user.uid,
+            email: user.email,
+            status: 'Active',
+            createdAt: now,
+            updatedAt: now,
+        };
 
+        switch (data.role) {
+            case 'Admin':
+                collectionPath = 'platformAdmins';
+                userProfileData = { ...commonData, id: user.uid, firstName, lastName: lastName || 'User' };
+                break;
+            case 'Customer':
+                collectionPath = 'customers';
+                userProfileData = { ...commonData, id: user.uid, type: 'Individual' };
+                break;
+            case 'Operator':
+                collectionPath = 'operators';
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval' };
+                break;
+            case 'Authorized Distributor':
+                collectionPath = 'distributors';
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval' };
+                break;
+            case 'Hotel Partner':
+                collectionPath = 'hotelPartners';
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval' };
+                break;
+            case 'CTD Admin':
+                // For CTD Admin, we create a new CorporateTravelDesk and a CTDUser
+                const ctdId = `ctd_${user.uid}`;
+                const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);
+                const ctdData = {
+                    id: ctdId,
+                    companyName: `${data.name}'s Corp`,
+                    adminExternalAuthId: user.uid,
+                    status: 'Active',
+                    createdAt: now,
+                    updatedAt: now,
+                };
+                setDocumentNonBlocking(ctdDocRef, ctdData, { merge: true });
+                
+                collectionPath = `corporateTravelDesks/${ctdId}/users`;
+                userProfileData = {
+                    id: user.uid,
+                    externalAuthId: user.uid,
+                    ctdId: ctdId,
+                    role: 'Corporate Admin',
+                    status: 'Active',
+                    createdAt: now,
+                    updatedAt: now,
+                };
+                break;
+        }
+
+        if (collectionPath && Object.keys(userProfileData).length > 0) {
+            const userDocRef = doc(firestore, collectionPath, docId);
+            setDocumentNonBlocking(userDocRef, userProfileData, { merge: true });
+        }
+        
         toast({
             title: "Registration Successful!",
             description: "You can now log in with your credentials.",
