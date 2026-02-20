@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
 import { UserRole } from "@/lib/types";
-import { collection, collectionGroup, doc } from "firebase/firestore";
+import { collection, doc, getDocs } from "firebase/firestore";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -41,7 +41,56 @@ export default function UserManagementPage() {
     const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]));
     const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]));
     const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]));
-    const { data: ctdUsers, isLoading: ctdUsersLoading } = useCollection(useMemoFirebase(() => firestore ? collectionGroup(firestore, 'users') : null, [firestore]));
+    
+    const { data: ctds, isLoading: ctdsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]));
+    const [ctdUsers, setCtdUsers] = useState<any[]>([]);
+    const [ctdUsersLoading, setCtdUsersLoading] = useState(true);
+
+    useEffect(() => {
+        // This effect replaces the collectionGroup query to avoid security rule limitations.
+        // It fetches users from each corporate travel desk individually.
+        if (!firestore || ctds === null) {
+            if (!ctdsLoading) {
+                setCtdUsers([]);
+                setCtdUsersLoading(false);
+            }
+            return;
+        }
+
+        if (ctds.length === 0) {
+            setCtdUsers([]);
+            setCtdUsersLoading(false);
+            return;
+        }
+
+        const fetchAllCtdUsers = async () => {
+            if (!firestore) return;
+            setCtdUsersLoading(true);
+            try {
+                const allUsersPromises = ctds.map(ctd => {
+                    const usersCollectionRef = collection(firestore, `corporateTravelDesks/${ctd.id}/users`);
+                    return getDocs(usersCollectionRef);
+                });
+
+                const allUsersSnapshots = await Promise.all(allUsersPromises);
+                const allUsersData: any[] = [];
+                allUsersSnapshots.forEach(snapshot => {
+                    snapshot.forEach(doc => {
+                        allUsersData.push({ ...doc.data(), id: doc.id });
+                    });
+                });
+                setCtdUsers(allUsersData);
+            } catch (error) {
+                console.error("Error fetching CTD users:", error);
+                // Not setting an error state to avoid UI disruption, but logging it.
+            } finally {
+                setCtdUsersLoading(false);
+            }
+        };
+
+        fetchAllCtdUsers();
+    }, [ctds, firestore, ctdsLoading]);
+
 
     useEffect(() => {
         const loading = adminsLoading || customersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading || ctdUsersLoading;
@@ -82,10 +131,9 @@ export default function UserManagementPage() {
             case 'Operator': return 'operators';
             case 'Authorized Distributor': return 'distributors';
             case 'Hotel Partner': return 'hotelPartners';
-            case 'Corporate Admin':
-            case 'CTD Admin':
+            // All other roles are assumed to be CTD users.
+            default:
                 return ctdId ? `corporateTravelDesks/${ctdId}/users` : null;
-            default: return null;
         }
     };
     
