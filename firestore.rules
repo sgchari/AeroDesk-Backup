@@ -83,18 +83,18 @@ service cloud.firestore {
     //-------------------------------------------------------------------------
 
     /**
-     * @description Manages Customer profiles. Users can create, read, and update their own profile.
+     * @description Manages Customer profiles. Users can create, read, and update their own profile. Admins can manage all profiles.
      * @path /customers/{customerId}
      * @allow (create) An authenticated user creating their own customer profile.
      * @deny (update) A user trying to modify another user's customer profile.
-     * @principle Enforces self-service profile management based on document ownership.
+     * @principle Enforces self-service profile management based on document ownership, with admin override.
      */
     match /customers/{customerId} {
       allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
-      allow update: if isOwner(resource.data.externalAuthId) && isExistingDoc();
-      allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      allow delete: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
     }
 
     /**
@@ -102,14 +102,14 @@ service cloud.firestore {
      * @path /operators/{operatorId}
      * @allow (get) An operator viewing their own company profile.
      * @deny (list) Any user, including other operators, listing all operators.
-     * @principle Restricts access to an operator's own data tree.
+     * @principle Restricts access to an operator's own data tree, with admin override.
      */
     match /operators/{operatorId} {
       allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
       allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      allow delete: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
 
       /**
        * @description Manages aircraft belonging to an operator.
@@ -159,14 +159,14 @@ service cloud.firestore {
      * @path /distributors/{distributorId}
      * @allow (get) A distributor viewing their own company profile.
      * @deny (list) Any user listing all distributors.
-     * @principle Restricts access to a distributor's own data.
+     * @principle Restricts access to a distributor's own data, with admin override.
      */
     match /distributors/{distributorId} {
       allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
-      allow update: if isOwner(resource.data.externalAuthId) && isExistingDoc();
-      allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      allow delete: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
     }
     
     /**
@@ -174,14 +174,14 @@ service cloud.firestore {
      * @path /hotelPartners/{hotelPartnerId}
      * @allow (get) A hotel partner viewing their own company profile.
      * @deny (list) Any user listing all hotel partners.
-     * @principle Restricts access to a hotel partner's own data tree.
+     * @principle Restricts access to a hotel partner's own data tree, with admin override.
      */
     match /hotelPartners/{hotelPartnerId} {
       allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
-      allow update: if isOwner(resource.data.externalAuthId) && isExistingDoc();
-      allow delete: if isOwner(resource.data.externalAuthId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+      allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
+      allow delete: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
 
       /**
        * @description Manages hotel properties belonging to a Hotel Partner.
@@ -429,7 +429,7 @@ service cloud.firestore {
       allow get: if isSignedIn();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(adminId) && request.resource.data.externalAuthId == request.auth.uid;
-      allow update: if isOwner(adminId); // Admins can update their own info
+      allow update: if isOwner(adminId) || isPlatformAdmin();
       allow delete: if isPlatformAdmin() && request.auth.uid != adminId;
     }
     

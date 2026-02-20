@@ -5,14 +5,18 @@ import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
 import { UserRole } from "@/lib/types";
-import { collection } from "firebase/firestore";
+import { collection, collectionGroup, doc } from "firebase/firestore";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import Link from "next/link";
+
 
 // A normalized user type for the table
 type DisplayUser = {
@@ -22,43 +26,104 @@ type DisplayUser = {
     role: UserRole;
     status: string;
     createdAt: string;
+    ctdId?: string;
 };
 
 export default function UserManagementPage() {
     const firestore = useFirestore();
+    const { toast } = useToast();
     const [allUsers, setAllUsers] = useState<DisplayUser[]>([]);
     const [isUsersLoading, setUsersLoading] = useState(true);
+    const [userToDelete, setUserToDelete] = useState<DisplayUser | null>(null);
 
     const { data: admins, isLoading: adminsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]));
     const { data: customers, isLoading: customersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'customers') : null, [firestore]));
     const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]));
     const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]));
     const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]));
-    // Not including CTD users for now to keep it simple, as it requires a collection group query.
+    const { data: ctdUsers, isLoading: ctdUsersLoading } = useCollection(useMemoFirebase(() => firestore ? collectionGroup(firestore, 'users') : null, [firestore]));
 
     useEffect(() => {
-        const loading = adminsLoading || customersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading;
+        const loading = adminsLoading || customersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading || ctdUsersLoading;
         setUsersLoading(loading);
 
         if (!loading) {
-            const normalizedUsers: DisplayUser[] = [];
+            const userMap = new Map<string, DisplayUser>();
 
-            admins?.forEach(u => normalizedUsers.push({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Admin', status: u.status, createdAt: u.createdAt }));
-            customers?.forEach(u => normalizedUsers.push({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Customer', status: u.status, createdAt: u.createdAt }));
-            operators?.forEach(u => normalizedUsers.push({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Operator', status: u.status, createdAt: u.createdAt }));
-            distributors?.forEach(u => normalizedUsers.push({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Authorized Distributor', status: u.status, createdAt: u.createdAt }));
-            hotelPartners?.forEach(u => normalizedUsers.push({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Hotel Partner', status: u.status, createdAt: u.createdAt }));
+            const addUserToMap = (user: DisplayUser) => {
+                if (!userMap.has(user.id)) {
+                    userMap.set(user.id, user);
+                }
+            };
+            
+            admins?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Admin', status: u.status, createdAt: u.createdAt }));
+            customers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Customer', status: u.status, createdAt: u.createdAt }));
+            operators?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Operator', status: u.status, createdAt: u.createdAt }));
+            distributors?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Authorized Distributor', status: u.status, createdAt: u.createdAt }));
+            hotelPartners?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Hotel Partner', status: u.status, createdAt: u.createdAt }));
+            ctdUsers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: u.role, status: u.status, createdAt: u.createdAt, ctdId: u.ctdId }));
 
-            // Sort by creation date
+            const normalizedUsers = Array.from(userMap.values());
             normalizedUsers.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
             
             setAllUsers(normalizedUsers);
         }
 
     }, [
-        admins, customers, operators, distributors, hotelPartners,
-        adminsLoading, customersLoading, operatorsLoading, distributorsLoading, hotelPartnersLoading
+        admins, customers, operators, distributors, hotelPartners, ctdUsers,
+        adminsLoading, customersLoading, operatorsLoading, distributorsLoading, hotelPartnersLoading, ctdUsersLoading
     ]);
+    
+    const getCollectionPathFromRole = (user: DisplayUser): string | null => {
+        const { role, ctdId } = user;
+        switch (role) {
+            case 'Admin': return 'platformAdmins';
+            case 'Customer': return 'customers';
+            case 'Operator': return 'operators';
+            case 'Authorized Distributor': return 'distributors';
+            case 'Hotel Partner': return 'hotelPartners';
+            case 'Corporate Admin':
+            case 'CTD Admin':
+                return ctdId ? `corporateTravelDesks/${ctdId}/users` : null;
+            default: return null;
+        }
+    };
+    
+    const handleUpdateStatus = (user: DisplayUser, status: string) => {
+        if (!firestore) return;
+        const collectionPath = getCollectionPathFromRole(user);
+        if (!collectionPath) {
+            toast({ title: 'Error', description: 'Invalid user role for status update.', variant: 'destructive' });
+            return;
+        }
+        const userDocRef = doc(firestore, collectionPath, user.id);
+        updateDocumentNonBlocking(userDocRef, { status });
+        toast({
+            title: "User Status Updated",
+            description: `${user.name}'s status has been updated to ${status}.`,
+        });
+    };
+    
+    const handleDeleteUser = () => {
+        if (!firestore || !userToDelete) return;
+
+        const collectionPath = getCollectionPathFromRole(userToDelete);
+        if (!collectionPath) {
+            toast({ title: 'Error', description: 'Cannot delete user with invalid role.', variant: 'destructive' });
+            setUserToDelete(null);
+            return;
+        }
+        const userDocRef = doc(firestore, collectionPath, userToDelete.id);
+        
+        deleteDocumentNonBlocking(userDocRef);
+        
+        toast({
+            title: "User Deleted",
+            description: `${userToDelete.name} has been deleted. Note: This does not remove them from Firebase Authentication.`,
+        });
+        setUserToDelete(null);
+    };
+
 
     return (
         <>
@@ -108,8 +173,20 @@ export default function UserManagementPage() {
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    <DropdownMenuItem>View Profile</DropdownMenuItem>
-                                                    <DropdownMenuItem>Suspend User</DropdownMenuItem>
+                                                    <DropdownMenuItem disabled>Edit Profile</DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    {user.status === 'Suspended' ? (
+                                                        <DropdownMenuItem onClick={() => handleUpdateStatus(user, 'Active')}>
+                                                            Re-activate User
+                                                        </DropdownMenuItem>
+                                                    ) : (
+                                                        <DropdownMenuItem onClick={() => handleUpdateStatus(user, 'Suspended')}>
+                                                            Suspend User
+                                                        </DropdownMenuItem>
+                                                    )}
+                                                    <DropdownMenuItem className="text-destructive" onClick={() => setUserToDelete(user)}>
+                                                        Delete User
+                                                    </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
@@ -125,6 +202,26 @@ export default function UserManagementPage() {
                     )}
                 </CardContent>
             </Card>
+            <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the user&apos;s profile data
+                            from Firestore. It will not remove the user from Firebase Authentication.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setUserToDelete(null)}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            className="bg-destructive hover:bg-destructive/90"
+                            onClick={handleDeleteUser}
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }
