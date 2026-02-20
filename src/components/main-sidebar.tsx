@@ -22,45 +22,45 @@ import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMen
 
 const navItems = {
   Customer: [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/dashboard/charter-rfq', label: 'My Charter RFQs', icon: FileText },
+    { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/charter-rfq', label: 'My Charter RFQs', icon: FileText, color: 'text-blue-500' },
   ],
   Operator: [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/dashboard/operator/rfq-marketplace', label: 'RFQ Marketplace', icon: GanttChartSquare },
-    { href: '/dashboard/operator/fleet', label: 'My Fleet', icon: Plane },
-    { href: '/dashboard/operator/team', label: 'Manage Team', icon: Users },
-    { href: '/dashboard/operator/empty-legs', label: 'Empty Legs', icon: Plane },
+    { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/operator/rfq-marketplace', label: 'RFQ Marketplace', icon: GanttChartSquare, color: 'text-amber-500' },
+    { href: '/dashboard/operator/fleet', label: 'My Fleet', icon: Plane, color: 'text-gray-500' },
+    { href: '/dashboard/operator/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/operator/empty-legs', label: 'Empty Legs', icon: Plane, color: 'text-green-500' },
   ],
   'Authorized Distributor': [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/dashboard/distributor/empty-legs', label: 'Approved Empty Legs', icon: Plane },
-    { href: '/dashboard/distributor/team', label: 'Manage Team', icon: Users },
+    { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/distributor/empty-legs', label: 'Approved Empty Legs', icon: Plane, color: 'text-green-500' },
+    { href: '/dashboard/distributor/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
   ],
   'CTD Admin': [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/dashboard/ctd/approvals', label: 'All Requests', icon: GanttChartSquare },
-    { href: '/dashboard/ctd/policies', label: 'Travel Policies', icon: Settings },
-    { href: '/dashboard/ctd/analytics', label: 'Analytics', icon: BarChart2 },
-    { href: '/dashboard/ctd/team', label: 'Manage Team', icon: Users },
+    { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/ctd/approvals', label: 'All Requests', icon: GanttChartSquare, color: 'text-amber-500' },
+    { href: '/dashboard/ctd/policies', label: 'Travel Policies', icon: Settings, color: 'text-gray-500' },
+    { href: '/dashboard/ctd/analytics', label: 'Analytics', icon: BarChart2, color: 'text-fuchsia-500' },
+    { href: '/dashboard/ctd/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
   ],
   'Hotel Partner': [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/dashboard/hotel/requests', label: 'Accommodation Requests', icon: Briefcase },
-    { href: '/dashboard/hotel/properties', label: 'My Properties', icon: Building },
-    { href: '/dashboard/hotel/team', label: 'Manage Team', icon: Users },
+    { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/hotel/requests', label: 'Accommodation Requests', icon: Briefcase, color: 'text-rose-500' },
+    { href: '/dashboard/hotel/properties', label: 'My Properties', icon: Building, color: 'text-orange-500' },
+    { href: '/dashboard/hotel/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
   ],
   Admin: [
-    { href: '/dashboard', label: 'Overview', icon: Home },
-    { href: '/dashboard/admin/approvals', label: 'Platform Approvals', icon: ShieldCheck },
-    { href: '/dashboard/admin/users', label: 'User Management', icon: Users },
-    { href: '/dashboard/admin/operators', label: 'Operator Management', icon: Plane },
-    { href: '/dashboard/admin/partners', label: 'Partner Management', icon: Briefcase },
-    { href: '/dashboard/admin/corporates', label: 'Corporate Management', icon: Building },
-    { href: '/dashboard/admin/team', label: 'Manage Team', icon: Users },
-    { href: '/dashboard/admin/audit-trail', label: 'Audit Trail', icon: FileText },
-    { href: '/dashboard/admin/billing', label: 'Billing Records', icon: CreditCard },
-    { href: '/dashboard/admin/settings', label: 'Platform Settings', icon: Settings },
+    { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/admin/approvals', label: 'Platform Approvals', icon: ShieldCheck, color: 'text-green-500' },
+    { href: '/dashboard/admin/users', label: 'User Management', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/admin/operators', label: 'Operator Management', icon: Plane, color: 'text-gray-500' },
+    { href: '/dashboard/admin/partners', label: 'Partner Management', icon: Briefcase, color: 'text-rose-500' },
+    { href: '/dashboard/admin/corporates', label: 'Corporate Management', icon: Building, color: 'text-orange-500' },
+    { href: '/dashboard/admin/team', label: 'Manage Team', icon: Users, color: 'text-indigo-500' },
+    { href: '/dashboard/admin/audit-trail', label: 'Audit Trail', icon: FileText, color: 'text-amber-500' },
+    { href: '/dashboard/admin/billing', label: 'Billing Records', icon: CreditCard, color: 'text-lime-500' },
+    { href: '/dashboard/admin/settings', label: 'Platform Settings', icon: Settings, color: 'text-blue-500' },
   ],
 };
 
@@ -94,7 +94,7 @@ export function MainSidebar({ className }: { className?: string }) {
       <SidebarContent>
         {isLoading ? <SidebarSkeleton /> : (
           <SidebarMenu>
-            {currentNavItems.map(({ href, label, icon: Icon }) => (
+            {currentNavItems.map(({ href, label, icon: Icon, color }) => (
               <SidebarMenuItem key={href}>
                 <SidebarMenuButton
                   asChild
@@ -102,7 +102,7 @@ export function MainSidebar({ className }: { className?: string }) {
                   tooltip={label}
                 >
                   <Link href={href}>
-                    <Icon />
+                    <Icon className={color} />
                     <span>{label}</span>
                   </Link>
                 </SidebarMenuButton>
