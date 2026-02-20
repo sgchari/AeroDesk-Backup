@@ -36,7 +36,6 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -87,15 +86,10 @@ export default function ProfilePage() {
   
   const uploadAvatar = async (file: File): Promise<string> => {
     if (!user) throw new Error('User not authenticated for upload.');
-    setIsUploading(true);
-    try {
-      const avatarRef = storageRef(storage, `avatars/${user.id}/${file.name}`);
-      const snapshot = await uploadBytes(avatarRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      return downloadURL;
-    } finally {
-      setIsUploading(false);
-    }
+    const avatarRef = storageRef(storage, `avatars/${user.id}/${file.name}`);
+    const snapshot = await uploadBytes(avatarRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
   };
 
 
@@ -272,8 +266,8 @@ export default function ProfilePage() {
               />
 
               <div className="flex justify-end">
-                <Button type="submit" disabled={form.formState.isSubmitting || isUploading}>
-                  {isUploading ? 'Uploading...' : form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
             </form>
