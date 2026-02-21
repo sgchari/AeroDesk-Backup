@@ -1,10 +1,22 @@
 {
   "placeholderImages": [
     {
-      "id": "hero-background",
+      "id": "landing-hero",
       "description": "Luxurious interior of a private jet cabin.",
-      "imageUrl": "https://images.unsplash.com/photo-1715882632868-4ec5ab721e7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxqZXQlMjBjYWJpbnxlbnwwfHx8fDE3NzE1MjM1MjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "jet cabin"
+      "imageUrl": "https://images.unsplash.com/photo-1715882632868-4ec5ab721e7d?q=80&w=2560&auto=format&fit=crop",
+      "imageHint": "jet cabin interior"
+    },
+    {
+      "id": "landing-features",
+      "description": "Private jet cabin background",
+      "imageUrl": "https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jet interior"
+    },
+    {
+      "id": "landing-payment",
+      "description": "Corporate Private Jet Charter",
+      "imageUrl": "https://images.unsplash.com/photo-1611118154903-8e44c6e54536?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "corporate jet"
     },
     {
       "id": "aircraft-1",
@@ -35,24 +47,6 @@
       "description": "Avatar for a female user.",
       "imageUrl": "https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8fDE3NzE0MjY3NTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman portrait"
-    },
-    {
-      "id": "landing-hero",
-      "description": "Luxurious interior of a private jet for the landing page hero.",
-      "imageUrl": "https://images.unsplash.com/photo-1536337632149-897336511197?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "jet interior wide"
-    },
-    {
-      "id": "landing-features",
-      "description": "A high quality placeholder image for the hero section.",
-      "imageUrl": "https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "jet interior"
-    },
-    {
-      "id": "landing-cta",
-      "description": "A private jet flying through the clouds for the call-to-action section.",
-      "imageUrl": "https://images.unsplash.com/photo-1763561901000-7c4bfca79961?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBmbHlpbmd8ZW58MHx8fHwxNzcxNTI0NTE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "jet flying"
     }
   ]
 }

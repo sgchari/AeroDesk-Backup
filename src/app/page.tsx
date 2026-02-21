@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube, Mail, Wallet, Banknote, Shield, CheckCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 const LandingHeader = () => {
@@ -127,11 +128,9 @@ const features = [
 
 
 export default function Home() {
-  const heroImage = {
-    imageUrl: "https://images.unsplash.com/photo-1715882632868-4ec5ab721e7d?q=80&w=2560&auto=format&fit=crop",
-    description: "Luxurious interior of a private jet cabin",
-    imageHint: "jet cabin interior"
-  };
+  const heroImage = PlaceHolderImages.find(p => p.id === 'landing-hero');
+  const featuresImage = PlaceHolderImages.find(p => p.id === 'landing-features');
+  const paymentImage = PlaceHolderImages.find(p => p.id === 'landing-payment');
   
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -175,13 +174,15 @@ export default function Home() {
         </section>
 
         <section className="relative py-16 md:py-24">
-            <Image
-                src="https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Private jet cabin background"
-                fill
-                className="object-cover"
-                data-ai-hint="jet interior"
-            />
+            {featuresImage && (
+                <Image
+                    src={featuresImage.imageUrl}
+                    alt={featuresImage.description}
+                    fill
+                    className="object-cover"
+                    data-ai-hint={featuresImage.imageHint}
+                />
+            )}
             <div className="absolute inset-0 bg-black/80" />
             <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
@@ -210,13 +211,15 @@ export default function Home() {
         </section>
 
         <section className="relative py-16 md:py-24">
-            <Image
-                src="https://images.unsplash.com/photo-1572216317536-402747378602?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Corporate Private Jet Charter"
-                fill
-                className="object-cover"
-                data-ai-hint="corporate jet"
-            />
+            {paymentImage && (
+                <Image
+                    src={paymentImage.imageUrl}
+                    alt={paymentImage.description}
+                    fill
+                    className="object-cover"
+                    data-ai-hint={paymentImage.imageHint}
+                />
+            )}
             <div className="absolute inset-0 bg-black/80" />
             <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
@@ -300,11 +303,11 @@ export default function Home() {
       </main>
       <footer className="border-t border-border/20 bg-background">
         <div className="container py-12">
-            <div className="grid grid-cols-1 gap-8 text-sm md:grid-cols-2 lg:grid-cols-4">
-                <div className="space-y-4 text-center sm:text-left">
+            <div className="grid grid-cols-1 gap-8 text-center sm:text-left md:grid-cols-4">
+                <div className="flex flex-col items-center gap-4 sm:items-start">
                     <Logo />
                 </div>
-                <div className="flex flex-col items-center gap-3 text-muted-foreground sm:items-start">
+                <div className="flex flex-col items-center gap-3 text-muted-foreground md:items-start">
                     <h3 className="font-semibold uppercase tracking-wider text-foreground">Get In Touch</h3>
                     <a href="tel:+919819754038" className="inline-flex items-center gap-2 hover:text-foreground">
                         <Phone className="h-4 w-4" /> +91 98197 54038
@@ -316,13 +319,13 @@ export default function Home() {
                         <Mail className="h-4 w-4" /> info@aerodesk.com
                     </a>
                 </div>
-                <div className="flex flex-col items-center gap-3 text-muted-foreground sm:items-start">
+                <div className="flex flex-col items-center gap-3 text-muted-foreground md:items-start">
                     <h3 className="font-semibold uppercase tracking-wider text-foreground">Legal</h3>
                     <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
                     <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
                     <Link href="/safety-standards" className="hover:text-foreground">Safety Standards</Link>
                 </div>
-                <div className="flex flex-col items-center gap-3 sm:items-start lg:items-end">
+                <div className="flex flex-col items-center gap-3 md:items-end">
                     <h3 className="font-semibold uppercase tracking-wider text-foreground">Follow Us</h3>
                     <div className="flex gap-4">
                         <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
@@ -334,10 +337,10 @@ export default function Home() {
                 </div>
             </div>
             <div className="mt-8 border-t border-border/20 pt-8 text-center text-xs text-muted-foreground">
-                <p>&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
-                <p className="mt-2">
+                <p>
                     <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
                 </p>
+                <p className="mt-2">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
             </div>
         </div>
       </footer>
