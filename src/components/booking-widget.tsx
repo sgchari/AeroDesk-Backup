@@ -140,7 +140,7 @@ export function BookingWidget() {
             setLegs(currentLegs => currentLegs.slice(0, 1));
         }
     }
-  }, [tripType, legs.length]);
+  }, [tripType, legs, legs.length]);
 
 
   const updateLeg = (index: number, field: 'origin' | 'destination', value: string) => {
@@ -195,7 +195,7 @@ export function BookingWidget() {
                         </div>
                     </RadioGroup>
 
-                    <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg lg:items-start">
+                    <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg">
                         <div className="flex flex-col w-full lg:flex-1">
                             {legs.map((leg, index) => (
                                 <div key={index}>
@@ -217,17 +217,19 @@ export function BookingWidget() {
                             ))}
                         </div>
                         
-                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
-                        <Input type="text" placeholder="Date & Time" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
-                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
-                        {tripType === 'round' && (
-                            <>
-                                <Input type="text" placeholder="Add A Return Flight" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
-                            </>
-                        )}
-                        <Input type="number" placeholder="Passengers" min="1" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full lg:w-48" />
-                        <Button className="rounded-none text-base sm:text-lg h-auto p-4 w-full lg:w-auto self-stretch">Request Pricing</Button>
+                        <div className="flex flex-col lg:flex-row">
+                            <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
+                            <Input type="text" placeholder="Date & Time" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                            <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
+                            {tripType === 'round' && (
+                                <>
+                                    <Input type="text" placeholder="Add A Return Flight" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                                    <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
+                                </>
+                            )}
+                            <Input type="number" placeholder="Passengers" min="1" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full lg:w-48" />
+                            <Button className="rounded-none text-base sm:text-lg h-auto p-4 w-full lg:w-auto">Request Pricing</Button>
+                        </div>
                     </div>
                 </div>
             </TabsContent>
