@@ -67,9 +67,9 @@ const LandingHeader = () => {
 
 export default function Home() {
   const heroImage = {
-    imageUrl: "https://images.unsplash.com/photo-1569695663721-a82a7f955104?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    description: "Tail of an airplane on a runway at dusk",
-    imageHint: "airplane tarmac dusk"
+    imageUrl: "https://images.unsplash.com/photo-1601002214002-9a4387a3b0a7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    description: "Luxurious interior of a private jet cabin",
+    imageHint: "jet cabin interior"
   };
   
   return (
