@@ -4,32 +4,32 @@
 
 @layer base {
   :root {
-    --background: 210 30% 95%;
-    --foreground: 210 30% 15%;
+    --background: 210 100% 97%; /* Very Light Sky Blue */
+    --foreground: 210 10% 15%; /* Dark text for contrast */
 
-    --card: 210 30% 98%;
-    --card-foreground: 210 30% 15%;
+    --card: 255 100% 100%; /* White cards */
+    --card-foreground: 210 10% 15%;
  
-    --popover: 210 30% 98%;
-    --popover-foreground: 210 30% 15%;
+    --popover: 255 100% 100%;
+    --popover-foreground: 210 10% 15%;
  
     --primary: 210 90% 60%;
     --primary-foreground: 210 40% 98%;
  
-    --secondary: 210 30% 90%;
-    --secondary-foreground: 210 30% 10%;
+    --secondary: 210 60% 92%;
+    --secondary-foreground: 210 10% 10%;
  
-    --muted: 210 30% 90%;
-    --muted-foreground: 210 30% 40%;
+    --muted: 210 60% 92%;
+    --muted-foreground: 210 10% 40%;
  
-    --accent: 210 30% 85%;
-    --accent-foreground: 210 30% 10%;
+    --accent: 210 60% 88%;
+    --accent-foreground: 210 10% 10%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 210 30% 80%;
-    --input: 210 30% 85%;
+    --border: 210 50% 85%;
+    --input: 210 50% 90%;
     --ring: 210 90% 60%;
     
     --chart-1: 221 83% 53%;
