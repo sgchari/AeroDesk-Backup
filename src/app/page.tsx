@@ -115,11 +115,6 @@ const features = [
         description: "Hotel partners can manage properties, define availability and rates, and receive accommodation requests linked to approved trips."
     },
     {
-        icon: ShieldCheck,
-        title: "Audit and Compliance System",
-        description: "Admin users can approve operators, distributors, CTDs, and hotels; manage feature flags; add compliance notes; and export audit CSVs."
-    },
-    {
         icon: Wand2,
         title: "Automated Compliance Check Tool",
         description: "AI tool will verify inputs across different phases against compliance policies and standards for NSOP in India, flagging inconsistencies for review."
