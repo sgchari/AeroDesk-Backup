@@ -40,11 +40,11 @@ export function BookingWidget() {
   return (
     <div className="w-full mx-auto p-4 sm:p-6 md:p-8 bg-black/25 backdrop-blur-md rounded-lg border border-white/20">
         <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-transparent p-0 mb-6">
-                <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:shadow-none p-3 border-b-2 border-transparent data-[state=active]:border-white rounded-none flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
+            <TabsList className="grid w-full grid-cols-2 bg-transparent p-0 mb-6 gap-2">
+                <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
                     <Plane /> JET
                 </TabsTrigger>
-                <TabsTrigger value="helicopter" className="text-white/70 data-[state=active]:text-white data-[state=active]:shadow-none p-3 border-b-2 border-transparent data-[state=active]:border-white rounded-none flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
+                <TabsTrigger value="helicopter" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
                     <Helicopter /> HELICOPTER
                 </TabsTrigger>
             </TabsList>
@@ -66,21 +66,21 @@ export function BookingWidget() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col lg:flex-row bg-white rounded-lg overflow-hidden shadow-lg">
-                        <Input placeholder="Origin" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-gray-800 flex-grow" />
-                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200"></div>
-                        <Input placeholder="Destination" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-gray-800 flex-grow" />
-                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200"></div>
-                        <Input type="text" placeholder="Date & Time" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-gray-800 flex-grow" />
-                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200"></div>
+                    <div className="flex flex-col lg:flex-row bg-white rounded-lg overflow-hidden shadow-lg items-center">
+                        <Input placeholder="Origin" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
+                        <Input placeholder="Destination" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
+                        <Input type="text" placeholder="Date & Time" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                         {tripType === 'round' && (
                             <>
-                                <Input type="text" placeholder="Add A Return Flight" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-gray-800 flex-grow" />
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200"></div>
+                                <Input type="text" placeholder="Add A Return Flight" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                                <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                             </>
                         )}
-                        <div className="p-4 whitespace-nowrap flex items-center justify-center text-sm sm:text-base text-gray-600 flex-grow">1 Passenger</div>
-                        <Button className="rounded-none text-base sm:text-lg h-auto p-4 w-full lg:w-auto">Request Pricing</Button>
+                        <div className="p-4 whitespace-nowrap flex items-center justify-center text-sm sm:text-base text-muted-foreground">1 Passenger</div>
+                        <Button className="rounded-none text-base sm:text-lg h-auto p-4 w-full lg:w-auto self-stretch">Request Pricing</Button>
                     </div>
                 </div>
             </TabsContent>
