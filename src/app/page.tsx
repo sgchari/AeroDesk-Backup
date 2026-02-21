@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Menu } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2 } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select"
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useRouter } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 
 const LandingHeader = () => {
@@ -65,9 +66,48 @@ const LandingHeader = () => {
     );
 };
 
+const features = [
+    {
+        icon: FileText,
+        title: "Charter RFQ Management",
+        description: "Customers can create and manage charter RFQs, including specifying flight requirements and viewing the RFQ lifecycle."
+    },
+    {
+        icon: GanttChartSquare,
+        title: "Operator Quotation Exchange",
+        description: "Operators can submit bids on RFQs, manage their aircraft fleet, and set aircraft blackout dates."
+    },
+    {
+        icon: Briefcase,
+        title: "Corporate Travel Desk (CTD) Approval System",
+        description: "CTD users can create RFQs on behalf of employees, manage approval workflows, and generate analytics reports."
+    },
+    {
+        icon: Plane,
+        title: "Empty-Leg Seat Allocation",
+        description: "Authorized distributors can view approved empty-leg flights and manage seat allocation requests within enforced distributor seat caps."
+    },
+    {
+        icon: Hotel,
+        title: "Hotel Accommodation Facilitation",
+        description: "Hotel partners can manage properties, define availability and rates, and receive accommodation requests linked to approved trips."
+    },
+    {
+        icon: ShieldCheck,
+        title: "Audit and Compliance System",
+        description: "Admin users can approve operators, distributors, CTDs, and hotels; manage feature flags; add compliance notes; and export audit CSVs."
+    },
+    {
+        icon: Wand2,
+        title: "Automated Compliance Check Tool",
+        description: "AI tool will verify inputs across different phases against compliance policies and standards for NSOP in India, flagging inconsistencies for review."
+    }
+];
+
+
 export default function Home() {
   const heroImage = {
-    imageUrl: "https://images.unsplash.com/photo-1536337632149-897336511197?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
     description: "Luxurious interior of a private jet cabin",
     imageHint: "jet cabin interior"
   };
@@ -112,6 +152,34 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <section className="py-16 md:py-24 bg-background">
+            <div className="container">
+                <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
+                    <p className="mt-4 text-lg text-muted-foreground">
+                        AeroDesk integrates every facet of the charter lifecycle into a single, compliant, and efficient digital platform.
+                    </p>
+                </div>
+
+                <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    {features.map((feature, index) => (
+                        <Card key={index} className="bg-card border-border/50">
+                            <CardHeader className="flex flex-row items-center gap-4">
+                                <div className="bg-primary/10 p-3 rounded-full border border-primary/20">
+                                    <feature.icon className="h-6 w-6 text-primary" />
+                                </div>
+                                <CardTitle className="text-lg">{feature.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground">{feature.description}</p>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        </section>
+
       </main>
       <footer className="border-t border-border/20 py-8">
         <div className="container grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground">
