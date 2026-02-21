@@ -44,9 +44,9 @@
     },
     {
       "id": "landing-features",
-      "description": "Cockpit of a private jet.",
-      "imageUrl": "https://images.unsplash.com/photo-1599933563914-8787f7353974?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "jet cockpit"
+      "description": "Private jet on a runway.",
+      "imageUrl": "https://images.unsplash.com/photo-1554104707-a76b270e4bbb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "private jet"
     },
     {
       "id": "landing-cta",
