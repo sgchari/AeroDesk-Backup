@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Activity, Menu, Send, ShieldCheck, Zap } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import React, { useState, useEffect } from 'react';
@@ -61,9 +60,9 @@ const StatItem = ({ icon: Icon, value, label }: { icon: React.ElementType, value
 
 export default function Home() {
   const heroImage = {
-    imageUrl: "https://images.unsplash.com/photo-1616142386326-311ee7ea3888?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    description: "Luxurious interior of a private jet.",
-    imageHint: "jet interior"
+    imageUrl: "https://source.unsplash.com/ogUyaf8JWA4",
+    description: "Luxurious interior of a private jet with comfortable seating",
+    imageHint: "private jet interior"
   };
   const [scale, setScale] = useState(1);
 
@@ -83,7 +82,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative h-[100vh] w-full overflow-hidden">
+        <section className="relative h-[80vh] w-full overflow-hidden">
             {heroImage && (
                 <Image
                     src={heroImage.imageUrl}
@@ -96,7 +95,7 @@ export default function Home() {
                 />
             )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-          <div className="sticky top-0 z-10 flex h-screen flex-col items-center justify-center pb-20 text-center">
+          <div className="sticky top-0 z-10 flex h-full flex-col items-center justify-end pb-20 text-center">
             <div className="max-w-4xl px-4">
               <h1 className="font-headline text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl">
                 DIGITAL INFRASTRUCTURE <br />
