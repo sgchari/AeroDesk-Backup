@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Mail, Wallet, Banknote, Shield, CheckCircle } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Mail, Wallet, Banknote, Shield, CheckCircle, Ship } from 'lucide-react';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { BookingWidget } from '@/components/booking-widget';
 
 
 const LandingHeader = () => {
@@ -161,12 +162,7 @@ export default function Home() {
                 Discover the ultimate convenience in private aviation. Request charter flights with ease, access exclusive empty leg opportunities, and coordinate luxury hotel stays—all through a single, sophisticated platform built for discerning individuals and corporate leaders.
               </p>
               <div className="mt-8">
-                <Button asChild size="lg">
-                  <Link href="/register">
-                    Request Access
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
+                <BookingWidget />
               </div>
             </div>
           </div>
@@ -178,7 +174,7 @@ export default function Home() {
                     src={featuresImage.imageUrl}
                     alt={featuresImage.description}
                     fill
-                    className="object-cover"
+                    className="object-cover opacity-10"
                     data-ai-hint={featuresImage.imageHint}
                 />
             )}
@@ -193,7 +189,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-card/30 backdrop-blur-sm">
+                        <Card key={index} className="border-border/50 bg-card/80 backdrop-blur-sm">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -215,7 +211,7 @@ export default function Home() {
                     src={paymentImage.imageUrl}
                     alt={paymentImage.description}
                     fill
-                    className="object-cover"
+                    className="object-cover opacity-10"
                     data-ai-hint={paymentImage.imageHint}
                 />
             )}
@@ -229,7 +225,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="flex flex-col border-border/50 bg-card/30 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -245,7 +241,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
 
-                    <Card className="flex flex-col border-border/50 bg-card/30 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -266,7 +262,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
                     
-                    <Card className="flex flex-col border-border/50 bg-card/30 backdrop-blur-sm md:col-span-2 lg:col-span-1">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm md:col-span-2 lg:col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
