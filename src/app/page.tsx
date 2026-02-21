@@ -150,11 +150,11 @@ export default function Home() {
                 />
             )}
           <div className="absolute inset-0 bg-black/60" />
-          <div className="relative z-10 flex min-h-screen flex-col items-center justify-center py-20 text-center text-white">
+          <div className="relative z-10 flex min-h-screen flex-col items-center justify-center py-12 text-center text-white">
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
                 <ShieldCheck className="h-4 w-4" />
-                Charter Smarter. Travel Seamlessly.
+                Fly Smarter. Stay Premium.
               </div>
               <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight [text-shadow:0_2px_4px_rgb(0_0_0_/_0.5)] sm:text-5xl md:text-6xl">
                 Designed for Those Who Fly Differently.
@@ -166,7 +166,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative py-12 md:py-16">
+        <section className="relative py-12">
             {featuresImage && (
                 <Image
                     src={featuresImage.imageUrl}
@@ -203,7 +203,7 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="relative py-12 md:py-16">
+        <section className="relative py-12">
             {paymentImage && (
                 <Image
                     src={paymentImage.imageUrl}
