@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Plane, Armchair } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -33,15 +33,19 @@ const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const primeDestinations = [
+    "Agra (AGR)",
     "Ahmedabad (AMD)",
     "Amritsar (ATQ)",
+    "Aurangabad (IXU)",
     "Bagdogra (IXB)",
     "Bengaluru (BLR)",
+    "Bhopal (BHO)",
     "Bhubaneswar (BBI)",
     "Chandigarh (IXC)",
     "Chennai (MAA)",
     "Cochin (COK)",
     "Coimbatore (CJB)",
+    "Dehradun (DED)",
     "Delhi (DEL)",
     "Goa (GOI)",
     "Guwahati (GAU)",
@@ -49,23 +53,33 @@ const primeDestinations = [
     "Imphal (IMF)",
     "Indore (IDR)",
     "Jaipur (JAI)",
+    "Jammu (IXJ)",
+    "Jodhpur (JDH)",
+    "Khajuraho (HJR)",
     "Kolkata (CCU)",
+    "Leh (IXL)",
     "Lucknow (LKO)",
     "Madurai (IXM)",
     "Mangalore (IXE)",
     "Mumbai (BOM)",
     "Nagpur (NAG)",
-    "Pune (PNQ)",
+    "Patna (PAT)",
     "Port Blair (IXZ)",
+    "Pune (PNQ)",
+    "Raipur (RPR)",
+    "Ranchi (IXR)",
     "Srinagar (SXR)",
     "Thiruvananthapuram (TRV)",
     "Tiruchirappalli (TRZ)",
+    "Udaipur (UDR)",
     "Varanasi (VNS)",
     "Visakhapatnam (VTZ)",
     "Dubai (DXB)",
     "London (LHR)",
     "New York (JFK)",
     "Singapore (SIN)",
+    "Bangkok (BKK)",
+    "Male (MLE)"
 ];
 
 const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; onChange: (value: string) => void; placeholder: string }) => {
@@ -147,12 +161,35 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
 
 export function BookingWidget() {
   const [tripType, setTripType] = useState('oneway');
-  const [origin, setOrigin] = useState('');
-  const [destination, setDestination] = useState('');
+  const [legs, setLegs] = useState([{ origin: '', destination: '' }]);
 
   const handleTripTypeChange = (type: string) => {
       setTripType(type);
   }
+
+  useEffect(() => {
+    if (tripType === 'multicity') {
+        if (legs.length === 1) {
+            setLegs(currentLegs => [...currentLegs, { origin: currentLegs[0].destination, destination: '' }]);
+        }
+    } else {
+        if (legs.length > 1) {
+            setLegs(currentLegs => currentLegs.slice(0, 1));
+        }
+    }
+  }, [tripType, legs.length]);
+
+
+  const updateLeg = (index: number, field: 'origin' | 'destination', value: string) => {
+    const newLegs = [...legs];
+    newLegs[index][field] = value;
+    
+    if (tripType === 'multicity' && field === 'destination' && index < newLegs.length - 1) {
+      newLegs[index + 1].origin = value;
+    }
+    
+    setLegs(newLegs);
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 bg-black/25 backdrop-blur-md rounded-lg border border-white/20">
@@ -164,10 +201,10 @@ export function BookingWidget() {
                 <TabsTrigger value="helicopter" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
                     <Helicopter /> HELICOPTER
                 </TabsTrigger>
-                <TooltipProvider>
+                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <TabsTrigger value="seats" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
+                             <TabsTrigger value="seats" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
                                 <Armchair /> RESERVE SEATS
                             </TabsTrigger>
                         </TooltipTrigger>
@@ -180,25 +217,43 @@ export function BookingWidget() {
 
             <TabsContent value="jet">
                 <div className="space-y-6">
-                    <div className="flex items-center gap-4 sm:gap-6">
+                    <RadioGroup value={tripType} onValueChange={handleTripTypeChange} className="flex items-center gap-4 sm:gap-6">
                         <div className="flex items-center space-x-2">
-                             <Checkbox id="oneway" checked={tripType === 'oneway'} onCheckedChange={() => handleTripTypeChange('oneway')} className="h-4 w-4 rounded-sm border-white data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+                            <RadioGroupItem value="oneway" id="oneway" className="border-white" />
                             <Label htmlFor="oneway" className="text-white text-sm sm:text-base">Oneway</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                             <Checkbox id="round" checked={tripType === 'round'} onCheckedChange={() => handleTripTypeChange('round')} className="h-4 w-4 rounded-sm border-white data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+                            <RadioGroupItem value="round" id="round" className="border-white" />
                             <Label htmlFor="round" className="text-white text-sm sm:text-base">Round</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                           <Checkbox id="multicity" checked={tripType === 'multicity'} onCheckedChange={() => handleTripTypeChange('multicity')} className="h-4 w-4 rounded-sm border-white data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+                            <RadioGroupItem value="multicity" id="multicity" className="border-white" />
                             <Label htmlFor="multicity" className="text-white text-sm sm:text-base">Multicity</Label>
                         </div>
-                    </div>
+                    </RadioGroup>
 
                     <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg items-center">
-                        <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
-                        <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
-                        <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
+                        <div className="flex flex-col w-full lg:flex-1">
+                            {legs.map((leg, index) => (
+                                <div key={index}>
+                                    {index > 0 && <div className="h-px w-full bg-gray-200"></div>}
+                                    <div className="flex flex-col sm:flex-row">
+                                        <AutocompleteInput 
+                                            placeholder={index === 0 ? "Origin" : `Leg ${index + 1} Origin`} 
+                                            value={leg.origin} 
+                                            onChange={(v) => updateLeg(index, 'origin', v)} 
+                                        />
+                                        <div className="h-px w-full sm:h-auto sm:w-px bg-gray-200 self-stretch"></div>
+                                        <AutocompleteInput 
+                                            placeholder={index === 0 ? "Destination" : `Leg ${index + 1} Destination`} 
+                                            value={leg.destination} 
+                                            onChange={(v) => updateLeg(index, 'destination', v)} 
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                         <Input type="text" placeholder="Date & Time" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
