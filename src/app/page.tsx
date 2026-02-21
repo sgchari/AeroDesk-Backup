@@ -1,23 +1,42 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2 } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 
 const LandingHeader = () => {
+    const navLinks = [
+        { href: "#", label: "Promotions" },
+        { href: "#", label: "Our Network" },
+        { href: "#", label: "Blog" },
+        { href: "#", label: "Media" },
+    ];
     return (
         <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/90 backdrop-blur-sm">
-            <div className="container flex h-20 items-center justify-between">
-                <Link href="/">
-                    <Logo />
-                </Link>
-                <div className="hidden items-center gap-2 md:flex">
+            <div className="container flex h-20 items-center">
+                <div className="flex items-center gap-6">
+                    <Link href="/">
+                        <Logo />
+                    </Link>
+                    <nav className="hidden items-center gap-6 text-sm md:flex">
+                        {navLinks.map(link => (
+                            <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground">
+                                {link.label}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
+                
+                <div className="ml-auto hidden items-center gap-4 md:flex">
+                     <a href="tel:+919819754038" className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                        <Phone className="h-4 w-4" />
+                        +91 98197 54038
+                    </a>
                     <Button variant="ghost" asChild>
                         <Link href="/login">Login</Link>
                     </Button>
@@ -25,7 +44,8 @@ const LandingHeader = () => {
                         <Link href="/register">Register</Link>
                     </Button>
                 </div>
-                <div className="md:hidden">
+
+                <div className="ml-auto md:hidden">
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -34,9 +54,20 @@ const LandingHeader = () => {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="right">
-                            <div className="flex flex-col gap-4 p-4">
+                            <div className="flex flex-col gap-6 p-6">
                                 <Logo />
-                                <div className="flex flex-col gap-2">
+                                <nav className="flex flex-col gap-4">
+                                     {navLinks.map(link => (
+                                        <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground py-2 text-lg">
+                                            {link.label}
+                                        </Link>
+                                    ))}
+                                </nav>
+                                <div className="flex flex-col gap-2 border-t pt-4">
+                                    <a href="tel:+919819754038" className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground py-2">
+                                        <Phone className="h-4 w-4" />
+                                        +91 98197 54038
+                                    </a>
                                   <Button asChild>
                                       <Link href="/login">Login</Link>
                                   </Button>
@@ -94,7 +125,7 @@ const features = [
 
 export default function Home() {
   const heroImage = {
-    imageUrl: "https://images.unsplash.com/photo-1536337632149-897336511197?q=80&w=2560&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1715882632868-4ec5ab721e7d?q=80&w=2560&auto=format&fit=crop",
     description: "Luxurious interior of a private jet cabin",
     imageHint: "jet cabin interior"
   };
@@ -129,7 +160,7 @@ export default function Home() {
                 Verified NSOP operators. Transparent quotations. Compliance-first aviation procurement for enterprise.
               </p>
               <div className="mt-8">
-                <Button asChild size="lg" className="bg-white text-black hover:bg-gray-200">
+                <Button asChild size="lg">
                   <Link href="/register">
                     Get Started
                     <ArrowRight className="ml-2 h-5 w-5" />
