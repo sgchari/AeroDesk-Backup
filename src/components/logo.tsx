@@ -9,9 +9,12 @@ export function Logo({ className }: { className?: string }) {
                 className={cn("h-5 w-5 text-primary")}
                 />
         </div>
-        <div className="flex items-baseline">
-            <span className="font-headline text-xl font-bold tracking-wider text-foreground">AERO</span>
-            <span className="font-headline text-xl font-bold tracking-wider text-primary">DESK</span>
+        <div>
+            <div className="flex items-baseline">
+                <span className="font-headline text-xl font-bold tracking-wider text-foreground">AERO</span>
+                <span className="font-headline text-xl font-bold tracking-wider text-primary">DESK</span>
+            </div>
+            <p className="text-xs text-muted-foreground -mt-1">Organized Charter Marketplace</p>
         </div>
     </div>
   );
