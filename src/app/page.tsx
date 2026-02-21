@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -188,7 +189,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="bg-card/80 border-border/50 backdrop-blur-lg">
+                        <Card key={index} className="bg-card/80 border-border/50 backdrop-blur-xl">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="bg-primary/10 p-3 rounded-full border border-primary/20">
                                     <feature.icon className="h-6 w-6 text-primary" />
