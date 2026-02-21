@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -237,11 +238,11 @@ export default function Home() {
                 </a>
               </div>
               <div className="flex gap-4 mt-6">
-                  <Link href="#" aria-label="Facebook" className="text-muted-foreground hover:text-primary"><Facebook className="h-5 w-5" /></Link>
-                  <Link href="#" aria-label="Twitter" className="text-muted-foreground hover:text-primary"><Twitter className="h-5 w-5" /></Link>
-                  <Link href="#" aria-label="LinkedIn" className="text-muted-foreground hover:text-primary"><Linkedin className="h-5 w-5" /></Link>
-                  <Link href="#" aria-label="Instagram" className="text-muted-foreground hover:text-primary"><Instagram className="h-5 w-5" /></Link>
-                  <Link href="#" aria-label="Youtube" className="text-muted-foreground hover:text-primary"><Youtube className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Facebook" className="text-chart-1 transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Twitter" className="text-chart-3 transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="LinkedIn" className="text-chart-1 transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Instagram" className="text-chart-5 transition-opacity hover:opacity-75"><Instagram className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Youtube" className="text-destructive transition-opacity hover:opacity-75"><Youtube className="h-5 w-5" /></Link>
               </div>
             </div>
           </div>
