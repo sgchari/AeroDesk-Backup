@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -11,11 +10,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking, deleteDocumentNonBlocking, errorEmitter, FirestorePermissionError } from "@/firebase";
 import { UserRole } from "@/lib/types";
 import { collection, doc, getDocs } from "firebase/firestore";
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import Link from "next/link";
+import { AddUserDialog } from "@/components/dashboard/admin/add-user-dialog";
 
 
 // A normalized user type for the table
@@ -81,15 +80,12 @@ export default function UserManagementPage() {
                 });
                 setCtdUsers(allUsersData);
             } catch (error: any) {
-                if (error.code === 'permission-denied') {
-                    const contextualError = new FirestorePermissionError({
-                        path: 'corporateTravelDesks/[ctdId]/users', // Generic path as we don't know which one failed
-                        operation: 'list'
-                    });
-                    errorEmitter.emit('permission-error', contextualError);
-                } else {
-                    console.error("Error fetching CTD users:", error);
-                }
+                const contextualError = new FirestorePermissionError({
+                    path: 'corporateTravelDesks/[ctdId]/users', // Generic path as we don't know which one failed
+                    operation: 'list'
+                });
+                errorEmitter.emit('permission-error', contextualError);
+                console.error("Error fetching CTD users:", error);
             } finally {
                 setCtdUsersLoading(false);
             }
@@ -183,10 +179,7 @@ export default function UserManagementPage() {
     return (
         <>
             <PageHeader title="User Management" description="Create, approve, and manage all platform users and their roles.">
-                 <Button>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add User
-                </Button>
+                 <AddUserDialog />
             </PageHeader>
             <Card>
                 <CardHeader>
