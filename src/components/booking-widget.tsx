@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
@@ -98,18 +97,7 @@ export function BookingWidget() {
                                 <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                             </>
                         )}
-                        <Select defaultValue="1">
-                            <SelectTrigger className="border-0 focus:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full lg:w-48 text-left font-normal">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {[...Array(18).keys()].map(i => (
-                                    <SelectItem key={i + 1} value={`${i + 1}`}>
-                                        {i + 1} {i + 1 === 1 ? 'Passenger' : 'Passengers'}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Input type="number" placeholder="Passengers" min="1" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full lg:w-48" />
                         <Button className="rounded-none text-base sm:text-lg h-auto p-4 w-full lg:w-auto self-stretch">Request Pricing</Button>
                     </div>
                 </div>
