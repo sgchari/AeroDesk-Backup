@@ -80,11 +80,11 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
             <div className="max-w-4xl px-4">
-              <h1 className="font-headline text-5xl font-bold tracking-tight md:text-7xl lg:text-8xl">
+              <h1 className="font-headline text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
                 INFRASTRUCTURE <br />
                 <span className="text-primary">FOR CHARTER AVIATION.</span>
               </h1>
-              <p className="mt-6 max-w-2xl mx-auto text-lg text-foreground/80 md:text-xl">
+              <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground md:text-xl">
                 A simple and reliable way to manage private flights. Built for businesses and flight operators who value efficiency and transparency.
               </p>
               <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -94,7 +94,7 @@ export default function Home() {
                     <Activity className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto bg-transparent border-white/50 hover:bg-white/10 hover:text-white">
+                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
                   <Link href="/register">
                     JOIN THE NETWORK
                   </Link>
