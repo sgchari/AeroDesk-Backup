@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube, Mail } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 
@@ -57,6 +56,7 @@ const LandingHeader = () => {
                                 </Button>
                             </SheetTrigger>
                             <SheetContent side="right">
+                                <SheetTitle className="sr-only">Menu</SheetTitle>
                                 <div className="flex flex-col gap-6 p-6">
                                     <Logo />
                                     <nav className="flex flex-col gap-4">
@@ -238,11 +238,11 @@ export default function Home() {
                 </a>
               </div>
               <div className="flex gap-4 mt-6">
-                  <Link href="#" aria-label="Facebook" className="text-chart-1 transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
-                  <Link href="#" aria-label="Twitter" className="text-chart-3 transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
-                  <Link href="#" aria-label="LinkedIn" className="text-chart-1 transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
-                  <Link href="#" aria-label="Instagram" className="text-chart-5 transition-opacity hover:opacity-75"><Instagram className="h-5 w-5" /></Link>
-                  <Link href="#" aria-label="Youtube" className="text-destructive transition-opacity hover:opacity-75"><Youtube className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="LinkedIn" className="text-[#0A66C2] transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Instagram" className="text-[#E4405F] transition-opacity hover:opacity-75"><Instagram className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Youtube" className="text-[#FF0000] transition-opacity hover:opacity-75"><Youtube className="h-5 w-5" /></Link>
               </div>
             </div>
           </div>
