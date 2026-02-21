@@ -80,7 +80,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative h-[150vh] w-full overflow-hidden">
+        <section className="relative h-[200vh] w-full overflow-hidden">
             {heroImage && (
                 <Image
                     src={heroImage.imageUrl}
@@ -93,13 +93,13 @@ export default function Home() {
                 />
             )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-end pb-32 text-center">
+          <div className="sticky top-0 z-10 flex h-screen flex-col items-center justify-center text-center">
             <div className="max-w-4xl px-4">
-              <h1 className="font-headline text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-                INFRASTRUCTURE <br />
-                <span className="text-primary">FOR CHARTER AVIATION.</span>
+              <h1 className="font-headline text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl">
+                DIGITAL INFRASTRUCTURE <br />
+                <span className="text-primary">FOR AIR CHARTER.</span>
               </h1>
-              <p className="mt-6 max-w-2xl mx-auto text-base text-muted-foreground md:text-lg">
+              <p className="mt-6 max-w-2xl mx-auto text-lg text-foreground/80 md:text-xl">
                 A simple and reliable way to manage private flights. Built for businesses and flight operators who value efficiency and transparency.
               </p>
               <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
