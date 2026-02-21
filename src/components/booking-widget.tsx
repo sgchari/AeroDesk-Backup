@@ -33,53 +33,16 @@ const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const primeDestinations = [
-    "Agra (AGR)",
-    "Ahmedabad (AMD)",
-    "Amritsar (ATQ)",
-    "Aurangabad (IXU)",
-    "Bagdogra (IXB)",
-    "Bengaluru (BLR)",
-    "Bhopal (BHO)",
-    "Bhubaneswar (BBI)",
-    "Chandigarh (IXC)",
-    "Chennai (MAA)",
-    "Cochin (COK)",
-    "Coimbatore (CJB)",
-    "Dehradun (DED)",
-    "Delhi (DEL)",
-    "Goa (GOI)",
-    "Guwahati (GAU)",
-    "Hyderabad (HYD)",
-    "Imphal (IMF)",
-    "Indore (IDR)",
-    "Jaipur (JAI)",
-    "Jammu (IXJ)",
-    "Jodhpur (JDH)",
-    "Khajuraho (HJR)",
-    "Kolkata (CCU)",
-    "Leh (IXL)",
-    "Lucknow (LKO)",
-    "Madurai (IXM)",
-    "Mangalore (IXE)",
-    "Mumbai (BOM)",
-    "Nagpur (NAG)",
-    "Patna (PAT)",
-    "Port Blair (IXZ)",
-    "Pune (PNQ)",
-    "Raipur (RPR)",
-    "Ranchi (IXR)",
-    "Srinagar (SXR)",
-    "Thiruvananthapuram (TRV)",
-    "Tiruchirappalli (TRZ)",
-    "Udaipur (UDR)",
-    "Varanasi (VNS)",
-    "Visakhapatnam (VTZ)",
-    "Dubai (DXB)",
-    "London (LHR)",
-    "New York (JFK)",
-    "Singapore (SIN)",
-    "Bangkok (BKK)",
-    "Male (MLE)"
+    "Agra (AGR)", "Ahmedabad (AMD)", "Amritsar (ATQ)", "Aurangabad (IXU)", "Bagdogra (IXB)",
+    "Bengaluru (BLR)", "Bhopal (BHO)", "Bhubaneswar (BBI)", "Chandigarh (IXC)", "Chennai (MAA)",
+    "Cochin (COK)", "Coimbatore (CJB)", "Dehradun (DED)", "Delhi (DEL)", "Goa (GOI)",
+    "Guwahati (GAU)", "Hyderabad (HYD)", "Imphal (IMF)", "Indore (IDR)", "Jaipur (JAI)",
+    "Jammu (IXJ)", "Jodhpur (JDH)", "Khajuraho (HJR)", "Kolkata (CCU)", "Leh (IXL)",
+    "Lucknow (LKO)", "Madurai (IXM)", "Mangalore (IXE)", "Mumbai (BOM)", "Nagpur (NAG)",
+    "Patna (PAT)", "Port Blair (IXZ)", "Pune (PNQ)", "Raipur (RPR)", "Ranchi (IXR)",
+    "Srinagar (SXR)", "Thiruvananthapuram (TRV)", "Tiruchirappalli (TRZ)", "Udaipur (UDR)", "Varanasi (VNS)",
+    "Visakhapatnam (VTZ)", "Dubai (DXB)", "London (LHR)", "New York (JFK)", "Singapore (SIN)",
+    "Bangkok (BKK)", "Male (MLE)"
 ];
 
 const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; onChange: (value: string) => void; placeholder: string }) => {
@@ -232,7 +195,7 @@ export function BookingWidget() {
                         </div>
                     </RadioGroup>
 
-                    <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg items-center">
+                    <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg lg:items-start">
                         <div className="flex flex-col w-full lg:flex-1">
                             {legs.map((leg, index) => (
                                 <div key={index}>
