@@ -250,9 +250,10 @@ export default function Home() {
                   <p className="text-center sm:text-left">
                       <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
                   </p>
-                  <div className="flex gap-4">
+                  <div className="flex flex-wrap justify-center gap-4 sm:flex-nowrap">
                     <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
                     <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
+                    <Link href="/safety-standards" className="hover:text-foreground">Safety Standards</Link>
                   </div>
                 </div>
               </div>
