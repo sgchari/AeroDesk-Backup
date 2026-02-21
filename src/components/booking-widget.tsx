@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -44,9 +44,87 @@ const primeDestinations = [
     "Singapore (SIN)",
 ];
 
+const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; onChange: (value: string) => void; placeholder: string }) => {
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        onChange(inputValue); // Update parent state
+
+        if (inputValue.length >= 3) {
+            const filtered = primeDestinations.filter(dest =>
+                dest.toLowerCase().includes(inputValue.toLowerCase())
+            );
+            setSuggestions(filtered);
+            setShowSuggestions(filtered.length > 0);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleSelectSuggestion = (suggestion: string) => {
+        onChange(suggestion);
+        setSuggestions([]);
+        setShowSuggestions(false);
+        inputRef.current?.blur();
+    };
+
+    return (
+        <div className="relative w-full">
+            <Input
+                ref={inputRef}
+                type="text"
+                placeholder={placeholder}
+                value={value}
+                onChange={handleInputChange}
+                onFocus={() => {
+                    if (value.length >= 3) {
+                        const filtered = primeDestinations.filter(dest =>
+                            dest.toLowerCase().includes(value.toLowerCase())
+                        );
+                        if (filtered.length > 0) {
+                            setSuggestions(filtered);
+                            setShowSuggestions(true);
+                        }
+                    }
+                }}
+                onBlur={() => {
+                    // Delay hiding suggestions to allow click event
+                    setTimeout(() => {
+                        setShowSuggestions(false);
+                    }, 150);
+                }}
+                className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full"
+                autoComplete="off"
+            />
+            {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-b-lg -mt-1 shadow-lg max-h-60 overflow-y-auto">
+                    {suggestions.map((suggestion, index) => (
+                        <div
+                            key={index}
+                            className="p-3 hover:bg-gray-100 cursor-pointer text-gray-800 text-sm"
+                            onMouseDown={(e) => {
+                                e.preventDefault();
+                                handleSelectSuggestion(suggestion);
+                            }}
+                        >
+                            {suggestion}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
 
 export function BookingWidget() {
   const [tripType, setTripType] = useState('oneway');
+  const [origin, setOrigin] = useState('');
+  const [destination, setDestination] = useState('');
 
   const handleTripTypeChange = (type: string) => {
       setTripType(type);
@@ -82,12 +160,9 @@ export function BookingWidget() {
                     </div>
 
                     <div className="flex flex-col lg:flex-row bg-white rounded-lg overflow-hidden shadow-lg items-center">
-                        <Input list="destinations" placeholder="Origin" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                        <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
-                        <Input list="destinations" placeholder="Destination" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
-                        <datalist id="destinations">
-                            {primeDestinations.map((dest) => <option key={dest} value={dest} />)}
-                        </datalist>
+                        <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                         <Input type="text" placeholder="Date & Time" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
