@@ -61,7 +61,7 @@ const StatItem = ({ icon: Icon, value, label }: { icon: React.ElementType, value
 );
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-features');
+  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
