@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -170,8 +169,16 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-16 md:py-24 bg-background">
-            <div className="container">
+        <section className="relative py-16 md:py-24">
+            <Image
+                src="https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080"
+                alt="Private jet cabin background"
+                fill
+                className="object-cover"
+                data-ai-hint="jet interior"
+            />
+            <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
+            <div className="container relative">
                 <div className="text-center max-w-3xl mx-auto">
                     <h2 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
@@ -181,7 +188,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="bg-card border-border/50">
+                        <Card key={index} className="bg-card/80 border-border/50 backdrop-blur-lg">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="bg-primary/10 p-3 rounded-full border border-primary/20">
                                     <feature.icon className="h-6 w-6 text-primary" />
