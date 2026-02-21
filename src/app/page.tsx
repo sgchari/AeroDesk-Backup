@@ -149,7 +149,7 @@ export default function Home() {
                 />
             )}
           <div className="absolute inset-0 bg-black/60" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
+          <div className="relative z-10 flex h-full flex-col items-center pt-20 text-center text-white">
             <div className="container max-w-7xl p-4 text-left sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
                 <ShieldCheck className="h-4 w-4" />

@@ -29,6 +29,20 @@ const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+const primeDestinations = [
+    "Mumbai (BOM)",
+    "Delhi (DEL)",
+    "Bengaluru (BLR)",
+    "Goa (GOI)",
+    "Chennai (MAA)",
+    "Hyderabad (HYD)",
+    "Kolkata (CCU)",
+    "Dubai (DXB)",
+    "London (LHR)",
+    "New York (JFK)",
+    "Singapore (SIN)",
+];
+
 
 export function BookingWidget() {
   const [tripType, setTripType] = useState('oneway');
@@ -67,9 +81,12 @@ export function BookingWidget() {
                     </div>
 
                     <div className="flex flex-col lg:flex-row bg-white rounded-lg overflow-hidden shadow-lg items-center">
-                        <Input placeholder="Origin" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                        <Input list="destinations" placeholder="Origin" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
-                        <Input placeholder="Destination" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                        <Input list="destinations" placeholder="Destination" className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                        <datalist id="destinations">
+                            {primeDestinations.map((dest) => <option key={dest} value={dest} />)}
+                        </datalist>
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                         <Input type="text" placeholder="Date & Time" onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
