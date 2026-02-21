@@ -9,6 +9,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Activity, Menu, Send, ShieldCheck, Zap } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import React, { useState, useEffect } from 'react';
 
 const LandingHeader = () => {
     return (
@@ -61,30 +62,45 @@ const StatItem = ({ icon: Icon, value, label }: { icon: React.ElementType, value
 );
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
+  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-features');
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const newScale = 1 + window.scrollY / 3000;
+      setScale(Math.min(newScale, 1.2));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative h-[calc(100vh-5rem)] w-full">
+        <section className="relative h-[calc(100vh-5rem)] w-full overflow-hidden">
             {heroImage && (
                 <Image
                     src={heroImage.imageUrl}
                     alt={heroImage.description}
                     fill
-                    className="object-cover"
+                    priority
+                    className="object-cover transition-transform duration-500 ease-out"
+                    style={{ transform: `scale(${scale})` }}
                     data-ai-hint={heroImage.imageHint}
                 />
             )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
             <div className="max-w-4xl px-4">
-              <h1 className="font-headline text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
+              <h1 className="font-headline text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
                 INFRASTRUCTURE <br />
                 <span className="text-primary">FOR CHARTER AVIATION.</span>
               </h1>
-              <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground md:text-xl">
+              <p className="mt-6 max-w-2xl mx-auto text-base text-muted-foreground md:text-lg">
                 A simple and reliable way to manage private flights. Built for businesses and flight operators who value efficiency and transparency.
               </p>
               <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
