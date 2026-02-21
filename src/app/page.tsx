@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,7 @@ const LandingHeader = () => {
                     </Link>
                 </div>
                 
-                <nav className="hidden absolute left-1/2 -translate-x-1/2 items-center gap-6 text-sm md:flex">
+                <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 text-sm md:flex">
                     {navLinks.map(link => (
                         <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground">
                             {link.label}
@@ -57,7 +56,7 @@ const LandingHeader = () => {
                                 </Button>
                             </SheetTrigger>
                             <SheetContent side="right">
-                                <SheetTitle className="sr-only">Menu</SheetTitle>
+                                <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                                 <div className="flex flex-col gap-6 p-6">
                                     <Logo />
                                     <nav className="flex flex-col gap-4">
@@ -147,16 +146,16 @@ export default function Home() {
             )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           <div className="absolute inset-0 bg-black/40" />
-          <div className="relative z-10 flex h-full flex-col items-start justify-center text-left container">
+          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center container">
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
                 <ShieldCheck className="h-4 w-4" />
                 REGULATED NSOP INFRASTRUCTURE
               </div>
-              <h1 className="mt-4 font-headline text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+              <h1 className="mt-4 font-headline text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
                 Request a Chartered Flight with AeroDesk
               </h1>
-              <p className="mt-6 max-w-xl text-base text-foreground/80 sm:text-lg md:text-xl">
+              <p className="mt-6 max-w-2xl mx-auto text-lg text-foreground/80 md:text-xl">
                 Verified NSOP operators. Transparent quotations. Compliance-first aviation procurement for enterprise.
               </p>
               <div className="mt-8">
@@ -171,7 +170,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative py-12 md:py-24">
+        <section className="relative py-16 md:py-24">
             <Image
                 src="https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Private jet cabin background"
@@ -190,7 +189,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-card/80 backdrop-blur-sm">
+                        <Card key={index} className="border-border/50 bg-card/80">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -217,16 +216,14 @@ export default function Home() {
                 <p className="mt-4 text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
               </div>
               <div className="text-xs text-muted-foreground">
-                <p>
                   <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
-                </p>
               </div>
             </div>
 
             {/* Column 2: Get in touch */}
-            <div>
+            <div className="flex flex-col items-start md:items-center">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Get In Touch</h3>
-              <div className="flex flex-col gap-3 text-muted-foreground">
+              <div className="flex flex-col items-start md:items-center gap-3 text-muted-foreground">
                 <a href="tel:+919819754038" className="flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 98197 54038
                 </a>
