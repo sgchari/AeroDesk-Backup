@@ -1,8 +1,7 @@
-
 'use client';
 
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { useUser as useFirebaseAuthUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
+import { useUser as useFirebaseAuthUser, useFirestore } from '@/firebase';
 import type { User as AppUser, UserRole } from '@/lib/types';
 import { doc, getDoc, collectionGroup, query, where, getDocs } from 'firebase/firestore';
 
@@ -37,15 +36,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setProfileError(null);
       const uid = authUser.uid;
 
-      const collectionsToSearch: Array<{ name: string, role: UserRole }> = [
-        { name: 'platformAdmins', role: 'Admin' },
-        { name: 'customers', role: 'Customer' },
-        { name: 'operators', role: 'Operator' },
-        { name: 'distributors', role: 'Authorized Distributor' },
-        { name: 'hotelPartners', role: 'Hotel Partner' },
-      ];
-
       try {
+        const collectionsToSearch: Array<{ name: string, role: UserRole }> = [
+          { name: 'platformAdmins', role: 'Admin' },
+          { name: 'customers', role: 'Customer' },
+          { name: 'operators', role: 'Operator' },
+          { name: 'distributors', role: 'Authorized Distributor' },
+          { name: 'hotelPartners', role: 'Hotel Partner' },
+        ];
+
         // 1. Check all standard top-level collections first.
         for (const { name, role } of collectionsToSearch) {
           const docRef = doc(firestore, name, uid);
@@ -58,18 +57,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        // 2. If not found in top-level collections, it might be a CTD user.
-        // This query requires special permissions that non-admins/non-CTD users won't have.
-        // We wrap it in a try-catch to handle the expected permission-denied error.
-        try {
-          const ctdUsersQuery = query(collectionGroup(firestore, 'users'), where('externalAuthId', '==', uid));
-          const ctdUsersSnap = await getDocs(ctdUsersQuery);
-          if (!ctdUsersSnap.empty) {
+        // 2. If not found, it might be a CTD user. This will fail for non-admins but that's expected.
+        const ctdUsersQuery = query(collectionGroup(firestore, 'users'), where('externalAuthId', '==', uid));
+        const ctdUsersSnap = await getDocs(ctdUsersQuery);
+
+        if (!ctdUsersSnap.empty) {
             const userDoc = ctdUsersSnap.docs[0];
             const profileData = { ...userDoc.data(), id: uid } as AppUser;
             
             // For CTD users, we also fetch the company name from the parent desk.
-            if (profileData.role === 'Corporate Admin' && (profileData as any).ctdId) {
+            if ((profileData.role === 'Corporate Admin' || profileData.role === 'CTD Admin') && (profileData as any).ctdId) {
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', (profileData as any).ctdId);
                 const ctdDocSnap = await getDoc(ctdDocRef);
                 if (ctdDocSnap.exists()) {
@@ -80,29 +77,25 @@ export function UserProvider({ children }: { children: ReactNode }) {
             setAppUser(profileData);
             setProfileLoading(false);
             return; // CTD profile found, we're done.
-          }
-        } catch (e: any) {
-          // If a 'permission-denied' error occurs, it's expected for non-admin users.
-          // We can safely ignore it and proceed to the final error state.
-          if (e.code !== 'permission-denied') {
-            throw e; // Re-throw any other unexpected errors.
-          }
-           console.warn("Permission denied for CTD user search, which is expected for non-admin/non-CTD roles. Continuing.");
         }
         
         // 3. If we've reached here, the profile was not found in any location.
-        throw new Error("User profile not found. Please complete your registration or contact support.");
+        throw new Error("User profile not found in any known collection. Please complete your registration or contact support.");
 
       } catch (e: any) {
+        // This single catch block will handle any error.
+        // If a 'permission-denied' error happens, it's most likely from the collectionGroup query, 
+        // which is an expected failure for non-corporate users. We can treat this as "profile not found".
         if (e.code === 'permission-denied') {
-            const contextualError = new FirestorePermissionError({
-                path: '[unknown during profile fetch]',
-                operation: 'get' // or list
-            });
-            errorEmitter.emit('permission-error', contextualError);
+            console.warn("A permission error occurred during profile search, which is expected for non-corporate users. This may mean the user's profile document doesn't exist in any of the primary collections.", e);
+            // We create a more user-friendly error to display.
+            const notFoundError = new Error("User profile not found. Please complete your registration or contact support.");
+            setProfileError(notFoundError);
+        } else {
+            // For any other type of error (e.g., network issues), report it directly.
+            console.error("An unexpected error occurred while fetching user profile:", e);
+            setProfileError(e);
         }
-        console.error("Error fetching user profile:", e);
-        setProfileError(e);
         setAppUser(null);
       } finally {
         setProfileLoading(false);
