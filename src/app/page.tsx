@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -60,7 +61,7 @@ const StatItem = ({ icon: Icon, value, label }: { icon: React.ElementType, value
 
 export default function Home() {
   const heroImage = {
-    imageUrl: "https://source.unsplash.com/ogUyaf8JWA4",
+    imageUrl: "https://images.unsplash.com/photo-1536337632149-897336511197?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     description: "Luxurious interior of a private jet with comfortable seating",
     imageHint: "private jet interior"
   };
