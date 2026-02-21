@@ -1,11 +1,10 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube, Mail } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -178,7 +177,7 @@ export default function Home() {
                 className="object-cover"
                 data-ai-hint="jet interior"
             />
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-black/70" />
             <div className="container relative">
                 <div className="text-center max-w-3xl mx-auto">
                     <h2 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
@@ -189,7 +188,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="bg-card/80 border-border/50">
+                        <Card key={index} className="bg-card/80 border-border/50 backdrop-blur-sm">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="bg-primary/10 p-3 rounded-full border border-primary/20">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -206,17 +205,46 @@ export default function Home() {
         </section>
 
       </main>
-      <footer className="border-t border-border/20 py-8">
-        <div className="container grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground">
-            <div>
-                <p>&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
-            </div>
-            <div className="text-xs md:text-right">
+      <footer className="border-t border-border/20 py-12">
+        <div className="container">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Column 1: Logo, Copyright and Disclaimer */}
+            <div className="md:col-span-2 space-y-4">
+              <div>
+                <Logo />
+                <p className="text-sm text-muted-foreground mt-4">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
+              </div>
+              <div className="text-xs">
                 <p className="font-bold uppercase">Disclaimer</p>
-                <p>
-                    This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
+                <p className="text-muted-foreground">
+                  This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
                 </p>
+              </div>
             </div>
+
+            {/* Column 2: Get in touch and Social */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Get In Touch</h3>
+              <div className="flex flex-col gap-3 text-muted-foreground">
+                <a href="tel:+919819754038" className="hover:text-foreground flex items-center gap-2">
+                    <Phone className="h-4 w-4" /> +91 98197 54038
+                </a>
+                <a href="tel:+912228222202" className="hover:text-foreground flex items-center gap-2">
+                    <Phone className="h-4 w-4" /> +91 22 2822 2202
+                </a>
+                <a href="mailto:info@aerodesk.com" className="hover:text-foreground flex items-center gap-2">
+                    <Mail className="h-4 w-4" /> info@aerodesk.com
+                </a>
+              </div>
+              <div className="flex gap-4 mt-6">
+                  <Link href="#" aria-label="Facebook" className="text-muted-foreground hover:text-primary"><Facebook className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Twitter" className="text-muted-foreground hover:text-primary"><Twitter className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="LinkedIn" className="text-muted-foreground hover:text-primary"><Linkedin className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Instagram" className="text-muted-foreground hover:text-primary"><Instagram className="h-5 w-5" /></Link>
+                  <Link href="#" aria-label="Youtube" className="text-muted-foreground hover:text-primary"><Youtube className="h-5 w-5" /></Link>
+              </div>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
