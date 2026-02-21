@@ -177,7 +177,7 @@ export default function Home() {
                 className="object-cover"
                 data-ai-hint="jet interior"
             />
-            <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-black/60" />
             <div className="container relative">
                 <div className="text-center max-w-3xl mx-auto">
                     <h2 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
