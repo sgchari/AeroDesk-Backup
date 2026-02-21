@@ -189,7 +189,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-card/80 backdrop-blur-sm">
+                        <Card key={index} className="border-border/50 bg-black/0 backdrop-blur-none">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -208,19 +208,19 @@ export default function Home() {
       </main>
       <footer className="border-t border-border/20 bg-background">
         <div className="container py-8 md:py-12">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 text-sm sm:grid-cols-2 lg:grid-cols-4">
             
             <div className="space-y-4">
               <div>
                 <Logo />
-                <p className="mt-4 text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
+                <p className="mt-4 text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
               </div>
             </div>
 
             
-            <div className="flex flex-col items-start md:items-center">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Get In Touch</h3>
-              <div className="flex flex-col items-start gap-3 text-muted-foreground md:items-center">
+            <div className="flex flex-col items-start sm:items-center">
+              <h3 className="mb-4 font-semibold uppercase tracking-wider">Get In Touch</h3>
+              <div className="flex flex-col items-start gap-3 text-muted-foreground sm:items-center">
                 <a href="tel:+919819754038" className="flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 98197 54038
                 </a>
@@ -233,10 +233,18 @@ export default function Home() {
               </div>
             </div>
 
+            <div className="flex flex-col items-start sm:items-center lg:items-start">
+              <h3 className="mb-4 font-semibold uppercase tracking-wider">Legal</h3>
+              <div className="flex flex-col items-start gap-3 text-muted-foreground sm:items-center lg:items-start">
+                <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
+                <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
+                <Link href="/safety-standards" className="hover:text-foreground">Safety Standards</Link>
+              </div>
+            </div>
             
-            <div className="md:text-right">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider md:text-right">Follow Us</h3>
-              <div className="flex gap-4 md:justify-end">
+            <div className="sm:text-right">
+              <h3 className="mb-4 font-semibold uppercase tracking-wider sm:text-right">Follow Us</h3>
+              <div className="flex gap-4 sm:justify-end">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="LinkedIn" className="text-[#0A66C2] transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
@@ -245,18 +253,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-           <div className="mt-8 border-t border-border/20 pt-8 text-xs text-muted-foreground">
-                <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-                  <p className="text-center sm:text-left">
-                      <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-4 sm:flex-nowrap">
-                    <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
-                    <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
-                    <Link href="/safety-standards" className="hover:text-foreground">Safety Standards</Link>
-                  </div>
-                </div>
-              </div>
+           <div className="mt-8 border-t border-border/20 pt-8 text-center text-xs text-muted-foreground">
+                <p>
+                    <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
+                </p>
+            </div>
         </div>
       </footer>
     </div>
