@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -181,7 +182,7 @@ export function BookingWidget() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col lg:flex-row bg-white rounded-lg overflow-hidden shadow-lg items-center">
+                    <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg items-center">
                         <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                         <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
