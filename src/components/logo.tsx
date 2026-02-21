@@ -13,7 +13,7 @@ export function Logo({ className }: { className?: string }) {
         <span className={cn(
             "font-headline text-xl font-bold tracking-wider text-foreground"
             )}>
-          AERONEX
+          AeroDesk
         </span>
         <span className={cn(
             'text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground'

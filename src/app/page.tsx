@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -66,21 +65,6 @@ const LandingHeader = () => {
     );
 };
 
-const FeatureStep = ({ num, title, description }: { num: string; title: string; description: string; }) => (
-    <div className="relative overflow-hidden rounded-lg border border-gray-200/10 bg-white/5 p-6 backdrop-blur-sm">
-        <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded bg-gray-800 font-bold text-white">
-            {num}
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold uppercase tracking-wider text-foreground">{title}</h3>
-            <p className="mt-1 text-muted-foreground">{description}</p>
-          </div>
-        </div>
-    </div>
-);
-
-
 export default function Home() {
   const heroImage = {
     imageUrl: "https://images.unsplash.com/photo-1569695663721-a82a7f955104?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -112,7 +96,7 @@ export default function Home() {
                 REGULATED NSOP INFRASTRUCTURE
               </div>
               <h1 className="mt-4 font-headline text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-                Request a Chartered Flight with AERONEX
+                Request a Chartered Flight with AeroDesk
               </h1>
               <p className="mt-6 max-w-xl text-lg text-foreground/80 md:text-xl">
                 Verified NSOP operators. Transparent quotations. Compliance-first aviation procurement for enterprise.
@@ -128,33 +112,11 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        <section className="py-16 md:py-24 bg-background">
-            <div className="container">
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-                   <FeatureStep 
-                     num="1"
-                     title="CREATE CHARTER REQUEST"
-                     description="Submit detailed flight requirements including route, passenger count, and aircraft preference (Turbo-prop / Jet)."
-                   />
-                   <FeatureStep 
-                     num="2"
-                     title="RECEIVE OPERATOR BIDS"
-                     description="Verified NSOP holders submit formal quotations with aircraft specifications and block-hour costs."
-                   />
-                   <FeatureStep 
-                     num="3"
-                     title="COMPLIANCE & SELECTION"
-                     description="Select operator based on fleet verification and price. Digital audit trail for all operations."
-                   />
-                </div>
-            </div>
-        </section>
       </main>
       <footer className="border-t border-border/20 py-8">
         <div className="container grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground">
             <div>
-                <p>&copy; {new Date().getFullYear()} AERONEX Aviation Infrastructure. All rights reserved.</p>
+                <p>&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
             </div>
             <div className="text-xs md:text-right">
                 <p className="font-bold uppercase">Disclaimer</p>
