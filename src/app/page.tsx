@@ -240,9 +240,9 @@ export default function Home() {
             </div>
 
             {/* Column 3: Social Media */}
-            <div>
+            <div className="md:text-right">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Follow Us</h3>
-              <div className="flex gap-4">
+              <div className="flex gap-4 md:justify-end">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="LinkedIn" className="text-[#0A66C2] transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
