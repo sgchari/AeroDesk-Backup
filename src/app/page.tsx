@@ -26,7 +26,7 @@ const LandingHeader = () => {
                     </Link>
                 </div>
                 
-                <nav className="hidden items-center gap-6 text-sm md:flex">
+                <nav className="hidden absolute left-1/2 -translate-x-1/2 items-center gap-6 text-sm md:flex">
                     {navLinks.map(link => (
                         <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground">
                             {link.label}
@@ -178,7 +178,7 @@ export default function Home() {
                 className="object-cover"
                 data-ai-hint="jet interior"
             />
-            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-black/50" />
             <div className="container relative">
                 <div className="text-center max-w-3xl mx-auto">
                     <h2 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
@@ -189,7 +189,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="bg-card/80 border-border/50 backdrop-blur-sm">
+                        <Card key={index} className="bg-card/80 border-border/50">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="bg-primary/10 p-3 rounded-full border border-primary/20">
                                     <feature.icon className="h-6 w-6 text-primary" />
