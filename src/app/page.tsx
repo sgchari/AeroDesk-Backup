@@ -146,7 +146,7 @@ export default function Home() {
             )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           <div className="absolute inset-0 bg-black/40" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center container">
+          <div className="relative z-10 flex h-full flex-col items-center justify-center container p-4 sm:p-6 md:p-8">
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
                 <ShieldCheck className="h-4 w-4" />
@@ -155,7 +155,7 @@ export default function Home() {
               <h1 className="mt-4 font-headline text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
                 Request a Chartered Flight with AeroDesk
               </h1>
-              <p className="mt-6 max-w-2xl mx-auto text-lg text-foreground/80 md:text-xl">
+              <p className="mt-6 max-w-2xl text-lg text-foreground/80 md:text-xl">
                 Verified NSOP operators. Transparent quotations. Compliance-first aviation procurement for enterprise.
               </p>
               <div className="mt-8">
@@ -179,7 +179,7 @@ export default function Home() {
                 data-ai-hint="jet interior"
             />
             <div className="absolute inset-0 bg-black/80" />
-            <div className="container relative">
+            <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
@@ -208,19 +208,16 @@ export default function Home() {
       </main>
       <footer className="border-t border-border/20 bg-background">
         <div className="container py-8 md:py-12">
-          <div className="grid grid-cols-1 gap-8 text-sm sm:grid-cols-2 md:grid-cols-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
             
-            <div className="space-y-4">
-              <div>
+            <div className="space-y-4 md:col-span-1">
                 <Logo />
-                <p className="mt-4 text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
-              </div>
+                <p className="text-xs text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
             </div>
 
-            
-            <div>
+            <div className="md:text-center">
               <h3 className="mb-4 font-semibold uppercase tracking-wider">Get In Touch</h3>
-              <div className="flex flex-col items-start gap-3 text-muted-foreground">
+              <div className="flex flex-col items-center gap-3 text-muted-foreground">
                 <a href="tel:+919819754038" className="flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 98197 54038
                 </a>
@@ -233,18 +230,18 @@ export default function Home() {
               </div>
             </div>
 
-            <div>
-              <h3 className="mb-4 font-semibold uppercase tracking-wider">Legal</h3>
-              <div className="flex flex-col items-start gap-3 text-muted-foreground">
-                <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
-                <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
-                <Link href="/safety-standards" className="hover:text-foreground">Safety Standards</Link>
-              </div>
+            <div className="md:text-center">
+                <h3 className="mb-4 font-semibold uppercase tracking-wider">Legal</h3>
+                <div className="flex flex-col items-center gap-3 text-muted-foreground">
+                    <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
+                    <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
+                    <Link href="/safety-standards" className="hover:text-foreground">Safety Standards</Link>
+                </div>
             </div>
             
-            <div>
+            <div className="md:text-right">
               <h3 className="mb-4 font-semibold uppercase tracking-wider">Follow Us</h3>
-              <div className="flex gap-4">
+              <div className="flex gap-4 md:justify-end">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="LinkedIn" className="text-[#0A66C2] transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
