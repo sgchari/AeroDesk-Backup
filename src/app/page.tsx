@@ -156,7 +156,7 @@ export default function Home() {
                 <ShieldCheck className="h-4 w-4" />
                 Charter Smarter. Travel Seamlessly.
               </div>
-              <h1 className="mt-4 font-headline text-4xl font-bold tracking-tight [text-shadow:0_2px_4px_rgb(0_0_0_/_0.5)] sm:text-5xl md:text-6xl">
+              <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight [text-shadow:0_2px_4px_rgb(0_0_0_/_0.5)] sm:text-5xl md:text-6xl">
                 Designed for Those Who Fly Differently.
               </h1>
               <div className="mt-8">
@@ -166,7 +166,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative py-16 md:py-24">
+        <section className="relative py-12 md:py-16">
             {featuresImage && (
                 <Image
                     src={featuresImage.imageUrl}
@@ -203,7 +203,7 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="relative py-16 md:py-24">
+        <section className="relative py-12 md:py-16">
             {paymentImage && (
                 <Image
                     src={paymentImage.imageUrl}
