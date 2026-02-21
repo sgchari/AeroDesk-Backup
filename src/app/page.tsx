@@ -189,7 +189,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-black/0 backdrop-blur-none">
+                        <Card key={index} className="border-border/50 bg-transparent">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -208,7 +208,7 @@ export default function Home() {
       </main>
       <footer className="border-t border-border/20 bg-background">
         <div className="container py-8 md:py-12">
-          <div className="grid grid-cols-1 gap-8 text-sm sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 text-sm sm:grid-cols-2 md:grid-cols-4">
             
             <div className="space-y-4">
               <div>
@@ -218,9 +218,9 @@ export default function Home() {
             </div>
 
             
-            <div className="flex flex-col items-start sm:items-center">
+            <div>
               <h3 className="mb-4 font-semibold uppercase tracking-wider">Get In Touch</h3>
-              <div className="flex flex-col items-start gap-3 text-muted-foreground sm:items-center">
+              <div className="flex flex-col items-start gap-3 text-muted-foreground">
                 <a href="tel:+919819754038" className="flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 98197 54038
                 </a>
@@ -233,18 +233,18 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex flex-col items-start sm:items-center lg:items-start">
+            <div>
               <h3 className="mb-4 font-semibold uppercase tracking-wider">Legal</h3>
-              <div className="flex flex-col items-start gap-3 text-muted-foreground sm:items-center lg:items-start">
+              <div className="flex flex-col items-start gap-3 text-muted-foreground">
                 <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
                 <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
                 <Link href="/safety-standards" className="hover:text-foreground">Safety Standards</Link>
               </div>
             </div>
             
-            <div className="sm:text-right">
-              <h3 className="mb-4 font-semibold uppercase tracking-wider sm:text-right">Follow Us</h3>
-              <div className="flex gap-4 sm:justify-end">
+            <div>
+              <h3 className="mb-4 font-semibold uppercase tracking-wider">Follow Us</h3>
+              <div className="flex gap-4">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="LinkedIn" className="text-[#0A66C2] transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
