@@ -5,7 +5,7 @@ import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube, Mail } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 
@@ -133,7 +133,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative h-[80vh] w-full overflow-hidden">
+        <section className="relative h-[70vh] w-full overflow-hidden md:h-[80vh]">
             {heroImage && (
                 <Image
                     src={heroImage.imageUrl}
@@ -152,10 +152,10 @@ export default function Home() {
                 <ShieldCheck className="h-4 w-4" />
                 REGULATED NSOP INFRASTRUCTURE
               </div>
-              <h1 className="mt-4 font-headline text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+              <h1 className="mt-4 font-headline text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
                 Request a Chartered Flight with AeroDesk
               </h1>
-              <p className="mt-6 max-w-xl text-lg text-foreground/80 md:text-xl">
+              <p className="mt-6 max-w-xl text-base text-foreground/80 sm:text-lg md:text-xl">
                 Verified NSOP operators. Transparent quotations. Compliance-first aviation procurement for enterprise.
               </p>
               <div className="mt-8">
@@ -170,7 +170,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative py-16 md:py-24">
+        <section className="relative py-12 md:py-24">
             <Image
                 src="https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Private jet cabin background"
@@ -180,8 +180,8 @@ export default function Home() {
             />
             <div className="absolute inset-0 bg-black/80" />
             <div className="container relative">
-                <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
+                <div className="mx-auto max-w-3xl text-center">
+                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
                         AeroDesk integrates every facet of the charter lifecycle into a single, compliant, and efficient digital platform.
                     </p>
@@ -189,9 +189,9 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="bg-card/80 border-border/50 backdrop-blur-sm">
+                        <Card key={index} className="border-border/50 bg-card/80">
                             <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="bg-primary/10 p-3 rounded-full border border-primary/20">
+                                <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
                                 </div>
                                 <CardTitle className="text-lg">{feature.title}</CardTitle>
@@ -206,14 +206,14 @@ export default function Home() {
         </section>
 
       </main>
-      <footer className="border-t border-border/20 py-12">
+      <footer className="border-t border-border/20 py-8 md:py-12">
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {/* Column 1: Logo, Copyright and Disclaimer */}
             <div className="space-y-4">
               <div>
                 <Logo />
-                <p className="text-sm text-muted-foreground mt-4">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
+                <p className="mt-4 text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
               </div>
               <div className="text-xs">
                 <p className="font-bold uppercase">Disclaimer</p>
@@ -225,15 +225,15 @@ export default function Home() {
 
             {/* Column 2: Get in touch */}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Get In Touch</h3>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Get In Touch</h3>
               <div className="flex flex-col gap-3 text-muted-foreground">
-                <a href="tel:+919819754038" className="hover:text-foreground flex items-center gap-2">
+                <a href="tel:+919819754038" className="flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 98197 54038
                 </a>
-                <a href="tel:+912228222202" className="hover:text-foreground flex items-center gap-2">
+                <a href="tel:+912228222202" className="flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 22 2822 2202
                 </a>
-                <a href="mailto:info@aerodesk.com" className="hover:text-foreground flex items-center gap-2">
+                <a href="mailto:info@aerodesk.com" className="flex items-center gap-2 hover:text-foreground">
                     <Mail className="h-4 w-4" /> info@aerodesk.com
                 </a>
               </div>
@@ -241,7 +241,7 @@ export default function Home() {
 
             {/* Column 3: Social Media */}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Follow Us</h3>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Follow Us</h3>
               <div className="flex gap-4">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
