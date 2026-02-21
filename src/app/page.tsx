@@ -148,7 +148,7 @@ export default function Home() {
                 />
             )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-background/30" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
             <div className="container max-w-3xl p-4 text-left sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
@@ -183,7 +183,7 @@ export default function Home() {
                     data-ai-hint={featuresImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-black/80" />
+            <div className="absolute inset-0 bg-background/80" />
             <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
@@ -194,7 +194,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-transparent">
+                        <Card key={index} className="border-border/50 bg-background/50 backdrop-blur-sm">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -220,7 +220,7 @@ export default function Home() {
                     data-ai-hint={paymentImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-black/80" />
+            <div className="absolute inset-0 bg-background/80" />
             <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
@@ -230,7 +230,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="flex flex-col border-border/50 bg-transparent">
+                    <Card className="flex flex-col border-border/50 bg-background/50 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -246,7 +246,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
 
-                    <Card className="flex flex-col border-border/50 bg-transparent">
+                    <Card className="flex flex-col border-border/50 bg-background/50 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -267,7 +267,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
                     
-                    <Card className="flex flex-col border-border/50 bg-transparent md:col-span-2 lg:col-span-1">
+                    <Card className="flex flex-col border-border/50 bg-background/50 backdrop-blur-sm md:col-span-2 lg:col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -301,9 +301,9 @@ export default function Home() {
         </section>
 
       </main>
-      <footer className="border-t border-border/20 bg-background">
+      <footer className="border-t border-border bg-background">
         <div className="container py-12">
-            <div className="grid grid-cols-1 gap-8 text-center sm:text-left md:grid-cols-4">
+            <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
                 <div className="flex flex-col items-center gap-4 sm:items-start">
                     <Logo />
                 </div>
@@ -336,7 +336,7 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-            <div className="mt-8 border-t border-border/20 pt-8 text-center text-xs text-muted-foreground">
+            <div className="mt-8 border-t border-border pt-8 text-center text-xs text-muted-foreground">
                 <p>
                     <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
                 </p>
