@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -18,66 +19,69 @@ const LandingHeader = () => {
     ];
     return (
         <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/90 backdrop-blur-sm">
-            <div className="container flex h-20 items-center">
+            <div className="container flex h-20 items-center justify-between">
                 <div className="flex items-center gap-6">
                     <Link href="/">
                         <Logo />
                     </Link>
-                    <nav className="hidden items-center gap-6 text-sm md:flex">
-                        {navLinks.map(link => (
-                            <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground">
-                                {link.label}
-                            </Link>
-                        ))}
-                    </nav>
                 </div>
                 
-                <div className="ml-auto hidden items-center gap-4 md:flex">
-                     <a href="tel:+919819754038" className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-                        <Phone className="h-4 w-4" />
-                        +91 98197 54038
-                    </a>
-                    <Button variant="ghost" asChild>
-                        <Link href="/login">Login</Link>
-                    </Button>
-                    <Button asChild>
-                        <Link href="/register">Register</Link>
-                    </Button>
-                </div>
+                <nav className="hidden items-center gap-6 text-sm md:flex">
+                    {navLinks.map(link => (
+                        <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground">
+                            {link.label}
+                        </Link>
+                    ))}
+                </nav>
+                
+                <div className="flex items-center gap-4">
+                    <div className="hidden items-center gap-4 md:flex">
+                        <a href="tel:+919819754038" className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                            <Phone className="h-4 w-4" />
+                            +91 98197 54038
+                        </a>
+                        <Button variant="ghost" asChild>
+                            <Link href="/login">Login</Link>
+                        </Button>
+                        <Button asChild>
+                            <Link href="/register">Register</Link>
+                        </Button>
+                    </div>
 
-                <div className="ml-auto md:hidden">
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                                <Menu className="h-6 w-6" />
-                                <span className="sr-only">Open menu</span>
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right">
-                            <div className="flex flex-col gap-6 p-6">
-                                <Logo />
-                                <nav className="flex flex-col gap-4">
-                                     {navLinks.map(link => (
-                                        <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground py-2 text-lg">
-                                            {link.label}
-                                        </Link>
-                                    ))}
-                                </nav>
-                                <div className="flex flex-col gap-2 border-t pt-4">
-                                    <a href="tel:+919819754038" className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground py-2">
-                                        <Phone className="h-4 w-4" />
-                                        +91 98197 54038
-                                    </a>
-                                  <Button asChild>
-                                      <Link href="/login">Login</Link>
-                                  </Button>
-                                  <Button variant="outline" asChild>
-                                      <Link href="/register">Register</Link>
-                                  </Button>
+                    <div className="md:hidden">
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                    <Menu className="h-6 w-6" />
+                                    <span className="sr-only">Open menu</span>
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="right">
+                                <div className="flex flex-col gap-6 p-6">
+                                    <Logo />
+                                    <nav className="flex flex-col gap-4">
+                                        {navLinks.map(link => (
+                                            <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground py-2 text-lg">
+                                                {link.label}
+                                            </Link>
+                                        ))}
+                                    </nav>
+                                    <div className="flex flex-col gap-2 border-t pt-4">
+                                        <a href="tel:+919819754038" className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground py-2">
+                                            <Phone className="h-4 w-4" />
+                                            +91 98197 54038
+                                        </a>
+                                    <Button asChild>
+                                        <Link href="/login">Login</Link>
+                                    </Button>
+                                    <Button variant="outline" asChild>
+                                        <Link href="/register">Register</Link>
+                                    </Button>
+                                    </div>
                                 </div>
-                            </div>
-                        </SheetContent>
-                    </Sheet>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
                 </div>
             </div>
       </header>
