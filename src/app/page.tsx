@@ -80,7 +80,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative h-[150vh] w-full overflow-hidden">
+        <section className="relative h-[100vh] w-full overflow-hidden">
             {heroImage && (
                 <Image
                     src={heroImage.imageUrl}
@@ -93,7 +93,7 @@ export default function Home() {
                 />
             )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-          <div className="sticky top-0 z-10 flex h-screen flex-col items-center justify-end pb-32 text-center">
+          <div className="sticky top-0 z-10 flex h-screen flex-col items-center justify-center pb-20 text-center">
             <div className="max-w-4xl px-4">
               <h1 className="font-headline text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl">
                 DIGITAL INFRASTRUCTURE <br />

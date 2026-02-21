@@ -39,8 +39,8 @@
     {
       "id": "landing-hero",
       "description": "Luxurious interior of a private jet for the landing page hero.",
-      "imageUrl": "https://images.unsplash.com/photo-1616142346960-c5d7e7f01113?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE0Nzc3NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "jet interior"
+      "imageUrl": "https://images.unsplash.com/photo-1536337632149-897336511197?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "jet interior wide"
     },
     {
       "id": "landing-features",
