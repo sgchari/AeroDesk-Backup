@@ -98,7 +98,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                         setShowSuggestions(false);
                     }, 150);
                 }}
-                className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full"
+                className="border-0 focus-visible:ring-0 rounded-none text-foreground w-full"
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
@@ -222,7 +222,7 @@ export function BookingWidget() {
                                             onChange={(e) => updateLeg(index, 'date', e.target.value)}
                                             onFocus={(e) => e.target.type='datetime-local'}
                                             onBlur={(e) => e.target.type='text'}
-                                            className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground"
+                                            className="border-0 focus-visible:ring-0 rounded-none text-foreground w-full"
                                         />
                                     </div>
                                 ))}
@@ -231,12 +231,12 @@ export function BookingWidget() {
                                 <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                                 {tripType === 'round' && (
                                     <>
-                                        <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full" />
+                                        <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none text-foreground w-full" />
                                         <div className="h-px w-full lg:h-auto lg:w-px bg-gray-200 self-stretch"></div>
                                     </>
                                 )}
-                                <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 rounded-none p-4 text-sm sm:text-base text-foreground w-full lg:w-48" />
-                                <Button className="rounded-none text-base sm:text-lg h-auto p-4 w-full lg:w-auto">Request Pricing</Button>
+                                <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 rounded-none text-foreground w-full lg:w-48" />
+                                <Button className="rounded-none w-full lg:w-auto">Request Pricing</Button>
                             </div>
                         </div>
                     </div>
