@@ -3,18 +3,18 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking, deleteDocumentNonBlocking, errorEmitter, FirestorePermissionError } from "@/firebase";
 import { UserRole } from "@/lib/types";
 import { collection, doc, getDocs } from "firebase/firestore";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Pencil } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AddUserDialog } from "@/components/dashboard/admin/add-user-dialog";
+import { EditUserDialog } from "@/components/dashboard/admin/edit-user-dialog";
 
 
 // A normalized user type for the table
@@ -34,6 +34,7 @@ export default function UserManagementPage() {
     const [allUsers, setAllUsers] = useState<DisplayUser[]>([]);
     const [isUsersLoading, setUsersLoading] = useState(true);
     const [userToDelete, setUserToDelete] = useState<DisplayUser | null>(null);
+    const [userToEdit, setUserToEdit] = useState<DisplayUser | null>(null);
 
     const { data: admins, isLoading: adminsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]));
     const { data: customers, isLoading: customersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'customers') : null, [firestore]));
@@ -135,8 +136,14 @@ export default function UserManagementPage() {
             case 'Authorized Distributor': return 'distributors';
             case 'Hotel Partner': return 'hotelPartners';
             // All other roles are assumed to be CTD users.
-            default:
+            case 'CTD Admin':
+            case 'Corporate Admin':
+            case 'Requester':
                 return ctdId ? `corporateTravelDesks/${ctdId}/users` : null;
+            default:
+                const unhandledRole: never = role;
+                console.warn(`Unhandled user role for collection path: ${unhandledRole}`);
+                return null;
         }
     };
     
@@ -221,7 +228,10 @@ export default function UserManagementPage() {
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    <DropdownMenuItem disabled>Edit Profile</DropdownMenuItem>
+                                                    <DropdownMenuItem onClick={() => setUserToEdit(user)}>
+                                                        <Pencil className="mr-2 h-4 w-4" />
+                                                        Edit Profile
+                                                    </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     {user.status === 'Suspended' ? (
                                                         <DropdownMenuItem onClick={() => handleUpdateStatus(user, 'Active')}>
@@ -250,6 +260,11 @@ export default function UserManagementPage() {
                     )}
                 </CardContent>
             </Card>
+            <EditUserDialog 
+                user={userToEdit}
+                open={!!userToEdit}
+                onOpenChange={(open) => !open && setUserToEdit(null)}
+            />
             <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
