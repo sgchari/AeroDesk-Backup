@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -148,23 +147,23 @@ export default function Home() {
                     data-ai-hint={heroImage.imageHint}
                 />
             )}
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
             <div className="container max-w-3xl p-4 text-left sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
                 <ShieldCheck className="h-4 w-4" />
-                REGULATED NSOP INFRASTRUCTURE
+                EXCLUSIVE CHARTER & LIFESTYLE COORDINATION
               </div>
               <h1 className="mt-4 font-headline text-4xl font-bold tracking-tight [text-shadow:0_2px_4px_rgb(0_0_0_/_0.5)] sm:text-5xl md:text-6xl">
-                Request a Chartered Flight with AeroDesk
+                Seamless Private Jet Travel, Redefined.
               </h1>
               <p className="mt-6 max-w-2xl text-lg text-white/90 [text-shadow:0_1px_3px_rgb(0_0_0_/_0.4)] md:text-xl">
-                Verified NSOP operators. Transparent quotations. Compliance-first aviation procurement for enterprise.
+                Discover the ultimate convenience in private aviation. Request charter flights with ease, access exclusive empty leg opportunities, and coordinate luxury hotel stays—all through a single, sophisticated platform built for discerning individuals and corporate leaders.
               </p>
               <div className="mt-8">
                 <Button asChild size="lg">
                   <Link href="/register">
-                    Get Started
+                    Request Access
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -367,7 +366,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
