@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -193,7 +194,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-background/80 backdrop-blur-sm">
+                        <Card key={index} className="border-border/50 bg-card/80 backdrop-blur-sm">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -229,7 +230,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="flex flex-col border-border/50 bg-background/80 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -245,7 +246,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
 
-                    <Card className="flex flex-col border-border/50 bg-background/80 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -266,7 +267,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
                     
-                    <Card className="flex flex-col border-border/50 bg-background/80 backdrop-blur-sm md:col-span-2 lg:col-span-1">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm md:col-span-2 lg:col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -346,3 +347,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
