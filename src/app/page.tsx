@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -137,7 +138,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative h-[70vh] w-full overflow-hidden md:h-[80vh]">
+        <section className="relative w-full">
             {heroImage && (
                 <Image
                     src={heroImage.imageUrl}
@@ -149,7 +150,7 @@ export default function Home() {
                 />
             )}
           <div className="absolute inset-0 bg-black/60" />
-          <div className="relative z-10 flex h-full flex-col items-center pt-20 text-center text-white">
+          <div className="relative z-10 flex min-h-[80vh] flex-col items-center justify-center py-20 text-center text-white md:min-h-[90vh]">
             <div className="container max-w-7xl p-4 text-left sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
                 <ShieldCheck className="h-4 w-4" />
