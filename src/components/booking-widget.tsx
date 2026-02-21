@@ -2,12 +2,13 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Plane } from 'lucide-react';
+import { Plane, Armchair } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
 const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
@@ -156,13 +157,25 @@ export function BookingWidget() {
   return (
     <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 bg-black/25 backdrop-blur-md rounded-lg border border-white/20">
         <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-transparent p-0 mb-6 gap-2">
-                <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
-                    <Plane /> JET
+            <TabsList className="grid w-full grid-cols-3 bg-transparent p-0 mb-6 gap-2">
+                <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
+                    <Plane /> JET CHARTER
                 </TabsTrigger>
-                <TabsTrigger value="helicopter" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
+                <TabsTrigger value="helicopter" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
                     <Helicopter /> HELICOPTER
                 </TabsTrigger>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <TabsTrigger value="seats" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
+                                <Armchair /> RESERVE SEATS
+                            </TabsTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Access seats on select private jet flights operating on predefined routes</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </TabsList>
 
             <TabsContent value="jet">
@@ -201,6 +214,7 @@ export function BookingWidget() {
                 </div>
             </TabsContent>
             <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-white">Helicopter booking functionality coming soon.</p></TabsContent>
+            <TabsContent value="seats"><p className="text-center p-12 text-lg text-white">Seat reservation functionality coming soon.</p></TabsContent>
         </Tabs>
     </div>
   );
