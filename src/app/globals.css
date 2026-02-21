@@ -4,39 +4,39 @@
 
 @layer base {
   :root {
-    --background: 210 100% 97%; /* Very Light Sky Blue */
-    --foreground: 210 10% 15%; /* Dark text for contrast */
+    --background: 160 60% 95%; /* Light Aqua Green */
+    --foreground: 210 10% 15%; /* Dark text for contrast (from previous theme) */
 
-    --card: 255 100% 100%; /* White cards */
+    --card: 160 60% 98%; /* Lighter Aqua Green */
     --card-foreground: 210 10% 15%;
  
-    --popover: 255 100% 100%;
+    --popover: 160 60% 98%;
     --popover-foreground: 210 10% 15%;
  
-    --primary: 210 90% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 160 70% 40%;
+    --primary-foreground: 160 20% 98%;
  
-    --secondary: 210 60% 92%;
+    --secondary: 160 50% 90%;
     --secondary-foreground: 210 10% 10%;
  
-    --muted: 210 60% 92%;
+    --muted: 160 50% 90%;
     --muted-foreground: 210 10% 40%;
  
-    --accent: 210 60% 88%;
+    --accent: 160 50% 85%;
     --accent-foreground: 210 10% 10%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 210 50% 85%;
-    --input: 210 50% 90%;
-    --ring: 210 90% 60%;
+    --border: 160 40% 80%;
+    --input: 160 40% 88%;
+    --ring: 160 70% 40%;
     
-    --chart-1: 221 83% 53%;
-    --chart-2: 173 100% 44%;
-    --chart-3: 206 90% 52%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 160 70% 45%;
+    --chart-2: 160 80% 35%;
+    --chart-3: 160 60% 55%;
+    --chart-4: 160 90% 65%;
+    --chart-5: 160 50% 65%;
 
     --radius: 0.5rem;
   }
