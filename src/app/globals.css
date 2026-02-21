@@ -4,32 +4,32 @@
 
 @layer base {
   :root {
-    --background: 160 60% 95%; /* Light Aqua Green */
-    --foreground: 210 10% 15%; /* Dark text for contrast (from previous theme) */
+    --background: 160 50% 85%;
+    --foreground: 210 10% 15%;
 
-    --card: 160 60% 98%; /* Lighter Aqua Green */
+    --card: 160 50% 90%;
     --card-foreground: 210 10% 15%;
  
-    --popover: 160 60% 98%;
+    --popover: 160 50% 90%;
     --popover-foreground: 210 10% 15%;
  
     --primary: 160 70% 40%;
     --primary-foreground: 160 20% 98%;
  
-    --secondary: 160 50% 90%;
+    --secondary: 160 40% 80%;
     --secondary-foreground: 210 10% 10%;
  
-    --muted: 160 50% 90%;
+    --muted: 160 40% 80%;
     --muted-foreground: 210 10% 40%;
  
-    --accent: 160 50% 85%;
+    --accent: 160 45% 78%;
     --accent-foreground: 210 10% 10%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 160 40% 80%;
-    --input: 160 40% 88%;
+    --border: 160 30% 70%;
+    --input: 160 30% 78%;
     --ring: 160 70% 40%;
     
     --chart-1: 160 70% 45%;
