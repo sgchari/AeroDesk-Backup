@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { Poppins } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { UserProvider } from '@/hooks/use-user';
 import { FirebaseClientProvider } from '@/firebase';
 
@@ -12,11 +12,10 @@ export const metadata: Metadata = {
     'A compliance-first digital aviation infrastructure platform for non-scheduled charter operations (NSOP) in India.',
 };
 
-const poppins = Poppins({
-  weight: ['300', '400', '500', '600', '700'],
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-poppins',
+  variable: '--font-inter',
 });
 
 
@@ -36,7 +35,7 @@ export default function RootLayout({
       <body
         className={cn(
           'min-h-screen bg-background font-body antialiased',
-          poppins.variable,
+          inter.variable,
           process.env.NODE_ENV === 'development' ? 'debug-screens' : ''
         )}
       >
