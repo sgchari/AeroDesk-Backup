@@ -183,7 +183,7 @@ export default function Home() {
                     data-ai-hint={featuresImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-background/60" />
+            <div className="absolute inset-0 bg-background/50" />
             <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
@@ -194,7 +194,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-card/80 backdrop-blur-sm">
+                        <Card key={index} className="border-border/50 bg-card/20 backdrop-blur-sm">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -220,7 +220,7 @@ export default function Home() {
                     data-ai-hint={paymentImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-background/60" />
+            <div className="absolute inset-0 bg-background/50" />
             <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
@@ -230,7 +230,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/20 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -246,7 +246,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
 
-                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/20 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -267,7 +267,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
                     
-                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm md:col-span-2 lg:col-span-1">
+                    <Card className="flex flex-col border-border/50 bg-card/20 backdrop-blur-sm md:col-span-2 lg:col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -347,5 +347,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
