@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Activity, Menu, Send, ShieldCheck, Zap } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
 import React, { useState, useEffect } from 'react';
 
 const LandingHeader = () => {
@@ -67,8 +66,8 @@ export default function Home() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const newScale = 1 + window.scrollY / 3000;
-      setScale(Math.min(newScale, 1.2));
+      const newScale = 1 + window.scrollY / 2000;
+      setScale(Math.min(newScale, 1.3));
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -81,7 +80,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative h-[calc(100vh-5rem)] w-full overflow-hidden">
+        <section className="relative h-[150vh] w-full overflow-hidden">
             {heroImage && (
                 <Image
                     src={heroImage.imageUrl}
@@ -93,8 +92,8 @@ export default function Home() {
                     data-ai-hint={heroImage.imageHint}
                 />
             )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+          <div className="relative z-10 flex h-full flex-col items-center justify-end pb-32 text-center">
             <div className="max-w-4xl px-4">
               <h1 className="font-headline text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
                 INFRASTRUCTURE <br />
@@ -120,7 +119,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-16 md:py-24 lg:py-32">
+        <section className="py-16 md:py-24 lg:py-32 bg-background">
             <div className="container">
                 <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
                    <StatItem icon={Send} value="110+" label="Network Operators" />
