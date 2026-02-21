@@ -148,7 +148,7 @@ export default function Home() {
                     data-ai-hint={heroImage.imageHint}
                 />
             )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-background/10 to-transparent" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
             <div className="container max-w-3xl p-4 text-left sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
@@ -183,7 +183,7 @@ export default function Home() {
                     data-ai-hint={featuresImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-background/50" />
+            <div className="absolute inset-0 bg-background/30" />
             <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
@@ -194,7 +194,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-card/20 backdrop-blur-sm">
+                        <Card key={index} className="border-border/50 bg-card/90 backdrop-blur-sm">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -220,7 +220,7 @@ export default function Home() {
                     data-ai-hint={paymentImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-background/50" />
+            <div className="absolute inset-0 bg-background/30" />
             <div className="container relative p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
@@ -230,7 +230,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="flex flex-col border-border/50 bg-card/20 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/90 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -240,13 +240,13 @@ export default function Home() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="flex-grow space-y-3">
-                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Generate professional invoices for charter and ancillary services.</span></p>
-                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Track payment status from pending to paid in one central place.</span></p>
-                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Provide clear payment instructions to all parties involved.</span></p>
+                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Generate invoices for services.</span></p>
+                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Track payment status (Mark as Paid/Pending).</span></p>
+                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Provide clear payment instructions to all parties.</span></p>
                         </CardContent>
                     </Card>
 
-                    <Card className="flex flex-col border-border/50 bg-card/20 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/90 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -257,17 +257,17 @@ export default function Home() {
                         </CardHeader>
                         <CardContent className="flex-grow space-y-4">
                             <div>
-                                <h4 className="font-semibold text-foreground">Air Charter</h4>
-                                <p className="text-muted-foreground">The Customer or their designated Agent pays the licensed Aircraft Operator directly via offline methods like bank transfer, ensuring regulatory compliance.</p>
+                                <h4 className="font-semibold text-foreground">Air Charter Payment</h4>
+                                <p className="text-muted-foreground">Customer / Corporate / Agent → Pays Operator Directly (offline / bank transfer).</p>
                             </div>
                              <div>
-                                <h4 className="font-semibold text-foreground">Hotel Stays</h4>
-                                <p className="text-muted-foreground">For accommodation, the Customer or Agent settles the payment directly with the Hotel Partner.</p>
+                                <h4 className="font-semibold text-foreground">Hotel Accommodation Payment</h4>
+                                <p className="text-muted-foreground">Customer / Corporate / Agent → Pays Hotel Directly.</p>
                             </div>
                         </CardContent>
                     </Card>
                     
-                    <Card className="flex flex-col border-border/50 bg-card/20 backdrop-blur-sm md:col-span-2 lg:col-span-1">
+                    <Card className="flex flex-col border-border/50 bg-card/90 backdrop-blur-sm md:col-span-2 lg:col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -282,8 +282,8 @@ export default function Home() {
                                 <ul className="space-y-2 text-muted-foreground text-sm">
                                     <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> AeroDesk never touches funds.</li>
                                     <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Zero refund liability.</li>
-                                    <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Avoids financial regulatory risk.</li>
-                                    <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Prevents OTA classification triggers.</li>
+                                    <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> No financial regulatory risk.</li>
+                                    <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> No OTA classification trigger.</li>
                                 </ul>
                             </div>
                              <div>
@@ -347,3 +347,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
