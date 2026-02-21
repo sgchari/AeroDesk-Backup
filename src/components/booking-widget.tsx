@@ -31,13 +31,35 @@ const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const primeDestinations = [
-    "Mumbai (BOM)",
-    "Delhi (DEL)",
+    "Ahmedabad (AMD)",
+    "Amritsar (ATQ)",
+    "Bagdogra (IXB)",
     "Bengaluru (BLR)",
-    "Goa (GOI)",
+    "Bhubaneswar (BBI)",
+    "Chandigarh (IXC)",
     "Chennai (MAA)",
+    "Cochin (COK)",
+    "Coimbatore (CJB)",
+    "Delhi (DEL)",
+    "Goa (GOI)",
+    "Guwahati (GAU)",
     "Hyderabad (HYD)",
+    "Imphal (IMF)",
+    "Indore (IDR)",
+    "Jaipur (JAI)",
     "Kolkata (CCU)",
+    "Lucknow (LKO)",
+    "Madurai (IXM)",
+    "Mangalore (IXE)",
+    "Mumbai (BOM)",
+    "Nagpur (NAG)",
+    "Pune (PNQ)",
+    "Port Blair (IXZ)",
+    "Srinagar (SXR)",
+    "Thiruvananthapuram (TRV)",
+    "Tiruchirappalli (TRZ)",
+    "Varanasi (VNS)",
+    "Visakhapatnam (VTZ)",
     "Dubai (DXB)",
     "London (LHR)",
     "New York (JFK)",
@@ -101,7 +123,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-b-lg -mt-1 shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-20 w-full bg-white border border-gray-200 rounded-b-lg -mt-1 shadow-lg max-h-60 overflow-y-auto">
                     {suggestions.map((suggestion, index) => (
                         <div
                             key={index}
