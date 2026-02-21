@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube, Mail } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube, Mail, Wallet, Banknote, Shield, CheckCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -146,7 +146,7 @@ export default function Home() {
             )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           <div className="absolute inset-0 bg-black/40" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center container p-4 sm:p-6 md:p-8">
+          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center container p-4 sm:p-6 md:p-8">
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
                 <ShieldCheck className="h-4 w-4" />
@@ -205,43 +205,122 @@ export default function Home() {
             </div>
         </section>
 
+        <section className="py-16 md:py-24 bg-background">
+            <div className="container p-4 sm:p-6 md:p-8">
+                <div className="mx-auto mb-12 max-w-3xl text-center">
+                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
+                    <p className="mt-4 text-lg text-muted-foreground">
+                        AeroDesk streamlines the payment process without handling funds, ensuring compliance and transparency for all parties.
+                    </p>
+                </div>
+
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    <Card className="flex flex-col">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-3">
+                                <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
+                                    <Wallet className="h-6 w-6 text-primary" />
+                                </div>
+                                Payment Coordination
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-grow space-y-3">
+                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Generate professional invoices for charter and ancillary services.</span></p>
+                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Track payment status from pending to paid in one central place.</span></p>
+                            <p className="flex items-start gap-3"><CheckCircle className="h-5 w-5 mt-0.5 shrink-0 text-green-500" /> <span>Provide clear payment instructions to all parties involved.</span></p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="flex flex-col">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-3">
+                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
+                                    <Banknote className="h-6 w-6 text-primary" />
+                                </div>
+                                Direct Payment Flow
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-grow space-y-4">
+                            <div>
+                                <h4 className="font-semibold text-foreground">Air Charter</h4>
+                                <p className="text-muted-foreground">The Customer or their designated Agent pays the licensed Aircraft Operator directly via offline methods like bank transfer, ensuring regulatory compliance.</p>
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-foreground">Hotel Stays</h4>
+                                <p className="text-muted-foreground">For accommodation, the Customer or Agent settles the payment directly with the Hotel Partner.</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    
+                    <Card className="flex flex-col md:col-span-2 lg:col-span-1">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-3">
+                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
+                                    <Shield className="h-6 w-6 text-primary" />
+                                </div>
+                                Our Role & Revenue Model
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <h4 className="font-semibold text-foreground mb-2">Compliance First</h4>
+                                <ul className="space-y-2 text-muted-foreground text-sm">
+                                    <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> AeroDesk never touches funds.</li>
+                                    <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Zero refund liability.</li>
+                                    <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Avoids financial regulatory risk.</li>
+                                    <li className="flex items-start gap-2"><ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Prevents OTA classification triggers.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-foreground mb-2">How We Earn</h4>
+                                 <ul className="space-y-2 text-muted-foreground text-sm">
+                                    <li className="flex items-start gap-2"><FileText className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Subscription fees.</li>
+                                    <li className="flex items-start gap-2"><FileText className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Participation fees.</li>
+                                    <li className="flex items-start gap-2"><FileText className="h-4 w-4 mt-0.5 shrink-0 text-primary/80" /> Coordination / facilitation fees.</li>
+                                </ul>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </section>
+
       </main>
       <footer className="border-t border-border/20 bg-background">
         <div className="container py-8 md:py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+          <div className="grid grid-cols-1 gap-8 text-sm sm:grid-cols-2 lg:grid-cols-4">
             
-            <div className="space-y-4 md:col-span-1">
+            <div className="space-y-4 text-center sm:text-left">
                 <Logo />
-                <p className="text-xs text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
             </div>
 
-            <div className="md:text-center">
-              <h3 className="mb-4 font-semibold uppercase tracking-wider">Get In Touch</h3>
-              <div className="flex flex-col items-center gap-3 text-muted-foreground">
-                <a href="tel:+919819754038" className="flex items-center gap-2 hover:text-foreground">
+            <div className="space-y-3 text-center sm:text-left">
+              <h3 className="font-semibold uppercase tracking-wider">Get In Touch</h3>
+              <div className="flex flex-col items-center sm:items-start gap-3 text-muted-foreground">
+                <a href="tel:+919819754038" className="inline-flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 98197 54038
                 </a>
-                <a href="tel:+912228222202" className="flex items-center gap-2 hover:text-foreground">
+                <a href="tel:+912228222202" className="inline-flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 22 2822 2202
                 </a>
-                <a href="mailto:info@aerodesk.com" className="flex items-center gap-2 hover:text-foreground">
+                <a href="mailto:info@aerodesk.com" className="inline-flex items-center gap-2 hover:text-foreground">
                     <Mail className="h-4 w-4" /> info@aerodesk.com
                 </a>
               </div>
             </div>
 
-            <div className="md:text-center">
-                <h3 className="mb-4 font-semibold uppercase tracking-wider">Legal</h3>
-                <div className="flex flex-col items-center gap-3 text-muted-foreground">
+            <div className="space-y-3 text-center sm:text-left">
+                <h3 className="font-semibold uppercase tracking-wider">Legal</h3>
+                <div className="flex flex-col items-center sm:items-start gap-3 text-muted-foreground">
                     <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
                     <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
                     <Link href="/safety-standards" className="hover:text-foreground">Safety Standards</Link>
                 </div>
             </div>
             
-            <div className="md:text-right">
-              <h3 className="mb-4 font-semibold uppercase tracking-wider">Follow Us</h3>
-              <div className="flex gap-4 md:justify-end">
+            <div className="space-y-3 text-center sm:text-left lg:text-right">
+              <h3 className="font-semibold uppercase tracking-wider">Follow Us</h3>
+              <div className="flex gap-4 justify-center sm:justify-start lg:justify-end">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="LinkedIn" className="text-[#0A66C2] transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
@@ -254,6 +333,7 @@ export default function Home() {
                 <p>
                     <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
                 </p>
+                <p className="mt-2">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
             </div>
         </div>
       </footer>
