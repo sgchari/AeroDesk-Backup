@@ -44,9 +44,9 @@
     },
     {
       "id": "landing-features",
-      "description": "Private jet on a runway.",
-      "imageUrl": "https://images.unsplash.com/photo-1554104707-a76b270e4bbb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "private jet"
+      "description": "Luxurious interior of a private air charter.",
+      "imageUrl": "https://images.unsplash.com/photo-1616142346960-c5d7e7f01113?q=80&w=1948&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "jet interior"
     },
     {
       "id": "landing-cta",
