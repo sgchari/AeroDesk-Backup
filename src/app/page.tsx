@@ -55,7 +55,7 @@ const LandingHeader = () => {
                                     <span className="sr-only">Open menu</span>
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="right">
+                            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                                 <div className="flex flex-col gap-6 p-6">
                                     <Logo />
@@ -208,19 +208,16 @@ export default function Home() {
       </main>
       <footer className="border-t border-border/20 bg-background">
         <div className="container py-8 md:py-12">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {/* Column 1: Logo, Copyright and Disclaimer */}
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            
             <div className="space-y-4">
               <div>
                 <Logo />
                 <p className="mt-4 text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
               </div>
-              <div className="text-xs text-muted-foreground">
-                  <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
-              </div>
             </div>
 
-            {/* Column 2: Get in touch */}
+            
             <div className="flex flex-col items-start md:items-center">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Get In Touch</h3>
               <div className="flex flex-col items-start md:items-center gap-3 text-muted-foreground">
@@ -236,9 +233,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Column 3: Social Media */}
+            
             <div className="md:text-right">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Follow Us</h3>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-right">Follow Us</h3>
               <div className="flex gap-4 md:justify-end">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
@@ -248,6 +245,17 @@ export default function Home() {
               </div>
             </div>
           </div>
+           <div className="mt-8 border-t border-border/20 pt-8 text-xs text-muted-foreground">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                  <p className="text-center sm:text-left">
+                      <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
+                  </p>
+                  <div className="flex gap-4">
+                    <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
+                    <Link href="#" className="hover:text-foreground">Privacy Policy</Link>
+                  </div>
+                </div>
+              </div>
         </div>
       </footer>
     </div>
