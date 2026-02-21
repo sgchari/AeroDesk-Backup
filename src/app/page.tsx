@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -189,7 +190,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-card/80">
+                        <Card key={index} className="border-border/50 bg-card/80 backdrop-blur-sm">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -206,8 +207,8 @@ export default function Home() {
         </section>
 
       </main>
-      <footer className="border-t border-border/20 py-8 md:py-12">
-        <div className="container">
+      <footer className="border-t border-border/20 bg-background">
+        <div className="container py-8 md:py-12">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {/* Column 1: Logo, Copyright and Disclaimer */}
             <div className="space-y-4">
@@ -215,10 +216,9 @@ export default function Home() {
                 <Logo />
                 <p className="mt-4 text-sm text-muted-foreground">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
               </div>
-              <div className="text-xs">
-                <p className="font-bold uppercase">Disclaimer</p>
-                <p className="text-muted-foreground">
-                  This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
+              <div className="text-xs text-muted-foreground">
+                <p>
+                  <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
                 </p>
               </div>
             </div>
