@@ -61,13 +61,13 @@ const LandingHeader = () => {
                                     <Logo />
                                     <nav className="flex flex-col gap-4">
                                         {navLinks.map(link => (
-                                            <Link key={link.label} href={link.href} className="text-muted-foreground transition-colors hover:text-foreground py-2 text-lg">
+                                            <Link key={link.label} href={link.href} className="py-2 text-lg text-muted-foreground transition-colors hover:text-foreground">
                                                 {link.label}
                                             </Link>
                                         ))}
                                     </nav>
                                     <div className="flex flex-col gap-2 border-t pt-4">
-                                        <a href="tel:+919819754038" className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground py-2">
+                                        <a href="tel:+919819754038" className="flex items-center gap-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                                             <Phone className="h-4 w-4" />
                                             +91 98197 54038
                                         </a>
@@ -189,7 +189,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-card/80">
+                        <Card key={index} className="border-border/50 bg-card/80 backdrop-blur-sm">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                                     <feature.icon className="h-6 w-6 text-primary" />
@@ -220,7 +220,7 @@ export default function Home() {
             
             <div className="flex flex-col items-start md:items-center">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Get In Touch</h3>
-              <div className="flex flex-col items-start md:items-center gap-3 text-muted-foreground">
+              <div className="flex flex-col items-start gap-3 text-muted-foreground md:items-center">
                 <a href="tel:+919819754038" className="flex items-center gap-2 hover:text-foreground">
                     <Phone className="h-4 w-4" /> +91 98197 54038
                 </a>
@@ -235,7 +235,7 @@ export default function Home() {
 
             
             <div className="md:text-right">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-right">Follow Us</h3>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider md:text-right">Follow Us</h3>
               <div className="flex gap-4 md:justify-end">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
@@ -246,13 +246,13 @@ export default function Home() {
             </div>
           </div>
            <div className="mt-8 border-t border-border/20 pt-8 text-xs text-muted-foreground">
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
                   <p className="text-center sm:text-left">
                       <span className="font-bold text-foreground">Disclaimer:</span> This platform facilitates non-scheduled charter operations (NSOP) only. It is not an Online Travel Agency (OTA) or a scheduled commercial airline booking system. All flights are subject to operator compliance and DGCA regulations.
                   </p>
                   <div className="flex gap-4">
                     <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
-                    <Link href="#" className="hover:text-foreground">Privacy Policy</Link>
+                    <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
                   </div>
                 </div>
               </div>
