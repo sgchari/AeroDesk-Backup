@@ -61,7 +61,7 @@ const StatItem = ({ icon: Icon, value, label }: { icon: React.ElementType, value
 
 export default function Home() {
   const heroImage = {
-    imageUrl: "https://plus.unsplash.com/premium_photo-1679079456083-9f288e224e96?auto=format&fit=crop&w=2070&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1627192641033-99d14b423455?auto=format&fit=crop&w=2070&q=80",
     description: "Luxurious interior of a private jet with comfortable seating",
     imageHint: "private jet interior"
   };
