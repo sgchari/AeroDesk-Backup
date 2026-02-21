@@ -44,9 +44,9 @@
     },
     {
       "id": "landing-features",
-      "description": "A long-shot view down the aisle of a luxurious private jet cabin.",
-      "imageUrl": "https://images.unsplash.com/photo-1550492612-6ecd7ff41dcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxqZXQlMjBhaXNsZXxlbnwwfHx8fDE3NzE2NDkwMTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "jet aisle"
+      "description": "A high quality placeholder image for the hero section.",
+      "imageUrl": "https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jet interior"
     },
     {
       "id": "landing-cta",
