@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -5,43 +6,24 @@ import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2 } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 
 const LandingHeader = () => {
-    const router = useRouter();
     return (
         <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/90 backdrop-blur-sm">
             <div className="container flex h-20 items-center justify-between">
                 <Link href="/">
                     <Logo />
                 </Link>
-                <div className="hidden items-center gap-4 md:flex">
-                    <span className='text-sm font-medium text-muted-foreground'>AUTHORIZED ACCESS:</span>
-                    <Select onValueChange={(role) => {
-                      if (role) router.push('/login');
-                    }}>
-                        <SelectTrigger className="w-[180px] bg-secondary border-border focus:ring-primary">
-                            <SelectValue placeholder="Select Role to Simulate" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="customer">Customer</SelectItem>
-                            <SelectItem value="operator">Operator</SelectItem>
-                            <SelectItem value="ctd-admin">CTD Admin</SelectItem>
-                            <SelectItem value="distributor">Distributor</SelectItem>
-                            <SelectItem value="hotel-partner">Hotel Partner</SelectItem>
-                            <SelectItem value="admin">Platform Admin</SelectItem>
-                        </SelectContent>
-                    </Select>
+                <div className="hidden items-center gap-2 md:flex">
+                    <Button variant="ghost" asChild>
+                        <Link href="/login">Login</Link>
+                    </Button>
+                    <Button asChild>
+                        <Link href="/register">Register</Link>
+                    </Button>
                 </div>
                 <div className="md:hidden">
                     <Sheet>
@@ -54,9 +36,14 @@ const LandingHeader = () => {
                         <SheetContent side="right">
                             <div className="flex flex-col gap-4 p-4">
                                 <Logo />
-                                <Button asChild>
-                                    <Link href="/login">Login to Platform</Link>
-                                </Button>
+                                <div className="flex flex-col gap-2">
+                                  <Button asChild>
+                                      <Link href="/login">Login</Link>
+                                  </Button>
+                                  <Button variant="outline" asChild>
+                                      <Link href="/register">Register</Link>
+                                  </Button>
+                                </div>
                             </div>
                         </SheetContent>
                     </Sheet>
@@ -107,7 +94,7 @@ const features = [
 
 export default function Home() {
   const heroImage = {
-    imageUrl: "https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: "https://images.unsplash.com/photo-1536337632149-897336511197?q=80&w=2560&auto=format&fit=crop",
     description: "Luxurious interior of a private jet cabin",
     imageHint: "jet cabin interior"
   };
@@ -143,8 +130,8 @@ export default function Home() {
               </p>
               <div className="mt-8">
                 <Button asChild size="lg" className="bg-white text-black hover:bg-gray-200">
-                  <Link href="/login">
-                    LOGIN TO ACCESS PLATFORM
+                  <Link href="/register">
+                    Get Started
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
