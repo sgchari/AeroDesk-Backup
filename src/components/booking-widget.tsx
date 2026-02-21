@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plane, Ship } from 'lucide-react';
+import { Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -38,17 +38,14 @@ export function BookingWidget() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 md:p-8 bg-black/25 backdrop-blur-md rounded-lg border border-white/20">
+    <div className="w-full mx-auto p-4 sm:p-6 md:p-8 bg-black/25 backdrop-blur-md rounded-lg border border-white/20">
         <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-transparent p-0 mb-6">
+            <TabsList className="grid w-full grid-cols-2 bg-transparent p-0 mb-6">
                 <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:shadow-none p-3 border-b-2 border-transparent data-[state=active]:border-white rounded-none flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
                     <Plane /> JET
                 </TabsTrigger>
                 <TabsTrigger value="helicopter" className="text-white/70 data-[state=active]:text-white data-[state=active]:shadow-none p-3 border-b-2 border-transparent data-[state=active]:border-white rounded-none flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
                     <Helicopter /> HELICOPTER
-                </TabsTrigger>
-                <TabsTrigger value="yacht" className="text-white/70 data-[state=active]:text-white data-[state=active]:shadow-none p-3 border-b-2 border-transparent data-[state=active]:border-white rounded-none flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg">
-                    <Ship /> YACHT
                 </TabsTrigger>
             </TabsList>
 
@@ -88,7 +85,6 @@ export function BookingWidget() {
                 </div>
             </TabsContent>
             <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-white">Helicopter booking functionality coming soon.</p></TabsContent>
-            <TabsContent value="yacht"><p className="text-center p-12 text-lg text-white">Yacht booking functionality coming soon.</p></TabsContent>
         </Tabs>
     </div>
   );
