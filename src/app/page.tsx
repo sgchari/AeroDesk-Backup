@@ -178,7 +178,7 @@ export default function Home() {
                 className="object-cover"
                 data-ai-hint="jet interior"
             />
-            <div className="absolute inset-0 bg-black/70" />
+            <div className="absolute inset-0 bg-black/80" />
             <div className="container relative">
                 <div className="text-center max-w-3xl mx-auto">
                     <h2 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
@@ -210,7 +210,7 @@ export default function Home() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Column 1: Logo, Copyright and Disclaimer */}
-            <div className="md:col-span-2 space-y-4">
+            <div className="space-y-4">
               <div>
                 <Logo />
                 <p className="text-sm text-muted-foreground mt-4">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. All rights reserved.</p>
@@ -223,7 +223,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Column 2: Get in touch and Social */}
+            {/* Column 2: Get in touch */}
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Get In Touch</h3>
               <div className="flex flex-col gap-3 text-muted-foreground">
@@ -237,7 +237,12 @@ export default function Home() {
                     <Mail className="h-4 w-4" /> info@aerodesk.com
                 </a>
               </div>
-              <div className="flex gap-4 mt-6">
+            </div>
+
+            {/* Column 3: Social Media */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Follow Us</h3>
+              <div className="flex gap-4">
                   <Link href="#" aria-label="Facebook" className="text-[#1877F2] transition-opacity hover:opacity-75"><Facebook className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="Twitter" className="text-[#1DA1F2] transition-opacity hover:opacity-75"><Twitter className="h-5 w-5" /></Link>
                   <Link href="#" aria-label="LinkedIn" className="text-[#0A66C2] transition-opacity hover:opacity-75"><Linkedin className="h-5 w-5" /></Link>
