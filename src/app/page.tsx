@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -61,7 +60,11 @@ const StatItem = ({ icon: Icon, value, label }: { icon: React.ElementType, value
 );
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
+  const heroImage = {
+    imageUrl: "https://images.unsplash.com/photo-1616142386326-311ee7ea3888?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    description: "Luxurious interior of a private jet.",
+    imageHint: "jet interior"
+  };
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
