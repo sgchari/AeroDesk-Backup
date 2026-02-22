@@ -99,7 +99,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                         setShowSuggestions(false);
                     }, 150);
                 }}
-                className="border-0 focus-visible:ring-0 text-foreground w-full h-full bg-transparent"
+                className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full h-full bg-transparent"
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
@@ -207,33 +207,33 @@ export function BookingWidget() {
                         </div>
                     </RadioGroup>
 
-                    <div className="bg-white rounded-lg shadow-lg flex flex-col border border-border overflow-hidden">
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-lg flex flex-col border border-white/20 overflow-hidden">
                         {tripType === 'multicity' ? (
                             <>
                                 <div className="flex-1 flex flex-col">
                                     {legs.map((leg, index) => (
-                                        <div key={index} className={cn("flex flex-col sm:flex-row items-stretch", index > 0 && "border-t border-border")}>
+                                        <div key={index} className={cn("flex flex-col sm:flex-row items-stretch", index > 0 && "border-t border-white/20")}>
                                             <div className='flex-1'>
                                                 <AutocompleteInput placeholder={`Leg ${index + 1} Origin`} value={leg.origin} onChange={(v) => updateLeg(index, 'origin', v)} />
                                             </div>
-                                            <div className="h-px w-full sm:h-auto sm:w-px bg-border self-stretch"></div>
+                                            <div className="h-px w-full sm:h-auto sm:w-px bg-white/20 self-stretch"></div>
                                             <div className='flex-1'>
                                                 <AutocompleteInput placeholder={`Leg ${index + 1} Destination`} value={leg.destination} onChange={(v) => updateLeg(index, 'destination', v)} />
                                             </div>
-                                            <div className="h-px w-full sm:h-auto sm:w-px bg-border self-stretch"></div>
+                                            <div className="h-px w-full sm:h-auto sm:w-px bg-white/20 self-stretch"></div>
                                             <div className='flex-1'>
-                                                <Input type="text" placeholder="Date & Time" value={leg.date} onChange={(e) => updateLeg(index, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-foreground w-full bg-transparent h-full"/>
+                                                <Input type="text" placeholder="Date & Time" value={leg.date} onChange={(e) => updateLeg(index, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full"/>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="flex flex-col lg:flex-row items-stretch border-t border-border">
+                                <div className="flex flex-col lg:flex-row items-stretch border-t border-white/20">
                                     <div className="flex w-full">
-                                        <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-foreground w-full lg:w-48 bg-transparent" />
+                                        <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full lg:w-48 bg-transparent" />
                                         <Button className="w-full lg:w-auto rounded-none flex-1 lg:flex-none">Request Pricing</Button>
                                     </div>
                                 </div>
-                                 <div className="p-2 bg-gray-50 border-t border-border">
+                                 <div className="p-2 bg-gray-50/10 border-t border-white/20">
                                     <Button variant="link" size="sm" onClick={addLeg} className="text-primary gap-2">
                                         <Plus className="h-4 w-4"/>
                                         Add another flight
@@ -246,27 +246,27 @@ export function BookingWidget() {
                                 <div className="flex-1">
                                     <AutocompleteInput placeholder="Origin" value={legs[0].origin} onChange={(v) => updateLeg(0, 'origin', v)} />
                                 </div>
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-border self-stretch"></div>
+                                <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                 <div className="flex-1">
                                     <AutocompleteInput placeholder="Destination" value={legs[0].destination} onChange={(v) => updateLeg(0, 'destination', v)} />
                                 </div>
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-border self-stretch"></div>
+                                <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                 <div className="flex-1">
-                                    <Input type="text" placeholder="Date & Time" value={legs[0].date} onChange={(e) => updateLeg(0, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-foreground w-full bg-transparent h-full"/>
+                                    <Input type="text" placeholder="Date & Time" value={legs[0].date} onChange={(e) => updateLeg(0, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full"/>
                                 </div>
                                 
                                 {tripType === 'round' && (
                                     <>
-                                        <div className="h-px w-full lg:h-auto lg:w-px bg-border self-stretch"></div>
+                                        <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                         <div className="flex-1">
-                                            <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 text-foreground w-full bg-transparent h-full" />
+                                            <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full" />
                                         </div>
                                     </>
                                 )}
 
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-border self-stretch"></div>
+                                <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                 <div className="flex w-full lg:w-auto">
-                                    <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-foreground lg:w-36 bg-transparent"/>
+                                    <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 lg:w-36 bg-transparent"/>
                                     <Button className="w-full lg:w-auto rounded-none flex-1 lg:flex-none">Request Pricing</Button>
                                 </div>
                             </div>
