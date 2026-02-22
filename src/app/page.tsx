@@ -133,18 +133,16 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section 
-          className="relative flex h-[85vh] flex-col items-center justify-center text-white"
-        >
+        <section className="relative flex h-[85vh] flex-col items-center justify-center text-white">
             <Image
                 src="https://images.unsplash.com/photo-1554104707-a4b67023c530?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx2aWV3JTIwZnJvbSUyMGpldCUyMHdpbmRvd3xlbnwwfHx8fDE3NzE4ODU5NzN8MA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Private jet wing soaring above clouds at sunset"
                 fill
-                className="object-cover -z-10"
+                className="object-cover"
                 priority
             />
-            <div className="absolute inset-0 bg-black/30 -z-10" />
-            <div className="container p-4 text-center sm:p-6 md:p-8">
+            <div className="absolute inset-0 bg-black/30" />
+            <div className="relative z-10 container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -158,17 +156,15 @@ export default function Home() {
             </div>
         </section>
 
-        <section 
-          className="relative overflow-hidden py-16 text-white sm:py-24"
-        >
+        <section className="relative overflow-hidden py-16 text-white sm:py-24">
             <Image
                 src="https://images.unsplash.com/photo-1614107028313-093557672573?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhaXJjcmFmdCUyMGNvY2twaXR8ZW58MHx8fHwxNzcxODg2OTU5fDA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Cockpit of a modern aircraft"
                 fill
-                className="object-cover -z-10"
+                className="object-cover"
             />
-            <div className="absolute inset-0 bg-black/50 -z-10" />
-            <div className="container p-4 sm:p-6 md:p-8">
+            <div className="absolute inset-0 bg-black/50" />
+            <div className="relative z-10 container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-white/90 [text-shadow:0_1px_3px_rgba(0,0,0,0.3)]">
