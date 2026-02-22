@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -39,11 +40,11 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-primary/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-primary backdrop-blur-sm">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
-            <Logo className="[&_svg]:text-primary-foreground/80 [&_.text-foreground]:text-primary-foreground [&_.text-primary]:text-primary-foreground" />
+            <Logo className="[&_svg]:text-primary-foreground/80 [&_.text-foreground]:text-primary-foreground [&_.text-primary]:text-accent" />
           </Link>
         </div>
 
@@ -169,6 +170,7 @@ const features = [
 
 export default function Home() {
   const landingHero = PlaceHolderImages.find((p) => p.id === 'landing-hero')!;
+  const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -187,7 +189,7 @@ export default function Home() {
           <div className="relative">
 
             {/* Hero Text */}
-            <div className="container p-4 text-center sm:p-6 md:p-8 pt-12 pb-24">
+            <div className="container p-4 text-center sm:p-6 md:p-8 pt-12 pb-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -198,7 +200,7 @@ export default function Home() {
             </div>
             
             {/* Booking Widget */}
-            <div className="relative z-10 -mt-24">
+            <div className="relative z-10">
                 <div className="container">
                     <BookingWidget />
                 </div>
