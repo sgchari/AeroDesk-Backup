@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "landing-hero",
-      "description": "Private jet flying over a mountain range at sunset",
-      "imageUrl": "https://images.unsplash.com/photo-1605026903786-6b2a3a093a2e?q=80&w=2070&auto=format&fit=crop",
-      "imageHint": "private jet mountains"
+      "description": "Vast mountain landscape at sunrise, used as a placeholder",
+      "imageUrl": "https://images.unsplash.com/photo-1668900016730-75a72135f96d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtb3VudGFpbnMlMjBsYW5kc2NhcGV8ZW58MHx8fHwxNzcxNzgyMjYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mountains landscape"
     },
     {
       "id": "landing-features",
