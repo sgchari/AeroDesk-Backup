@@ -198,7 +198,7 @@ export function BookingWidget() {
                         </div>
                     </RadioGroup>
 
-                    <div className="bg-white rounded-lg shadow-lg flex flex-col border">
+                    <div className="bg-white rounded-lg shadow-lg flex flex-col border border-foreground/20">
                         <div className="flex flex-col lg:flex-row">
                             <div className="flex-1 flex flex-col">
                                 {legs.map((leg, index) => (
@@ -208,13 +208,13 @@ export function BookingWidget() {
                                             value={leg.origin} 
                                             onChange={(v) => updateLeg(index, 'origin', v)} 
                                         />
-                                        <div className="h-px w-full sm:h-auto sm:w-px bg-border self-stretch"></div>
+                                        <div className="h-px w-full sm:h-auto sm:w-px bg-foreground/20 self-stretch"></div>
                                         <AutocompleteInput 
                                             placeholder={index === 0 ? "Destination" : `Leg ${index + 1} Destination`} 
                                             value={leg.destination} 
                                             onChange={(v) => updateLeg(index, 'destination', v)} 
                                         />
-                                        <div className="h-px w-full sm:h-auto sm:w-px bg-border self-stretch"></div>
+                                        <div className="h-px w-full sm:h-auto sm:w-px bg-foreground/20 self-stretch"></div>
                                         <Input
                                             type="text"
                                             placeholder="Date & Time"
@@ -227,12 +227,12 @@ export function BookingWidget() {
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex flex-col lg:flex-row items-start">
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-border self-stretch"></div>
+                            <div className="flex flex-col lg:flex-row">
+                                <div className="h-px w-full lg:h-auto lg:w-px bg-foreground/20 self-stretch"></div>
                                 {tripType === 'round' && (
                                     <>
                                         <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 rounded-none text-foreground w-full" />
-                                        <div className="h-px w-full lg:h-auto lg:w-px bg-border self-stretch"></div>
+                                        <div className="h-px w-full lg:h-auto lg:w-px bg-foreground/20 self-stretch"></div>
                                     </>
                                 )}
                                 <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 rounded-none text-foreground w-full lg:w-48" />
