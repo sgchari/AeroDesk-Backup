@@ -8,6 +8,7 @@ import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, P
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
+import Image from 'next/image';
 
 
 const LandingHeader = () => {
@@ -134,12 +135,15 @@ export default function Home() {
       <main className="flex-1">
         <section 
           className="relative flex h-[85vh] flex-col items-center justify-center text-white"
-          style={{
-            backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1544091444-9097a8b25327?q=80&w=2070&auto=format&fit=crop')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
         >
+            <Image
+                src="https://images.unsplash.com/photo-1544091444-9097a8b25327?q=80&w=2070&auto=format&fit=crop"
+                alt="Private jet wing soaring above clouds at sunset"
+                fill
+                className="object-cover -z-10"
+                priority
+            />
+            <div className="absolute inset-0 bg-black/30 -z-10" />
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
@@ -156,12 +160,14 @@ export default function Home() {
 
         <section 
           className="relative overflow-hidden py-16 text-white sm:py-24"
-          style={{
-            backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1580486622086-565545a9a5a7?q=80&w=2070&auto=format&fit=crop')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
         >
+            <Image
+                src="https://images.unsplash.com/photo-1580486622086-565545a9a5a7?q=80&w=2070&auto=format&fit=crop"
+                alt="Cockpit of a modern aircraft"
+                fill
+                className="object-cover -z-10"
+            />
+            <div className="absolute inset-0 bg-black/50 -z-10" />
             <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">A Comprehensive Aviation Ecosystem</h2>
@@ -188,7 +194,7 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="bg-background py-16 sm:py-24">
+        <section className="bg-muted py-16 sm:py-24">
             <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
