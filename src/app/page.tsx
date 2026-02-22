@@ -149,7 +149,7 @@ export default function Home() {
               priority
             />
           )}
-          <div className="absolute inset-0 bg-black/30 -z-10" />
+          <div className="absolute inset-0 bg-black/20 -z-10" />
           
           <div className="flex h-full flex-col items-center justify-center text-center text-white">
             <div className="container p-4 text-center sm:p-6 md:p-8">
@@ -177,7 +177,7 @@ export default function Home() {
                     data-ai-hint={featuresImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-black/50 -z-10" />
+            <div className="absolute inset-0 bg-black/30 -z-10" />
             
             <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center text-white">
