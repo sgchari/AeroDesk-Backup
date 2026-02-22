@@ -3,7 +3,7 @@
     {
       "id": "landing-hero",
       "description": "A modern private jet on an airport runway",
-      "imageUrl": "https://images.unsplash.com/photo-1540541382423-734103541426?q=80&w=1974&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1619659085985-f51a00f0160a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwcml2YXRlJTIwamV0fGVufDB8fHx8MTc3MTczMTkwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "private jet"
     },
     {
