@@ -2,14 +2,14 @@
   "placeholderImages": [
     {
       "id": "landing-hero",
-      "description": "View from a jet window",
-      "imageUrl": "https://images.unsplash.com/photo-1554104707-a4b67023c530?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx2aWV3JTIwZnJvbSUyMGpldCUyMHdpbmRvd3xlbnwwfHx8fDE3NzE4ODU5NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "jet window view"
+      "description": "Private jet flying over a mountain range at sunset",
+      "imageUrl": "https://images.unsplash.com/photo-1605026903786-6b2a3a093a2e?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "private jet mountains"
     },
     {
       "id": "landing-features",
-      "description": "Modern aircraft cockpit on a runway",
-      "imageUrl": "https://images.unsplash.com/photo-1614107028313-093557672573?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhaXJjcmFmdCUyMGNvY2twaXR8ZW58MHx8fHwxNzcxODg2OTU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Cockpit of a modern aircraft",
+      "imageUrl": "https://images.unsplash.com/photo-1555895724-819235b0d467?q=80&w=1931&auto=format&fit=crop",
       "imageHint": "aircraft cockpit"
     },
     {

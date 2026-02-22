@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/s
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 const LandingHeader = () => {
@@ -129,14 +130,17 @@ const features = [
 
 
 export default function Home() {
+  const heroImage = PlaceHolderImages.find(p => p.id === 'landing-hero');
+  const featuresImage = PlaceHolderImages.find(p => p.id === 'landing-features');
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
         <section className="relative flex h-[85vh] flex-col items-center justify-center text-white">
             <Image
-                src="https://storage.googleapis.com/project-spark-335111-public/a927a7c7-deec-4001-8b32-0c9398ac38d7"
-                alt="Private jet flying over a mountain range at sunset"
+                src={heroImage?.imageUrl || ''}
+                alt={heroImage?.description || 'Private jet flying over a mountain range at sunset'}
                 fill
                 className="object-cover"
                 priority
@@ -158,8 +162,8 @@ export default function Home() {
 
         <section className="relative overflow-hidden py-16 text-white sm:py-24">
             <Image
-                src="https://images.unsplash.com/photo-1614107028313-093557672573?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhaXJjcmFmdCUyMGNvY2twaXR8ZW58MHx8fHwxNzcxODg2OTU5fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Cockpit of a modern aircraft"
+                src={featuresImage?.imageUrl || ''}
+                alt={featuresImage?.description || 'Cockpit of a modern aircraft'}
                 fill
                 className="object-cover"
             />
