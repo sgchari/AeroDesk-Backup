@@ -44,17 +44,17 @@ const LandingHeader = () => {
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
-             {/* The text colors within the logo are changed to white and the icon to yellow */}
-            <Logo className="[&_svg]:text-accent [&_.text-foreground]:text-primary-foreground [&_.text-primary]:text-primary-foreground" />
+             {/* The text colors within the logo are changed to white and the icon to a lighter blue */}
+            <Logo className="[&_svg]:text-primary-foreground/80 [&_.text-foreground]:text-primary-foreground [&_.text-primary]:text-primary-foreground" />
           </Link>
         </div>
 
-        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 text-sm text-primary-foreground/80 md:flex">
+        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 text-sm text-primary-foreground md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="transition-colors hover:text-primary-foreground"
+              className="transition-colors hover:text-primary-foreground/80"
             >
               {link.label}
             </Link>
@@ -65,7 +65,7 @@ const LandingHeader = () => {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="tel:+919819754038"
-              className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80 transition-colors hover:text-primary-foreground"
+              className="flex items-center gap-2 text-sm font-medium text-primary-foreground transition-colors hover:text-primary-foreground/80"
             >
               <Phone className="h-4 w-4" />
               +91 9819754038
@@ -193,7 +193,7 @@ export default function Home() {
               Fly Smarter. Stay Premium.
             </div>
             <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-              Where Exceptional <span className="text-accent">Journey Begins</span>
+              Where Exceptional Journey Begins
             </h1>
           </div>
         </section>
@@ -228,10 +228,10 @@ export default function Home() {
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center text-center p-6 rounded-xl bg-blue-950/80 backdrop-blur-md shadow-lg"
+                  className="flex flex-col items-center text-center p-6 rounded-xl bg-primary/20 backdrop-blur-lg shadow-lg"
                 >
-                    <div className="rounded-full border-4 border-primary/50 bg-primary/20 p-4">
-                      <feature.icon className="h-8 w-8 text-primary" />
+                    <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
+                      <feature.icon className="h-8 w-8 text-accent" />
                     </div>
                     <h3 className="mt-4 text-lg font-bold text-primary-foreground">{feature.title}</h3>
                     <p className="mt-2 text-primary-foreground/80">{feature.description}</p>
@@ -369,61 +369,61 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-border bg-primary text-primary-foreground">
+      <footer className="bg-secondary text-foreground">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
-               <Logo className="[&_svg]:text-accent [&_.text-foreground]:text-primary-foreground [&_.text-primary]:text-primary-foreground" />
+               <Logo />
             </div>
-            <div className="flex flex-col items-center gap-3 text-primary-foreground/80 md:items-start">
-              <h3 className="font-semibold uppercase tracking-wider text-primary-foreground">
+            <div className="flex flex-col items-center gap-3 text-muted-foreground md:items-start">
+              <h3 className="font-semibold uppercase tracking-wider text-foreground">
                 Get In Touch
               </h3>
               <a
                 href="tel:+919819754038"
-                className="inline-flex items-center gap-2 hover:text-primary-foreground"
+                className="inline-flex items-center gap-2 hover:text-foreground"
               >
                 <Phone className="h-4 w-4" /> +91 98197 54038
               </a>
               <a
                 href="tel:+912228222202"
-                className="inline-flex items-center gap-2 hover:text-primary-foreground"
+                className="inline-flex items-center gap-2 hover:text-foreground"
               >
                 <Phone className="h-4 w-4" /> +91 22 2822 2202
               </a>
               <a
                 href="mailto:info@aerodesk.com"
-                className="inline-flex items-center gap-2 hover:text-primary-foreground"
+                className="inline-flex items-center gap-2 hover:text-foreground"
               >
                 <Mail className="h-4 w-4" /> info@aerodesk.com
               </a>
             </div>
-            <div className="flex flex-col items-center gap-3 text-primary-foreground/80 md:items-start">
-              <h3 className="font-semibold uppercase tracking-wider text-primary-foreground">
+            <div className="flex flex-col items-center gap-3 text-muted-foreground md:items-start">
+              <h3 className="font-semibold uppercase tracking-wider text-foreground">
                 Legal
               </h3>
               <Link
                 href="/terms-of-service"
-                className="hover:text-primary-foreground"
+                className="hover:text-foreground"
               >
                 Terms of Service
               </Link>
-              <Link href="/privacy-policy" className="hover:text-primary-foreground">
+              <Link href="/privacy-policy" className="hover:text-foreground">
                 Privacy Policy
               </Link>
-              <Link href="/safety-standards" className="hover:text-primary-foreground">
+              <Link href="/safety-standards" className="hover:text-foreground">
                 Safety Standards
               </Link>
             </div>
             <div className="flex flex-col items-center gap-3 md:items-end">
-              <h3 className="font-semibold uppercase tracking-wider text-primary-foreground">
+              <h3 className="font-semibold uppercase tracking-wider text-foreground">
                 Follow Us
               </h3>
-              <div className="flex gap-4 text-primary-foreground">
+              <div className="flex gap-4 text-muted-foreground">
                 <Link
                   href="#"
                   aria-label="Facebook"
-                  className="transition-opacity hover:opacity-75"
+                  className="transition-opacity hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -437,7 +437,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Twitter"
-                  className="transition-opacity hover:opacity-75"
+                  className="transition-opacity hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -451,7 +451,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="LinkedIn"
-                  className="transition-opacity hover:opacity-75"
+                  className="transition-opacity hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -465,7 +465,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Instagram"
-                  className="transition-opacity hover:opacity-75"
+                  className="transition-opacity hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -479,7 +479,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Youtube"
-                  className="transition-opacity hover:opacity-75"
+                  className="transition-opacity hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -493,9 +493,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="mt-8 border-t border-border/20 pt-8 text-center text-xs text-primary-foreground/60">
+          <div className="mt-8 border-t border-border pt-8 text-center text-xs text-muted-foreground">
             <p>
-              <span className="font-bold text-primary-foreground">Disclaimer:</span>{' '}
+              <span className="font-bold text-foreground">Disclaimer:</span>{' '}
               This platform facilitates non-scheduled charter operations (NSOP)
               only. It is not an Online Travel Agency (OTA) or a scheduled
               commercial airline booking system. All flights are subject to
