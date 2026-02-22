@@ -9,7 +9,6 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/s
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 const LandingHeader = () => {
@@ -130,23 +129,18 @@ const features = [
 
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(p => p.id === 'landing-hero');
-  const featuresImage = PlaceHolderImages.find(p => p.id === 'landing-features');
-
   return (
     <div className="flex min-h-screen flex-col text-foreground">
       <LandingHeader />
       <main className="flex-1 bg-background">
         <section className="relative h-[85vh]">
-            {heroImage && (
-                <Image
-                    src={heroImage.imageUrl}
-                    alt={heroImage.description}
-                    fill
-                    className="object-cover"
-                    priority
-                />
-            )}
+            <Image
+                src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3e%3crect fill='%23334155' width='1600' height='900'/%3e%3c/svg%3e"
+                alt="Placeholder background"
+                fill
+                className="object-cover"
+                priority
+            />
             <div className="absolute inset-0 bg-black/30" />
             <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center text-white sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
@@ -163,14 +157,12 @@ export default function Home() {
         </section>
 
         <section className="relative overflow-hidden py-16 sm:py-24">
-            {featuresImage && (
-                 <Image
-                    src={featuresImage.imageUrl}
-                    alt={featuresImage.description}
-                    fill
-                    className="object-cover"
-                />
-            )}
+             <Image
+                src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3e%3crect fill='%231e293b' width='1600' height='900'/%3e%3c/svg%3e"
+                alt="Placeholder background"
+                fill
+                className="object-cover"
+            />
             <div className="absolute inset-0 bg-black/50" />
             <div className="relative z-10 container p-4 sm:p-6 md:p-8 text-white">
                 <div className="mx-auto max-w-3xl text-center">
