@@ -138,19 +138,12 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative w-full">
-            {heroImage && (
-                <Image
-                    src={heroImage.imageUrl}
-                    alt={heroImage.description}
-                    fill
-                    priority
-                    className="object-cover"
-                    data-ai-hint={heroImage.imageHint}
-                />
-            )}
+        <section
+          className="relative w-full bg-cover bg-center bg-fixed"
+          style={heroImage ? { backgroundImage: `url(${heroImage.imageUrl})` } : {}}
+        >
           <div className="absolute inset-0 bg-black/60" />
-          <div className="relative z-10 flex min-h-[calc(100vh-80px)] flex-col items-center justify-center py-6 text-center text-white">
+          <div className="relative z-10 flex flex-col items-center justify-center py-24 text-center text-white">
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
                 <ShieldCheck className="h-6 w-6" />
