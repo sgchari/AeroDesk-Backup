@@ -132,16 +132,12 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col text-foreground">
       <LandingHeader />
-      <main className="flex-1 bg-background">
-        <section className="relative h-[85vh]">
-            <Image
-                src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3e%3crect fill='%23334155' width='1600' height='900'/%3e%3c/svg%3e"
-                alt="Placeholder background"
-                fill
-                className="object-cover"
-                priority
-            />
-            <div className="absolute inset-0 bg-black/30" />
+      <main>
+        <section
+          className="relative h-[85vh] bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1605026903786-6b2a3a093a2e?q=80&w=2070&auto=format&fit=crop')" }}
+        >
+            <div className="absolute inset-0 bg-black/40" />
             <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center text-white sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
@@ -156,14 +152,11 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="relative overflow-hidden py-16 sm:py-24">
-             <Image
-                src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3e%3crect fill='%231e293b' width='1600' height='900'/%3e%3c/svg%3e"
-                alt="Placeholder background"
-                fill
-                className="object-cover"
-            />
-            <div className="absolute inset-0 bg-black/50" />
+        <section
+          className="relative overflow-hidden py-16 sm:py-24 bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1555895724-819235b0d467?q=80&w=1931&auto=format&fit=crop')" }}
+        >
+            <div className="absolute inset-0 bg-slate-900/60" />
             <div className="relative z-10 container p-4 sm:p-6 md:p-8 text-white">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">A Comprehensive Aviation Ecosystem</h2>
