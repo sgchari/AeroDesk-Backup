@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -139,9 +138,18 @@ export default function Home() {
       <LandingHeader />
       <main className="flex-1">
         <section
-          className="relative w-full bg-cover bg-center bg-fixed"
-          style={heroImage ? { backgroundImage: `url(${heroImage.imageUrl})` } : {}}
+          className="relative w-full"
         >
+          {heroImage && (
+            <Image
+              src={heroImage.imageUrl}
+              alt={heroImage.description}
+              fill
+              className="object-cover"
+              data-ai-hint={heroImage.imageHint}
+              priority
+            />
+          )}
           <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 flex flex-col items-center justify-center py-24 text-center text-white">
             <div className="container p-4 text-center sm:p-6 md:p-8">
