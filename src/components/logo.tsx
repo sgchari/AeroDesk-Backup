@@ -14,7 +14,7 @@ export function Logo({ className }: { className?: string }) {
                 <span className="font-headline text-xl font-bold tracking-wider text-foreground">AERO</span>
                 <span className="font-headline text-xl font-bold tracking-wider text-primary">DESK</span>
             </div>
-            <p className="text-xs text-muted-foreground -mt-1">Organized Charter Marketplace</p>
+            <p className="text-xs text-muted-foreground -mt-1">Organized Charter Network</p>
         </div>
     </div>
   );
