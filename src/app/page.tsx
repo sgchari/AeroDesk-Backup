@@ -138,21 +138,19 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section
-          className="relative w-full h-[60vh] lg:h-[70vh]"
-        >
+        <section className="relative isolate overflow-hidden h-[60vh] lg:h-[70vh]">
           {heroImage && (
             <Image
               src={heroImage.imageUrl}
               alt={heroImage.description}
               fill
-              className="object-cover"
+              className="object-cover -z-10"
               data-ai-hint={heroImage.imageHint}
               priority
             />
           )}
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
+          <div className="absolute inset-0 bg-black/60 -z-10" />
+          <div className="flex h-full flex-col items-center justify-center text-center text-white">
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
                 <ShieldCheck className="h-6 w-6" />
@@ -168,18 +166,18 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative py-6">
+        <section className="relative isolate overflow-hidden py-16 sm:py-24">
             {featuresImage && (
                 <Image
                     src={featuresImage.imageUrl}
                     alt={featuresImage.description}
                     fill
-                    className="object-cover opacity-[.03]"
+                    className="object-cover -z-10"
                     data-ai-hint={featuresImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-background/95" />
-            <div className="container relative p-4 sm:p-6 md:p-8">
+            <div className="absolute inset-0 bg-background/95 -z-10" />
+            <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
@@ -205,18 +203,18 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="relative py-6">
+        <section className="relative isolate overflow-hidden py-16 sm:py-24">
             {paymentImage && (
                 <Image
                     src={paymentImage.imageUrl}
                     alt={paymentImage.description}
                     fill
-                    className="object-cover opacity-[.03]"
+                    className="object-cover -z-10"
                     data-ai-hint={paymentImage.imageHint}
                 />
             )}
-            <div className="absolute inset-0 bg-background/95" />
-            <div className="container relative p-4 sm:p-6 md:p-8">
+            <div className="absolute inset-0 bg-background/95 -z-10" />
+            <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
