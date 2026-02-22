@@ -40,7 +40,7 @@ const LandingHeader = () => {
                     <div className="hidden items-center gap-4 md:flex">
                         <a href="tel:+919819754038" className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                             <Phone className="h-4 w-4" />
-                            +91 98197 54038
+                            +91 9819754038
                         </a>
                         <Button variant="ghost" asChild>
                             <Link href="/login">Login</Link>
@@ -74,7 +74,7 @@ const LandingHeader = () => {
                                     <div className="mt-auto flex flex-col gap-4 border-t pt-4">
                                         <a href="tel:+919819754038" className="flex items-center gap-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                                             <Phone className="h-4 w-4" />
-                                            +91 98197 54038
+                                            +91 9819754038
                                         </a>
                                         <div className="grid grid-cols-2 gap-2">
                                             <Button asChild>
@@ -138,7 +138,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative isolate overflow-hidden h-[85vh]">
+        <section className="relative isolate h-[85vh] overflow-hidden">
           {heroImage && (
             <Image
               src={heroImage.imageUrl}
@@ -149,14 +149,15 @@ export default function Home() {
               priority
             />
           )}
+          <div className="absolute inset-0 bg-black/30 -z-10" />
           
           <div className="flex h-full flex-col items-center justify-center text-center text-white">
             <div className="container p-4 text-center sm:p-6 md:p-8">
-              <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
               </div>
-              <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight [text-shadow:0_2px_4px_rgb(0_0_0_/_0.5)] sm:text-5xl">
+              <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl">
                 Where Exceptional Journeys Begin.
               </h1>
               <div className="mt-8">
@@ -176,9 +177,10 @@ export default function Home() {
                     data-ai-hint={featuresImage.imageHint}
                 />
             )}
+            <div className="absolute inset-0 bg-black/50 -z-10" />
             
             <div className="container p-4 sm:p-6 md:p-8">
-                <div className="mx-auto max-w-3xl text-center text-white [text-shadow:0_1px_3px_rgb(0_0_0_/_0.6)]">
+                <div className="mx-auto max-w-3xl text-center text-white">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-white/90">
                         All your charter needs, coordinated through one intelligent platform.
@@ -187,9 +189,9 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-white/20 bg-transparent text-white [text-shadow:0_1px_2px_rgb(0_0_0_/_0.6)]">
+                        <Card key={index} className="border-white/20 bg-black/20 text-white backdrop-blur-md">
                             <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="rounded-full border border-white/30 bg-white/10 p-3 backdrop-blur-sm">
+                                <div className="rounded-full border border-white/30 bg-black/25 p-3 backdrop-blur-sm">
                                     <feature.icon className="h-6 w-6 text-white" />
                                 </div>
                                 <CardTitle className="text-lg">{feature.title}</CardTitle>
