@@ -28,8 +28,7 @@ import {
 } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { cn } from '@/lib/utils';
 
 const LandingHeader = () => {
   const navLinks = [
@@ -172,13 +171,13 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <LandingHeader />
       <main>
-        <section className="flex h-[85vh] w-full flex-col items-center justify-center bg-slate-900 text-white">
+        <section className="flex h-[85vh] w-full flex-col items-center justify-center bg-secondary">
           <div className="p-4 text-center sm:p-6 md:p-8">
-            <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
+            <div className="inline-flex items-center gap-3 rounded-full border border-primary/30 bg-primary/10 px-6 py-3 text-lg font-medium backdrop-blur-sm text-primary">
               <ShieldCheck className="h-6 w-6" />
               Fly Smarter. Stay Premium.
             </div>
-            <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">
+            <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight text-secondary-foreground sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
               Where Exceptional Journeys Begin.
             </h1>
             <div className="mt-8">
@@ -187,13 +186,13 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="bg-slate-800 py-16 sm:py-24 text-white">
+        <section className="bg-background py-16 sm:py-24">
           <div className="container p-4 sm:p-6 md:p-8">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">
+              <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 A Comprehensive Aviation Ecosystem
               </h2>
-              <p className="mt-4 text-lg text-white/90 [text-shadow:0_1px_3px_rgba(0,0,0,0.3)]">
+              <p className="mt-4 text-lg text-muted-foreground">
                 All your charter needs, coordinated through one intelligent
                 platform.
               </p>
@@ -203,16 +202,16 @@ export default function Home() {
               {features.map((feature, index) => (
                 <Card
                   key={index}
-                  className="border-white/20 bg-black/40 text-white backdrop-blur-md"
+                  className="border bg-card text-card-foreground"
                 >
                   <CardHeader className="flex flex-row items-center gap-4">
-                    <div className="rounded-full border border-white/30 bg-black/25 p-3 backdrop-blur-sm">
-                      <feature.icon className="h-6 w-6 text-white" />
+                    <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
+                      <feature.icon className="h-6 w-6 text-primary" />
                     </div>
                     <CardTitle className="text-lg">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-white/80">{feature.description}</p>
+                    <p className="text-muted-foreground">{feature.description}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -490,5 +489,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
