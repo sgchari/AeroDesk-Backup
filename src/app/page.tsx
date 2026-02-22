@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Mail, Wallet, Banknote, Shield, CheckCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { BookingWidget } from '@/components/booking-widget';
 
 
@@ -129,19 +128,19 @@ const features = [
 
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(p => p.id === 'landing-hero');
-  const featuresImage = PlaceHolderImages.find(p => p.id === 'landing-features');
-  
+  const heroImageUrl = "https://images.unsplash.com/photo-1554104707-a4b67023c530?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx2aWV3JTIwZnJvbSUyMGpldCUyMHdpbmRvd3xlbnwwfHx8fDE3NzE4ODU5NzN8MA&ixlib=rb-4.1.0&q=80&w=1080";
+  const featuresImageUrl = "https://images.unsplash.com/photo-1614107028313-093557672573?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhcmNyYWZ0JTIwY29ja3BpdHxlbnwwfHx8fDE3NzE4ODY5NTl8MA&ixlib=rb-4.1.0&q=80&w=1080";
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
         <section 
-          className="relative h-[85vh] bg-cover bg-center text-white"
-          style={{ backgroundImage: heroImage ? `url(${heroImage.imageUrl})` : 'none' }}
+          className="relative h-[85vh] bg-cover bg-center text-white flex flex-col items-center justify-center"
+          style={{ 
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${heroImageUrl}')`
+          }}
         >
-          <div className="absolute inset-0 bg-black/30" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center">
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
@@ -154,15 +153,15 @@ export default function Home() {
                 <BookingWidget />
               </div>
             </div>
-          </div>
         </section>
 
         <section 
           className="relative overflow-hidden bg-cover bg-center py-16 sm:py-24 text-white"
-          style={{ backgroundImage: featuresImage ? `url(${featuresImage.imageUrl})` : 'none' }}
-          >
-            <div className="absolute inset-0 bg-black/50" />
-            <div className="relative z-10 container p-4 sm:p-6 md:p-8">
+          style={{ 
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${featuresImageUrl}')` 
+          }}
+        >
+            <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-white/90 [text-shadow:0_1px_3px_rgba(0,0,0,0.3)]">
@@ -191,7 +190,7 @@ export default function Home() {
         <section className="py-16 sm:py-24 bg-background">
             <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
-                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_2px_rgba(0,0,0,0.1)]">Transparent Payment Coordination</h2>
+                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
                         AeroDesk streamlines the payment process without handling funds, ensuring compliance and transparency for all parties.
                     </p>
@@ -335,5 +334,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
