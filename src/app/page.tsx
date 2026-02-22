@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -167,27 +168,12 @@ const features = [
 ];
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find((img) => img.id === 'landing-hero');
-  const featuresImage = PlaceHolderImages.find(
-    (img) => img.id === 'landing-features'
-  );
-
   return (
     <div className="flex min-h-screen flex-col">
       <LandingHeader />
       <main>
-        <section className="relative h-[85vh] w-full">
-          {heroImage && (
-            <Image
-              src={heroImage.imageUrl}
-              alt={heroImage.description}
-              fill
-              className="object-cover"
-              priority
-            />
-          )}
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center text-white sm:p-6 md:p-8">
+        <section className="flex h-[85vh] w-full flex-col items-center justify-center bg-slate-900 text-white">
+          <div className="p-4 text-center sm:p-6 md:p-8">
             <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
               <ShieldCheck className="h-6 w-6" />
               Fly Smarter. Stay Premium.
@@ -201,17 +187,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden py-16 sm:py-24">
-          {featuresImage && (
-            <Image
-              src={featuresImage.imageUrl}
-              alt={featuresImage.description}
-              fill
-              className="object-cover"
-            />
-          )}
-          <div className="absolute inset-0 bg-slate-900/60" />
-          <div className="relative z-10 container p-4 sm:p-6 md:p-8 text-white">
+        <section className="bg-slate-800 py-16 sm:py-24 text-white">
+          <div className="container p-4 sm:p-6 md:p-8">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">
                 A Comprehensive Aviation Ecosystem
@@ -513,3 +490,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
