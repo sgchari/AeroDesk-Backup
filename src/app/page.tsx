@@ -147,7 +147,7 @@ export default function Home() {
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
               </div>
-              <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl [text-shadow:0_2px_4px_rgba(0,0,0,0.4)]">
+              <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">
                 Where Exceptional Journeys Begin.
               </h1>
               <div className="mt-8">
@@ -158,13 +158,13 @@ export default function Home() {
         </section>
 
         <section 
-          className="relative overflow-hidden py-16 sm:py-24 text-white"
+          className="relative overflow-hidden bg-cover bg-center py-16 sm:py-24 text-white"
           style={{ backgroundImage: featuresImage ? `url(${featuresImage.imageUrl})` : 'none' }}
           >
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/50" />
             <div className="relative z-10 container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
-                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_2px_4px_rgba(0,0,0,0.4)]">A Comprehensive Aviation Ecosystem</h2>
+                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-white/90 [text-shadow:0_1px_3px_rgba(0,0,0,0.3)]">
                         All your charter needs, coordinated through one intelligent platform.
                     </p>
@@ -172,15 +172,15 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-white/20 bg-black/30 text-white backdrop-blur-md">
+                        <Card key={index} className="border-white/20 bg-black/40 text-white backdrop-blur-md">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-white/30 bg-black/25 p-3 backdrop-blur-sm">
                                     <feature.icon className="h-6 w-6 text-white" />
                                 </div>
-                                <CardTitle className="text-lg [text-shadow:0_1px_2px_rgba(0,0,0,0.3)]">{feature.title}</CardTitle>
+                                <CardTitle className="text-lg">{feature.title}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-white/80 [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">{feature.description}</p>
+                                <p className="text-white/80">{feature.description}</p>
                             </CardContent>
                         </Card>
                     ))}
@@ -335,3 +335,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
