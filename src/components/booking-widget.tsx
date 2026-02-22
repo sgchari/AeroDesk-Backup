@@ -103,7 +103,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-20 w-full bg-white border border-gray-200 rounded-b-lg -mt-1 shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-b-lg -mt-1 shadow-lg max-h-60 overflow-y-auto">
                     {suggestions.map((suggestion, index) => (
                         <div
                             key={index}
@@ -125,8 +125,9 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
 
 export function BookingWidget() {
   const [tripType, setTripType] = useState('oneway');
-  const [legs, setLegs] = useState([{ origin: '', destination: '', date: '' }]);
+  const [legs, setLegs] = useState([{ origin: '', destination: '', date: '', time: '' }]);
   const [returnDate, setReturnDate] = useState('');
+  const [returnTime, setReturnTime] = useState('');
   const [passengers, setPassengers] = useState('1');
 
 
@@ -137,7 +138,7 @@ export function BookingWidget() {
   const addLeg = () => {
     setLegs(currentLegs => {
         const lastDestination = currentLegs[currentLegs.length - 1]?.destination || '';
-        return [...currentLegs, { origin: lastDestination, destination: '', date: '' }];
+        return [...currentLegs, { origin: lastDestination, destination: '', date: '', time: '' }];
     });
   };
 
@@ -155,7 +156,7 @@ export function BookingWidget() {
   }, [tripType]);
 
 
-  const updateLeg = (index: number, field: 'origin' | 'destination' | 'date', value: string) => {
+  const updateLeg = (index: number, field: 'origin' | 'destination' | 'date' | 'time', value: string) => {
     const newLegs = [...legs];
     newLegs[index][field] = value;
     
@@ -167,9 +168,9 @@ export function BookingWidget() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 bg-transparent rounded-lg">
+    <div className="w-full max-w-5xl mx-auto bg-black/30 backdrop-blur-md rounded-xl shadow-lg border border-white/20 p-4 sm:p-6">
         <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="flex justify-center bg-black/20 backdrop-blur-md p-1 rounded-lg">
+            <TabsList className="flex justify-center bg-transparent p-0 rounded-lg max-w-md mx-auto">
                 <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
                     <Plane /> JET
                 </TabsTrigger>
@@ -190,9 +191,9 @@ export function BookingWidget() {
                 </TooltipProvider>
             </TabsList>
 
-            <TabsContent value="jet">
+            <TabsContent value="jet" className="mt-6">
                 <div className="space-y-6">
-                    <RadioGroup value={tripType} onValueChange={handleTripTypeChange} className="flex items-center gap-4 sm:gap-6">
+                    <RadioGroup value={tripType} onValueChange={handleTripTypeChange} className="flex items-center justify-center gap-4 sm:gap-6">
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="oneway" id="oneway" className="border-white" />
                             <Label htmlFor="oneway" className="text-white text-sm sm:text-base">Oneway</Label>
@@ -207,7 +208,7 @@ export function BookingWidget() {
                         </div>
                     </RadioGroup>
 
-                    <div className="bg-black/20 backdrop-blur-md rounded-lg shadow-lg flex flex-col border border-white/20 overflow-hidden">
+                    <div className="flex flex-col border border-white/20 rounded-lg">
                         {tripType === 'multicity' ? (
                             <>
                                 <div className="flex-1 flex flex-col">
@@ -222,7 +223,11 @@ export function BookingWidget() {
                                             </div>
                                             <div className="h-px w-full sm:h-auto sm:w-px bg-white/20 self-stretch"></div>
                                             <div className='flex-1'>
-                                                <Input type="text" placeholder="Date & Time" value={leg.date} onChange={(e) => updateLeg(index, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center"/>
+                                                <Input type="date" value={leg.date} onChange={(e) => updateLeg(index, 'date', e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center"/>
+                                            </div>
+                                            <div className="h-px w-full sm:h-auto sm:w-px bg-white/20 self-stretch"></div>
+                                            <div className='flex-1'>
+                                                 <Input type="time" value={leg.time} onChange={(e) => updateLeg(index, 'time', e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center"/>
                                             </div>
                                         </div>
                                     ))}
@@ -252,14 +257,22 @@ export function BookingWidget() {
                                 </div>
                                 <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                 <div className="flex-1">
-                                    <Input type="text" placeholder="Date & Time" value={legs[0].date} onChange={(e) => updateLeg(0, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center"/>
+                                    <Input type="date" placeholder="Date" value={legs[0].date} onChange={(e) => updateLeg(0, 'date', e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center"/>
+                                </div>
+                                <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
+                                <div className="flex-1">
+                                    <Input type="time" placeholder="Time" value={legs[0].time} onChange={(e) => updateLeg(0, 'time', e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center"/>
                                 </div>
                                 
                                 {tripType === 'round' && (
                                     <>
                                         <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                         <div className="flex-1">
-                                            <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center" />
+                                            <Input type="date" placeholder="Return Date" value={returnDate} onChange={e => setReturnDate(e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center" />
+                                        </div>
+                                        <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
+                                        <div className="flex-1">
+                                            <Input type="time" placeholder="Return Time" value={returnTime} onChange={e => setReturnTime(e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center" />
                                         </div>
                                     </>
                                 )}
