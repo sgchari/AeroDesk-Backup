@@ -157,7 +157,7 @@ export default function Home() {
                 Fly Smarter. Stay Premium.
               </div>
               <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight [text-shadow:0_2px_4px_rgb(0_0_0_/_0.5)] sm:text-5xl md:text-6xl">
-                Designed for Those Who Fly Differently.
+                Where Exceptional Journeys Begin.
               </h1>
               <div className="mt-8">
                 <BookingWidget />
