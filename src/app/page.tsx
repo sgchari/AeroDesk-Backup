@@ -3,7 +3,6 @@
 
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Menu, FileText, GanttChartSquare, Briefcase, Plane, Hotel, Wand2, Phone, Mail, Wallet, Banknote, Shield, CheckCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -130,7 +129,7 @@ const features = [
 
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(p => p.id === 'landing-payment');
+  const heroImage = PlaceHolderImages.find(p => p.id === 'landing-hero');
   const featuresImage = PlaceHolderImages.find(p => p.id === 'landing-features');
   
   return (
@@ -159,7 +158,7 @@ export default function Home() {
         </section>
 
         <section 
-          className="relative overflow-hidden py-16 sm:py-24 text-white bg-cover bg-center"
+          className="relative overflow-hidden py-16 sm:py-24 text-white"
           style={{ backgroundImage: featuresImage ? `url(${featuresImage.imageUrl})` : 'none' }}
           >
             <div className="absolute inset-0 bg-black/40" />
@@ -192,7 +191,7 @@ export default function Home() {
         <section className="py-16 sm:py-24 bg-background">
             <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
-                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
+                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_1px_2px_rgba(0,0,0,0.1)]">Transparent Payment Coordination</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
                         AeroDesk streamlines the payment process without handling funds, ensuring compliance and transparency for all parties.
                     </p>
