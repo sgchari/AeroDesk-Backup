@@ -29,6 +29,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const LandingHeader = () => {
   const navLinks = [
@@ -168,12 +170,23 @@ const features = [
 ];
 
 export default function Home() {
+  const landingHero = PlaceHolderImages.find((p) => p.id === 'landing-hero')!;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <LandingHeader />
       <main>
         <section className="relative w-full bg-primary pb-24 pt-12 text-primary-foreground">
-          <div className="container p-4 text-center sm:p-6 md:p-8">
+          <Image
+            src={landingHero.imageUrl}
+            alt={landingHero.description}
+            fill
+            className="object-cover"
+            data-ai-hint={landingHero.imageHint}
+            priority
+          />
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative container p-4 text-center sm:p-6 md:p-8">
             <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
               <ShieldCheck className="h-6 w-6" />
               Fly Smarter. Stay Premium.
