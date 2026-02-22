@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -222,7 +221,7 @@ export default function Home() {
                 {features.map((feature, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center text-center p-6 rounded-xl bg-blue-950/80 backdrop-blur-lg shadow-lg"
+                    className="flex flex-col items-center text-center p-6 rounded-xl bg-blue-950/30 backdrop-blur-lg shadow-lg"
                   >
                       <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
                         <feature.icon className="h-8 w-8 text-accent" />
