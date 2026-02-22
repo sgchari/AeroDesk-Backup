@@ -98,33 +98,33 @@ const LandingHeader = () => {
 const features = [
     {
         icon: FileText,
-        title: "Charter RFQ Management",
-        description: "Customers can create and manage charter RFQs, including specifying flight requirements and viewing the RFQ lifecycle."
+        title: "Flight Request & Lifecycle Tracking",
+        description: "Create charter requests, specify flight and accommodation needs, and maintain visibility across the full request lifecycle."
     },
     {
         icon: GanttChartSquare,
-        title: "Operator Quotation Exchange",
-        description: "Operators can submit bids on RFQs, manage their aircraft fleet, and set aircraft blackout dates."
+        title: "Operator Quotation & Fleet Management",
+        description: "Operators can respond to charter requests with structured quotations, manage fleet availability, coordinate crew stays and logistics, and create or manage empty-leg opportunities."
     },
     {
         icon: Briefcase,
-        title: "Corporate Travel Desk (CTD) Approval System",
-        description: "CTD users can create RFQs on behalf of employees, manage approval workflows, and generate analytics reports."
+        title: "Corporate Travel Desk",
+        description: "Corporate Travel Desk users can create charter requests for employees, request jet seat allocations, and coordinate associated accommodation needs."
     },
     {
         icon: Plane,
-        title: "Empty-Leg Seat Allocation",
-        description: "Authorized distributors can view approved empty-leg flights and manage seat allocation requests within enforced distributor seat caps."
+        title: "Available Jet Seat Allocation",
+        description: "Access seats on select private jet flights operating on predefined routes"
     },
     {
         icon: Hotel,
-        title: "Hotel Accommodation Facilitation",
-        description: "Hotel partners can manage properties, define availability and rates, and receive accommodation requests linked to approved trips."
+        title: "Hotel Partner Accommodation",
+        description: "Hotels maintain inventory visibility, configure stay availability, and handle accommodation requests tied to approved charter activity."
     },
     {
         icon: Wand2,
-        title: "Automated Compliance Check Tool",
-        description: "AI tool will verify inputs across different phases against compliance policies and standards for NSOP in India, flagging inconsistencies for review."
+        title: "AI-Assisted Compliance Review",
+        description: "AI-assisted logic evaluates workflow inputs and highlights potential inconsistencies for administrative or operator review."
     }
 ];
 
@@ -152,8 +152,8 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 flex min-h-[calc(100vh-80px)] flex-col items-center justify-center py-6 text-center text-white">
             <div className="container p-4 text-center sm:p-6 md:p-8">
-              <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-base font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
-                <ShieldCheck className="h-5 w-5" />
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
+                <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
               </div>
               <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight [text-shadow:0_2px_4px_rgb(0_0_0_/_0.5)] sm:text-5xl md:text-6xl">
