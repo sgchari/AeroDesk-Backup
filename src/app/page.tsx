@@ -181,7 +181,7 @@ export default function Home() {
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
-                        AeroDesk integrates every facet of the charter lifecycle into a single, compliant, and efficient digital platform.
+                        All your charter needs, coordinated through one intelligent platform.
                     </p>
                 </div>
 
