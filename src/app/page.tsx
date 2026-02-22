@@ -169,13 +169,12 @@ const features = [
 
 export default function Home() {
   const landingHero = PlaceHolderImages.find((p) => p.id === 'landing-hero')!;
-  const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <LandingHeader />
       <main>
-        <section className="relative w-full bg-primary pb-24 pt-12 text-primary-foreground">
+        <section className="relative w-full bg-primary text-primary-foreground">
           <Image
             src={landingHero.imageUrl}
             alt={landingHero.description}
@@ -185,56 +184,52 @@ export default function Home() {
             priority
           />
           <div className="absolute inset-0 bg-black/60" />
-          <div className="relative container p-4 text-center sm:p-6 md:p-8">
-            <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
-              <ShieldCheck className="h-6 w-6" />
-              Fly Smarter. Stay Premium.
-            </div>
-            <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-              Where <span className="text-accent">Exceptional Journey</span> Begins
-            </h1>
-          </div>
-        </section>
+          <div className="relative">
 
-        <section className="relative z-10 -mt-24">
-            <div className="container">
-                <BookingWidget />
+            {/* Hero Text */}
+            <div className="container p-4 text-center sm:p-6 md:p-8 pt-12 pb-24">
+              <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
+                <ShieldCheck className="h-6 w-6" />
+                Fly Smarter. Stay Premium.
+              </div>
+              <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
+                Where <span className="text-accent">Exceptional Journey</span> Begins
+              </h1>
             </div>
-        </section>
-
-        <section className="relative bg-secondary py-16 sm:py-24">
-          <Image
-            src={landingFeatures.imageUrl}
-            alt={landingFeatures.description}
-            fill
-            className="object-cover"
-            data-ai-hint={landingFeatures.imageHint}
-          />
-          <div className="absolute inset-0 bg-black/80" />
-          <div className="relative container p-4 sm:p-6 md:p-8">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
-                A Comprehensive Aviation Ecosystem
-              </h2>
-              <p className="mt-4 text-lg text-primary-foreground/80">
-                All your charter needs, coordinated through one intelligent
-                platform.
-              </p>
-            </div>
-
-            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center text-center p-6 rounded-xl bg-primary/20 backdrop-blur-lg shadow-lg"
-                >
-                    <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
-                      <feature.icon className="h-8 w-8 text-accent" />
-                    </div>
-                    <h3 className="mt-4 text-lg font-bold text-primary-foreground">{feature.title}</h3>
-                    <p className="mt-2 text-primary-foreground/80">{feature.description}</p>
+            
+            {/* Booking Widget */}
+            <div className="relative z-10 -mt-24">
+                <div className="container">
+                    <BookingWidget />
                 </div>
-              ))}
+            </div>
+
+            {/* Features Section */}
+            <div className="container p-4 sm:p-6 md:p-8 py-16 sm:py-24">
+              <div className="mx-auto max-w-3xl text-center">
+                <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+                  A Comprehensive Aviation Ecosystem
+                </h2>
+                <p className="mt-4 text-lg text-primary-foreground/80">
+                  All your charter needs, coordinated through one intelligent
+                  platform.
+                </p>
+              </div>
+
+              <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {features.map((feature, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col items-center text-center p-6 rounded-xl bg-blue-950/80 backdrop-blur-lg shadow-lg"
+                  >
+                      <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
+                        <feature.icon className="h-8 w-8 text-accent" />
+                      </div>
+                      <h3 className="mt-4 text-lg font-bold text-primary-foreground">{feature.title}</h3>
+                      <p className="mt-2 text-primary-foreground/80">{feature.description}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
