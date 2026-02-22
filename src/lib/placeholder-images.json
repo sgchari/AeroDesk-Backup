@@ -2,8 +2,8 @@
   "placeholderImages": [
     {
       "id": "landing-hero",
-      "description": "A private jet wing flying over clouds.",
-      "imageUrl": "https://images.unsplash.com/photo-1544033234-a7a67a44b82a?q=80&w=2560&auto=format&fit=crop",
+      "description": "A private jet flying above the clouds.",
+      "imageUrl": "https://images.unsplash.com/photo-1614028368578-f7525a7465f2?q=80&w=2560&auto=format&fit=crop",
       "imageHint": "private jet sky"
     },
     {
