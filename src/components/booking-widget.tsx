@@ -167,7 +167,7 @@ export function BookingWidget() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 bg-black/25 backdrop-blur-md rounded-lg border border-white/20">
+    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 bg-transparent rounded-lg border border-white/20">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-transparent p-0 mb-6 gap-2">
                 <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">

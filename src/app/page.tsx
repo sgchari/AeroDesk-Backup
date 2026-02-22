@@ -149,6 +149,7 @@ export default function Home() {
               priority
             />
           )}
+          
           <div className="flex h-full flex-col items-center justify-center text-center text-white">
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm [text-shadow:0_1px_2px_rgb(0_0_0_/_0.4)]">
@@ -175,25 +176,26 @@ export default function Home() {
                     data-ai-hint={featuresImage.imageHint}
                 />
             )}
+            
             <div className="container p-4 sm:p-6 md:p-8">
-                <div className="mx-auto max-w-3xl text-center">
+                <div className="mx-auto max-w-3xl text-center text-white [text-shadow:0_1px_3px_rgb(0_0_0_/_0.6)]">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
-                    <p className="mt-4 text-lg text-muted-foreground">
+                    <p className="mt-4 text-lg text-white/90">
                         All your charter needs, coordinated through one intelligent platform.
                     </p>
                 </div>
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-border/50 bg-card/30 backdrop-blur-sm">
+                        <Card key={index} className="border-white/20 bg-transparent text-white [text-shadow:0_1px_2px_rgb(0_0_0_/_0.6)]">
                             <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
-                                    <feature.icon className="h-6 w-6 text-primary" />
+                                <div className="rounded-full border border-white/30 bg-white/10 p-3 backdrop-blur-sm">
+                                    <feature.icon className="h-6 w-6 text-white" />
                                 </div>
                                 <CardTitle className="text-lg">{feature.title}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-muted-foreground">{feature.description}</p>
+                                <p className="text-white/80">{feature.description}</p>
                             </CardContent>
                         </Card>
                     ))}
