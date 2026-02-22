@@ -130,9 +130,8 @@ const features = [
 
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(p => p.id === 'landing-hero');
+  const heroImage = PlaceHolderImages.find(p => p.id === 'landing-payment');
   const featuresImage = PlaceHolderImages.find(p => p.id === 'landing-features');
-  const paymentImage = PlaceHolderImages.find(p => p.id === 'landing-payment');
   
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -149,7 +148,7 @@ export default function Home() {
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
               </div>
-              <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl">
+              <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl [text-shadow:0_2px_4px_rgba(0,0,0,0.4)]">
                 Where Exceptional Journeys Begin.
               </h1>
               <div className="mt-8">
@@ -166,8 +165,8 @@ export default function Home() {
             <div className="absolute inset-0 bg-black/40" />
             <div className="relative z-10 container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
-                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
-                    <p className="mt-4 text-lg text-white/90">
+                    <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl [text-shadow:0_2px_4px_rgba(0,0,0,0.4)]">A Comprehensive Aviation Ecosystem</h2>
+                    <p className="mt-4 text-lg text-white/90 [text-shadow:0_1px_3px_rgba(0,0,0,0.3)]">
                         All your charter needs, coordinated through one intelligent platform.
                     </p>
                 </div>
@@ -179,10 +178,10 @@ export default function Home() {
                                 <div className="rounded-full border border-white/30 bg-black/25 p-3 backdrop-blur-sm">
                                     <feature.icon className="h-6 w-6 text-white" />
                                 </div>
-                                <CardTitle className="text-lg">{feature.title}</CardTitle>
+                                <CardTitle className="text-lg [text-shadow:0_1px_2px_rgba(0,0,0,0.3)]">{feature.title}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-white/80">{feature.description}</p>
+                                <p className="text-white/80 [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">{feature.description}</p>
                             </CardContent>
                         </Card>
                     ))}
@@ -190,12 +189,8 @@ export default function Home() {
             </div>
         </section>
 
-        <section 
-          className="relative overflow-hidden py-16 sm:py-24 bg-cover bg-center"
-          style={{ backgroundImage: paymentImage ? `url(${paymentImage.imageUrl})` : 'none' }}
-        >
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-            <div className="relative z-10 container p-4 sm:p-6 md:p-8">
+        <section className="py-16 sm:py-24 bg-background">
+            <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
@@ -204,7 +199,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
+                    <Card className="flex flex-col">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -220,7 +215,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
 
-                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
+                    <Card className="flex flex-col">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -241,7 +236,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
                     
-                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm md:col-span-2 lg:col-span-1">
+                    <Card className="flex flex-col md:col-span-2 lg:col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
