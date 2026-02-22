@@ -2,21 +2,21 @@
   "placeholderImages": [
     {
       "id": "landing-hero",
-      "description": "Corporate Private Jet Charter",
-      "imageUrl": "https://images.unsplash.com/photo-1768346564233-d71f37bd19b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3Jwb3JhdGUlMjBqZXQlMjBjYWJpbnxlbnwwfHx8fDE3NzE2Nzg0NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "corporate jet cabin"
+      "description": "View from a jet window",
+      "imageUrl": "https://images.unsplash.com/photo-1554104707-a4b67023c530?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx2aWV3JTIwZnJvbSUyMGpldCUyMHdpbmRvd3xlbnwwfHx8fDE3NzE4ODU5NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jet window view"
     },
     {
       "id": "landing-features",
-      "description": "Private jet cabin background",
-      "imageUrl": "https://images.unsplash.com/photo-1616142386326-311ee7ea3888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzE2NDk2MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "jet interior"
+      "description": "Modern aircraft cockpit on a runway",
+      "imageUrl": "https://images.unsplash.com/photo-1614107028313-093557672573?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhaXJjcmFmdCUyMGNvY2twaXR8ZW58MHx8fHwxNzcxODg2OTU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "aircraft cockpit"
     },
     {
       "id": "landing-payment",
-      "description": "Corporate Private Jet Charter",
-      "imageUrl": "https://images.unsplash.com/photo-1768346564233-d71f37bd19b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3Jwb3JhdGUlMjBqZXQlMjBjYWJpbnxlbnwwfHx8fDE3NzE2Nzg0NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "corporate jet cabin"
+      "description": "Clean airport terminal",
+      "imageUrl": "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhaXJwb3J0JTIwdGVybWluYWx8ZW58MHx8fHwxNzcxODg2MzY0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "airport terminal"
     },
     {
       "id": "aircraft-1",
