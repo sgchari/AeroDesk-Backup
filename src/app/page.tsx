@@ -138,20 +138,22 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative isolate h-[85vh] overflow-hidden">
+        <section className="relative h-[85vh] overflow-hidden text-white">
           {heroImage && (
-            <Image
-              src={heroImage.imageUrl}
-              alt={heroImage.description}
-              fill
-              className="object-cover -z-10"
-              data-ai-hint={heroImage.imageHint}
-              priority
-            />
+            <div className="absolute inset-0 -z-10">
+                <Image
+                src={heroImage.imageUrl}
+                alt={heroImage.description}
+                fill
+                className="object-cover"
+                data-ai-hint={heroImage.imageHint}
+                priority
+                />
+                <div className="absolute inset-0 bg-black/20" />
+            </div>
           )}
-          <div className="absolute inset-0 bg-black/20 -z-10" />
           
-          <div className="flex h-full flex-col items-center justify-center text-center text-white">
+          <div className="relative z-10 flex h-full flex-col items-center justify-center">
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
@@ -167,20 +169,22 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative isolate overflow-hidden py-16 sm:py-24">
+        <section className="relative overflow-hidden py-16 sm:py-24 text-white">
             {featuresImage && (
-                <Image
-                    src={featuresImage.imageUrl}
-                    alt={featuresImage.description}
-                    fill
-                    className="object-cover -z-10"
-                    data-ai-hint={featuresImage.imageHint}
-                />
+                <div className="absolute inset-0 -z-10">
+                    <Image
+                        src={featuresImage.imageUrl}
+                        alt={featuresImage.description}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={featuresImage.imageHint}
+                    />
+                    <div className="absolute inset-0 bg-black/20" />
+                </div>
             )}
-            <div className="absolute inset-0 bg-black/30 -z-10" />
             
-            <div className="container p-4 sm:p-6 md:p-8">
-                <div className="mx-auto max-w-3xl text-center text-white">
+            <div className="relative z-10 container p-4 sm:p-6 md:p-8">
+                <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
                     <p className="mt-4 text-lg text-white/90">
                         All your charter needs, coordinated through one intelligent platform.
@@ -205,18 +209,20 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="relative isolate overflow-hidden py-16 sm:py-24">
+        <section className="relative overflow-hidden py-16 sm:py-24">
             {paymentImage && (
-                <Image
-                    src={paymentImage.imageUrl}
-                    alt={paymentImage.description}
-                    fill
-                    className="object-cover -z-10"
-                    data-ai-hint={paymentImage.imageHint}
-                />
+                <div className="absolute inset-0 -z-10">
+                    <Image
+                        src={paymentImage.imageUrl}
+                        alt={paymentImage.description}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={paymentImage.imageHint}
+                    />
+                    <div className="absolute inset-0 bg-black/10" />
+                </div>
             )}
-            <div className="absolute inset-0 bg-black/10 -z-10" />
-            <div className="container p-4 sm:p-6 md:p-8">
+            <div className="relative z-10 container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
                     <p className="mt-4 text-lg text-muted-foreground">

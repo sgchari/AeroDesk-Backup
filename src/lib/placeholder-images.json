@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "landing-hero",
-      "description": "A private jet's wing above the clouds at sunset.",
-      "imageUrl": "https://plus.unsplash.com/premium_photo-1661962842412-23c1c1f2a083?q=80&w=2671&auto=format&fit=crop",
-      "imageHint": "private jet wing"
+      "description": "View from a private jet window over the clouds.",
+      "imageUrl": "https://images.unsplash.com/photo-1628288125739-c32450843a05?q=80&w=2670&auto=format&fit=crop",
+      "imageHint": "jet window view"
     },
     {
       "id": "landing-features",
