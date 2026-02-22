@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -44,7 +43,6 @@ const LandingHeader = () => {
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
-             {/* The text colors within the logo are changed to white and the icon to a lighter blue */}
             <Logo className="[&_svg]:text-primary-foreground/80 [&_.text-foreground]:text-primary-foreground [&_.text-primary]:text-primary-foreground" />
           </Link>
         </div>
@@ -193,7 +191,7 @@ export default function Home() {
               Fly Smarter. Stay Premium.
             </div>
             <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-              Where Exceptional Journey Begins
+              Where <span className="text-accent">Exceptional Journey</span> Begins
             </h1>
           </div>
         </section>
@@ -204,7 +202,7 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-secondary py-16 sm:py-24">
           <Image
             src={landingFeatures.imageUrl}
             alt={landingFeatures.description}
@@ -241,7 +239,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="bg-secondary py-16 sm:py-24">
+        <section className="bg-background py-16 sm:py-24">
           <div className="container p-4 sm:p-6 md:p-8">
             <div className="mx-auto mb-12 max-w-3xl text-center">
               <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">
