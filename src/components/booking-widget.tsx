@@ -143,7 +143,7 @@ export function BookingWidget() {
             setLegs(currentLegs => currentLegs.slice(0, 1));
         }
     }
-  }, [tripType, legs.length]);
+  }, [tripType, legs, setLegs]);
 
 
   const updateLeg = (index: number, field: 'origin' | 'destination' | 'date', value: string) => {
@@ -162,7 +162,7 @@ export function BookingWidget() {
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-transparent p-0 mb-6 gap-2">
                 <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
-                    <Plane /> JET CHARTER
+                    <Plane /> JET
                 </TabsTrigger>
                 <TabsTrigger value="helicopter" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
                     <Helicopter /> HELICOPTER
@@ -198,23 +198,25 @@ export function BookingWidget() {
                         </div>
                     </RadioGroup>
 
-                    <div className="bg-white rounded-lg shadow-lg flex flex-col border border-foreground/20 overflow-hidden">
+                    <div className="bg-white rounded-lg shadow-lg flex flex-col border border-foreground/30 overflow-hidden">
                         <div className="flex flex-col lg:flex-row">
                             <div className="flex-1 flex flex-col">
                                 {legs.map((leg, index) => (
-                                    <div key={index} className="flex flex-col sm:flex-row">
-                                        <AutocompleteInput 
-                                            placeholder={index === 0 ? "Origin" : `Leg ${index + 1} Origin`} 
-                                            value={leg.origin} 
-                                            onChange={(v) => updateLeg(index, 'origin', v)} 
-                                        />
-                                        <div className="h-px w-full sm:h-auto sm:w-px bg-foreground/20 self-stretch"></div>
-                                        <AutocompleteInput 
-                                            placeholder={index === 0 ? "Destination" : `Leg ${index + 1} Destination`} 
-                                            value={leg.destination} 
-                                            onChange={(v) => updateLeg(index, 'destination', v)} 
-                                        />
-                                        <div className="h-px w-full sm:h-auto sm:w-px bg-foreground/20 self-stretch"></div>
+                                    <div key={index} className="flex flex-col sm:flex-row items-start">
+                                        <div className="w-full flex-1 flex flex-col sm:flex-row">
+                                            <AutocompleteInput 
+                                                placeholder={index === 0 ? "Origin" : `Leg ${index + 1} Origin`} 
+                                                value={leg.origin} 
+                                                onChange={(v) => updateLeg(index, 'origin', v)} 
+                                            />
+                                            <div className="h-px w-full sm:h-auto sm:w-px bg-foreground/30 self-stretch"></div>
+                                            <AutocompleteInput 
+                                                placeholder={index === 0 ? "Destination" : `Leg ${index + 1} Destination`} 
+                                                value={leg.destination} 
+                                                onChange={(v) => updateLeg(index, 'destination', v)} 
+                                            />
+                                        </div>
+                                        <div className="h-px w-full sm:h-auto sm:w-px bg-foreground/30 self-stretch"></div>
                                         <Input
                                             type="text"
                                             placeholder="Date & Time"
@@ -228,15 +230,17 @@ export function BookingWidget() {
                                 ))}
                             </div>
                             <div className="flex flex-col lg:flex-row">
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-foreground/20 self-stretch"></div>
+                                <div className="h-px w-full lg:h-auto lg:w-px bg-foreground/30 self-stretch"></div>
                                 {tripType === 'round' && (
                                     <>
                                         <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 text-foreground w-full" />
-                                        <div className="h-px w-full lg:h-auto lg:w-px bg-foreground/20 self-stretch"></div>
+                                        <div className="h-px w-full lg:h-auto lg:w-px bg-foreground/30 self-stretch"></div>
                                     </>
                                 )}
-                                <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-foreground w-full lg:w-48" />
-                                <Button className="w-full lg:w-auto h-full">Request Pricing</Button>
+                                <div className="flex w-full lg:w-auto">
+                                    <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-foreground w-full lg:w-48" />
+                                    <Button className="w-full lg:w-auto rounded-none">Request Pricing</Button>
+                                </div>
                             </div>
                         </div>
                     </div>
