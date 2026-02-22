@@ -171,6 +171,7 @@ const features = [
 
 export default function Home() {
   const landingHero = PlaceHolderImages.find((p) => p.id === 'landing-hero')!;
+  const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -203,8 +204,16 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="bg-background py-16 sm:py-24">
-          <div className="container p-4 sm:p-6 md:p-8">
+        <section className="relative bg-background py-16 sm:py-24">
+          <Image
+            src={landingFeatures.imageUrl}
+            alt={landingFeatures.description}
+            fill
+            className="object-cover"
+            data-ai-hint={landingFeatures.imageHint}
+          />
+          <div className="absolute inset-0 bg-background/90" />
+          <div className="relative container p-4 sm:p-6 md:p-8">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 A Comprehensive Aviation Ecosystem
@@ -221,7 +230,7 @@ export default function Home() {
                   key={index}
                   className="flex flex-col items-center text-center p-4"
                 >
-                    <div className="rounded-full border-8 border-secondary p-4">
+                    <div className="rounded-full border-8 border-secondary bg-background/80 p-4 backdrop-blur-sm">
                       <feature.icon className="h-8 w-8 text-primary" />
                     </div>
                     <h3 className="mt-4 text-lg font-bold">{feature.title}</h3>

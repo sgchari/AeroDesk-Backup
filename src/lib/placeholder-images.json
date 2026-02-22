@@ -3,13 +3,13 @@
     {
       "id": "landing-hero",
       "description": "A modern private jet on an airport runway",
-      "imageUrl": "https://images.unsplash.com/photo-1619659085985-f51a00f0160a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwcml2YXRlJTIwamV0fGVufDB8fHx8MTc3MTczMTkwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1474302770737-173ee21bab63?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcml2YXRlJTIwamV0fGVufDB8fHx8MTc3MTczMTkwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "private jet"
     },
     {
       "id": "landing-features",
       "description": "Cockpit of a modern aircraft",
-      "imageUrl": "https://images.unsplash.com/photo-1555895724-819235b0d467?q=80&w=1931&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1741160450767-7eaeb9ac53d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhaXJjcmFmdCUyMGNvY2twaXR8ZW58MHx8fHwxNzcxNzgyNzE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "aircraft cockpit"
     },
     {
