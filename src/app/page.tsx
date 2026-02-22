@@ -133,7 +133,12 @@ export default function Home() {
       <LandingHeader />
       <main className="flex-1">
         <section 
-          className="relative hero-bg flex h-[85vh] flex-col items-center justify-center bg-cover bg-center text-white"
+          className="relative flex h-[85vh] flex-col items-center justify-center text-white"
+          style={{
+            backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1544091444-9097a8b25327?q=80&w=2070&auto=format&fit=crop')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         >
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
@@ -150,7 +155,12 @@ export default function Home() {
         </section>
 
         <section 
-          className="relative features-bg overflow-hidden bg-cover bg-center py-16 text-white sm:py-24"
+          className="relative overflow-hidden py-16 text-white sm:py-24"
+          style={{
+            backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1580486622086-565545a9a5a7?q=80&w=2070&auto=format&fit=crop')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         >
             <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
@@ -325,3 +335,4 @@ export default function Home() {
     </div>
   );
 }
+
