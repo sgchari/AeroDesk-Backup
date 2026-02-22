@@ -138,21 +138,11 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
-        <section className="relative h-[85vh] overflow-hidden text-white">
-          {heroImage && (
-            <div className="absolute inset-0 -z-10">
-                <Image
-                src={heroImage.imageUrl}
-                alt={heroImage.description}
-                fill
-                className="object-cover"
-                data-ai-hint={heroImage.imageHint}
-                priority
-                />
-                <div className="absolute inset-0 bg-black/20" />
-            </div>
-          )}
-          
+        <section 
+          className="relative h-[85vh] bg-cover bg-center text-white"
+          style={{ backgroundImage: heroImage ? `url(${heroImage.imageUrl})` : 'none' }}
+        >
+          <div className="absolute inset-0 bg-black/30" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center">
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
@@ -169,20 +159,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden py-16 sm:py-24 text-white">
-            {featuresImage && (
-                <div className="absolute inset-0 -z-10">
-                    <Image
-                        src={featuresImage.imageUrl}
-                        alt={featuresImage.description}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={featuresImage.imageHint}
-                    />
-                    <div className="absolute inset-0 bg-black/20" />
-                </div>
-            )}
-            
+        <section 
+          className="relative overflow-hidden py-16 sm:py-24 text-white bg-cover bg-center"
+          style={{ backgroundImage: featuresImage ? `url(${featuresImage.imageUrl})` : 'none' }}
+          >
+            <div className="absolute inset-0 bg-black/40" />
             <div className="relative z-10 container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">A Comprehensive Aviation Ecosystem</h2>
@@ -193,7 +174,7 @@ export default function Home() {
 
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-white/20 bg-black/20 text-white backdrop-blur-md">
+                        <Card key={index} className="border-white/20 bg-black/30 text-white backdrop-blur-md">
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <div className="rounded-full border border-white/30 bg-black/25 p-3 backdrop-blur-sm">
                                     <feature.icon className="h-6 w-6 text-white" />
@@ -209,19 +190,11 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="relative overflow-hidden py-16 sm:py-24">
-            {paymentImage && (
-                <div className="absolute inset-0 -z-10">
-                    <Image
-                        src={paymentImage.imageUrl}
-                        alt={paymentImage.description}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={paymentImage.imageHint}
-                    />
-                    <div className="absolute inset-0 bg-black/10" />
-                </div>
-            )}
+        <section 
+          className="relative overflow-hidden py-16 sm:py-24 bg-cover bg-center"
+          style={{ backgroundImage: paymentImage ? `url(${paymentImage.imageUrl})` : 'none' }}
+        >
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
             <div className="relative z-10 container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>
@@ -231,7 +204,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="flex flex-col border-border/50 bg-card/30 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                 <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -247,7 +220,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
 
-                    <Card className="flex flex-col border-border/50 bg-card/30 backdrop-blur-sm">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -268,7 +241,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
                     
-                    <Card className="flex flex-col border-border/50 bg-card/30 backdrop-blur-sm md:col-span-2 lg:col-span-1">
+                    <Card className="flex flex-col border-border/50 bg-card/80 backdrop-blur-sm md:col-span-2 lg:col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                  <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
