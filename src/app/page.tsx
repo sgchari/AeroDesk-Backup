@@ -128,18 +128,12 @@ const features = [
 
 
 export default function Home() {
-  const heroImageUrl = "https://images.unsplash.com/photo-1554104707-a4b67023c530?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx2aWV3JTIwZnJvbSUyMGpldCUyMHdpbmRvd3xlbnwwfHx8fDE3NzE4ODU5NzN8MA&ixlib=rb-4.1.0&q=80&w=1080";
-  const featuresImageUrl = "https://images.unsplash.com/photo-1614107028313-093557672573?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhcmNyYWZ0JTIwY29ja3BpdHxlbnwwfHx8fDE3NzE4ODY5NTl8MA&ixlib=rb-4.1.0&q=80&w=1080";
-
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <LandingHeader />
       <main className="flex-1">
         <section 
-          className="relative h-[85vh] bg-cover bg-center text-white flex flex-col items-center justify-center"
-          style={{ 
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${heroImageUrl}')`
-          }}
+          className="relative hero-bg flex h-[85vh] flex-col items-center justify-center bg-cover bg-center text-white"
         >
             <div className="container p-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/20 px-6 py-3 text-lg font-medium backdrop-blur-sm">
@@ -156,10 +150,7 @@ export default function Home() {
         </section>
 
         <section 
-          className="relative overflow-hidden bg-cover bg-center py-16 sm:py-24 text-white"
-          style={{ 
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${featuresImageUrl}')` 
-          }}
+          className="relative features-bg overflow-hidden bg-cover bg-center py-16 text-white sm:py-24"
         >
             <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
@@ -187,7 +178,7 @@ export default function Home() {
             </div>
         </section>
 
-        <section className="py-16 sm:py-24 bg-background">
+        <section className="bg-background py-16 sm:py-24">
             <div className="container p-4 sm:p-6 md:p-8">
                 <div className="mx-auto mb-12 max-w-3xl text-center">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Transparent Payment Coordination</h2>

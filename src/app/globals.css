@@ -50,3 +50,13 @@
     @apply bg-background text-foreground text-sm;
   }
 }
+
+@layer components {
+  .hero-bg {
+    background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1554104707-a4b67023c530?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx2aWV3JTIwZnJvbSUyMGpldCUyMHdpbmRvd3xlbnwwfHx8fDE3NzE4ODU5NzN8MA&ixlib=rb-4.1.0&q=80&w=1080');
+  }
+
+  .features-bg {
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1614107028313-093557672573?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhcmNyYWZ0JTIwY29ja3BpdHxlbnwwfHx8fDE3NzE4ODY5NTl8MA&ixlib=rb-4.1.0&q=80&w=1080');
+  }
+}
