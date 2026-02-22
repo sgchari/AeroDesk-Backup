@@ -2,13 +2,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Plane, Armchair } from 'lucide-react';
+import { Plane, Armchair, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 
 const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
@@ -54,7 +55,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
         const inputValue = e.target.value;
         onChange(inputValue); // Update parent state
 
-        if (inputValue.length >= 3) {
+        if (inputValue.length >= 2) {
             const filtered = primeDestinations.filter(dest =>
                 dest.toLowerCase().includes(inputValue.toLowerCase())
             );
@@ -82,7 +83,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                 value={value}
                 onChange={handleInputChange}
                 onFocus={() => {
-                    if (value.length >= 3) {
+                    if (value.length >= 2) {
                         const filtered = primeDestinations.filter(dest =>
                             dest.toLowerCase().includes(value.toLowerCase())
                         );
@@ -98,7 +99,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                         setShowSuggestions(false);
                     }, 150);
                 }}
-                className="border-0 focus-visible:ring-0 text-foreground w-full"
+                className="border-0 focus-visible:ring-0 text-foreground w-full bg-transparent"
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
@@ -133,17 +134,25 @@ export function BookingWidget() {
       setTripType(type);
   }
 
+  const addLeg = () => {
+    setLegs(currentLegs => {
+        const lastDestination = currentLegs[currentLegs.length - 1]?.destination || '';
+        return [...currentLegs, { origin: lastDestination, destination: '', date: '' }];
+    });
+  };
+
   useEffect(() => {
     if (tripType === 'multicity') {
         if (legs.length === 1) {
-            setLegs(currentLegs => [...currentLegs, { origin: currentLegs[0].destination, destination: '', date: '' }]);
+            addLeg();
         }
     } else {
         if (legs.length > 1) {
             setLegs(currentLegs => currentLegs.slice(0, 1));
         }
     }
-  }, [tripType, legs, setLegs]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tripType]);
 
 
   const updateLeg = (index: number, field: 'origin' | 'destination' | 'date', value: string) => {
@@ -198,25 +207,29 @@ export function BookingWidget() {
                         </div>
                     </RadioGroup>
 
-                    <div className="bg-white rounded-lg shadow-lg flex flex-col border border-foreground/30 overflow-hidden">
+                    <div className="bg-white rounded-lg shadow-lg flex flex-col border border-border overflow-hidden">
                         <div className="flex flex-col lg:flex-row">
                             <div className="flex-1 flex flex-col">
                                 {legs.map((leg, index) => (
-                                    <div key={index} className="flex flex-col sm:flex-row items-start">
-                                        <div className="w-full flex-1 flex flex-col sm:flex-row">
-                                            <AutocompleteInput 
-                                                placeholder={index === 0 ? "Origin" : `Leg ${index + 1} Origin`} 
-                                                value={leg.origin} 
-                                                onChange={(v) => updateLeg(index, 'origin', v)} 
-                                            />
-                                            <div className="h-px w-full sm:h-auto sm:w-px bg-foreground/30 self-stretch"></div>
-                                            <AutocompleteInput 
-                                                placeholder={index === 0 ? "Destination" : `Leg ${index + 1} Destination`} 
-                                                value={leg.destination} 
-                                                onChange={(v) => updateLeg(index, 'destination', v)} 
-                                            />
+                                    <div key={index} className={cn("flex flex-col sm:flex-row items-stretch", index > 0 && "border-t border-border")}>
+                                        <div className="w-full flex-1 flex flex-col sm:flex-row items-stretch">
+                                            <div className='flex-1'>
+                                                <AutocompleteInput 
+                                                    placeholder={index === 0 ? "Origin" : `Leg ${index + 1} Origin`} 
+                                                    value={leg.origin} 
+                                                    onChange={(v) => updateLeg(index, 'origin', v)} 
+                                                />
+                                            </div>
+                                            <div className="h-px w-full sm:h-auto sm:w-px bg-border self-stretch"></div>
+                                            <div className='flex-1'>
+                                                <AutocompleteInput 
+                                                    placeholder={index === 0 ? "Destination" : `Leg ${index + 1} Destination`} 
+                                                    value={leg.destination} 
+                                                    onChange={(v) => updateLeg(index, 'destination', v)} 
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="h-px w-full sm:h-auto sm:w-px bg-foreground/30 self-stretch"></div>
+                                        <div className="h-px w-full sm:h-auto sm:w-px bg-border self-stretch"></div>
                                         <Input
                                             type="text"
                                             placeholder="Date & Time"
@@ -224,25 +237,33 @@ export function BookingWidget() {
                                             onChange={(e) => updateLeg(index, 'date', e.target.value)}
                                             onFocus={(e) => e.target.type='datetime-local'}
                                             onBlur={(e) => e.target.type='text'}
-                                            className="border-0 focus-visible:ring-0 text-foreground w-full"
+                                            className="border-0 focus-visible:ring-0 text-foreground w-full bg-transparent"
                                         />
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex flex-col lg:flex-row">
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-foreground/30 self-stretch"></div>
+                            <div className="flex flex-col lg:flex-row items-stretch">
                                 {tripType === 'round' && (
-                                    <>
-                                        <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 text-foreground w-full" />
-                                        <div className="h-px w-full lg:h-auto lg:w-px bg-foreground/30 self-stretch"></div>
-                                    </>
+                                    <div className='flex flex-col sm:flex-row items-stretch w-full'>
+                                        <div className="h-px w-full lg:h-auto lg:w-px bg-border self-stretch"></div>
+                                        <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 text-foreground w-full bg-transparent" />
+                                    </div>
                                 )}
+                                <div className="h-px w-full lg:h-auto lg:w-px bg-border self-stretch"></div>
                                 <div className="flex w-full lg:w-auto">
-                                    <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-foreground w-full lg:w-48" />
+                                    <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-foreground w-full lg:w-48 bg-transparent" />
                                     <Button className="w-full lg:w-auto rounded-none">Request Pricing</Button>
                                 </div>
                             </div>
                         </div>
+                         {tripType === 'multicity' && (
+                            <div className="p-2 bg-gray-50 border-t border-border">
+                                <Button variant="link" size="sm" onClick={addLeg} className="text-primary gap-2">
+                                    <Plus className="h-4 w-4"/>
+                                    Add another flight
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </TabsContent>
