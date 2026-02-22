@@ -137,7 +137,7 @@ export default function Home() {
           className="relative flex h-[85vh] flex-col items-center justify-center text-white"
         >
             <Image
-                src="https://images.unsplash.com/photo-1544091444-9097a8b25327?q=80&w=2070&auto=format&fit=crop"
+                src="/hero-background.svg"
                 alt="Private jet wing soaring above clouds at sunset"
                 fill
                 className="object-cover -z-10"
@@ -162,7 +162,7 @@ export default function Home() {
           className="relative overflow-hidden py-16 text-white sm:py-24"
         >
             <Image
-                src="https://images.unsplash.com/photo-1580486622086-565545a9a5a7?q=80&w=2070&auto=format&fit=crop"
+                src="/cockpit-background.svg"
                 alt="Cockpit of a modern aircraft"
                 fill
                 className="object-cover -z-10"
@@ -341,4 +341,3 @@ export default function Home() {
     </div>
   );
 }
-
