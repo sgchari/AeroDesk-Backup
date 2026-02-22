@@ -192,13 +192,13 @@ export default function Home() {
               <ShieldCheck className="h-6 w-6" />
               Fly Smarter. Stay Premium.
             </div>
-            <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-              Where <span className="text-accent">Exceptional Journeys</span> Begin.
+            <h1 className="mt-4 text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
+              Where <span className="text-accent">Exceptional Journeys</span> Begin's.
             </h1>
           </div>
         </section>
 
-        <section className="relative -mt-24">
+        <section className="relative z-10 -mt-24">
             <div className="container">
                 <BookingWidget />
             </div>
@@ -212,7 +212,7 @@ export default function Home() {
             className="object-cover"
             data-ai-hint={landingFeatures.imageHint}
           />
-          <div className="absolute inset-0 bg-black/70" />
+          <div className="absolute inset-0 bg-black/80" />
           <div className="relative container p-4 sm:p-6 md:p-8">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
@@ -228,7 +228,7 @@ export default function Home() {
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center text-center p-6 rounded-xl bg-blue-950/50 backdrop-blur-md shadow-lg"
+                  className="flex flex-col items-center text-center p-6 rounded-xl bg-blue-950/80 backdrop-blur-md shadow-lg"
                 >
                     <div className="rounded-full border-4 border-primary/50 bg-primary/20 p-4">
                       <feature.icon className="h-8 w-8 text-primary" />
