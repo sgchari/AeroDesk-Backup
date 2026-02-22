@@ -134,7 +134,7 @@ export default function Home() {
   const featuresImage = PlaceHolderImages.find(p => p.id === 'landing-features');
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex min-h-screen flex-col text-foreground">
       <LandingHeader />
       <main className="flex-1">
         <section className="relative flex h-[85vh] flex-col items-center justify-center text-white">
