@@ -186,7 +186,7 @@ export default function Home() {
             data-ai-hint={landingHero.imageHint}
             priority
           />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-black/60" />
           <div className="relative container p-4 text-center sm:p-6 md:p-8">
             <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
               <ShieldCheck className="h-6 w-6" />
@@ -212,13 +212,13 @@ export default function Home() {
             className="object-cover"
             data-ai-hint={landingFeatures.imageHint}
           />
-          <div className="absolute inset-0 bg-background/90" />
+          <div className="absolute inset-0 bg-black/70" />
           <div className="relative container p-4 sm:p-6 md:p-8">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                 A Comprehensive Aviation Ecosystem
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-lg text-primary-foreground/80">
                 All your charter needs, coordinated through one intelligent
                 platform.
               </p>
@@ -228,13 +228,13 @@ export default function Home() {
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center text-center p-4"
+                  className="flex flex-col items-center text-center p-6 rounded-xl bg-blue-950/50 backdrop-blur-md shadow-lg"
                 >
-                    <div className="rounded-full border-8 border-secondary bg-background/80 p-4 backdrop-blur-sm">
+                    <div className="rounded-full border-4 border-primary/50 bg-primary/20 p-4">
                       <feature.icon className="h-8 w-8 text-primary" />
                     </div>
-                    <h3 className="mt-4 text-lg font-bold">{feature.title}</h3>
-                    <p className="mt-2 text-muted-foreground">{feature.description}</p>
+                    <h3 className="mt-4 text-lg font-bold text-primary-foreground">{feature.title}</h3>
+                    <p className="mt-2 text-primary-foreground/80">{feature.description}</p>
                 </div>
               ))}
             </div>
