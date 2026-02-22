@@ -99,7 +99,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                         setShowSuggestions(false);
                     }, 150);
                 }}
-                className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full h-full bg-transparent"
+                className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full h-full bg-transparent text-center"
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
@@ -169,7 +169,7 @@ export function BookingWidget() {
   return (
     <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 bg-transparent rounded-lg">
         <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-transparent p-0 mb-6 gap-2">
+            <TabsList className="flex justify-center bg-black/20 backdrop-blur-md p-1 rounded-lg">
                 <TabsTrigger value="jet" className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-primary/80 data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
                     <Plane /> JET
                 </TabsTrigger>
@@ -222,14 +222,14 @@ export function BookingWidget() {
                                             </div>
                                             <div className="h-px w-full sm:h-auto sm:w-px bg-white/20 self-stretch"></div>
                                             <div className='flex-1'>
-                                                <Input type="text" placeholder="Date & Time" value={leg.date} onChange={(e) => updateLeg(index, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full"/>
+                                                <Input type="text" placeholder="Date & Time" value={leg.date} onChange={(e) => updateLeg(index, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center"/>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                                 <div className="flex flex-col lg:flex-row items-stretch border-t border-white/20">
                                     <div className="flex w-full">
-                                        <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full lg:w-48 bg-transparent" />
+                                        <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full lg:w-48 bg-transparent text-center" />
                                         <Button className="w-full lg:w-auto rounded-none flex-1 lg:flex-none">Request Pricing</Button>
                                     </div>
                                 </div>
@@ -252,21 +252,21 @@ export function BookingWidget() {
                                 </div>
                                 <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                 <div className="flex-1">
-                                    <Input type="text" placeholder="Date & Time" value={legs[0].date} onChange={(e) => updateLeg(0, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full"/>
+                                    <Input type="text" placeholder="Date & Time" value={legs[0].date} onChange={(e) => updateLeg(0, 'date', e.target.value)} onFocus={(e) => e.target.type = 'datetime-local'} onBlur={(e) => e.target.type = 'text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center"/>
                                 </div>
                                 
                                 {tripType === 'round' && (
                                     <>
                                         <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                         <div className="flex-1">
-                                            <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full" />
+                                            <Input type="text" placeholder="Add A Return Flight" value={returnDate} onChange={e => setReturnDate(e.target.value)} onFocus={(e) => e.target.type='datetime-local'} onBlur={(e) => e.target.type='text'} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 w-full bg-transparent h-full text-center" />
                                         </div>
                                     </>
                                 )}
 
                                 <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                 <div className="flex w-full lg:w-auto">
-                                    <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 lg:w-36 bg-transparent"/>
+                                    <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 text-white placeholder:text-white/70 lg:w-36 bg-transparent text-center"/>
                                     <Button className="w-full lg:w-auto rounded-none flex-1 lg:flex-none">Request Pricing</Button>
                                 </div>
                             </div>
