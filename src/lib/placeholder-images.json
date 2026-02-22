@@ -3,13 +3,13 @@
     {
       "id": "landing-hero",
       "description": "A high-end private jet on a parking bay",
-      "imageUrl": "https://images.unsplash.com/photo-1519757043432-3f25d3b64042?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2070&auto=format&fit=crop",
       "imageHint": "private jet tarmac"
     },
     {
       "id": "landing-features",
       "description": "Cockpit of a modern aircraft",
-      "imageUrl": "https://images.unsplash.com/photo-1750232453488-f6a40815126d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhaXJjcmFmdCUyMGNvY2twaXR8ZW58MHx8fHwxNzcxNzgyNzE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=2070&auto=format&fit=crop",
       "imageHint": "aircraft cockpit"
     },
     {
