@@ -288,18 +288,18 @@ export default function Home() {
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-7xl mx-auto">
                       <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-4 border-b-0">
                            <TabsTrigger value="jet" asChild>
-                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg data-[state=inactive]:opacity-50">
-                                  <PlaneIcon className="h-40 w-40" />
+                              <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
+                                  <PlaneIcon className="h-48 w-48" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="helicopter" asChild>
-                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg data-[state=inactive]:opacity-50">
-                                  <HelicopterIcon className="h-40 w-40" />
+                              <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
+                                  <HelicopterIcon className="h-48 w-48" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="seats" asChild>
-                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg data-[state=inactive]:opacity-50">
-                                  <ArmchairIcon className="h-40 w-40" />
+                              <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
+                                  <ArmchairIcon className="h-48 w-48" />
                               </Button>
                           </TabsTrigger>
                       </TabsList>
