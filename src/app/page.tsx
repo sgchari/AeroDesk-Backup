@@ -215,6 +215,13 @@ const features = [
 ];
 
 export default function Home() {
+    useEffect(() => {
+    document.body.classList.add('homepage-transparent-body');
+    return () => {
+      document.body.classList.remove('homepage-transparent-body');
+    };
+  }, []);
+
   return (
     <div className="w-full">
       {/* Background Layer: Fixed to the viewport, sits behind everything else */}
@@ -222,7 +229,7 @@ export default function Home() {
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')",
+            "url('https://picsum.photos/seed/aerodesk-beach/1920/1080')",
         }}
       >
         <div className="absolute inset-0 bg-black/40" />
