@@ -217,13 +217,15 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="relative w-full bg-black">
-      {/* Background Layer */}
-      <div className="absolute inset-0 z-0 bg-hero-pattern bg-cover bg-center" />
-      <div className="absolute inset-0 z-0 bg-black/60" />
+    <div className="w-full">
+      {/* Background Layer: Fixed to the viewport, sits behind everything else */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-hero-pattern bg-cover bg-center" />
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
 
-      {/* Content Layer */}
-      <div className="relative z-10 flex min-h-screen flex-col overflow-x-hidden">
+      {/* Content Layer: Sits on top of the background and handles scrolling */}
+      <div className="relative z-10 flex min-h-screen flex-col overflow-x-hidden bg-transparent">
         <LandingHeader />
 
         <main className="flex-grow">
