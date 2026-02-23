@@ -119,6 +119,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
 
 
 export function BookingWidget() {
+  const [activeTab, setActiveTab] = useState('jet');
   const [tripType, setTripType] = useState('oneway');
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
@@ -129,17 +130,23 @@ export function BookingWidget() {
   const [passengers, setPassengers] = useState('');
 
   return (
-    <div className="w-full max-w-7xl mx-auto rounded-lg shadow-lg p-4 bg-primary/0 border border-white/20">
-        <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="flex justify-center sm:justify-start bg-transparent p-0 rounded-lg max-w-md mx-auto sm:mx-0 mb-6 gap-2 sm:gap-4">
-                <TabsTrigger value="jet" className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
-                    <Plane className="h-5 w-5" /> JET
+    <div className="w-full max-w-7xl mx-auto rounded-lg shadow-lg bg-primary/10 border border-white/20 p-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-3 bg-transparent p-0 rounded-lg max-w-md mx-auto mb-6 gap-2 sm:gap-4">
+                <TabsTrigger value="jet" asChild>
+                    <Button variant={activeTab === 'jet' ? 'accent' : 'ghost'} className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                        <Plane className="h-5 w-5" /> JET
+                    </Button>
                 </TabsTrigger>
-                <TabsTrigger value="helicopter" className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
-                    <HelicopterIcon className="h-5 w-5" /> HELICOPTER
+                <TabsTrigger value="helicopter" asChild>
+                     <Button variant={activeTab === 'helicopter' ? 'accent' : 'ghost'} className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                        <HelicopterIcon className="h-5 w-5" /> HELICOPTER
+                    </Button>
                 </TabsTrigger>
-                 <TabsTrigger value="seats" className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
-                    <Armchair className="h-5 w-5" /> RESERVE SEATS
+                 <TabsTrigger value="seats" asChild>
+                    <Button variant={activeTab === 'seats' ? 'accent' : 'ghost'} className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                        <Armchair className="h-5 w-5" /> RESERVE SEATS
+                    </Button>
                 </TabsTrigger>
             </TabsList>
 
@@ -164,11 +171,20 @@ export function BookingWidget() {
                                 Round
                             </Label>
                         </div>
+                         <div className="flex items-center space-x-2">
+                           <RadioGroupItem value="multicity" id="multicity" className="sr-only" />
+                             <Label htmlFor="multicity" className="flex items-center gap-2 text-white cursor-pointer text-sm sm:text-base">
+                                 <span className={cn("h-3 w-3 flex items-center justify-center rounded-full border-2 border-white", tripType === 'multicity' && 'border-accent')}>
+                                     {tripType === 'multicity' && <span className='h-1.5 w-1.5 rounded-full bg-accent' />}
+                                 </span>
+                                 Multicity
+                            </Label>
+                        </div>
                     </RadioGroup>
                     
                     <div className={cn(
-                        "grid grid-cols-1 items-stretch rounded-md overflow-hidden bg-white",
-                        tripType === 'oneway' ? 'md:grid-cols-[repeat(5,1fr)_auto]' : 'md:grid-cols-[repeat(7,1fr)_auto]'
+                        "grid items-stretch rounded-md overflow-hidden bg-white",
+                        tripType === 'round' ? 'grid-cols-[repeat(7,1fr)_auto]' : 'grid-cols-[repeat(5,1fr)_auto]'
                     )}>
                         <div className="border-r border-gray-300">
                              <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
