@@ -197,6 +197,7 @@ export function BookingWidget() {
                              <Input 
                                 type="text"
                                 placeholder="Add A Return Flight"
+                                value=""
                                 onFocus={() => setTripType('round')}
                                 className="bg-white text-black placeholder:text-gray-400 border-0 border-r border-gray-300 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3 cursor-pointer"
                                 readOnly
@@ -221,5 +222,3 @@ export function BookingWidget() {
     </div>
   );
 }
-
-    
