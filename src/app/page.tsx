@@ -23,7 +23,7 @@ import {
   Banknote,
   Shield,
   CheckCircle,
-  Plane,
+  Armchair,
 } from 'lucide-react';
 import {
   Sheet,
@@ -128,7 +128,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-l-0 bg-black/80 text-white backdrop-blur-xl"
+                className="w-[240px] border border-white/10 bg-black/20 text-white backdrop-blur-md"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -140,7 +140,7 @@ const LandingHeader: FC = () => {
                       <Link
                         key={link.label}
                         href={link.href}
-                        className="py-2 text-lg text-white/80 transition-colors hover:text-white"
+                        className="py-2 text-sm text-white/80 transition-colors hover:text-white"
                       >
                         {link.label}
                       </Link>
@@ -197,7 +197,7 @@ const features = [
       'Corporate Travel Desk users can create charter requests for employees, request jet seat allocations, and coordinate associated accommodation needs.',
   },
   {
-    icon: Plane,
+    icon: Armchair,
     title: 'Available Jet Seat Allocation',
     description:
       'Access seats on select private jet flights operating on predefined routes',
@@ -553,3 +553,4 @@ export default function Home() {
     </div>
   );
 }
+
