@@ -39,7 +39,7 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-primary backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/20 backdrop-blur-sm">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -174,21 +174,22 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <LandingHeader />
-      <main>
-        <section className="relative w-full bg-primary text-primary-foreground">
-          <Image
-            src={landingHero.imageUrl}
-            alt={landingHero.description}
-            fill
-            className="object-cover"
-            data-ai-hint={landingHero.imageHint}
-            priority
-          />
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="relative">
-
+      <main className="-mt-20">
+        <section className="relative w-full text-primary-foreground">
+          <div className="absolute inset-0">
+            <Image
+              src={landingHero.imageUrl}
+              alt={landingHero.description}
+              fill
+              className="object-cover"
+              data-ai-hint={landingHero.imageHint}
+              priority
+            />
+            <div className="absolute inset-0 bg-black/60" />
+          </div>
+          <div className="relative pt-20">
             {/* Hero Text */}
-            <div className="container p-4 text-center sm:p-6 md:p-8 pt-12 pb-8">
+            <div className="container p-4 pt-12 pb-8 text-center sm:p-6 sm:pt-12 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -197,16 +198,16 @@ export default function Home() {
                 Where <span className="text-accent">Exceptional Journey</span> Begins
               </h1>
             </div>
-            
+
             {/* Booking Widget */}
             <div className="relative z-10">
-                <div className="container">
-                    <BookingWidget />
-                </div>
+              <div className="container">
+                <BookingWidget />
+              </div>
             </div>
 
             {/* Features Section */}
-            <div className="container p-4 sm:p-6 md:p-8 py-16 sm:py-24">
+            <div className="container p-4 py-16 sm:p-6 sm:py-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
@@ -221,13 +222,17 @@ export default function Home() {
                 {features.map((feature, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center text-center p-6 rounded-xl bg-black/30 backdrop-blur-lg shadow-lg"
+                    className="flex flex-col items-center rounded-xl bg-black/50 p-6 text-center shadow-lg backdrop-blur-lg"
                   >
-                      <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
-                        <feature.icon className="h-8 w-8 text-accent" />
-                      </div>
-                      <h3 className="mt-4 text-lg font-bold text-primary-foreground">{feature.title}</h3>
-                      <p className="mt-2 text-primary-foreground/80">{feature.description}</p>
+                    <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
+                      <feature.icon className="h-8 w-8 text-accent" />
+                    </div>
+                    <h3 className="mt-4 text-lg font-bold text-primary-foreground">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-2 text-primary-foreground/80">
+                      {feature.description}
+                    </p>
                   </div>
                 ))}
               </div>
