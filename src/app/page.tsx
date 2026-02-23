@@ -241,7 +241,7 @@ export default function Home() {
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1505118380757-91f5f5632de0?q=80&w=2148&auto=format&fit=crop')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1520454974749-611b7248ffdb?q=80&w=2070&auto=format&fit=crop')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
@@ -270,18 +270,18 @@ export default function Home() {
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-7xl mx-auto">
                       <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-6 border-b-0">
                           <TabsTrigger value="jet" asChild>
-                              <Button variant="ghost" className="bg-transparent transition-all text-yellow-300">
-                                  <Plane className="h-20 w-20 fill-currentColor" />
+                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent text-accent/70 data-[state=active]:text-accent hover:bg-transparent transition-all">
+                                  <Plane className="h-24 w-24 fill-currentColor" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="helicopter" asChild>
-                              <Button variant="ghost" className="bg-transparent transition-all text-yellow-300">
-                                  <HelicopterIcon className="h-20 w-20" />
+                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent text-accent/70 data-[state=active]:text-accent hover:bg-transparent transition-all">
+                                  <HelicopterIcon className="h-24 w-24" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="seats" asChild>
-                              <Button variant="ghost" className="bg-transparent transition-all text-yellow-300">
-                                  <Armchair className="h-20 w-20 fill-currentColor" />
+                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent text-accent/70 data-[state=active]:text-accent hover:bg-transparent transition-all">
+                                  <Armchair className="h-24 w-24 fill-currentColor" />
                               </Button>
                           </TabsTrigger>
                       </TabsList>
