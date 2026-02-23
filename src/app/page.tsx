@@ -221,7 +221,7 @@ export default function Home() {
                 {features.map((feature, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center text-center p-6 rounded-xl bg-blue-950/30 backdrop-blur-lg shadow-lg"
+                    className="flex flex-col items-center text-center p-6 rounded-xl bg-black/30 backdrop-blur-lg shadow-lg"
                   >
                       <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
                         <feature.icon className="h-8 w-8 text-accent" />
@@ -363,61 +363,61 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="bg-secondary text-foreground">
+      <footer className="bg-secondary text-secondary-foreground">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
-               <Logo />
+               <Logo className="[&_svg]:text-secondary-foreground/80 [&_.text-foreground]:text-secondary-foreground [&_.text-primary]:text-accent" />
             </div>
-            <div className="flex flex-col items-center gap-3 text-muted-foreground md:items-start">
-              <h3 className="font-semibold uppercase tracking-wider text-foreground">
+            <div className="flex flex-col items-center gap-3 text-secondary-foreground/80 md:items-start">
+              <h3 className="font-semibold uppercase tracking-wider text-secondary-foreground">
                 Get In Touch
               </h3>
               <a
                 href="tel:+919819754038"
-                className="inline-flex items-center gap-2 hover:text-foreground"
+                className="inline-flex items-center gap-2 hover:text-secondary-foreground"
               >
                 <Phone className="h-4 w-4" /> +91 98197 54038
               </a>
               <a
                 href="tel:+912228222202"
-                className="inline-flex items-center gap-2 hover:text-foreground"
+                className="inline-flex items-center gap-2 hover:text-secondary-foreground"
               >
                 <Phone className="h-4 w-4" /> +91 22 2822 2202
               </a>
               <a
                 href="mailto:info@aerodesk.com"
-                className="inline-flex items-center gap-2 hover:text-foreground"
+                className="inline-flex items-center gap-2 hover:text-secondary-foreground"
               >
                 <Mail className="h-4 w-4" /> info@aerodesk.com
               </a>
             </div>
-            <div className="flex flex-col items-center gap-3 text-muted-foreground md:items-start">
-              <h3 className="font-semibold uppercase tracking-wider text-foreground">
+            <div className="flex flex-col items-center gap-3 text-secondary-foreground/80 md:items-start">
+              <h3 className="font-semibold uppercase tracking-wider text-secondary-foreground">
                 Legal
               </h3>
               <Link
                 href="/terms-of-service"
-                className="hover:text-foreground"
+                className="hover:text-secondary-foreground"
               >
                 Terms of Service
               </Link>
-              <Link href="/privacy-policy" className="hover:text-foreground">
+              <Link href="/privacy-policy" className="hover:text-secondary-foreground">
                 Privacy Policy
               </Link>
-              <Link href="/safety-standards" className="hover:text-foreground">
+              <Link href="/safety-standards" className="hover:text-secondary-foreground">
                 Safety Standards
               </Link>
             </div>
             <div className="flex flex-col items-center gap-3 md:items-end">
-              <h3 className="font-semibold uppercase tracking-wider text-foreground">
+              <h3 className="font-semibold uppercase tracking-wider text-secondary-foreground">
                 Follow Us
               </h3>
-              <div className="flex gap-4 text-muted-foreground">
+              <div className="flex gap-4 text-secondary-foreground/80">
                 <Link
                   href="#"
                   aria-label="Facebook"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-secondary-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -431,7 +431,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Twitter"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-secondary-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -445,7 +445,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="LinkedIn"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-secondary-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -459,7 +459,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Instagram"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-secondary-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -473,7 +473,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Youtube"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-secondary-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -487,9 +487,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="mt-8 border-t border-border pt-8 text-center text-xs text-muted-foreground">
+          <div className="mt-8 border-t border-border/20 pt-8 text-center text-xs text-secondary-foreground/60">
             <p>
-              <span className="font-bold text-foreground">Disclaimer:</span>{' '}
+              <span className="font-bold text-secondary-foreground/80">Disclaimer:</span>{' '}
               This platform facilitates non-scheduled charter operations (NSOP)
               only. It is not an Online Travel Agency (OTA) or a scheduled
               commercial airline booking system. All flights are subject to
