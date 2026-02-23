@@ -10,14 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-    >
-        <path d="M12.93,7.46,15.2,2.8a.5.5,0,0,1,.9.38L15.25,8H20.5a2,2,0,0,1,1.8,2.75l-1.7,6.82a4,4,0,0,1-3.9,3.18H8.3a4,4,0,0,1-3.9-3.18L2.7,10.75A2,2,0,0,1,4.5,8H12.2a.5.5,0,0,1,.48.33.5.5,0,0,1-.1.53.5.5,0,0,1-.32.15H5.83a.5.5,0,0,0-.49.65l1.37,5.5a2,2,0,0,0,2,1.72h6.58a2,2,0,0,0,2-1.72l1.37-5.5a.5.5,0,0,0-.49-.65H13.54a.5.5,0,0,1-.32-.15.5.5,0,0,1-.1-.53A.5.5,0,0,1,12.93,7.46ZM12,6a1,1,0,1,0-1-1A1,1,0,0,0,12,6Z"/>
-        <path d="M12,1A3,3,0,0,0,9,4V4.08a.5.5,0,0,0,.5.5h5a.5.5,0,0,0,.5-.5V4A3,3,0,0,0,12,1Z"/>
+    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M13,3.34a1,1,0,0,0-2,0V8.5H3.5a1,1,0,0,0-1,1.73l3,3a1,1,0,0,0,.77.27H11V21h2V13h4.23a1,1,0,0,0,.77-0.27l3-3a1,1,0,0,0-1-1.73H13V3.34Z"/>
     </svg>
 );
 
@@ -147,16 +141,13 @@ export function BookingWidget() {
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent p-0 mb-6">
                 <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <Plane className="h-8 w-8" />
-                    <span className="font-semibold text-sm">Private Jet</span>
+                    <Plane className="h-10 w-10" />
                 </TabsTrigger>
                 <TabsTrigger value="helicopter" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <HelicopterIcon className="h-8 w-8" />
-                    <span className="font-semibold text-sm">Helicopter</span>
+                    <HelicopterIcon className="h-10 w-10" />
                 </TabsTrigger>
                 <TabsTrigger value="seats" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <Armchair className="h-8 w-8" />
-                    <span className="font-semibold text-sm">Seats</span>
+                    <Armchair className="h-10 w-10" />
                 </TabsTrigger>
             </TabsList>
             <TabsContent value="jet" className="mt-0">
@@ -256,4 +247,5 @@ export function BookingWidget() {
   );
 }
 
+    
     
