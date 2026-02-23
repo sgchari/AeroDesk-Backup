@@ -248,7 +248,7 @@ export default function Home() {
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1507525428034-b723a9ce6890')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
