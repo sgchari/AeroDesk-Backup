@@ -34,7 +34,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 const LandingHeader: FC = () => {
@@ -273,23 +272,7 @@ export default function Home() {
 
               <div className="relative z-10 py-6">
                 <div className="container">
-                  <Tabs defaultValue="jet" className="w-full max-w-7xl mx-auto">
-                    <TabsList className="grid w-full max-w-2xl grid-cols-3 gap-2 bg-black/20 p-2 rounded-lg border border-white/10 backdrop-blur-sm mx-auto mb-4">
-                        <TabsTrigger value="jet" className="flex items-center justify-center flex-col gap-2 p-4 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground h-auto">
-                            <Plane className="h-8 w-8" />
-                            <span className="font-semibold text-sm">Private Jet</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="helicopter" className="flex items-center justify-center flex-col gap-2 p-4 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground h-auto">
-                            <HelicopterIcon className="h-8 w-8" />
-                            <span className="font-semibold text-sm">Helicopter</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="seats" className="flex items-center justify-center flex-col gap-2 p-4 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground h-auto">
-                            <ArmchairIcon className="h-8 w-8" />
-                            <span className="font-semibold text-sm">Seats</span>
-                        </TabsTrigger>
-                    </TabsList>
-                      <BookingWidget />
-                  </Tabs>
+                  <BookingWidget />
                 </div>
               </div>
 
@@ -593,5 +576,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
