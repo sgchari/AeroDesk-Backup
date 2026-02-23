@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -36,7 +35,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 
 const LandingHeader: FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -220,15 +218,13 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-transparent">
       <LandingHeader />
       <main className="relative flex-grow">
         <div
-          className="absolute inset-0 -z-10"
+          className="absolute inset-0 -z-10 bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://picsum.photos/seed/aeroplane/1920/1080')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundImage: `url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')`,
           }}
         >
           <div className="absolute inset-0 bg-black/50" />
