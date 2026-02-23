@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -219,17 +220,19 @@ const features = [
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-black">
-      <LandingHeader />
-      <main className="relative flex-grow">
+      <div className="fixed inset-0 -z-10">
         <div
-          className="absolute inset-0 -z-10 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')`,
+            backgroundImage: `url('https://picsum.photos/seed/coupleonthebeach/1920/1080')`,
           }}
         >
-          <div className="absolute inset-0 bg-black/50" />
         </div>
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
 
+      <LandingHeader />
+      <main className="relative flex-grow">
         <section className="relative w-full text-white">
           <div className="relative">
             <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
@@ -549,3 +552,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
