@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -214,21 +213,22 @@ const features = [
 export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden">
-      <Image
-        src="https://images.unsplash.com/photo-1520437358206-62e3b4260486?q=80&w=2070&auto=format&fit=crop"
-        alt="Airplane flying low over a tropical beach"
-        fill
-        className="-z-10 object-cover"
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1520437358206-62e3b4260486?q=80&w=2070&auto=format&fit=crop')",
+        }}
         data-ai-hint="airplane beach"
-        priority
-      />
-      <div className="absolute inset-0 -z-10 bg-black/60" />
+      >
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
 
       <LandingHeader />
       <main>
         <section className="relative w-full text-primary-foreground">
           <div className="relative">
-            <div className="container space-y-6 px-4 pb-4 text-center sm:px-6 md:px-8">
+            <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
