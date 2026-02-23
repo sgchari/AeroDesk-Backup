@@ -24,6 +24,7 @@ import {
   Banknote,
   Shield,
   CheckCircle,
+  Armchair,
 } from 'lucide-react';
 import {
   Sheet,
@@ -34,6 +35,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 
 const LandingHeader: FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -127,7 +130,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-l-0 bg-black/95 text-white backdrop-blur-xl"
+                className="w-[240px] border-l-0 bg-black/80 text-white backdrop-blur-xl"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -215,14 +218,37 @@ const features = [
   },
 ];
 
+const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+        <path d="M2 12C2 12 4.5 10 9 10C13.5 10 16.5 12 16.5 12C16.5 12 15.5 15 12 15C8.5 15 2 12 2 12Z" />
+        <path d="M10 10V3L14 3" />
+        <path d="M7 3H17" />
+        <path d="M16 12L22 10" />
+        <path d="M20 10V8" />
+    </svg>
+);
+
+
 export default function Home() {
+  const [activeTab, setActiveTab] = useState('jet');
   return (
     <div className="w-full">
       {/* Background Layer: Fixed to the viewport, sits behind everything else */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2072&auto=format&fit=crop')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1527663274351-68160c761358?q=80&w=2070&auto=format&fit=crop')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
@@ -248,7 +274,26 @@ export default function Home() {
 
               <div className="relative z-10 py-6">
                 <div className="container">
-                  <BookingWidget />
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-7xl mx-auto">
+                      <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-6 border-b-0">
+                          <TabsTrigger value="jet" asChild>
+                              <Button variant="ghost" className="p-2 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all">
+                                  <Plane className="h-12 w-12" />
+                              </Button>
+                          </TabsTrigger>
+                          <TabsTrigger value="helicopter" asChild>
+                              <Button variant="ghost" className="p-2 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all">
+                                  <HelicopterIcon className="h-12 w-12" />
+                              </Button>
+                          </TabsTrigger>
+                          <TabsTrigger value="seats" asChild>
+                              <Button variant="ghost" className="p-2 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all">
+                                  <Armchair className="h-12 w-12" />
+                              </Button>
+                          </TabsTrigger>
+                      </TabsList>
+                      <BookingWidget activeTab={activeTab}/>
+                  </Tabs>
                 </div>
               </div>
               
@@ -269,7 +314,7 @@ export default function Home() {
                       key={index}
                       className="flex flex-col items-center rounded-xl border border-white/10 bg-black/20 p-6 text-center shadow-lg backdrop-blur-md"
                     >
-                      <feature.icon className="h-10 w-10 text-accent" />
+                      <feature.icon className="h-10 w-10" style={{ color: '#EEDC5B' }} />
                       <h3 className="mt-4 text-lg font-bold text-white">
                         {feature.title}
                       </h3>
