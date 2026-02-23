@@ -19,6 +19,7 @@ import {
   Banknote,
   Shield,
   CheckCircle,
+  Armchair,
 } from 'lucide-react';
 import {
   Sheet,
@@ -189,7 +190,7 @@ export default function Home() {
           </div>
           <LandingHeader />
           <div className="relative">
-            <div className="container space-y-10 p-4 pt-24 pb-8 text-center sm:p-6 md:p-8">
+            <div className="container space-y-10 p-4 pt-32 pb-8 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -199,13 +200,13 @@ export default function Home() {
               </h1>
             </div>
 
-            <div className="relative z-10 py-12">
+            <div className="relative z-10 py-24">
               <div className="container">
                 <BookingWidget />
               </div>
             </div>
             
-            <div className="container p-4 pt-48 pb-16 sm:p-6 sm:pt-64 sm:pb-24 md:p-8">
+            <div className="container p-4 pt-48 pb-16 sm:p-6 sm:pt-96 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
@@ -220,7 +221,7 @@ export default function Home() {
                 {features.map((feature, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center rounded-xl bg-black/50 p-6 text-center shadow-lg backdrop-blur-lg"
+                    className="flex flex-col items-center rounded-xl bg-black/20 p-6 text-center shadow-lg border border-white/10"
                   >
                     <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
                       <feature.icon className="h-8 w-8 text-accent" />
