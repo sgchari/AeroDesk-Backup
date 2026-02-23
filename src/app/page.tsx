@@ -43,7 +43,7 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/5 backdrop-blur-sm">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -192,7 +192,7 @@ export default function Home() {
           </div>
           <LandingHeader />
           <div className="relative">
-            <div className="container space-y-10 p-4 pt-20 pb-4 text-center sm:p-6 md:p-8">
+            <div className="container space-y-6 p-4 pt-16 pb-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -208,7 +208,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="container p-4 pt-[32rem] pb-16 sm:p-6 sm:pt-[32rem] sm:pb-24 md:p-8">
+            <div className="container p-4 pt-[40rem] pb-16 sm:p-6 sm:pt-[44rem] sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
@@ -369,61 +369,61 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="bg-secondary text-secondary-foreground">
+      <footer className="border-t border-white/10 bg-black/20 text-white backdrop-blur-md">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
-               <Logo className="[&_svg]:text-secondary-foreground/80 [&_.text-foreground]:text-secondary-foreground [&_.text-primary]:text-accent" />
+               <Logo className="[&_svg]:text-white/80 [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/70" />
             </div>
-            <div className="flex flex-col items-center gap-3 text-secondary-foreground/80 md:items-start">
-              <h3 className="font-semibold uppercase tracking-wider text-secondary-foreground">
+            <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
+              <h3 className="font-semibold uppercase tracking-wider text-white">
                 Get In Touch
               </h3>
               <a
                 href="tel:+919819754038"
-                className="inline-flex items-center gap-2 hover:text-secondary-foreground"
+                className="inline-flex items-center gap-2 hover:text-white"
               >
                 <Phone className="h-4 w-4" /> +91 98197 54038
               </a>
               <a
                 href="tel:+912228222202"
-                className="inline-flex items-center gap-2 hover:text-secondary-foreground"
+                className="inline-flex items-center gap-2 hover:text-white"
               >
                 <Phone className="h-4 w-4" /> +91 22 2822 2202
               </a>
               <a
                 href="mailto:info@aerodesk.com"
-                className="inline-flex items-center gap-2 hover:text-secondary-foreground"
+                className="inline-flex items-center gap-2 hover:text-white"
               >
                 <Mail className="h-4 w-4" /> info@aerodesk.com
               </a>
             </div>
-            <div className="flex flex-col items-center gap-3 text-secondary-foreground/80 md:items-start">
-              <h3 className="font-semibold uppercase tracking-wider text-secondary-foreground">
+            <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
+              <h3 className="font-semibold uppercase tracking-wider text-white">
                 Legal
               </h3>
               <Link
                 href="/terms-of-service"
-                className="hover:text-secondary-foreground"
+                className="hover:text-white"
               >
                 Terms of Service
               </Link>
-              <Link href="/privacy-policy" className="hover:text-secondary-foreground">
+              <Link href="/privacy-policy" className="hover:text-white">
                 Privacy Policy
               </Link>
-              <Link href="/safety-standards" className="hover:text-secondary-foreground">
+              <Link href="/safety-standards" className="hover:text-white">
                 Safety Standards
               </Link>
             </div>
             <div className="flex flex-col items-center gap-3 md:items-end">
-              <h3 className="font-semibold uppercase tracking-wider text-secondary-foreground">
+              <h3 className="font-semibold uppercase tracking-wider text-white">
                 Follow Us
               </h3>
-              <div className="flex gap-4 text-secondary-foreground/80">
+              <div className="flex gap-4 text-white/80">
                 <Link
                   href="#"
                   aria-label="Facebook"
-                  className="transition-opacity hover:text-secondary-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -437,7 +437,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Twitter"
-                  className="transition-opacity hover:text-secondary-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -451,7 +451,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="LinkedIn"
-                  className="transition-opacity hover:text-secondary-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -465,7 +465,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Instagram"
-                  className="transition-opacity hover:text-secondary-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -479,7 +479,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Youtube"
-                  className="transition-opacity hover:text-secondary-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -493,9 +493,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="mt-8 border-t border-border/20 pt-8 text-center text-xs text-secondary-foreground/60">
+          <div className="mt-8 border-t border-white/20 pt-8 text-center text-xs text-white/60">
             <p>
-              <span className="font-bold text-secondary-foreground/80">Disclaimer:</span>{' '}
+              <span className="font-bold text-white/80">Disclaimer:</span>{' '}
               This platform facilitates non-scheduled charter operations (NSOP)
               only. It is not an Online Travel Agency (OTA) or a scheduled
               commercial airline booking system. All flights are subject to
