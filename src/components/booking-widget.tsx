@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Plane, Sailboat } from 'lucide-react';
+import { Plane, Armchair } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -126,7 +126,7 @@ export function BookingWidget() {
   const [passengers, setPassengers] = useState('');
 
   return (
-    <div className="w-full max-w-5xl mx-auto backdrop-blur-md rounded-xl shadow-lg p-4 bg-black/60 border border-white/10">
+    <div className="w-full max-w-5xl mx-auto rounded-xl shadow-lg p-4 bg-black/60 border border-white/10">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="flex justify-center bg-transparent p-0 rounded-lg max-w-md mx-auto mb-6">
                 <TabsTrigger value="jet" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
@@ -135,8 +135,8 @@ export function BookingWidget() {
                 <TabsTrigger value="helicopter" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
                     <Helicopter className="h-7 w-7" /> HELICOPTER
                 </TabsTrigger>
-                 <TabsTrigger value="yacht" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
-                    <Sailboat className="h-7 w-7" /> YACHT
+                 <TabsTrigger value="seats" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
+                    <Armchair className="h-7 w-7" /> RESERVE SEATS
                 </TabsTrigger>
             </TabsList>
 
@@ -217,7 +217,7 @@ export function BookingWidget() {
                 </div>
             </TabsContent>
             <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-white">Helicopter booking functionality coming soon.</p></TabsContent>
-            <TabsContent value="yacht"><p className="text-center p-12 text-lg text-white">Yacht booking functionality coming soon.</p></TabsContent>
+            <TabsContent value="seats"><p className="text-center p-12 text-lg text-white">Seat reservation functionality coming soon.</p></TabsContent>
         </Tabs>
     </div>
   );
