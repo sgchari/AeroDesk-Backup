@@ -39,7 +39,7 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/30 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-lg">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -84,36 +84,36 @@ const LandingHeader = () => {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-full max-w-xs sm:max-w-sm">
+              <SheetContent side="right" className="w-full max-w-xs bg-black/20 backdrop-blur-lg border-l border-white/10 text-white sm:max-w-sm">
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
                   <div className="mb-6 flex items-center justify-between">
-                    <Logo />
+                     <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:font-bold [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/70" />
                   </div>
                   <nav className="flex flex-col gap-4">
                     {navLinks.map((link) => (
                       <Link
                         key={link.label}
                         href={link.href}
-                        className="py-2 text-lg text-muted-foreground transition-colors hover:text-foreground"
+                        className="py-2 text-lg text-white/80 transition-colors hover:text-white"
                       >
                         {link.label}
                       </Link>
                     ))}
                   </nav>
-                  <div className="mt-auto flex flex-col gap-4 border-t pt-4">
+                  <div className="mt-auto flex flex-col gap-4 border-t border-white/10 pt-4">
                     <a
                       href="tel:+919819754038"
-                      className="flex items-center gap-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      className="flex items-center gap-2 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
                     >
                       <Phone className="h-4 w-4" />
                       +91 9819754038
                     </a>
                     <div className="grid grid-cols-2 gap-2">
-                      <Button asChild>
+                       <Button asChild variant="accent">
                         <Link href="/login">Login</Link>
                       </Button>
-                      <Button variant="outline" asChild>
+                      <Button variant="ghost" asChild className="font-semibold text-white hover:bg-white/10 hover:text-white">
                         <Link href="/register">Register</Link>
                       </Button>
                     </div>
@@ -172,7 +172,7 @@ export default function Home() {
   const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-cover bg-center bg-no-repeat">
+    <div className="relative flex min-h-screen flex-col">
        <Image
           src={landingHero.imageUrl}
           alt={landingHero.description}
@@ -186,8 +186,8 @@ export default function Home() {
       <LandingHeader />
       <main>
         <section className="relative w-full py-8 text-primary-foreground sm:py-12">
-          <div className="relative">
-            <div className="container space-y-6 px-4 pt-4 pb-4 text-center sm:px-6 sm:pt-8 md:px-8">
+          <div className="relative pt-8">
+            <div className="container space-y-6 px-4 pb-4 text-center sm:px-6 md:px-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -203,7 +203,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="container p-4 pt-[40rem] pb-16 sm:p-6 sm:pt-[44rem] sm:pb-24 md:p-8">
+            <div className="container p-4 pt-[44rem] pb-16 sm:p-6 sm:pt-[44rem] sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
@@ -251,7 +251,7 @@ export default function Home() {
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               <Card className="flex flex-col bg-black/20 border-white/10 text-white">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
+                  <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                       <Wallet className="h-6 w-6 text-primary" />
                     </div>
@@ -278,7 +278,7 @@ export default function Home() {
 
               <Card className="flex flex-col bg-black/20 border-white/10 text-white">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
+                  <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                       <Banknote className="h-6 w-6 text-primary" />
                     </div>
@@ -308,7 +308,7 @@ export default function Home() {
 
               <Card className="flex flex-col md:col-span-2 lg:col-span-1 bg-black/20 border-white/10 text-white">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
+                  <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                       <Shield className="h-6 w-6 text-primary" />
                     </div>
@@ -364,7 +364,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-white/10 bg-black/50 text-white/80 backdrop-blur-md">
+      <footer className="border-t border-white/10 bg-black/20 text-white/80 backdrop-blur-md">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
