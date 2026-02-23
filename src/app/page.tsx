@@ -217,14 +217,14 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="w-full bg-black">
+    <div className="w-full">
       {/* Background Layer: Fixed to the viewport, sits behind everything else */}
       <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1517581177682-a085bb7ffb73?q=80&w=2070&auto=format&fit=crop')",
+              "url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2070&auto=format&fit=crop')",
           }}
         />
         <div className="absolute inset-0 bg-black/60" />
