@@ -19,9 +19,6 @@ export default {
       },
     },
     extend: {
-      backgroundImage: {
-        'hero-pattern': "url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')",
-      },
       fontFamily: {
         body: ['var(--font-inter)', 'sans-serif'],
         headline: ['var(--font-inter)', 'sans-serif'],
