@@ -222,7 +222,7 @@ export default function Home() {
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url('https://picsum.photos/seed/beach/1920/1080')",
+            "url('https://picsum.photos/seed/tropicalbeach/1920/1080')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
