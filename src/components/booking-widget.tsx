@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
-const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
+const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       width="24"
       height="24"
@@ -18,7 +18,7 @@ const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}
@@ -126,17 +126,17 @@ export function BookingWidget() {
   const [passengers, setPassengers] = useState('');
 
   return (
-    <div className="w-full max-w-5xl mx-auto rounded-xl shadow-lg p-4 bg-black/60 border border-white/10">
+    <div className="w-full max-w-5xl mx-auto rounded-xl shadow-lg p-4 bg-black/30 border border-white/10">
         <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="flex justify-center bg-transparent p-0 rounded-lg max-w-md mx-auto mb-6">
-                <TabsTrigger value="jet" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
-                    <Plane className="h-7 w-7" /> JET
+            <TabsList className="flex justify-center sm:justify-start bg-transparent p-0 rounded-lg max-w-md mx-auto sm:mx-0 mb-6 gap-2 sm:gap-4">
+                <TabsTrigger value="jet" className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                    <Plane className="h-5 w-5" /> JET
                 </TabsTrigger>
-                <TabsTrigger value="helicopter" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
-                    <Helicopter className="h-7 w-7" /> HELICOPTER
+                <TabsTrigger value="helicopter" className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                    <HelicopterIcon className="h-5 w-5" /> HELICOPTER
                 </TabsTrigger>
-                 <TabsTrigger value="seats" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
-                    <Armchair className="h-7 w-7" /> RESERVE SEATS
+                 <TabsTrigger value="seats" className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                    <Armchair className="h-5 w-5" /> RESERVE SEATS
                 </TabsTrigger>
             </TabsList>
 
@@ -146,21 +146,25 @@ export function BookingWidget() {
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="oneway" id="oneway" className="sr-only" />
                             <Label htmlFor="oneway" className="flex items-center gap-2 text-white cursor-pointer text-sm sm:text-base">
-                                <span className={cn("h-2.5 w-2.5 rounded-sm border border-white", tripType === 'oneway' && 'bg-accent border-accent')}></span>
+                                <span className={cn("h-3 w-3 flex items-center justify-center rounded-full border-2 border-white", tripType === 'oneway' && 'border-accent')}>
+                                     {tripType === 'oneway' && <span className='h-1.5 w-1.5 rounded-full bg-accent' />}
+                                </span>
                                 Oneway
                             </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                            <RadioGroupItem value="round" id="round" className="sr-only" />
                              <Label htmlFor="round" className="flex items-center gap-2 text-white cursor-pointer text-sm sm:text-base">
-                                <span className={cn("h-2.5 w-2.5 rounded-sm border border-white", tripType === 'round' && 'bg-accent border-accent')}></span>
+                                 <span className={cn("h-3 w-3 flex items-center justify-center rounded-full border-2 border-white", tripType === 'round' && 'border-accent')}>
+                                     {tripType === 'round' && <span className='h-1.5 w-1.5 rounded-full bg-accent' />}
+                                 </span>
                                 Round
                             </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                              <RadioGroupItem value="multicity" id="multicity" className="sr-only" disabled />
                              <Label htmlFor="multicity" className="flex items-center gap-2 text-white/50 cursor-not-allowed text-sm sm:text-base">
-                                <span className="h-2.5 w-2.5 rounded-sm border border-white/50"></span>
+                                 <span className="h-3 w-3 flex items-center justify-center rounded-full border-2 border-white/50"></span>
                                 Multicity
                             </Label>
                         </div>
@@ -173,26 +177,34 @@ export function BookingWidget() {
                          <div className="flex-1 border-r border-gray-300">
                              <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                          </div>
-                        <Input 
-                            type="text"
-                            onFocus={(e) => { e.target.type = 'date'; }}
-                            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                            placeholder="Date & Time"
-                            value={departureDate} 
-                            onChange={(e) => setDepartureDate(e.target.value)} 
-                             className="bg-white text-black placeholder:text-gray-500 border-0 border-r border-gray-300 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3"
-                        />
-                        
-                        {tripType === 'round' ? (
+                        <div className="relative flex-1 border-r border-gray-300">
                             <Input 
                                 type="text"
                                 onFocus={(e) => { e.target.type = 'date'; }}
                                 onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                placeholder="Add A Return Flight"
-                                value={returnDate} 
-                                onChange={e => setReturnDate(e.target.value)} 
-                                className="bg-white text-black placeholder:text-gray-500 border-0 border-r border-gray-300 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3"
+                                placeholder="Date"
+                                value={departureDate} 
+                                onChange={(e) => setDepartureDate(e.target.value)} 
+                                className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
+                                style={{colorScheme: 'light'}}
                             />
+                             {!departureDate && <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'>Date</span>}
+                        </div>
+                        
+                        {tripType === 'round' ? (
+                             <div className="relative flex-1 border-r border-gray-300">
+                                <Input 
+                                    type="text"
+                                    onFocus={(e) => { e.target.type = 'date'; }}
+                                    onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+                                    placeholder="Add A Return Flight"
+                                    value={returnDate} 
+                                    onChange={e => setReturnDate(e.target.value)} 
+                                    className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
+                                    style={{colorScheme: 'light'}}
+                                />
+                                {!returnDate && <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'>Return Date</span>}
+                            </div>
                         ) : (
                              <Input 
                                 type="text"
@@ -204,14 +216,17 @@ export function BookingWidget() {
                             />
                         )}
 
-                        <Input 
-                            type="text"
-                            placeholder="1 Passenger"
-                            value={passengers} 
-                            onChange={e => setPassengers(e.target.value)}
-                            onFocus={(e) => { e.target.type = 'number'; e.target.placeholder='1'; e.target.min='1'; }} onBlur={(e) => { if (!e.target.value) {e.target.type = 'text'; e.target.placeholder='1 Passenger'}}}
-                            className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3"
-                        />
+                        <div className="relative flex-1">
+                            <Input 
+                                type="text"
+                                placeholder="1 Passenger"
+                                value={passengers} 
+                                onChange={e => setPassengers(e.target.value)}
+                                onFocus={(e) => { e.target.type = 'number'; e.target.placeholder='1'; e.target.min='1'; }} onBlur={(e) => { if (!e.target.value) {e.target.type = 'text'; e.target.placeholder='1 Passenger'}}}
+                                className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
+                            />
+                             {!passengers && <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'>Passengers</span>}
+                        </div>
                         <Button variant="primary" className="rounded-none text-lg h-auto px-8">SEARCH</Button>
                     </div>
                 </div>
