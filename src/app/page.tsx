@@ -130,7 +130,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-l-0 bg-black/95 text-white backdrop-blur-xl"
+                className="w-[240px] border-l-0 bg-black/80 text-white backdrop-blur-xl"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -248,7 +248,7 @@ export default function Home() {
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1517776832644-33f1595ab7a0?q=80&w=2070&auto=format&fit=crop')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=2070&auto=format&fit=crop')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
