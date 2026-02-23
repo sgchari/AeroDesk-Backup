@@ -216,7 +216,7 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="w-full bg-black">
+    <div className="w-full">
       {/* Background Layer: Fixed to the viewport, sits behind everything else */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
