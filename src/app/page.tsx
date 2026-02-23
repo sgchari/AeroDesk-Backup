@@ -205,7 +205,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="container p-4 py-16 sm:p-6 sm:py-24 md:p-8">
+            <div className="container p-4 pt-24 pb-16 sm:p-6 sm:pt-32 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem

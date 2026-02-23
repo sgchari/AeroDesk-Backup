@@ -175,9 +175,9 @@ export function BookingWidget() {
             </TabsList>
             
             <div className="bg-black/20 p-4 rounded-lg shadow-2xl border border-white/10">
-                <TabsContent value="jet">
+                <TabsContent value="jet" className="mt-0">
                     <div className="space-y-4">
-                        <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6">
+                        <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6 mt-6">
                             <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="oneway" id="oneway" className="sr-only" />
                                 <Label htmlFor="oneway" className="flex items-center gap-2 text-white cursor-pointer text-sm sm:text-base">
@@ -196,7 +196,7 @@ export function BookingWidget() {
                                     Round
                                 </Label>
                             </div>
-                            <div className="flex items-center space-x-2">
+                             <div className="flex items-center space-x-2">
                             <RadioGroupItem value="multicity" id="multicity" className="sr-only" />
                                 <Label htmlFor="multicity" className="flex items-center gap-2 text-white cursor-pointer text-sm sm:text-base">
                                     <span className={cn("h-4 w-4 flex items-center justify-center rounded-sm border-2 border-white", tripType === 'multicity' && 'border-accent bg-accent')}>
@@ -208,128 +208,48 @@ export function BookingWidget() {
                         </RadioGroup>
                         
                         {tripType === 'oneway' && (
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 items-stretch rounded-md overflow-hidden bg-white gap-px">
+                             <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-5 gap-px rounded-md overflow-hidden bg-white">
                                     <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                                     <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
-                                    <Input
-                                        type="text"
-                                        onFocus={(e) => { e.target.type = 'date'; }}
-                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                        placeholder="Date"
-                                        value={departureDate}
-                                        onChange={(e) => setDepartureDate(e.target.value)}
-                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                        style={{colorScheme: 'light'}}
-                                    />
-                                    <Input
-                                        type="text"
-                                        onFocus={(e) => { e.target.type = 'time'; }}
-                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                        placeholder="Time"
-                                        value={departureTime}
-                                        onChange={(e) => setDepartureTime(e.target.value)}
-                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                        style={{colorScheme: 'light'}}
-                                    />
-                                    <Input
-                                        type="number"
-                                        placeholder="Passengers"
-                                        value={passengers}
-                                        onChange={e => setPassengers(e.target.value)}
-                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                    />
+                                    <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
+                                    <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
+                                    <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
                                 </div>
-                                <Button variant="accent" className="rounded-md text-lg h-auto px-12 w-full">SEARCH</Button>
+                                 <div className="flex justify-center">
+                                    <Button variant="accent" className="rounded-md text-lg h-auto px-8">SEARCH</Button>
+                                </div>
                             </div>
                         )}
                         
                         {tripType === 'round' && (
-                            <div className="space-y-2">
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-px rounded-md overflow-hidden bg-white">
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-px rounded-md overflow-hidden bg-white">
                                     <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                                     <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
-                                    <Input
-                                        type="number"
-                                        placeholder="Passengers"
-                                        value={passengers}
-                                        onChange={e => setPassengers(e.target.value)}
-                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                    />
+                                    <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-4 gap-px rounded-md overflow-hidden bg-white">
-                                    <Input
-                                        type="text"
-                                        onFocus={(e) => { e.target.type = 'date'; }}
-                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                        placeholder="Departure Date"
-                                        value={departureDate}
-                                        onChange={(e) => setDepartureDate(e.target.value)}
-                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                        style={{colorScheme: 'light'}}
-                                    />
-                                    <Input
-                                        type="text"
-                                        onFocus={(e) => { e.target.type = 'time'; }}
-                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                        placeholder="Time"
-                                        value={departureTime}
-                                        onChange={(e) => setDepartureTime(e.target.value)}
-                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                        style={{colorScheme: 'light'}}
-                                    />
-                                    <Input
-                                        type="text"
-                                        onFocus={(e) => { e.target.type = 'date'; }}
-                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                        placeholder="Return Date"
-                                        value={returnDate}
-                                        onChange={e => setReturnDate(e.target.value)}
-                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                        style={{colorScheme: 'light'}}
-                                    />
-                                    <Input
-                                        type="text"
-                                        onFocus={(e) => { e.target.type = 'time'; }}
-                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                        placeholder="Return Time"
-                                        value={returnTime}
-                                        onChange={(e) => setReturnTime(e.target.value)}
-                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                        style={{colorScheme: 'light'}}
-                                    />
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-px rounded-md overflow-hidden bg-white">
+                                    <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
+                                    <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
+                                    <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Date" value={returnDate} onChange={e => setReturnDate(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
+                                    <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Time" value={returnTime} onChange={(e) => setReturnTime(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
                                 </div>
-                                <Button variant="accent" className="rounded-md text-lg h-auto px-12 w-full mt-2">SEARCH</Button>
+                                <div className="mt-4 flex justify-center">
+                                    <Button variant="accent" className="rounded-md text-lg h-auto px-8">SEARCH</Button>
+                                </div>
                             </div>
                         )}
 
                         {tripType === 'multicity' && (
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    {legs.map((leg, index) => (
-                                        <div key={leg.id} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-px items-stretch rounded-md overflow-hidden bg-white">
+                                    {legs.map((leg) => (
+                                        <div key={leg.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-px items-stretch rounded-md overflow-hidden bg-white">
                                             <AutocompleteInput placeholder="Origin" value={leg.origin} onChange={(val) => handleLegChange(leg.id, 'origin', val)} />
                                             <AutocompleteInput placeholder="Destination" value={leg.destination} onChange={(val) => handleLegChange(leg.id, 'destination', val)} />
-                                            <Input 
-                                                type="text"
-                                                onFocus={(e) => { e.target.type = 'date'; }}
-                                                onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                                placeholder="Date"
-                                                value={leg.departureDate} 
-                                                onChange={(e) => handleLegChange(leg.id, 'departureDate', e.target.value)} 
-                                                className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                                style={{colorScheme: 'light'}}
-                                            />
-                                            <Input 
-                                                type="text"
-                                                onFocus={(e) => { e.target.type = 'time'; }}
-                                                onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                                placeholder="Time"
-                                                value={leg.departureTime} 
-                                                onChange={(e) => handleLegChange(leg.id, 'departureTime', e.target.value)} 
-                                                className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                                style={{colorScheme: 'light'}}
-                                            />
+                                            <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={leg.departureDate} onChange={(e) => handleLegChange(leg.id, 'departureDate', e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
+                                            <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Time" value={leg.departureTime} onChange={(e) => handleLegChange(leg.id, 'departureTime', e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
                                             <div className="flex items-center justify-center bg-white">
                                                 {legs.length > 1 && (
                                                     <Button variant="ghost" size="icon" onClick={() => removeLeg(leg.id)} className="text-destructive h-full w-full rounded-none hover:bg-destructive/10">
@@ -343,15 +263,17 @@ export function BookingWidget() {
                                         <Plus className="mr-2 h-4 w-4" /> Add another flight
                                     </Button>
                                 </div>
-                                <div className="grid grid-cols-[1fr_auto] gap-x-4 items-stretch">
-                                    <Input 
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                     <Input 
                                         type="number"
                                         placeholder="Passengers"
                                         value={passengers} 
                                         onChange={e => setPassengers(e.target.value)}
                                         className="bg-white text-black placeholder:text-gray-500 rounded-md h-full text-center"
                                     />
-                                    <Button variant="accent" className="rounded-md text-lg h-auto px-12">SEARCH</Button>
+                                    <div className="flex justify-center md:justify-start">
+                                        <Button variant="accent" className="rounded-md text-lg h-auto px-8 w-full">SEARCH</Button>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -365,5 +287,3 @@ export function BookingWidget() {
     </div>
   );
 }
-
-    
