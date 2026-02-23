@@ -1,7 +1,7 @@
 
-
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import Link from 'next/link';
@@ -34,6 +34,31 @@ import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const LandingHeader = () => {
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+
+    // Hide header if scrolling down and past the header's height
+    // Show header if scrolling up or at the top
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      setVisible(false);
+    } else {
+      setVisible(true);
+    }
+
+    setLastScrollY(currentScrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY]);
+
   const navLinks = [
     { href: '#', label: 'Promotions' },
     { href: '#', label: 'Our Network' },
@@ -41,7 +66,12 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-md">
+    <header
+      className={cn(
+        'sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-md transition-transform duration-300',
+        visible ? 'translate-y-0' : '-translate-y-full'
+      )}
+    >
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -70,7 +100,11 @@ const LandingHeader = () => {
               <Phone className="h-4 w-4" />
               +91 9819754038
             </a>
-            <Button variant="ghost" asChild className="font-semibold text-white hover:bg-white/10 hover:text-white">
+            <Button
+              variant="ghost"
+              asChild
+              className="font-semibold text-white hover:bg-white/10 hover:text-white"
+            >
               <Link href="/login">Login</Link>
             </Button>
             <Button asChild variant="accent">
@@ -81,16 +115,23 @@ const LandingHeader = () => {
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/10 hover:text-white"
+                >
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-full max-w-xs bg-black/10 backdrop-blur-md border-l border-white/10 text-white sm:max-w-sm">
+              <SheetContent
+                side="right"
+                className="w-full max-w-xs border-l border-white/10 bg-black/10 text-white backdrop-blur-md sm:max-w-sm"
+              >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
                   <div className="mb-6 flex items-center justify-between">
-                     <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:font-bold [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/80" />
+                    <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:font-bold [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/80" />
                   </div>
                   <nav className="flex flex-col gap-4">
                     {navLinks.map((link) => (
@@ -112,10 +153,14 @@ const LandingHeader = () => {
                       +91 9819754038
                     </a>
                     <div className="grid grid-cols-2 gap-2">
-                       <Button asChild variant="accent">
+                      <Button asChild variant="accent">
                         <Link href="/login">Login</Link>
                       </Button>
-                      <Button variant="ghost" asChild className="font-semibold text-white hover:bg-white/10 hover:text-white">
+                      <Button
+                        variant="ghost"
+                        asChild
+                        className="font-semibold text-white hover:bg-white/10 hover:text-white"
+                      >
                         <Link href="/register">Register</Link>
                       </Button>
                     </div>
@@ -171,18 +216,18 @@ const features = [
 
 export default function Home() {
   const landingHero = PlaceHolderImages.find((p) => p.id === 'landing-hero')!;
-  
+
   return (
     <div className="relative flex min-h-screen flex-col">
-       <Image
-          src={landingHero.imageUrl}
-          alt={landingHero.description}
-          fill
-          className="object-cover -z-10"
-          data-ai-hint={landingHero.imageHint}
-          priority
-        />
-        <div className="absolute inset-0 -z-10 bg-black/60" />
+      <Image
+        src={landingHero.imageUrl}
+        alt={landingHero.description}
+        fill
+        className="-z-10 object-cover"
+        data-ai-hint={landingHero.imageHint}
+        priority
+      />
+      <div className="absolute inset-0 -z-10 bg-black/60" />
 
       <LandingHeader />
       <main>
@@ -194,16 +239,17 @@ export default function Home() {
                 Fly Smarter. Stay Premium.
               </div>
               <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-                Where <span className="text-accent">Exceptional Journey</span> Begins
+                Where <span className="text-accent">Exceptional Journey</span>{' '}
+                Begins
               </h1>
             </div>
-            
+
             <div className="relative z-10 pt-6 pb-12">
               <div className="container">
                 <BookingWidget />
               </div>
             </div>
-            
+
             <div className="container p-4 pt-48 pb-16 sm:p-6 sm:pt-64 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -250,7 +296,7 @@ export default function Home() {
             </div>
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="flex flex-col bg-black/20 border-white/10 text-white">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -277,7 +323,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col bg-black/20 border-white/10 text-white">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -307,7 +353,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col md:col-span-2 lg:col-span-1 bg-black/20 border-white/10 text-white">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-white md:col-span-2 lg:col-span-1">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -316,12 +362,12 @@ export default function Home() {
                     Our Role & Revenue Model
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <CardContent className="flex-grow grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
-                    <h4 className="font-semibold text-white mb-2">
+                    <h4 className="mb-2 font-semibold text-white">
                       Compliance First
                     </h4>
-                    <ul className="space-y-2 text-white/80 text-sm">
+                    <ul className="space-y-2 text-sm text-white/80">
                       <li className="flex items-start gap-2">
                         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
                         AeroDesk never touches funds.
@@ -341,10 +387,10 @@ export default function Home() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white mb-2">
+                    <h4 className="mb-2 font-semibold text-white">
                       How We Earn
                     </h4>
-                    <ul className="space-y-2 text-white/80 text-sm">
+                    <ul className="space-y-2 text-sm text-white/80">
                       <li className="flex items-start gap-2">
                         <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
                         Subscription fees.
@@ -369,7 +415,7 @@ export default function Home() {
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
-               <Logo className="[&_svg]:text-white/80 [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/80" />
+              <Logo className="[&_svg]:text-white/80 [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/80" />
             </div>
             <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
               <h3 className="font-semibold uppercase tracking-wider text-white">
@@ -398,10 +444,7 @@ export default function Home() {
               <h3 className="font-semibold uppercase tracking-wider text-white">
                 Legal
               </h3>
-              <Link
-                href="/terms-of-service"
-                className="hover:text-white"
-              >
+              <Link href="/terms-of-service" className="hover:text-white">
                 Terms of Service
               </Link>
               <Link href="/privacy-policy" className="hover:text-white">
