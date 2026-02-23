@@ -127,7 +127,7 @@ export function BookingWidget() {
   const [legs, setLegs] = useState([{ origin: '', destination: '', date: '', time: '' }]);
   const [returnDate, setReturnDate] = useState('');
   const [returnTime, setReturnTime] = useState('');
-  const [passengers, setPassengers] = useState('1');
+  const [passengers, setPassengers] = useState('');
 
 
   const handleTripTypeChange = (type: string) => {
@@ -167,7 +167,7 @@ export function BookingWidget() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-black/30 backdrop-blur-md rounded-xl shadow-lg p-4 sm:p-6">
+    <div className="w-full max-w-5xl mx-auto bg-accent/20 backdrop-blur-md rounded-xl shadow-lg p-4 sm:p-6">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="flex justify-center bg-transparent p-0 rounded-lg max-w-md mx-auto">
                 <TabsTrigger value="jet" className="text-white/70 hover:text-white data-[state=active]:text-accent-foreground data-[state=active]:bg-accent data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
@@ -324,7 +324,7 @@ export function BookingWidget() {
 
                                 <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
                                 <div className="flex w-full lg:w-auto">
-                                    <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 lg:w-36 bg-transparent text-center text-white placeholder:text-white"/>
+                                    <Input type="text" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} onFocus={(e) => { e.target.type = 'number'; }} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} className="border-0 focus-visible:ring-0 lg:w-36 bg-transparent text-center text-white placeholder:text-white"/>
                                     <Button variant="accent" className="w-full lg:w-auto rounded-none flex-1 lg:flex-none">Request Pricing</Button>
                                 </div>
                             </div>

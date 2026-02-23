@@ -39,7 +39,7 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/20 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-accent/20 backdrop-blur-sm">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -173,8 +173,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <LandingHeader />
-      <main className="-mt-20">
+      <main>
         <section className="relative w-full text-primary-foreground">
           <div className="absolute inset-0">
             <Image
@@ -187,9 +186,9 @@ export default function Home() {
             />
             <div className="absolute inset-0 bg-black/60" />
           </div>
-          <div className="relative pt-20">
-            {/* Hero Text */}
-            <div className="container p-4 pt-12 pb-8 text-center sm:p-6 sm:pt-12 md:p-8">
+          <LandingHeader />
+          <div className="relative pt-8">
+            <div className="container p-4 pb-8 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -199,14 +198,12 @@ export default function Home() {
               </h1>
             </div>
 
-            {/* Booking Widget */}
             <div className="relative z-10">
               <div className="container">
                 <BookingWidget />
               </div>
             </div>
 
-            {/* Features Section */}
             <div className="container p-4 py-16 sm:p-6 sm:py-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
