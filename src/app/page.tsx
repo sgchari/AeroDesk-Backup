@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -84,7 +85,7 @@ const LandingHeader = () => {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-full max-w-xs bg-black/20 backdrop-blur-lg border-l border-white/10 text-white sm:max-w-sm">
+              <SheetContent side="right" className="w-full max-w-xs bg-black/10 backdrop-blur-lg border-l border-white/10 text-white sm:max-w-sm">
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
                   <div className="mb-6 flex items-center justify-between">
@@ -172,7 +173,7 @@ export default function Home() {
   const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="relative flex min-h-screen flex-col bg-background">
        <Image
           src={landingHero.imageUrl}
           alt={landingHero.description}
@@ -185,8 +186,8 @@ export default function Home() {
 
       <LandingHeader />
       <main>
-        <section className="relative w-full py-8 text-primary-foreground sm:py-12">
-          <div className="relative pt-8">
+        <section className="relative w-full pt-4 pb-12 text-primary-foreground sm:pt-8">
+          <div className="relative">
             <div className="container space-y-6 px-4 pb-4 text-center sm:px-6 md:px-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
@@ -203,7 +204,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="container p-4 pt-[44rem] pb-16 sm:p-6 sm:pt-[44rem] sm:pb-24 md:p-8">
+            <div className="container p-4 pt-32 pb-16 sm:p-6 sm:pt-48 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
