@@ -30,7 +30,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const LandingHeader = () => {
   const [visible, setVisible] = useState(true);
@@ -214,16 +213,14 @@ const features = [
 ];
 
 export default function Home() {
-  const landingHero = PlaceHolderImages.find((p) => p.id === 'landing-hero')!;
-
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden">
       <Image
-        src={landingHero.imageUrl}
-        alt={landingHero.description}
+        src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
+        alt="An airplane flying low over the ocean near a beach"
         fill
         className="-z-10 object-cover"
-        data-ai-hint={landingHero.imageHint}
+        data-ai-hint="airplane beach"
         priority
       />
       <div className="absolute inset-0 -z-10 bg-black/60" />
