@@ -213,6 +213,14 @@ const features = [
 export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden">
+      <Image
+        alt="Background"
+        src="https://images.unsplash.com/photo-1585792948263-636c4b245c47?q=80&w=2070&auto=format&fit=crop"
+        fill
+        className="absolute inset-0 z-[-2] object-cover"
+        priority
+      />
+      <div className="absolute inset-0 z-[-1] bg-black/60" />
       <LandingHeader />
       <main>
         <section className="relative w-full text-primary-foreground">
