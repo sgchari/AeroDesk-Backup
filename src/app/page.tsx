@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -38,8 +39,6 @@ const LandingHeader = () => {
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
 
-    // Hide header if scrolling down and past the header's height
-    // Show header if scrolling up or at the top
     if (currentScrollY > lastScrollY && currentScrollY > 100) {
       setVisible(false);
     } else {
@@ -216,8 +215,8 @@ export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden">
       <Image
-        src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
-        alt="An airplane flying low over the ocean near a beach"
+        src="https://images.unsplash.com/photo-1520437358206-62e3b4260486?q=80&w=2070&auto=format&fit=crop"
+        alt="Airplane flying low over a tropical beach"
         fill
         className="-z-10 object-cover"
         data-ai-hint="airplane beach"
@@ -227,7 +226,7 @@ export default function Home() {
 
       <LandingHeader />
       <main>
-        <section className="relative w-full pt-6 pb-12 text-primary-foreground sm:pt-12">
+        <section className="relative w-full text-primary-foreground">
           <div className="relative">
             <div className="container space-y-6 px-4 pb-4 text-center sm:px-6 md:px-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
