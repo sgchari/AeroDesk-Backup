@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -19,9 +18,6 @@ import {
   Banknote,
   Shield,
   CheckCircle,
-  Armchair,
-  Plus,
-  X,
 } from 'lucide-react';
 import {
   Sheet,
@@ -43,7 +39,7 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/5 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-lg">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -176,23 +172,24 @@ export default function Home() {
   const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="relative flex min-h-screen flex-col bg-background">
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src={landingHero.imageUrl}
+          alt={landingHero.description}
+          fill
+          className="object-cover"
+          data-ai-hint={landingHero.imageHint}
+          priority
+        />
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
+
+      <LandingHeader />
       <main>
         <section className="relative w-full text-primary-foreground">
-          <div className="absolute inset-0">
-            <Image
-              src={landingHero.imageUrl}
-              alt={landingHero.description}
-              fill
-              className="object-cover"
-              data-ai-hint={landingHero.imageHint}
-              priority
-            />
-            <div className="absolute inset-0 bg-black/60" />
-          </div>
-          <LandingHeader />
           <div className="relative">
-            <div className="container space-y-6 p-4 pt-16 pb-4 text-center sm:p-6 md:p-8">
+            <div className="container space-y-6 p-4 pt-16 pb-4 text-center sm:p-6 sm:pt-24 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -208,7 +205,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="container p-4 pt-[40rem] pb-16 sm:p-6 sm:pt-[44rem] sm:pb-24 md:p-8">
+            <div className="container p-4 pt-[48rem] pb-16 sm:p-6 sm:pt-[52rem] sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
@@ -241,20 +238,20 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="bg-background py-16 sm:py-24">
+        <section className="bg-transparent py-16 sm:py-24">
           <div className="container p-4 sm:p-6 md:p-8">
             <div className="mx-auto mb-12 max-w-3xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Transparent Payment Coordination
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-lg text-white/80">
                 AeroDesk streamlines the payment process without handling funds,
                 ensuring compliance and transparency for all parties.
               </p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="flex flex-col">
+              <Card className="flex flex-col bg-black/20 border-white/10 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -263,7 +260,7 @@ export default function Home() {
                     Payment Coordination
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-grow space-y-3">
+                <CardContent className="flex-grow space-y-3 text-white/80">
                   <p className="flex items-start gap-3">
                     <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
                     <span>Generate invoices for services.</span>
@@ -281,7 +278,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col">
+              <Card className="flex flex-col bg-black/20 border-white/10 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -292,26 +289,26 @@ export default function Home() {
                 </CardHeader>
                 <CardContent className="flex-grow space-y-4">
                   <div>
-                    <h4 className="font-semibold text-foreground">
+                    <h4 className="font-semibold text-white">
                       Air Charter Payment
                     </h4>
-                    <p className="text-muted-foreground">
+                    <p className="text-white/80">
                       Customer / Corporate / Agent → Pays Operator Directly
                       (offline / bank transfer).
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground">
+                    <h4 className="font-semibold text-white">
                       Hotel Accommodation Payment
                     </h4>
-                    <p className="text-muted-foreground">
+                    <p className="text-white/80">
                       Customer / Corporate / Agent → Pays Hotel Directly.
                     </p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col md:col-span-2 lg:col-span-1">
+              <Card className="flex flex-col md:col-span-2 lg:col-span-1 bg-black/20 border-white/10 text-white">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -322,10 +319,10 @@ export default function Home() {
                 </CardHeader>
                 <CardContent className="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold text-foreground mb-2">
+                    <h4 className="font-semibold text-white mb-2">
                       Compliance First
                     </h4>
-                    <ul className="space-y-2 text-muted-foreground text-sm">
+                    <ul className="space-y-2 text-white/80 text-sm">
                       <li className="flex items-start gap-2">
                         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
                         AeroDesk never touches funds.
@@ -345,10 +342,10 @@ export default function Home() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground mb-2">
+                    <h4 className="font-semibold text-white mb-2">
                       How We Earn
                     </h4>
-                    <ul className="space-y-2 text-muted-foreground text-sm">
+                    <ul className="space-y-2 text-white/80 text-sm">
                       <li className="flex items-start gap-2">
                         <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
                         Subscription fees.
