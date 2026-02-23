@@ -158,41 +158,41 @@ export function BookingWidget() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-6 border-b-0">
                 <TabsTrigger value="jet" asChild>
-                    <Button variant={activeTab === 'jet' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
+                    <Button variant={activeTab === 'jet' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-foreground/80 hover:text-foreground hover:bg-foreground/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
                         <Plane className="h-6 w-6" />
                     </Button>
                 </TabsTrigger>
                 <TabsTrigger value="helicopter" asChild>
-                        <Button variant={activeTab === 'helicopter' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
+                        <Button variant={activeTab === 'helicopter' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-foreground/80 hover:text-foreground hover:bg-foreground/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
                         <HelicopterIcon className="h-6 w-6" />
                     </Button>
                 </TabsTrigger>
                 <TabsTrigger value="seats" asChild>
-                    <Button variant={activeTab === 'seats' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
+                    <Button variant={activeTab === 'seats' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-foreground/80 hover:text-foreground hover:bg-foreground/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
                         <Armchair className="h-6 w-6" />
                     </Button>
                 </TabsTrigger>
             </TabsList>
             
-            <div className="bg-black/20 p-4 rounded-lg shadow-2xl border border-white/10">
+            <div className="bg-secondary p-4 rounded-lg shadow-2xl border border-border">
                 <TabsContent value="jet" className="mt-0">
                     <div className="space-y-4">
                         <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6 mt-2 mb-6">
                             <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="oneway" id="oneway" className='text-accent border-accent' />
-                                <Label htmlFor="oneway" className="text-white cursor-pointer text-sm sm:text-base">
+                                <Label htmlFor="oneway" className="text-foreground cursor-pointer text-sm sm:text-base">
                                     Oneway
                                 </Label>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="round" id="round" className='text-accent border-accent' />
-                                <Label htmlFor="round" className="text-white cursor-pointer text-sm sm:text-base">
+                                <Label htmlFor="round" className="text-foreground cursor-pointer text-sm sm:text-base">
                                     Round
                                 </Label>
                             </div>
                              <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="multicity" id="multicity" className='text-accent border-accent' />
-                                <Label htmlFor="multicity" className="text-white cursor-pointer text-sm sm:text-base">
+                                <Label htmlFor="multicity" className="text-foreground cursor-pointer text-sm sm:text-base">
                                     Multicity
                                 </Label>
                             </div>
@@ -265,8 +265,8 @@ export function BookingWidget() {
                         </div>
                     </div>
                 </TabsContent>
-                <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-white">Helicopter booking functionality coming soon.</p></TabsContent>
-                <TabsContent value="seats"><p className="text-center p-12 text-lg text-white">Seat reservation functionality coming soon.</p></TabsContent>
+                <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-foreground">Helicopter booking functionality coming soon.</p></TabsContent>
+                <TabsContent value="seats"><p className="text-center p-12 text-lg text-foreground">Seat reservation functionality coming soon.</p></TabsContent>
             </div>
         </Tabs>
     </div>
