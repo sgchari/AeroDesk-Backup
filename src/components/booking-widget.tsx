@@ -10,10 +10,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <path d="M13,3.34a1,1,0,0,0-2,0V8.5H3.5a1,1,0,0,0-1,1.73l3,3a1,1,0,0,0,.77.27H11V21h2V13h4.23a1,1,0,0,0,.77-0.27l3-3a1,1,0,0,0-1-1.73H13V3.34Z"/>
+    <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+    >
+        <path d="M14.5 19c-1.21 0-2.33.42-3.25 1.13.33-.23.65-.5.95-.82.88-.95 1.3-2.22 1.3-3.56V15h3v-2h-3v-2h1c.55 0 1-.45 1-1V9c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1c0 .55.45 1 1 1h1v2H7v2h3v.75c0 1.34.42 2.61 1.3 3.56.3.32.62.59.95.82C11.33 19.42 10.21 19 9 19c-2.76 0-5 2.24-5 5h2c0-1.65 1.35-3 3-3s3 1.35 3 3h2c0-1.65 1.35-3 3-3s3 1.35 3 3h2c0-2.76-2.24-5-5-5zM9 9h6V8c0-.55-.45-1-1-1h-4c-.55 0-1 .45-1 1v1zm14 2c0 .55-.45 1-1 1h-1.07c-.36-2.12-1.5-4.03-3.08-5.39-.01-.01 0 0 0 0C17.98 5.79 17.06 5 16 5c-1.18 0-2.24.45-3.03.95-.25.16-.5.33-.74.52-.02 0-.03.01-.05.02-.23.18-.46.36-.67.56-.02.02-.04.03-.06.05-.2.19-.39.39-.57.59-.01.01-.01.02-.02.03-.2.22-.38.45-.55.69-.01.01-.02.03-.02.04-.15.23-.29.46-.41.7-.01.02-.02.04-.02.06-.11.23-.21.46-.29.7-.01.02-.02.04-.03.06-.07.24-.14.48-.19.73-.01.02-.01.03-.02.05-.04.25-.07.5-.09.75v.01c0 .01 0 .02-.01.04-.01.25-.02.5-.02.75h-1.07c-.55 0-1-.45-1-1s.45-1 1-1h1.07C6.01 9.37 8.71 7 12 7c3.48 0 6.36 2.58 6.92 6H23c.55 0 1 .45 1 1z"/>
     </svg>
 );
+
 
 const primeDestinations = [
     "Agra (AGR)", "Ahmedabad (AMD)", "Amritsar (ATQ)", "Aurangabad (IXU)", "Bagdogra (IXB)",
@@ -140,14 +146,14 @@ export function BookingWidget() {
     <div className="bg-black/20 p-4 rounded-lg shadow-2xl border border-white/10 backdrop-blur-sm max-w-4xl mx-auto">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent p-0 mb-6">
-                <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <Plane className="h-10 w-10" />
+                 <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
+                    <Plane className="h-8 w-8" />
                 </TabsTrigger>
                 <TabsTrigger value="helicopter" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <HelicopterIcon className="h-10 w-10" />
+                    <HelicopterIcon className="h-8 w-8" />
                 </TabsTrigger>
                 <TabsTrigger value="seats" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <Armchair className="h-10 w-10" />
+                    <Armchair className="h-8 w-8" />
                 </TabsTrigger>
             </TabsList>
             <TabsContent value="jet" className="mt-0">
