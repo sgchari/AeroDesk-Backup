@@ -50,18 +50,3 @@
     @apply text-foreground text-sm;
   }
 }
-
-@layer utilities {
-    @keyframes zoom-in-out {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.1);
-      }
-    }
-  
-    .animate-zoom {
-      animation: zoom-in-out 40s ease-in-out infinite;
-    }
-  }
