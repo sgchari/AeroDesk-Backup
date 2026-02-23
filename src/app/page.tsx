@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -39,7 +40,7 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -172,7 +173,7 @@ export default function Home() {
   const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
+    <div className="relative flex min-h-screen flex-col">
       <div className="absolute inset-0 -z-10">
         <Image
           src={landingHero.imageUrl}
@@ -187,9 +188,9 @@ export default function Home() {
 
       <LandingHeader />
       <main>
-        <section className="relative w-full text-primary-foreground">
+        <section className="relative w-full py-16 text-primary-foreground sm:py-24">
           <div className="relative">
-            <div className="container space-y-6 p-4 pt-16 pb-4 text-center sm:p-6 sm:pt-24 md:p-8">
+            <div className="container space-y-6 px-4 pt-24 pb-4 text-center sm:px-6 sm:pt-32 md:px-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -198,7 +199,7 @@ export default function Home() {
                 Where <span className="text-accent">Exceptional Journey</span> Begins
               </h1>
             </div>
-
+            
             <div className="relative z-10 pt-10 pb-24">
               <div className="container">
                 <BookingWidget />
@@ -366,7 +367,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-white/10 bg-black/20 text-white backdrop-blur-md">
+      <footer className="border-t border-white/10 bg-black/20 text-white/80 backdrop-blur-md">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
