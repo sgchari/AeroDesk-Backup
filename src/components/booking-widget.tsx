@@ -178,7 +178,7 @@ export function BookingWidget({ activeTab }: { activeTab: string }) {
                 
                 {tripType === 'oneway' && (
                      <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-px rounded-md overflow-hidden bg-white/20 backdrop-blur-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-px rounded-md overflow-hidden bg-black/30 backdrop-blur-md border border-white/10">
                             <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                             <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                             <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
@@ -190,12 +190,12 @@ export function BookingWidget({ activeTab }: { activeTab: string }) {
                 
                 {tripType === 'round' && (
                     <div className="space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px rounded-md overflow-hidden bg-white/20 backdrop-blur-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px rounded-md overflow-hidden bg-black/30 backdrop-blur-md border border-white/10">
                             <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                             <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                             <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-px rounded-md overflow-hidden bg-white/20 backdrop-blur-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-px rounded-md overflow-hidden bg-black/30 backdrop-blur-md border border-white/10">
                             <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
                             <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
                             <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Date" value={returnDate} onChange={e => setReturnDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
@@ -208,7 +208,7 @@ export function BookingWidget({ activeTab }: { activeTab: string }) {
                     <div className="space-y-4">
                         <div className="space-y-2">
                             {legs.map((leg) => (
-                                <div key={leg.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-px items-stretch rounded-md overflow-hidden bg-white/20 backdrop-blur-sm">
+                                <div key={leg.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-px items-stretch rounded-md overflow-hidden bg-black/30 backdrop-blur-md border border-white/10">
                                     <AutocompleteInput placeholder="Origin" value={leg.origin} onChange={(val) => handleLegChange(leg.id, 'origin', val)} />
                                     <AutocompleteInput placeholder="Destination" value={leg.destination} onChange={(val) => handleLegChange(leg.id, 'destination', val)} />
                                     <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={leg.departureDate} onChange={(e) => handleLegChange(leg.id, 'departureDate', e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
@@ -232,7 +232,7 @@ export function BookingWidget({ activeTab }: { activeTab: string }) {
                                 placeholder="Passengers"
                                 value={passengers} 
                                 onChange={e => setPassengers(e.target.value)}
-                                className="bg-white/20 text-white placeholder:text-white/70 rounded-md h-full text-center backdrop-blur-sm"
+                                className="bg-black/30 backdrop-blur-md border border-white/10 text-white placeholder:text-white/70 rounded-md h-full text-center"
                             />
                         </div>
                     </div>

@@ -220,22 +220,15 @@ const features = [
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
     >
-        <path d="M2 12C2 12 4.5 10 9 10C13.5 10 16.5 12 16.5 12C16.5 12 15.5 15 12 15C8.5 15 2 12 2 12Z" />
-        <path d="M10 10V3L14 3" />
-        <path d="M7 3H17" />
-        <path d="M16 12L22 10" />
-        <path d="M20 10V8" />
+        <path d="M12 2c-4.42 0-8 .45-8 1s3.58 1 8 1 8-.45 8-1-3.58-1-8-1zm0 5c-.41 0-.75-.34-.75-.75V3.5c0-.41.34-.75.75-.75s.75.34.75.75V6.25c0 .41-.34.75-.75.75z"/>
+        <path d="M21.23 9.47c-.52-.2-1.1.08-1.3.6s.08 1.1.6 1.3l-2.67 1.07c-.43-1.8-1.66-3.33-3.36-4.2V7.25c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.07C9.34 9.8 6.66 12.63 6.04 16H3.75c-.41 0-.75.34-.75.75s.34.75.75.75h2.5c.09 0 .17-.01.25-.03.04.1.08.19.14.28H5.75c-.41 0-.75.34-.75.75s.34.75.75.75h1.72c1.23 1.69 3.14 2.89 5.28 3.23V21.25c0 .41.34.75.75.75s.75-.34.75-.75v-1.51c2.14-.34 4.05-1.54 5.28-3.23h1.72c.41 0 .75-.34.75-.75s-.34-.75-.75-.75h-.88c.06-.09.1-.18.14-.28.08.02.16.03.25.03h2.5c.41 0 .75-.34.75-.75s-.34-.75-.75-.75h-2.29c-.62-3.37-3.3-6.2-6.64-7.07l2.67-1.07c.52.2 1.1-.08 1.3-.6.2-.52-.08-1.1-.6-1.3z"/>
     </svg>
 );
 
@@ -277,18 +270,18 @@ export default function Home() {
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-7xl mx-auto">
                       <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-6 border-b-0">
                           <TabsTrigger value="jet" asChild>
-                              <Button variant="ghost" className="p-2 bg-transparent transition-all">
-                                  <Plane className="h-28 w-28 text-yellow-300" />
+                              <Button variant="ghost" className="bg-transparent transition-all text-yellow-300">
+                                  <Plane className="h-20 w-20 fill-currentColor" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="helicopter" asChild>
-                              <Button variant="ghost" className="p-2 bg-transparent transition-all">
-                                  <HelicopterIcon className="h-28 w-28 text-yellow-300" />
+                              <Button variant="ghost" className="bg-transparent transition-all text-yellow-300">
+                                  <HelicopterIcon className="h-20 w-20" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="seats" asChild>
-                              <Button variant="ghost" className="p-2 bg-transparent transition-all">
-                                  <Armchair className="h-28 w-28 text-yellow-300" />
+                              <Button variant="ghost" className="bg-transparent transition-all text-yellow-300">
+                                  <Armchair className="h-20 w-20 fill-currentColor" />
                               </Button>
                           </TabsTrigger>
                       </TabsList>
