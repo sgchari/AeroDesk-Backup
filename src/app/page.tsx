@@ -41,11 +41,11 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-md">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
-            <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:font-bold [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/70" />
+            <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:font-bold [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/80" />
           </Link>
         </div>
 
@@ -86,11 +86,11 @@ const LandingHeader = () => {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-full max-w-xs bg-black/10 backdrop-blur-lg border-l border-white/10 text-white sm:max-w-sm">
+              <SheetContent side="right" className="w-full max-w-xs bg-black/10 backdrop-blur-md border-l border-white/10 text-white sm:max-w-sm">
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
                   <div className="mb-6 flex items-center justify-between">
-                     <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:font-bold [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/70" />
+                     <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:font-bold [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/80" />
                   </div>
                   <nav className="flex flex-col gap-4">
                     {navLinks.map((link) => (
@@ -171,8 +171,7 @@ const features = [
 
 export default function Home() {
   const landingHero = PlaceHolderImages.find((p) => p.id === 'landing-hero')!;
-  const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
-
+  
   return (
     <div className="relative flex min-h-screen flex-col">
        <Image
@@ -187,7 +186,7 @@ export default function Home() {
 
       <LandingHeader />
       <main>
-        <section className="relative w-full pt-12 pb-12 text-primary-foreground sm:pt-16">
+        <section className="relative w-full pt-6 pb-12 text-primary-foreground sm:pt-12">
           <div className="relative">
             <div className="container space-y-6 px-4 pb-4 text-center sm:px-6 md:px-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
@@ -366,11 +365,11 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-white/10 bg-black/20 text-white/80 backdrop-blur-md">
+      <footer className="border-t border-white/10 bg-black/10 text-white/80 backdrop-blur-md">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
-               <Logo className="[&_svg]:text-white/80 [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/70" />
+               <Logo className="[&_svg]:text-white/80 [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/80" />
             </div>
             <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
               <h3 className="font-semibold uppercase tracking-wider text-white">
