@@ -215,20 +215,6 @@ const features = [
 
 export default function Home() {
   const landingHero = PlaceHolderImages.find((p) => p.id === 'landing-hero')!;
-  const [imageScale, setImageScale] = useState(1);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const newScale = 1 + window.scrollY / 5000;
-      setImageScale(newScale);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden">
@@ -236,8 +222,7 @@ export default function Home() {
         src={landingHero.imageUrl}
         alt={landingHero.description}
         fill
-        className="-z-10 object-cover transition-transform duration-500 ease-out"
-        style={{ transform: `scale(${imageScale})` }}
+        className="-z-10 object-cover"
         data-ai-hint={landingHero.imageHint}
         priority
       />
