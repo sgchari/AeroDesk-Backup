@@ -242,7 +242,7 @@ export default function Home() {
                   Fly Smarter. Stay Premium.
                 </div>
                 <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-                  Where <span className="text-accent">Exceptional</span> Journey{' '}
+                  Where <span className="text-[#EEDC5B]">Exceptional Journey</span>{' '}
                   Begins
                 </h1>
               </div>
