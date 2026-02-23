@@ -126,7 +126,7 @@ export function BookingWidget() {
   const [passengers, setPassengers] = useState('');
 
   return (
-    <div className="w-full max-w-5xl mx-auto rounded-xl shadow-lg p-4 bg-black/30 border border-white/10">
+    <div className="w-full max-w-6xl mx-auto rounded-lg shadow-lg p-4 bg-black/50">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="flex justify-center sm:justify-start bg-transparent p-0 rounded-lg max-w-md mx-auto sm:mx-0 mb-6 gap-2 sm:gap-4">
                 <TabsTrigger value="jet" className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
@@ -170,14 +170,14 @@ export function BookingWidget() {
                         </div>
                     </RadioGroup>
 
-                    <div className="flex flex-col md:flex-row items-stretch rounded-md overflow-hidden">
-                         <div className="flex-1 border-r border-gray-300">
+                    <div className="grid grid-cols-1 md:grid-cols-[repeat(5,1fr)_auto] items-stretch rounded-md overflow-hidden bg-white">
+                        <div className="border-r border-gray-300">
                              <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
-                         </div>
-                         <div className="flex-1 border-r border-gray-300">
+                        </div>
+                        <div className="border-r border-gray-300">
                              <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
-                         </div>
-                        <div className="relative flex-1 border-r border-gray-300">
+                        </div>
+                        <div className="border-r border-gray-300">
                             <Input 
                                 type="text"
                                 onFocus={(e) => { e.target.type = 'date'; }}
@@ -188,46 +188,42 @@ export function BookingWidget() {
                                 className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
                                 style={{colorScheme: 'light'}}
                             />
-                             {!departureDate && <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'>Date</span>}
                         </div>
                         
-                        {tripType === 'round' ? (
-                             <div className="relative flex-1 border-r border-gray-300">
+                        <div className="border-r border-gray-300">
+                            {tripType === 'round' ? (
                                 <Input 
                                     type="text"
                                     onFocus={(e) => { e.target.type = 'date'; }}
                                     onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                    placeholder="Add A Return Flight"
+                                    placeholder="Return Date"
                                     value={returnDate} 
                                     onChange={e => setReturnDate(e.target.value)} 
                                     className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
                                     style={{colorScheme: 'light'}}
                                 />
-                                {!returnDate && <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'>Return Date</span>}
-                            </div>
-                        ) : (
+                            ) : (
+                                <Input 
+                                    type="text"
+                                    placeholder="Add A Return Flight"
+                                    onFocus={() => setTripType('round')}
+                                    className="bg-white text-black placeholder:text-gray-400 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3 cursor-pointer"
+                                    readOnly
+                                    value=""
+                                />
+                            )}
+                        </div>
+                        
+                        <div>
                              <Input 
-                                type="text"
-                                placeholder="Add A Return Flight"
-                                value=""
-                                onFocus={() => setTripType('round')}
-                                className="bg-white text-black placeholder:text-gray-400 border-0 border-r border-gray-300 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3 cursor-pointer"
-                                readOnly
-                            />
-                        )}
-
-                        <div className="relative flex-1">
-                            <Input 
-                                type="text"
-                                placeholder="1 Passenger"
+                                type="number"
+                                placeholder="Passengers"
                                 value={passengers} 
                                 onChange={e => setPassengers(e.target.value)}
-                                onFocus={(e) => { e.target.type = 'number'; e.target.placeholder='1'; e.target.min='1'; }} onBlur={(e) => { if (!e.target.value) {e.target.type = 'text'; e.target.placeholder='1 Passenger'}}}
                                 className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
                             />
-                             {!passengers && <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'>Passengers</span>}
                         </div>
-                        <Button variant="primary" className="rounded-none text-lg h-auto px-8">SEARCH</Button>
+                        <Button variant="accent" className="rounded-none text-lg h-auto px-8">SEARCH</Button>
                     </div>
                 </div>
             </TabsContent>
