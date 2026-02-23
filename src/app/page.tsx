@@ -221,13 +221,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-black">
       <div className="fixed inset-0 -z-10">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('https://picsum.photos/seed/coupleonthebeach/1920/1080')`,
-          }}
-        >
-        </div>
+        <div className="absolute inset-0 bg-hero-pattern bg-cover bg-center" />
         <div className="absolute inset-0 bg-black/50" />
       </div>
 
@@ -552,5 +546,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
