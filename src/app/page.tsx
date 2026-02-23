@@ -1,5 +1,13 @@
+
 'use client';
 
+import {
+  useState,
+  useEffect,
+  useRef,
+  type CSSProperties,
+  type FC,
+} from 'react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 import Link from 'next/link';
@@ -30,17 +38,42 @@ import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
-const LandingHeader = () => {
+const LandingHeader: FC = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 10);
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        // Scrolling down
+        setIsVisible(false);
+      } else {
+        // Scrolling up
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   const navLinks = [
     { href: '#', label: 'Promotions' },
     { href: '#', label: 'Our Network' },
     { href: '#', label: 'Blog' },
     { href: '#', label: 'Media' },
   ];
+
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full bg-black/30 backdrop-blur-md border-b border-white/10'
+        'sticky top-0 z-50 w-full text-white transition-transform duration-300',
+        isScrolled ? 'bg-black/50 backdrop-blur-md' : 'bg-transparent',
+        isVisible ? 'translate-y-0' : '-translate-y-full'
       )}
     >
       <div className="container flex h-20 items-center justify-between">
@@ -55,7 +88,7 @@ const LandingHeader = () => {
             <Link
               key={link.label}
               href={link.href}
-              className="font-semibold text-foreground transition-colors hover:text-foreground/80"
+              className="font-semibold text-white transition-colors hover:text-white/80"
             >
               {link.label}
             </Link>
@@ -66,7 +99,7 @@ const LandingHeader = () => {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="tel:+919819754038"
-              className="flex items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-foreground/80"
+              className="flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-white/80"
             >
               <Phone className="h-4 w-4" />
               +91 9819754038
@@ -74,7 +107,7 @@ const LandingHeader = () => {
             <Button
               variant="ghost"
               asChild
-              className="font-semibold"
+              className="font-semibold text-white hover:bg-white/10 hover:text-white"
             >
               <Link href="/login">Login</Link>
             </Button>
@@ -89,6 +122,7 @@ const LandingHeader = () => {
                 <Button
                   variant="ghost"
                   size="icon"
+                  className="text-white hover:bg-white/10 hover:text-white"
                 >
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
@@ -96,7 +130,7 @@ const LandingHeader = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-full max-w-xs border-l border-border bg-background/80 backdrop-blur-md sm:max-w-sm"
+                className="w-full max-w-xs border-l-0 bg-background/80 text-white backdrop-blur-md sm:max-w-sm"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -108,16 +142,16 @@ const LandingHeader = () => {
                       <Link
                         key={link.label}
                         href={link.href}
-                        className="py-2 text-lg text-foreground/80 transition-colors hover:text-foreground"
+                        className="py-2 text-lg text-white/80 transition-colors hover:text-white"
                       >
                         {link.label}
                       </Link>
                     ))}
                   </nav>
-                  <div className="mt-auto flex flex-col gap-4 border-t border-border pt-4">
+                  <div className="mt-auto flex flex-col gap-4 border-t border-white/20 pt-4">
                     <a
                       href="tel:+919819754038"
-                      className="flex items-center gap-2 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+                      className="flex items-center gap-2 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
                     >
                       <Phone className="h-4 w-4" />
                       +91 9819754038
@@ -129,7 +163,7 @@ const LandingHeader = () => {
                       <Button
                         variant="ghost"
                         asChild
-                        className="font-semibold"
+                        className="font-semibold text-white hover:bg-white/10"
                       >
                         <Link href="/register">Register</Link>
                       </Button>
@@ -188,31 +222,32 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <LandingHeader />
-      <main className='relative'>
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2080&auto=format&fit=crop"
-            alt="Background"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-black/60" />
+      <main className="relative flex-grow">
+        <div
+          className="absolute inset-0 -z-10"
+          style={{
+            backgroundImage: `url('https://plus.unsplash.com/premium_photo-1661963959935-2b25b59a633c?q=80&w=2070&auto=format&fit=crop')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50" />
         </div>
 
-        <section className="relative w-full text-foreground">
+        <section className="relative w-full text-white">
           <div className="relative">
             <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/30 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
               </div>
-              <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-foreground sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
+              <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
                 Where <span className="text-accent">Exceptional</span> Journey{' '}
                 Begins
               </h1>
             </div>
 
-            <div className="relative z-10 pt-6 pb-12">
+            <div className="relative z-10 py-6">
               <div className="container">
                 <BookingWidget />
               </div>
@@ -220,10 +255,10 @@ export default function Home() {
 
             <div className="container p-4 pt-16 pb-16 sm:p-6 sm:pt-24 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
-                <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
                 </h2>
-                <p className="mt-4 text-lg text-foreground/80">
+                <p className="mt-4 text-lg text-white/80">
                   All your charter needs, coordinated through one intelligent
                   platform.
                 </p>
@@ -238,10 +273,10 @@ export default function Home() {
                     <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
                       <feature.icon className="h-8 w-8 text-accent" />
                     </div>
-                    <h3 className="mt-4 text-lg font-bold text-foreground">
+                    <h3 className="mt-4 text-lg font-bold text-white">
                       {feature.title}
                     </h3>
-                    <p className="mt-2 text-foreground/80">
+                    <p className="mt-2 text-white/80">
                       {feature.description}
                     </p>
                   </div>
@@ -254,26 +289,26 @@ export default function Home() {
         <section className="bg-transparent py-16 sm:py-24">
           <div className="container p-4 sm:p-6 md:p-8">
             <div className="mx-auto mb-12 max-w-3xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Transparent Payment Coordination
               </h2>
-              <p className="mt-4 text-lg text-foreground/80">
+              <p className="mt-4 text-lg text-white/80">
                 AeroDesk streamlines the payment process without handling funds,
                 ensuring compliance and transparency for all parties.
               </p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="flex flex-col border-white/10 bg-black/20 text-foreground backdrop-blur-md">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-white backdrop-blur-md">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-foreground">
+                  <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                       <Wallet className="h-6 w-6 text-primary" />
                     </div>
                     Payment Coordination
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-grow space-y-3 text-foreground/80">
+                <CardContent className="flex-grow space-y-3 text-white/80">
                   <p className="flex items-start gap-3">
                     <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
                     <span>Generate invoices for services.</span>
@@ -291,9 +326,9 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col border-white/10 bg-black/20 text-foreground backdrop-blur-md">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-white backdrop-blur-md">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-foreground">
+                  <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                       <Banknote className="h-6 w-6 text-primary" />
                     </div>
@@ -302,28 +337,28 @@ export default function Home() {
                 </CardHeader>
                 <CardContent className="flex-grow space-y-4">
                   <div>
-                    <h4 className="font-semibold text-foreground">
+                    <h4 className="font-semibold text-white">
                       Air Charter Payment
                     </h4>
-                    <p className="text-foreground/80">
+                    <p className="text-white/80">
                       Customer / Corporate / Agent → Pays Operator Directly
                       (offline / bank transfer).
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground">
+                    <h4 className="font-semibold text-white">
                       Hotel Accommodation Payment
                     </h4>
-                    <p className="text-foreground/80">
+                    <p className="text-white/80">
                       Customer / Corporate / Agent → Pays Hotel Directly.
                     </p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col border-white/10 bg-black/20 text-foreground backdrop-blur-md md:col-span-2 lg:col-span-1">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-white backdrop-blur-md md:col-span-2 lg:col-span-1">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-foreground">
+                  <CardTitle className="flex items-center gap-3 text-white">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                       <Shield className="h-6 w-6 text-primary" />
                     </div>
@@ -332,10 +367,10 @@ export default function Home() {
                 </CardHeader>
                 <CardContent className="flex-grow grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
-                    <h4 className="mb-2 font-semibold text-foreground">
+                    <h4 className="mb-2 font-semibold text-white">
                       Compliance First
                     </h4>
-                    <ul className="space-y-2 text-sm text-foreground/80">
+                    <ul className="space-y-2 text-sm text-white/80">
                       <li className="flex items-start gap-2">
                         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
                         AeroDesk never touches funds.
@@ -355,10 +390,10 @@ export default function Home() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="mb-2 font-semibold text-foreground">
+                    <h4 className="mb-2 font-semibold text-white">
                       How We Earn
                     </h4>
-                    <ul className="space-y-2 text-sm text-foreground/80">
+                    <ul className="space-y-2 text-sm text-white/80">
                       <li className="flex items-start gap-2">
                         <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
                         Subscription fees.
@@ -379,58 +414,58 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-white/10 bg-black/30 text-foreground/80 backdrop-blur-md">
+      <footer className="border-t border-white/10 bg-black/50 text-white/80 backdrop-blur-md">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
               <Logo />
             </div>
-            <div className="flex flex-col items-center gap-3 text-foreground/80 md:items-start">
-              <h3 className="font-semibold uppercase tracking-wider text-foreground">
+            <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
+              <h3 className="font-semibold uppercase tracking-wider text-white">
                 Get In Touch
               </h3>
               <a
                 href="tel:+919819754038"
-                className="inline-flex items-center gap-2 hover:text-foreground"
+                className="inline-flex items-center gap-2 hover:text-white"
               >
                 <Phone className="h-4 w-4" /> +91 98197 54038
               </a>
               <a
                 href="tel:+912228222202"
-                className="inline-flex items-center gap-2 hover:text-foreground"
+                className="inline-flex items-center gap-2 hover:text-white"
               >
                 <Phone className="h-4 w-4" /> +91 22 2822 2202
               </a>
               <a
                 href="mailto:info@aerodesk.com"
-                className="inline-flex items-center gap-2 hover:text-foreground"
+                className="inline-flex items-center gap-2 hover:text-white"
               >
                 <Mail className="h-4 w-4" /> info@aerodesk.com
               </a>
             </div>
-            <div className="flex flex-col items-center gap-3 text-foreground/80 md:items-start">
-              <h3 className="font-semibold uppercase tracking-wider text-foreground">
+            <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
+              <h3 className="font-semibold uppercase tracking-wider text-white">
                 Legal
               </h3>
-              <Link href="/terms-of-service" className="hover:text-foreground">
+              <Link href="/terms-of-service" className="hover:text-white">
                 Terms of Service
               </Link>
-              <Link href="/privacy-policy" className="hover:text-foreground">
+              <Link href="/privacy-policy" className="hover:text-white">
                 Privacy Policy
               </Link>
-              <Link href="/safety-standards" className="hover:text-foreground">
+              <Link href="/safety-standards" className="hover:text-white">
                 Safety Standards
               </Link>
             </div>
             <div className="flex flex-col items-center gap-3 md:items-end">
-              <h3 className="font-semibold uppercase tracking-wider text-foreground">
+              <h3 className="font-semibold uppercase tracking-wider text-white">
                 Follow Us
               </h3>
-              <div className="flex gap-4 text-foreground/80">
+              <div className="flex gap-4 text-white/80">
                 <Link
                   href="#"
                   aria-label="Facebook"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -444,7 +479,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Twitter"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -458,7 +493,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="LinkedIn"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -472,7 +507,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Instagram"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -486,7 +521,7 @@ export default function Home() {
                 <Link
                   href="#"
                   aria-label="Youtube"
-                  className="transition-opacity hover:text-foreground"
+                  className="transition-opacity hover:text-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -500,9 +535,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="mt-8 border-t border-white/10 pt-8 text-center text-xs text-foreground/60">
+          <div className="mt-8 border-t border-white/10 pt-8 text-center text-xs text-white/60">
             <p>
-              <span className="font-bold text-foreground/80">Disclaimer:</span>{' '}
+              <span className="font-bold text-white/80">Disclaimer:</span>{' '}
               This platform facilitates non-scheduled charter operations (NSOP)
               only. It is not an Online Travel Agency (OTA) or a scheduled
               commercial airline booking system. All flights are subject to
