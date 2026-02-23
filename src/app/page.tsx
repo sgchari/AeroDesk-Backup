@@ -216,22 +216,15 @@ const features = [
 ];
 
 export default function Home() {
-  useEffect(() => {
-    document.body.classList.add('homepage-transparent-body');
-    return () => {
-      document.body.classList.remove('homepage-transparent-body');
-    };
-  }, []);
-
   return (
-    <div className="w-full">
+    <div className="w-full bg-black">
       {/* Background Layer: Fixed to the viewport, sits behind everything else */}
       <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1524142392194-4762283522a7?q=80&w=2070&auto=format&fit=crop')",
+              "url('https://images.unsplash.com/photo-1517581177682-a085bb7ffb73?q=80&w=2070&auto=format&fit=crop')",
           }}
         />
         <div className="absolute inset-0 bg-black/60" />
