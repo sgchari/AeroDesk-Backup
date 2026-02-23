@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -222,7 +223,7 @@ export default function Home() {
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url('https://picsum.photos/seed/tropicalbeach/1920/1080')",
+            "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2070&auto=format&fit=crop')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
