@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -40,7 +41,7 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -53,7 +54,7 @@ const LandingHeader = () => {
             <Link
               key={link.label}
               href={link.href}
-              className="font-semibold transition-colors hover:text-white/80"
+              className="font-semibold text-white transition-colors hover:text-white/80"
             >
               {link.label}
             </Link>
@@ -173,7 +174,7 @@ export default function Home() {
   const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
+    <div className="relative flex min-h-screen flex-col">
        <Image
           src={landingHero.imageUrl}
           alt={landingHero.description}
@@ -186,7 +187,7 @@ export default function Home() {
 
       <LandingHeader />
       <main>
-        <section className="relative w-full pt-4 pb-12 text-primary-foreground sm:pt-8">
+        <section className="relative w-full pt-12 pb-12 text-primary-foreground sm:pt-16">
           <div className="relative">
             <div className="container space-y-6 px-4 pb-4 text-center sm:px-6 md:px-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
@@ -204,7 +205,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="container p-4 pt-32 pb-16 sm:p-6 sm:pt-48 sm:pb-24 md:p-8">
+            <div className="container p-4 pt-48 pb-16 sm:p-6 sm:pt-64 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
