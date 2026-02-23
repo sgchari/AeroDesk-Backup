@@ -219,14 +219,13 @@ export default function Home() {
   return (
     <div className="w-full">
       {/* Background Layer: Fixed to the viewport, sits behind everything else */}
-      <div className="fixed inset-0 z-0">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')",
-          }}
-        />
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1570594148332-92d8323e429d?q=80&w=2070&auto=format&fit=crop')",
+        }}
+      >
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
