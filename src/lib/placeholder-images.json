@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "landing-hero",
-      "description": "A high-end private jet on a parking bay",
-      "imageUrl": "https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2070&auto=format&fit=crop",
-      "imageHint": "private jet tarmac"
+      "description": "An airplane flying low over the ocean near a beach",
+      "imageUrl": "https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "airplane beach"
     },
     {
       "id": "landing-features",
