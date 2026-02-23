@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -40,7 +39,7 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/30 backdrop-blur-lg">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
@@ -173,25 +172,23 @@ export default function Home() {
   const landingFeatures = PlaceHolderImages.find((p) => p.id === 'landing-features')!;
 
   return (
-    <div className="relative flex min-h-screen flex-col">
-      <div className="absolute inset-0 -z-10">
-        <Image
+    <div className="relative flex min-h-screen flex-col bg-cover bg-center bg-no-repeat">
+       <Image
           src={landingHero.imageUrl}
           alt={landingHero.description}
           fill
-          className="object-cover"
+          className="object-cover -z-10"
           data-ai-hint={landingHero.imageHint}
           priority
         />
-        <div className="absolute inset-0 bg-black/60" />
-      </div>
+        <div className="absolute inset-0 -z-10 bg-black/60" />
 
       <LandingHeader />
       <main>
-        <section className="relative w-full py-16 text-primary-foreground sm:py-24">
+        <section className="relative w-full py-8 text-primary-foreground sm:py-12">
           <div className="relative">
-            <div className="container space-y-6 px-4 pt-24 pb-4 text-center sm:px-6 sm:pt-32 md:px-8">
-              <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
+            <div className="container space-y-6 px-4 pt-4 pb-4 text-center sm:px-6 sm:pt-8 md:px-8">
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
               </div>
@@ -200,18 +197,18 @@ export default function Home() {
               </h1>
             </div>
             
-            <div className="relative z-10 pt-10 pb-24">
+            <div className="relative z-10 pt-6 pb-12">
               <div className="container">
                 <BookingWidget />
               </div>
             </div>
             
-            <div className="container p-4 pt-[48rem] pb-16 sm:p-6 sm:pt-[52rem] sm:pb-24 md:p-8">
+            <div className="container p-4 pt-[40rem] pb-16 sm:p-6 sm:pt-[44rem] sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
-                <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+                <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
                 </h2>
-                <p className="mt-4 text-lg text-primary-foreground/80">
+                <p className="mt-4 text-lg text-white/80">
                   All your charter needs, coordinated through one intelligent
                   platform.
                 </p>
@@ -226,10 +223,10 @@ export default function Home() {
                     <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
                       <feature.icon className="h-8 w-8 text-accent" />
                     </div>
-                    <h3 className="mt-4 text-lg font-bold text-primary-foreground">
+                    <h3 className="mt-4 text-lg font-bold text-white">
                       {feature.title}
                     </h3>
-                    <p className="mt-2 text-primary-foreground/80">
+                    <p className="mt-2 text-white/80">
                       {feature.description}
                     </p>
                   </div>
@@ -367,7 +364,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-white/10 bg-black/20 text-white/80 backdrop-blur-md">
+      <footer className="border-t border-white/10 bg-black/50 text-white/80 backdrop-blur-md">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
@@ -471,7 +468,7 @@ export default function Home() {
                     fill="currentColor"
                     className="h-5 w-5"
                   >
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919 4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.058-1.689-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664 4.771 4.919 4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.058-1.689-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
                   </svg>
                 </Link>
                 <Link
