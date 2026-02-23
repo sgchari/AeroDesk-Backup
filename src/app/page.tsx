@@ -127,7 +127,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-l-0 bg-background/80 text-white backdrop-blur-md"
+                className="w-[240px] border-l-0 bg-black/20 text-white backdrop-blur-lg"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -223,7 +223,7 @@ export default function Home() {
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url('https://picsum.photos/seed/43/1920/1080')",
+            "url('https://picsum.photos/seed/beach-sky-ocean/1920/1080')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
