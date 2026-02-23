@@ -158,18 +158,18 @@ export function BookingWidget() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-6 border-b-0">
                 <TabsTrigger value="jet" asChild>
-                    <Button variant={activeTab === 'jet' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-foreground/80 hover:text-foreground hover:bg-foreground/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
-                        <Plane className="h-6 w-6" />
+                    <Button variant="ghost" className="rounded-full w-14 h-14 p-0 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all flex items-center justify-center">
+                        <Plane className="h-8 w-8" />
                     </Button>
                 </TabsTrigger>
                 <TabsTrigger value="helicopter" asChild>
-                        <Button variant={activeTab === 'helicopter' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-foreground/80 hover:text-foreground hover:bg-foreground/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
-                        <HelicopterIcon className="h-6 w-6" />
+                    <Button variant="ghost" className="rounded-full w-14 h-14 p-0 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all flex items-center justify-center">
+                        <HelicopterIcon className="h-8 w-8" />
                     </Button>
                 </TabsTrigger>
                 <TabsTrigger value="seats" asChild>
-                    <Button variant={activeTab === 'seats' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-foreground/80 hover:text-foreground hover:bg-foreground/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
-                        <Armchair className="h-6 w-6" />
+                    <Button variant="ghost" className="rounded-full w-14 h-14 p-0 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all flex items-center justify-center">
+                        <Armchair className="h-8 w-8" />
                     </Button>
                 </TabsTrigger>
             </TabsList>
