@@ -213,17 +213,6 @@ const features = [
 export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden">
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1520437358206-62e3b4260486?q=80&w=2070&auto=format&fit=crop')",
-        }}
-        data-ai-hint="airplane beach"
-      >
-        <div className="absolute inset-0 bg-black/60" />
-      </div>
-
       <LandingHeader />
       <main>
         <section className="relative w-full text-primary-foreground">
