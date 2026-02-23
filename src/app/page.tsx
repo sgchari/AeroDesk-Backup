@@ -15,7 +15,6 @@ import {
   FileText,
   GanttChartSquare,
   Briefcase,
-  Plane,
   Hotel,
   Wand2,
   Phone,
@@ -24,7 +23,7 @@ import {
   Banknote,
   Shield,
   CheckCircle,
-  Armchair,
+  Plane,
 } from 'lucide-react';
 import {
   Sheet,
@@ -220,15 +219,34 @@ const features = [
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
-        width="24"
-        height="24"
         viewBox="0 0 24 24"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
-        <path d="M12 2c-4.42 0-8 .45-8 1s3.58 1 8 1 8-.45 8-1-3.58-1-8-1zm0 5c-.41 0-.75-.34-.75-.75V3.5c0-.41.34-.75.75-.75s.75.34.75.75V6.25c0 .41-.34.75-.75.75z"/>
-        <path d="M21.23 9.47c-.52-.2-1.1.08-1.3.6s.08 1.1.6 1.3l-2.67 1.07c-.43-1.8-1.66-3.33-3.36-4.2V7.25c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.07C9.34 9.8 6.66 12.63 6.04 16H3.75c-.41 0-.75.34-.75.75s.34.75.75.75h2.5c.09 0 .17-.01.25-.03.04.1.08.19.14.28H5.75c-.41 0-.75.34-.75.75s.34.75.75.75h1.72c1.23 1.69 3.14 2.89 5.28 3.23V21.25c0 .41.34.75.75.75s.75-.34.75-.75v-1.51c2.14-.34 4.05-1.54 5.28-3.23h1.72c.41 0 .75-.34.75-.75s-.34-.75-.75-.75h-.88c.06-.09.1-.18.14-.28.08.02.16.03.25.03h2.5c.41 0 .75-.34.75-.75s-.34-.75-.75-.75h-2.29c-.62-3.37-3.3-6.2-6.64-7.07l2.67-1.07c.52.2 1.1-.08 1.3-.6.2-.52-.08-1.1-.6-1.3z"/>
+      <path d="M12 2C6.48 2 2 2.45 2 3s4.48 1 10 1s10-.45 10-1s-4.48-1-10-1zm0 4.75c-.69 0-1.25-.56-1.25-1.25V3.5c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25v2.01c0 .68-.56 1.24-1.25 1.24zm8.23-1.28c-.52-.2-1.1.08-1.3.6s.08 1.1.6 1.3l-2.67 1.07c-.43-1.8-1.66-3.33-3.36-4.2V7.25c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.07C9.34 9.8 6.66 12.63 6.04 16H3.75c-.41 0-.75.34-.75.75s.34.75.75.75h2.5c.09 0 .17-.01.25-.03.04.1.08.19.14.28H5.75c-.41 0-.75.34-.75.75s.34.75.75.75h1.72c1.23 1.69 3.14 2.89 5.28 3.23V21.25c0 .41.34.75.75.75s.75-.34.75-.75v-1.51c2.14-.34 4.05-1.54 5.28-3.23h1.72c.41 0 .75-.34.75-.75s-.34-.75-.75-.75h-.88c.06-.09.1-.18.14-.28.08.02.16.03.25.03h2.5c.41 0 .75-.34.75-.75s-.34-.75-.75-.75h-2.29c-.62-3.37-3.3-6.2-6.64-7.07l2.67-1.07c.52.2 1.1-.08 1.3-.6s-.09-1.1-.61-1.3z"/>
+    </svg>
+);
+
+const PlaneIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg 
+        viewBox="0 0 24 24" 
+        fill="currentColor" 
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+    >
+        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+    </svg>
+);
+
+const ArmchairIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg 
+        viewBox="0 0 24 24" 
+        fill="currentColor" 
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+    >
+        <path d="M22 8v3c0 1.1-.9 2-2 2h-1v2h-2v-2H7v2H5v-2H4c-1.1 0-2-.9-2-2V8c0-1.86 1.28-3.41 3-3.86V2h12v2.14c1.72.45 3 2 3 3.86zM6 11h12V8H6v3z"/>
     </svg>
 );
 
@@ -270,18 +288,18 @@ export default function Home() {
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-7xl mx-auto">
                       <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-4 border-b-0">
                            <TabsTrigger value="jet" asChild>
-                              <Button variant="ghost" className="bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg opacity-50 data-[state=active]:opacity-100">
-                                  <Plane className="h-28 w-28" />
+                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg data-[state=inactive]:opacity-50">
+                                  <PlaneIcon className="h-32 w-32" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="helicopter" asChild>
-                              <Button variant="ghost" className="bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg opacity-50 data-[state=active]:opacity-100">
-                                  <HelicopterIcon className="h-28 w-28" />
+                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg data-[state=inactive]:opacity-50">
+                                  <HelicopterIcon className="h-32 w-32" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="seats" asChild>
-                              <Button variant="ghost" className="bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg opacity-50 data-[state=active]:opacity-100">
-                                  <Armchair className="h-28 w-28" />
+                              <Button variant="ghost" className="bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-accent hover:bg-transparent transition-all px-6 py-4 rounded-t-lg data-[state=inactive]:opacity-50">
+                                  <ArmchairIcon className="h-32 w-32" />
                               </Button>
                           </TabsTrigger>
                       </TabsList>
@@ -590,5 +608,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
