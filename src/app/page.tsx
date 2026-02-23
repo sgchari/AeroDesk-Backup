@@ -216,6 +216,13 @@ const features = [
 ];
 
 export default function Home() {
+  useEffect(() => {
+    document.body.classList.add('homepage-transparent-body');
+    return () => {
+      document.body.classList.remove('homepage-transparent-body');
+    };
+  }, []);
+
   return (
     <div className="w-full">
       {/* Background Layer: Fixed to the viewport, sits behind everything else */}

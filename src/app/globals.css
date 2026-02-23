@@ -47,6 +47,10 @@
     @apply border-border;
   }
   body {
-    @apply text-foreground text-sm;
+    @apply bg-background text-foreground text-sm;
+  }
+  /* This class is added via useEffect in page.tsx for the homepage */
+  .homepage-transparent-body {
+    @apply bg-transparent;
   }
 }
