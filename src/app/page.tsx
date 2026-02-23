@@ -41,20 +41,20 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-primary/50 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-primary/40 backdrop-blur-md">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
-            <Logo className="[&_svg]:text-primary-foreground/80 [&_.text-foreground]:text-primary-foreground [&_.text-primary]:text-accent" />
+            <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/70" />
           </Link>
         </div>
 
-        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 text-sm text-primary-foreground md:flex">
+        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 text-sm text-white md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="transition-colors hover:text-primary-foreground/80"
+              className="font-medium transition-colors hover:text-white/80"
             >
               {link.label}
             </Link>
@@ -65,12 +65,12 @@ const LandingHeader = () => {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="tel:+919819754038"
-              className="flex items-center gap-2 text-sm font-medium text-primary-foreground transition-colors hover:text-primary-foreground/80"
+              className="flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-white/80"
             >
               <Phone className="h-4 w-4" />
               +91 9819754038
             </a>
-            <Button variant="ghost" asChild className="text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <Button variant="ghost" asChild className="font-medium text-white hover:bg-white/10 hover:text-white">
               <Link href="/login">Login</Link>
             </Button>
             <Button asChild variant="accent">
@@ -81,7 +81,7 @@ const LandingHeader = () => {
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>
@@ -200,13 +200,13 @@ export default function Home() {
               </h1>
             </div>
 
-            <div className="relative z-10 py-24">
+            <div className="relative z-10 pt-10 pb-24">
               <div className="container">
                 <BookingWidget />
               </div>
             </div>
             
-            <div className="container p-4 pt-48 pb-16 sm:p-6 sm:pt-96 sm:pb-24 md:p-8">
+            <div className="container p-4 pt-96 pb-16 sm:p-6 sm:pt-96 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
@@ -221,7 +221,7 @@ export default function Home() {
                 {features.map((feature, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center rounded-xl bg-black/20 p-6 text-center shadow-lg border border-white/10"
+                    className="flex flex-col items-center rounded-xl border border-white/10 bg-black/20 p-6 text-center shadow-lg"
                   >
                     <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
                       <feature.icon className="h-8 w-8 text-accent" />
