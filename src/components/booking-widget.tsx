@@ -156,19 +156,19 @@ export function BookingWidget() {
   return (
     <div className="w-full max-w-7xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 bg-transparent p-0 rounded-t-lg max-w-lg mx-auto mb-6 gap-2 sm:gap-4 border-b-0">
+            <TabsList className="grid grid-cols-3 bg-transparent p-0 rounded-t-lg max-w-lg mx-auto mb-6 border-b-0">
                 <TabsTrigger value="jet" asChild>
-                    <Button variant={activeTab === 'jet' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                    <Button variant={activeTab === 'jet' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
                         <Plane className="h-6 w-6" />
                     </Button>
                 </TabsTrigger>
                 <TabsTrigger value="helicopter" asChild>
-                        <Button variant={activeTab === 'helicopter' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                        <Button variant={activeTab === 'helicopter' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
                         <HelicopterIcon className="h-6 w-6" />
                     </Button>
                 </TabsTrigger>
                 <TabsTrigger value="seats" asChild>
-                    <Button variant={activeTab === 'seats' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
+                    <Button variant={activeTab === 'seats' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
                         <Armchair className="h-6 w-6" />
                     </Button>
                 </TabsTrigger>
@@ -179,19 +179,19 @@ export function BookingWidget() {
                     <div className="space-y-4">
                         <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6 mt-2 mb-6">
                             <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="oneway" id="oneway" />
+                                <RadioGroupItem value="oneway" id="oneway" className='text-accent border-accent' />
                                 <Label htmlFor="oneway" className="text-white cursor-pointer text-sm sm:text-base">
                                     Oneway
                                 </Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="round" id="round" />
+                                <RadioGroupItem value="round" id="round" className='text-accent border-accent' />
                                 <Label htmlFor="round" className="text-white cursor-pointer text-sm sm:text-base">
                                     Round
                                 </Label>
                             </div>
                              <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="multicity" id="multicity" />
+                                <RadioGroupItem value="multicity" id="multicity" className='text-accent border-accent' />
                                 <Label htmlFor="multicity" className="text-white cursor-pointer text-sm sm:text-base">
                                     Multicity
                                 </Label>
@@ -206,9 +206,6 @@ export function BookingWidget() {
                                     <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
                                     <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
                                     <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
-                                </div>
-                                 <div className="flex justify-center pt-2">
-                                    <Button variant="accent" className="rounded-md px-4">SEARCH</Button>
                                 </div>
                             </div>
                         )}
@@ -225,9 +222,6 @@ export function BookingWidget() {
                                     <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
                                     <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Date" value={returnDate} onChange={e => setReturnDate(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
                                     <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Time" value={returnTime} onChange={(e) => setReturnTime(e.target.value)} className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'light'}} />
-                                </div>
-                                <div className="mt-4 flex justify-center pt-2">
-                                    <Button variant="accent" className="rounded-md px-4">SEARCH</Button>
                                 </div>
                             </div>
                         )}
@@ -254,7 +248,7 @@ export function BookingWidget() {
                                         <Plus className="mr-2 h-4 w-4" /> Add another flight
                                     </Button>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                <div className="grid grid-cols-1">
                                      <Input 
                                         type="number"
                                         placeholder="Passengers"
@@ -262,13 +256,13 @@ export function BookingWidget() {
                                         onChange={e => setPassengers(e.target.value)}
                                         className="bg-white text-black placeholder:text-gray-500 rounded-md h-full text-center"
                                     />
-                                    <div className="flex justify-center md:justify-start">
-                                        <Button variant="accent" className="rounded-md px-6 w-full">SEARCH</Button>
-                                    </div>
                                 </div>
                             </div>
                         )}
                         
+                         <div className="flex justify-center pt-2">
+                            <Button variant="accent" className="rounded-md px-4">SEARCH</Button>
+                        </div>
                     </div>
                 </TabsContent>
                 <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-white">Helicopter booking functionality coming soon.</p></TabsContent>
