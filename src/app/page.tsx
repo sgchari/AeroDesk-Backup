@@ -130,7 +130,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-l-0 bg-black/80 text-white backdrop-blur-xl"
+                className="w-[240px] border-l-0 bg-black/95 text-white backdrop-blur-xl"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -248,7 +248,7 @@ export default function Home() {
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1527663274351-68160c761358?q=80&w=2070&auto=format&fit=crop')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1517776832644-33f1595ab7a0?q=80&w=2070&auto=format&fit=crop')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
@@ -278,17 +278,17 @@ export default function Home() {
                       <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-6 border-b-0">
                           <TabsTrigger value="jet" asChild>
                               <Button variant="ghost" className="p-2 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all">
-                                  <Plane className="h-12 w-12" />
+                                  <Plane className="h-16 w-16 text-yellow-300" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="helicopter" asChild>
                               <Button variant="ghost" className="p-2 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all">
-                                  <HelicopterIcon className="h-12 w-12" />
+                                  <HelicopterIcon className="h-16 w-16 text-yellow-300" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="seats" asChild>
                               <Button variant="ghost" className="p-2 text-white/70 bg-transparent hover:text-accent data-[state=active]:text-accent transition-all">
-                                  <Armchair className="h-12 w-12" />
+                                  <Armchair className="h-16 w-16 text-yellow-300" />
                               </Button>
                           </TabsTrigger>
                       </TabsList>
@@ -314,7 +314,7 @@ export default function Home() {
                       key={index}
                       className="flex flex-col items-center rounded-xl border border-white/10 bg-black/20 p-6 text-center shadow-lg backdrop-blur-md"
                     >
-                      <feature.icon className="h-10 w-10" style={{ color: '#EEDC5B' }} />
+                      <feature.icon className="h-10 w-10 text-yellow-300" />
                       <h3 className="mt-4 text-lg font-bold text-white">
                         {feature.title}
                       </h3>
