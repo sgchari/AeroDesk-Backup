@@ -217,15 +217,16 @@ const features = [
 
 export default function Home() {
   return (
-    <>
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-hero-pattern bg-cover bg-center" />
-        <div className="absolute inset-0 bg-black/50" />
-      </div>
+    <div className="relative w-full bg-black">
+      {/* Background Layer */}
+      <div className="absolute inset-0 z-0 bg-hero-pattern bg-cover bg-center" />
+      <div className="absolute inset-0 z-0 bg-black/60" />
 
-      <div className="flex min-h-screen flex-col overflow-x-hidden bg-transparent">
+      {/* Content Layer */}
+      <div className="relative z-10 flex min-h-screen flex-col overflow-x-hidden">
         <LandingHeader />
-        <main className="relative flex-grow">
+
+        <main className="flex-grow">
           <section className="relative w-full text-white">
             <div className="relative">
               <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
@@ -406,6 +407,7 @@ export default function Home() {
             </div>
           </section>
         </main>
+        
         <footer className="border-t border-white/10 bg-black/50 text-white/80 backdrop-blur-md">
           <div className="container py-12">
             <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
@@ -543,6 +545,6 @@ export default function Home() {
           </div>
         </footer>
       </div>
-    </>
+    </div>
   );
 }
