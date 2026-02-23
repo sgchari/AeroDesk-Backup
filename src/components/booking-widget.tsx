@@ -117,16 +117,19 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
     );
 };
 
+
 export function BookingWidget() {
   const [tripType, setTripType] = useState('oneway');
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [departureDate, setDepartureDate] = useState('');
+  const [departureTime, setDepartureTime] = useState('');
   const [returnDate, setReturnDate] = useState('');
+  const [returnTime, setReturnTime] = useState('');
   const [passengers, setPassengers] = useState('');
 
   return (
-    <div className="w-full max-w-6xl mx-auto rounded-lg shadow-lg p-4 bg-black/50">
+    <div className="w-full max-w-7xl mx-auto rounded-lg shadow-lg p-4 bg-primary/0 border border-white/20">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="flex justify-center sm:justify-start bg-transparent p-0 rounded-lg max-w-md mx-auto sm:mx-0 mb-6 gap-2 sm:gap-4">
                 <TabsTrigger value="jet" className="flex-row items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all">
@@ -161,22 +164,19 @@ export function BookingWidget() {
                                 Round
                             </Label>
                         </div>
-                        <div className="flex items-center space-x-2">
-                             <RadioGroupItem value="multicity" id="multicity" className="sr-only" disabled />
-                             <Label htmlFor="multicity" className="flex items-center gap-2 text-white/50 cursor-not-allowed text-sm sm:text-base">
-                                 <span className="h-3 w-3 flex items-center justify-center rounded-full border-2 border-white/50"></span>
-                                Multicity
-                            </Label>
-                        </div>
                     </RadioGroup>
-
-                    <div className="grid grid-cols-1 md:grid-cols-[repeat(5,1fr)_auto] items-stretch rounded-md overflow-hidden bg-white">
+                    
+                    <div className={cn(
+                        "grid grid-cols-1 items-stretch rounded-md overflow-hidden bg-white",
+                        tripType === 'oneway' ? 'md:grid-cols-[repeat(5,1fr)_auto]' : 'md:grid-cols-[repeat(7,1fr)_auto]'
+                    )}>
                         <div className="border-r border-gray-300">
                              <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                         </div>
                         <div className="border-r border-gray-300">
                              <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                         </div>
+
                         <div className="border-r border-gray-300">
                             <Input 
                                 type="text"
@@ -190,29 +190,47 @@ export function BookingWidget() {
                             />
                         </div>
                         
-                        <div className="border-r border-gray-300">
-                            {tripType === 'round' ? (
-                                <Input 
-                                    type="text"
-                                    onFocus={(e) => { e.target.type = 'date'; }}
-                                    onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                    placeholder="Return Date"
-                                    value={returnDate} 
-                                    onChange={e => setReturnDate(e.target.value)} 
-                                    className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
-                                    style={{colorScheme: 'light'}}
-                                />
-                            ) : (
-                                <Input 
-                                    type="text"
-                                    placeholder="Add A Return Flight"
-                                    onFocus={() => setTripType('round')}
-                                    className="bg-white text-black placeholder:text-gray-400 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3 cursor-pointer"
-                                    readOnly
-                                    value=""
-                                />
-                            )}
+                         <div className="border-r border-gray-300">
+                            <Input 
+                                type="text"
+                                onFocus={(e) => { e.target.type = 'time'; }}
+                                onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+                                placeholder="Time"
+                                value={departureTime} 
+                                onChange={(e) => setDepartureTime(e.target.value)} 
+                                className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
+                                style={{colorScheme: 'light'}}
+                            />
                         </div>
+
+                        {tripType === 'round' && (
+                            <>
+                                <div className="border-r border-gray-300">
+                                    <Input 
+                                        type="text"
+                                        onFocus={(e) => { e.target.type = 'date'; }}
+                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+                                        placeholder="Return Date"
+                                        value={returnDate} 
+                                        onChange={e => setReturnDate(e.target.value)} 
+                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
+                                        style={{colorScheme: 'light'}}
+                                    />
+                                </div>
+                                <div className="border-r border-gray-300">
+                                    <Input 
+                                        type="text"
+                                        onFocus={(e) => { e.target.type = 'time'; }}
+                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+                                        placeholder="Return Time"
+                                        value={returnTime} 
+                                        onChange={(e) => setReturnTime(e.target.value)} 
+                                        className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
+                                        style={{colorScheme: 'light'}}
+                                    />
+                                </div>
+                            </>
+                        )}
                         
                         <div>
                              <Input 
