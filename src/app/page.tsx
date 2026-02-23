@@ -189,7 +189,7 @@ export default function Home() {
           </div>
           <LandingHeader />
           <div className="relative">
-            <div className="container space-y-8 p-4 pt-20 pb-8 text-center sm:p-6 md:p-8">
+            <div className="container space-y-10 p-4 pt-24 pb-8 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -205,7 +205,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="container p-4 pt-24 pb-16 sm:p-6 sm:pt-32 sm:pb-24 md:p-8">
+            <div className="container p-4 pt-40 pb-16 sm:p-6 sm:pt-64 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
