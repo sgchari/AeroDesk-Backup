@@ -108,7 +108,7 @@ const LandingHeader: FC = () => {
             >
               <Link href="/login">Login</Link>
             </Button>
-            <Button asChild variant="accent">
+            <Button asChild style={{ backgroundColor: '#EEDC5B', color: 'black' }}>
               <Link href="/register">Register</Link>
             </Button>
           </div>
@@ -127,7 +127,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[300px] border-l-0 bg-background/80 text-white backdrop-blur-md"
+                className="w-[240px] border-l-0 bg-background/80 text-white backdrop-blur-md"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -154,7 +154,7 @@ const LandingHeader: FC = () => {
                       +91 9819754038
                     </a>
                     <div className="grid grid-cols-2 gap-2">
-                      <Button asChild variant="accent">
+                      <Button asChild style={{ backgroundColor: '#EEDC5B', color: 'black' }}>
                         <Link href="/login">Login</Link>
                       </Button>
                       <Button
@@ -223,10 +223,10 @@ export default function Home() {
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url('https://picsum.photos/seed/beachsky/1920/1080')",
+            "url('https://picsum.photos/seed/beach/1920/1080')",
         }}
       >
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Content Layer: Sits on top of the background and handles scrolling */}
@@ -242,7 +242,7 @@ export default function Home() {
                   Fly Smarter. Stay Premium.
                 </div>
                 <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-                  Where <span className="text-accent">Exceptional Journey</span>{' '}
+                  Where <span style={{ color: '#EEDC5B' }}>Exceptional Journey</span>{' '}
                   Begins
                 </h1>
               </div>
