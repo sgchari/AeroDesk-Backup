@@ -229,9 +229,9 @@ const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const PlaneIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg 
-        viewBox="0 0 24 24" 
-        fill="currentColor" 
+    <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
@@ -240,9 +240,9 @@ const PlaneIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const ArmchairIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg 
-        viewBox="0 0 24 24" 
-        fill="currentColor" 
+    <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
@@ -259,7 +259,7 @@ export default function Home() {
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1517400508447-f8a2927299d4?q=80&w=2070&auto=format&fit=crop')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1540213548542-99a365868848?q=80&w=2070&auto=format&fit=crop')",
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
@@ -289,17 +289,17 @@ export default function Home() {
                       <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-4 border-b-0">
                            <TabsTrigger value="jet" asChild>
                               <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
-                                  <PlaneIcon className="h-48 w-48" />
+                                  <PlaneIcon className="w-100 h-100" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="helicopter" asChild>
                               <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
-                                  <HelicopterIcon className="h-48 w-48" />
+                                  <HelicopterIcon className="w-100 h-100" />
                               </Button>
                           </TabsTrigger>
                           <TabsTrigger value="seats" asChild>
                               <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
-                                  <ArmchairIcon className="h-48 w-48" />
+                                  <ArmchairIcon className="w-100 h-100" />
                               </Button>
                           </TabsTrigger>
                       </TabsList>
@@ -307,7 +307,7 @@ export default function Home() {
                   </Tabs>
                 </div>
               </div>
-              
+
               <div className="container p-4 pt-16 pb-16 sm:p-6 sm:pt-24 sm:pb-24 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -608,3 +608,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
