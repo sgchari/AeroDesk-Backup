@@ -28,6 +28,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const LandingHeader = () => {
   const navLinks = [
@@ -39,7 +40,7 @@ const LandingHeader = () => {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full bg-background'
+        'sticky top-0 z-50 w-full bg-black/30 backdrop-blur-md border-b border-white/10'
       )}
     >
       <div className="container flex h-20 items-center justify-between">
@@ -95,7 +96,7 @@ const LandingHeader = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-full max-w-xs border-l border-border bg-background sm:max-w-sm"
+                className="w-full max-w-xs border-l border-border bg-background/80 backdrop-blur-md sm:max-w-sm"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -187,16 +188,26 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <LandingHeader />
-      <main>
+      <main className='relative'>
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2080&auto=format&fit=crop"
+            alt="Background"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/60" />
+        </div>
+
         <section className="relative w-full text-foreground">
           <div className="relative">
             <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
-              <div className="inline-flex items-center gap-3 rounded-full border border-border bg-secondary px-6 py-3 text-lg font-medium">
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/30 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
               </div>
               <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-foreground sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-                Where <span className="text-accent">Exceptional Journey</span>{' '}
+                Where <span className="text-accent">Exceptional</span> Journey{' '}
                 Begins
               </h1>
             </div>
@@ -207,7 +218,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="container p-4 pt-48 pb-16 sm:p-6 sm:pt-64 sm:pb-24 md:p-8">
+            <div className="container p-4 pt-16 pb-16 sm:p-6 sm:pt-24 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
@@ -222,7 +233,7 @@ export default function Home() {
                 {features.map((feature, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center rounded-xl border border-border bg-secondary p-6 text-center shadow-lg"
+                    className="flex flex-col items-center rounded-xl border border-white/10 bg-black/20 p-6 text-center shadow-lg backdrop-blur-md"
                   >
                     <div className="rounded-full border-4 border-accent/50 bg-accent/20 p-4">
                       <feature.icon className="h-8 w-8 text-accent" />
@@ -253,7 +264,7 @@ export default function Home() {
             </div>
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="flex flex-col border-border bg-secondary text-foreground">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-foreground backdrop-blur-md">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-foreground">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -280,7 +291,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col border-border bg-secondary text-foreground">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-foreground backdrop-blur-md">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-foreground">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -310,7 +321,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="flex flex-col border-border bg-secondary text-foreground md:col-span-2 lg:col-span-1">
+              <Card className="flex flex-col border-white/10 bg-black/20 text-foreground backdrop-blur-md md:col-span-2 lg:col-span-1">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-foreground">
                     <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -368,7 +379,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-border bg-background text-foreground/80">
+      <footer className="border-t border-white/10 bg-black/30 text-foreground/80 backdrop-blur-md">
         <div className="container py-12">
           <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
             <div className="flex flex-col items-center gap-4 sm:items-start">
@@ -489,7 +500,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="mt-8 border-t border-border pt-8 text-center text-xs text-foreground/60">
+          <div className="mt-8 border-t border-white/10 pt-8 text-center text-xs text-foreground/60">
             <p>
               <span className="font-bold text-foreground/80">Disclaimer:</span>{' '}
               This platform facilitates non-scheduled charter operations (NSOP)

@@ -174,7 +174,7 @@ export function BookingWidget() {
                 </TabsTrigger>
             </TabsList>
             
-            <div className="bg-secondary p-4 rounded-lg shadow-2xl border border-border">
+            <div className="bg-black/20 p-4 rounded-lg shadow-2xl border border-white/10 backdrop-blur-md">
                 <TabsContent value="jet" className="mt-0">
                     <div className="space-y-4">
                         <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6 mt-2 mb-6">
