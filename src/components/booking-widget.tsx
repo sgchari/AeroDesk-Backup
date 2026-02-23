@@ -74,7 +74,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
     };
 
     return (
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full z-20">
             <Input
                 ref={inputRef}
                 type="text"
@@ -167,7 +167,7 @@ export function BookingWidget() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-accent/20 backdrop-blur-md rounded-xl shadow-lg p-4 sm:p-6">
+    <div className="w-full max-w-5xl mx-auto bg-primary/80 backdrop-blur-md rounded-xl shadow-lg p-4 sm:p-6">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="flex justify-center bg-transparent p-0 rounded-lg max-w-md mx-auto">
                 <TabsTrigger value="jet" className="text-white/70 hover:text-white data-[state=active]:text-accent-foreground data-[state=active]:bg-accent data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
