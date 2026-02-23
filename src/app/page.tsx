@@ -223,7 +223,7 @@ export default function Home() {
         src={landingHero.imageUrl}
         alt={landingHero.description}
         fill
-        className="-z-10 object-cover"
+        className="-z-10 object-cover animate-zoom"
         data-ai-hint={landingHero.imageHint}
         priority
       />
