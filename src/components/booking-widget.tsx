@@ -1,16 +1,14 @@
 
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { Plane, Armchair, Plus } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Plane, Sailboat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
-import { Tooltip, TooltipProvider, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-
 
 const Helicopter = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -53,7 +51,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
-        onChange(inputValue); // Update parent state
+        onChange(inputValue);
 
         if (inputValue.length >= 2) {
             const filtered = primeDestinations.filter(dest =>
@@ -75,7 +73,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
     };
 
     return (
-        <div className="relative w-full h-full z-20">
+        <div className="relative w-full h-full">
             <Input
                 ref={inputRef}
                 type="text"
@@ -94,16 +92,13 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                     }
                 }}
                 onBlur={() => {
-                    // Delay hiding suggestions to allow click event
-                    setTimeout(() => {
-                        setShowSuggestions(false);
-                    }, 150);
+                    setTimeout(() => setShowSuggestions(false), 150);
                 }}
-                className="border-0 focus-visible:ring-0 w-full h-full text-center bg-transparent text-white placeholder:text-white"
+                className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-b-lg -mt-1 shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-b-md -mt-1 shadow-lg max-h-60 overflow-y-auto">
                     {suggestions.map((suggestion, index) => (
                         <div
                             key={index}
@@ -122,220 +117,109 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
     );
 };
 
-
 export function BookingWidget() {
   const [tripType, setTripType] = useState('oneway');
-  const [legs, setLegs] = useState([{ origin: '', destination: '', date: '', time: '' }]);
+  const [origin, setOrigin] = useState('');
+  const [destination, setDestination] = useState('');
+  const [departureDate, setDepartureDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
-  const [returnTime, setReturnTime] = useState('');
   const [passengers, setPassengers] = useState('');
 
-
-  const handleTripTypeChange = (type: string) => {
-      setTripType(type);
-  }
-
-  const addLeg = () => {
-    setLegs(currentLegs => {
-        const lastDestination = currentLegs[currentLegs.length - 1]?.destination || '';
-        return [...currentLegs, { origin: lastDestination, destination: '', date: '', time: '' }];
-    });
-  };
-
-  useEffect(() => {
-    if (tripType === 'multicity') {
-        if (legs.length === 1) {
-            addLeg();
-        }
-    } else {
-        if (legs.length > 1) {
-            setLegs(currentLegs => currentLegs.slice(0, 1));
-        }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tripType]);
-
-
-  const updateLeg = (index: number, field: 'origin' | 'destination' | 'date' | 'time', value: string) => {
-    const newLegs = [...legs];
-    newLegs[index][field] = value;
-    
-    if (tripType === 'multicity' && field === 'destination' && index < newLegs.length - 1) {
-      newLegs[index + 1].origin = value;
-    }
-    
-    setLegs(newLegs);
-  };
-
   return (
-    <div className="w-full max-w-3xl mx-auto border border-white/20 backdrop-blur-md rounded-xl shadow-lg p-2">
+    <div className="w-full max-w-5xl mx-auto backdrop-blur-md rounded-xl shadow-lg p-4 bg-black/60 border border-white/10">
         <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="flex justify-center bg-transparent p-0 rounded-lg max-w-md mx-auto">
-                <TabsTrigger value="jet" className="text-white/70 hover:text-white data-[state=active]:text-accent-foreground data-[state=active]:bg-accent data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
-                    <Plane /> JET
+            <TabsList className="flex justify-center bg-transparent p-0 rounded-lg max-w-md mx-auto mb-6">
+                <TabsTrigger value="jet" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
+                    <Plane className="h-7 w-7" /> JET
                 </TabsTrigger>
-                <TabsTrigger value="helicopter" className="text-white/70 hover:text-white data-[state=active]:text-accent-foreground data-[state=active]:bg-accent data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
-                    <Helicopter /> HELICOPTER
+                <TabsTrigger value="helicopter" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
+                    <Helicopter className="h-7 w-7" /> HELICOPTER
                 </TabsTrigger>
-                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                             <TabsTrigger value="seats" className="text-white/70 hover:text-white data-[state=active]:text-accent-foreground data-[state=active]:bg-accent data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
-                                <Armchair /> RESERVE SEATS
-                            </TabsTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Access seats on select private jet flights operating on predefined routes</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                 <TabsTrigger value="yacht" className="flex-col text-white/70 hover:text-white data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:shadow-none border-b-2 border-transparent rounded-none h-auto p-3 gap-2 text-sm sm:text-base bg-transparent transition-none">
+                    <Sailboat className="h-7 w-7" /> YACHT
+                </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="jet" className="mt-6">
-                <div className="space-y-6">
-                    <RadioGroup value={tripType} onValueChange={handleTripTypeChange} className="flex items-center justify-center gap-4 sm:gap-6">
+            <TabsContent value="jet" className="mt-2">
+                <div className="space-y-5">
+                    <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6">
                         <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="oneway" id="oneway" className="border-white/50 text-accent data-[state=checked]:border-accent" />
-                            <Label htmlFor="oneway" className="text-white text-sm sm:text-base">Oneway</Label>
+                            <RadioGroupItem value="oneway" id="oneway" className="sr-only" />
+                            <Label htmlFor="oneway" className="flex items-center gap-2 text-white cursor-pointer text-sm sm:text-base">
+                                <span className={cn("h-2.5 w-2.5 rounded-sm border border-white", tripType === 'oneway' && 'bg-accent border-accent')}></span>
+                                Oneway
+                            </Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="round" id="round" className="border-white/50 text-accent data-[state=checked]:border-accent" />
-                            <Label htmlFor="round" className="text-white text-sm sm:text-base">Round</Label>
+                           <RadioGroupItem value="round" id="round" className="sr-only" />
+                             <Label htmlFor="round" className="flex items-center gap-2 text-white cursor-pointer text-sm sm:text-base">
+                                <span className={cn("h-2.5 w-2.5 rounded-sm border border-white", tripType === 'round' && 'bg-accent border-accent')}></span>
+                                Round
+                            </Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="multicity" id="multicity" className="border-white/50 text-accent data-[state=checked]:border-accent" />
-                            <Label htmlFor="multicity" className="text-white text-sm sm:text-base">Multicity</Label>
+                             <RadioGroupItem value="multicity" id="multicity" className="sr-only" disabled />
+                             <Label htmlFor="multicity" className="flex items-center gap-2 text-white/50 cursor-not-allowed text-sm sm:text-base">
+                                <span className="h-2.5 w-2.5 rounded-sm border border-white/50"></span>
+                                Multicity
+                            </Label>
                         </div>
                     </RadioGroup>
 
-                    <div className="flex flex-col bg-black/20 rounded-lg">
-                        {tripType === 'multicity' ? (
-                            <>
-                                <div className="flex-1 flex flex-col">
-                                    {legs.map((leg, index) => (
-                                        <div key={index} className={cn("flex flex-col sm:flex-row items-stretch", index > 0 && "border-t border-white/20")}>
-                                            <div className='flex-1'>
-                                                <AutocompleteInput placeholder={`Leg ${index + 1} Origin`} value={leg.origin} onChange={(v) => updateLeg(index, 'origin', v)} />
-                                            </div>
-                                            <div className="h-px w-full sm:h-auto sm:w-px bg-white/20 self-stretch"></div>
-                                            <div className='flex-1'>
-                                                <AutocompleteInput placeholder={`Leg ${index + 1} Destination`} value={leg.destination} onChange={(v) => updateLeg(index, 'destination', v)} />
-                                            </div>
-                                            <div className="h-px w-full sm:h-auto sm:w-px bg-white/20 self-stretch"></div>
-                                            <div className='flex-1'>
-                                                <Input 
-                                                    type="text"
-                                                    onFocus={(e) => { e.target.type = 'date'; e.target.min = new Date().toISOString().split("T")[0]; }}
-                                                    onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                                    placeholder="Date"
-                                                    value={leg.date} 
-                                                    onChange={(e) => updateLeg(index, 'date', e.target.value)} 
-                                                    className="border-0 focus-visible:ring-0 w-full bg-transparent h-full text-center text-white placeholder:text-white"
-                                                />
-                                            </div>
-                                            <div className="h-px w-full sm:h-auto sm:w-px bg-white/20 self-stretch"></div>
-                                            <div className='flex-1'>
-                                                 <Input 
-                                                    type="text"
-                                                    onFocus={(e) => e.target.type = 'time'}
-                                                    onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                                    placeholder="Time"
-                                                    value={leg.time} 
-                                                    onChange={(e) => updateLeg(index, 'time', e.target.value)} 
-                                                    className="border-0 focus-visible:ring-0 w-full bg-transparent h-full text-center text-white placeholder:text-white"
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex flex-col lg:flex-row items-stretch border-t border-white/20">
-                                    <div className="flex w-full">
-                                        <Input type="text" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} onFocus={(e) => { e.target.type = 'number'; }} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} className="border-0 focus-visible:ring-0 w-full lg:w-48 bg-transparent text-center text-white placeholder:text-white" />
-                                        <Button variant="accent" className="w-full lg:w-auto rounded-none flex-1 lg:flex-none">Request Pricing</Button>
-                                    </div>
-                                </div>
-                                 <div className="p-2 bg-black/20 border-t border-white/20 rounded-b-lg">
-                                    <Button variant="link" size="sm" onClick={addLeg} className="text-accent/80 hover:text-accent gap-2">
-                                        <Plus className="h-4 w-4"/>
-                                        Add another flight
-                                    </Button>
-                                </div>
-                            </>
+                    <div className="flex flex-col md:flex-row items-stretch rounded-md overflow-hidden">
+                         <div className="flex-1 border-r border-gray-300">
+                             <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
+                         </div>
+                         <div className="flex-1 border-r border-gray-300">
+                             <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
+                         </div>
+                        <Input 
+                            type="text"
+                            onFocus={(e) => { e.target.type = 'date'; }}
+                            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+                            placeholder="Date & Time"
+                            value={departureDate} 
+                            onChange={(e) => setDepartureDate(e.target.value)} 
+                             className="bg-white text-black placeholder:text-gray-500 border-0 border-r border-gray-300 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3"
+                        />
+                        
+                        {tripType === 'round' ? (
+                            <Input 
+                                type="text"
+                                onFocus={(e) => { e.target.type = 'date'; }}
+                                onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+                                placeholder="Add A Return Flight"
+                                value={returnDate} 
+                                onChange={e => setReturnDate(e.target.value)} 
+                                className="bg-white text-black placeholder:text-gray-500 border-0 border-r border-gray-300 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3"
+                            />
                         ) : (
-                            // Oneway & Roundtrip layout
-                            <div className="flex flex-col lg:flex-row items-stretch">
-                                <div className="flex-1">
-                                    <AutocompleteInput placeholder="Origin" value={legs[0].origin} onChange={(v) => updateLeg(0, 'origin', v)} />
-                                </div>
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
-                                <div className="flex-1">
-                                    <AutocompleteInput placeholder="Destination" value={legs[0].destination} onChange={(v) => updateLeg(0, 'destination', v)} />
-                                </div>
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
-                                <div className="flex-1">
-                                    <Input 
-                                        type="text"
-                                        onFocus={(e) => { e.target.type = 'date'; e.target.min = new Date().toISOString().split("T")[0]; }}
-                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                        placeholder="Date"
-                                        value={legs[0].date} 
-                                        onChange={(e) => updateLeg(0, 'date', e.target.value)} 
-                                        className="border-0 focus-visible:ring-0 w-full bg-transparent h-full text-center text-white placeholder:text-white"
-                                    />
-                                </div>
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
-                                <div className="flex-1">
-                                    <Input 
-                                        type="text"
-                                        onFocus={(e) => e.target.type = 'time'}
-                                        onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                        placeholder="Time"
-                                        value={legs[0].time} 
-                                        onChange={(e) => updateLeg(0, 'time', e.target.value)} 
-                                        className="border-0 focus-visible:ring-0 w-full bg-transparent h-full text-center text-white placeholder:text-white"
-                                    />
-                                </div>
-                                
-                                {tripType === 'round' && (
-                                    <>
-                                        <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
-                                        <div className="flex-1">
-                                            <Input 
-                                                type="text"
-                                                onFocus={(e) => { e.target.type = 'date'; e.target.min = legs[0].date || new Date().toISOString().split("T")[0]; }}
-                                                onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                                placeholder="Return Date"
-                                                value={returnDate} 
-                                                onChange={e => setReturnDate(e.target.value)} 
-                                                className="border-0 focus-visible:ring-0 w-full bg-transparent h-full text-center text-white placeholder:text-white" />
-                                        </div>
-                                        <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
-                                        <div className="flex-1">
-                                            <Input 
-                                                type="text"
-                                                onFocus={(e) => e.target.type = 'time'}
-                                                onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                                                placeholder="Return Time"
-                                                value={returnTime} 
-                                                onChange={e => setReturnTime(e.target.value)} 
-                                                className="border-0 focus-visible:ring-0 w-full bg-transparent h-full text-center text-white placeholder:text-white" />
-                                        </div>
-                                    </>
-                                )}
-
-                                <div className="h-px w-full lg:h-auto lg:w-px bg-white/20 self-stretch"></div>
-                                <div className="flex w-full lg:w-auto">
-                                    <Input type="text" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} onFocus={(e) => { e.target.type = 'number'; }} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} className="border-0 focus-visible:ring-0 lg:w-36 bg-transparent text-center text-white placeholder:text-white"/>
-                                    <Button variant="accent" className="w-full lg:w-auto rounded-none flex-1 lg:flex-none">Request Pricing</Button>
-                                </div>
-                            </div>
+                             <Input 
+                                type="text"
+                                placeholder="Add A Return Flight"
+                                onFocus={() => setTripType('round')}
+                                className="bg-white text-black placeholder:text-gray-400 border-0 border-r border-gray-300 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3 cursor-pointer"
+                                readOnly
+                            />
                         )}
+
+                        <Input 
+                            type="text"
+                            placeholder="1 Passenger"
+                            value={passengers} 
+                            onChange={e => setPassengers(e.target.value)}
+                            onFocus={(e) => { e.target.type = 'number'; e.target.placeholder='1'; e.target.min='1'; }} onBlur={(e) => { if (!e.target.value) {e.target.type = 'text'; e.target.placeholder='1 Passenger'}}}
+                            className="bg-white text-black placeholder:text-gray-500 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center flex-1 py-3"
+                        />
+                        <Button variant="primary" className="rounded-none text-lg h-auto px-8">SEARCH</Button>
                     </div>
                 </div>
             </TabsContent>
             <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-white">Helicopter booking functionality coming soon.</p></TabsContent>
-            <TabsContent value="seats"><p className="text-center p-12 text-lg text-white">Seat reservation functionality coming soon.</p></TabsContent>
+            <TabsContent value="yacht"><p className="text-center p-12 text-lg text-white">Yacht booking functionality coming soon.</p></TabsContent>
         </Tabs>
     </div>
   );
 }
+
+    
