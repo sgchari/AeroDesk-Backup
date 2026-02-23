@@ -218,7 +218,7 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-transparent">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-black">
       <LandingHeader />
       <main className="relative flex-grow">
         <div
@@ -248,7 +248,7 @@ export default function Home() {
                 <BookingWidget />
               </div>
             </div>
-
+            
             <div className="container p-4 pt-16 pb-16 sm:p-6 sm:pt-24 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
