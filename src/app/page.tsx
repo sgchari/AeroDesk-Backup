@@ -226,7 +226,7 @@ export default function Home() {
         <div
           className="absolute inset-0 -z-10"
           style={{
-            backgroundImage: `url('https://plus.unsplash.com/premium_photo-1661963959935-2b25b59a633c?q=80&w=2070&auto=format&fit=crop')`,
+            backgroundImage: `url('https://picsum.photos/seed/aeroplane/1920/1080')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
