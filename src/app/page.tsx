@@ -20,6 +20,8 @@ import {
   Shield,
   CheckCircle,
   Armchair,
+  Plus,
+  X,
 } from 'lucide-react';
 import {
   Sheet,
@@ -41,11 +43,11 @@ const LandingHeader = () => {
     { href: '#', label: 'Media' },
   ];
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-primary/40 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/10 backdrop-blur-md">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/">
-            <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/70" />
+            <Logo className="[&_svg]:text-white/90 [&_.text-foreground]:font-bold [&_.text-foreground]:text-white [&_.text-primary]:text-accent [&_p]:text-white/70" />
           </Link>
         </div>
 
@@ -54,7 +56,7 @@ const LandingHeader = () => {
             <Link
               key={link.label}
               href={link.href}
-              className="font-medium transition-colors hover:text-white/80"
+              className="font-semibold transition-colors hover:text-white/80"
             >
               {link.label}
             </Link>
@@ -65,12 +67,12 @@ const LandingHeader = () => {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="tel:+919819754038"
-              className="flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-white/80"
+              className="flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-white/80"
             >
               <Phone className="h-4 w-4" />
               +91 9819754038
             </a>
-            <Button variant="ghost" asChild className="font-medium text-white hover:bg-white/10 hover:text-white">
+            <Button variant="ghost" asChild className="font-semibold text-white hover:bg-white/10 hover:text-white">
               <Link href="/login">Login</Link>
             </Button>
             <Button asChild variant="accent">
@@ -190,7 +192,7 @@ export default function Home() {
           </div>
           <LandingHeader />
           <div className="relative">
-            <div className="container space-y-10 p-4 pt-32 pb-8 text-center sm:p-6 md:p-8">
+            <div className="container space-y-10 p-4 pt-20 pb-4 text-center sm:p-6 md:p-8">
               <div className="inline-flex items-center gap-3 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                 <ShieldCheck className="h-6 w-6" />
                 Fly Smarter. Stay Premium.
@@ -206,7 +208,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="container p-4 pt-96 pb-16 sm:p-6 sm:pt-96 sm:pb-24 md:p-8">
+            <div className="container p-4 pt-[32rem] pb-16 sm:p-6 sm:pt-[32rem] sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
@@ -471,7 +473,7 @@ export default function Home() {
                     fill="currentColor"
                     className="h-5 w-5"
                   >
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.058-1.689-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919 4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.058-1.689-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
                   </svg>
                 </Link>
                 <Link
