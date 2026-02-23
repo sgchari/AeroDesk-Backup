@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Plane, Plus, X } from 'lucide-react';
+import { Plane, Plus, X, Armchair } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -16,18 +16,8 @@ const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
         xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
-      <path d="M12 2C6.48 2 2 2.45 2 3s4.48 1 10 1s10-.45 10-1s-4.48-1-10-1zm0 4.75c-.69 0-1.25-.56-1.25-1.25V3.5c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25v2.01c0 .68-.56 1.24-1.25 1.24zm8.23-1.28c-.52-.2-1.1.08-1.3.6s.08 1.1.6 1.3l-2.67 1.07c-.43-1.8-1.66-3.33-3.36-4.2V7.25c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.07C9.34 9.8 6.66 12.63 6.04 16H3.75c-.41 0-.75.34-.75.75s.34.75.75.75h2.5c.09 0 .17-.01.25-.03.04.1.08.19.14.28H5.75c-.41 0-.75.34-.75.75s.34.75.75.75h1.72c1.23 1.69 3.14 2.89 5.28 3.23V21.25c0 .41.34.75.75.75s.75-.34.75-.75v-1.51c2.14-.34 4.05-1.54 5.28-3.23h1.72c.41 0 .75-.34.75-.75s-.34-.75-.75-.75h-.88c.06-.09.1-.18.14-.28.08.02.16.03.25.03h2.5c.41 0 .75-.34.75-.75s-.34-.75-.75-.75h-2.29c-.62-3.37-3.3-6.2-6.64-7.07l2.67-1.07c.52.2 1.1-.08 1.3-.6s-.09-1.1-.61-1.3z"/>
-    </svg>
-);
-
-const ArmchairIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-    >
-        <path d="M22 8v3c0 1.1-.9 2-2 2h-1v2h-2v-2H7v2H5v-2H4c-1.1 0-2-.9-2-2V8c0-1.86 1.28-3.41 3-3.86V2h12v2.14c1.72.45 3 2 3 3.86zM6 11h12V8H6v3z"/>
+        <path d="M12.93,7.46,15.2,2.8a.5.5,0,0,1,.9.38L15.25,8H20.5a2,2,0,0,1,1.8,2.75l-1.7,6.82a4,4,0,0,1-3.9,3.18H8.3a4,4,0,0,1-3.9-3.18L2.7,10.75A2,2,0,0,1,4.5,8H12.2a.5.5,0,0,1,.48.33.5.5,0,0,1-.1.53.5.5,0,0,1-.32.15H5.83a.5.5,0,0,0-.49.65l1.37,5.5a2,2,0,0,0,2,1.72h6.58a2,2,0,0,0,2-1.72l1.37-5.5a.5.5,0,0,0-.49-.65H13.54a.5.5,0,0,1-.32-.15.5.5,0,0,1-.1-.53A.5.5,0,0,1,12.93,7.46ZM12,6a1,1,0,1,0-1-1A1,1,0,0,0,12,6Z"/>
+        <path d="M12,1A3,3,0,0,0,9,4V4.08a.5.5,0,0,0,.5.5h5a.5.5,0,0,0,.5-.5V4A3,3,0,0,0,12,1Z"/>
     </svg>
 );
 
@@ -165,7 +155,7 @@ export function BookingWidget() {
                     <span className="font-semibold text-sm">Helicopter</span>
                 </TabsTrigger>
                 <TabsTrigger value="seats" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <ArmchairIcon className="h-8 w-8" />
+                    <Armchair className="h-8 w-8" />
                     <span className="font-semibold text-sm">Seats</span>
                 </TabsTrigger>
             </TabsList>
