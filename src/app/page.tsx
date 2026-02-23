@@ -127,7 +127,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-full max-w-xs border-l-0 bg-background/80 text-white backdrop-blur-md sm:max-w-sm"
+                className="w-[300px] border-l-0 bg-background/80 text-white backdrop-blur-md"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -242,7 +242,7 @@ export default function Home() {
                   Fly Smarter. Stay Premium.
                 </div>
                 <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-                  Where <span className="text-[#EEDC5B]">Exceptional Journey</span>{' '}
+                  Where <span className="text-accent">Exceptional Journey</span>{' '}
                   Begins
                 </h1>
               </div>

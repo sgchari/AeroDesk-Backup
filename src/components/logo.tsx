@@ -28,7 +28,7 @@ export function Logo({ className }: { className?: string }) {
         <div>
             <div className="flex items-baseline">
                 <span className="font-headline text-xl font-semibold tracking-normal text-foreground">AERO</span>
-                <span className="font-headline text-xl font-semibold tracking-normal text-primary">DESK</span>
+                <span className="font-headline text-xl font-semibold tracking-normal text-accent">DESK</span>
             </div>
             <p className="text-xs text-muted-foreground -mt-1">Organized Charter Platform</p>
         </div>
