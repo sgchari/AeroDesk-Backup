@@ -24,6 +24,7 @@ import {
   Shield,
   CheckCircle,
   Armchair,
+  Plane,
 } from 'lucide-react';
 import {
   Sheet,
@@ -128,7 +129,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border border-white/20 bg-black/10 text-white backdrop-blur-lg"
+                className="w-[240px] border border-white/20 bg-black/10 text-white"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -553,4 +554,5 @@ export default function Home() {
     </div>
   );
 }
+
 
