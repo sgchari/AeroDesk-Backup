@@ -6,7 +6,7 @@ import { Plane, Armchair, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TabsContent } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -117,7 +117,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
 };
 
 
-export function BookingWidget({ activeTab }: { activeTab: string }) {
+export function BookingWidget() {
   const [tripType, setTripType] = useState('oneway');
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
@@ -153,7 +153,7 @@ export function BookingWidget({ activeTab }: { activeTab: string }) {
 
   return (
     <div className="bg-black/20 p-4 rounded-lg shadow-2xl border border-white/10 backdrop-blur-sm">
-        <TabsContent value="jet" forceMount={true} hidden={activeTab !== 'jet'} className="mt-0">
+        <TabsContent value="jet" className="mt-0">
             <div className="space-y-4">
                 <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6 mt-2 mb-6">
                     <div className="flex items-center space-x-2">
@@ -243,9 +243,10 @@ export function BookingWidget({ activeTab }: { activeTab: string }) {
                 </div>
             </div>
         </TabsContent>
-        <TabsContent value="helicopter" forceMount={true} hidden={activeTab !== 'helicopter'}><p className="text-center p-12 text-lg text-foreground">Helicopter booking functionality coming soon.</p></TabsContent>
-        <TabsContent value="seats" forceMount={true} hidden={activeTab !== 'seats'}><p className="text-center p-12 text-lg text-foreground">Seat reservation functionality coming soon.</p></TabsContent>
+        <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-foreground">Helicopter booking functionality coming soon.</p></TabsContent>
+        <TabsContent value="seats"><p className="text-center p-12 text-lg text-foreground">Seat reservation functionality coming soon.</p></TabsContent>
     </div>
   );
 }
+
 

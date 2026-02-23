@@ -228,17 +228,6 @@ const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-const PlaneIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-    >
-        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-    </svg>
-);
-
 const ArmchairIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
         viewBox="0 0 24 24"
@@ -252,7 +241,6 @@ const ArmchairIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('jet');
   return (
     <div className="w-full">
       {/* Background Layer: Fixed to the viewport, sits behind everything else */}
@@ -285,25 +273,22 @@ export default function Home() {
 
               <div className="relative z-10 py-6">
                 <div className="container">
-                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-7xl mx-auto">
-                      <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-4 border-b-0">
-                           <TabsTrigger value="jet" asChild>
-                              <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
-                                  <PlaneIcon className="w-100 h-100" />
-                              </Button>
-                          </TabsTrigger>
-                          <TabsTrigger value="helicopter" asChild>
-                              <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
-                                  <HelicopterIcon className="w-100 h-100" />
-                              </Button>
-                          </TabsTrigger>
-                          <TabsTrigger value="seats" asChild>
-                              <Button variant="ghost" className="transition-all rounded-t-lg px-6 py-4 data-[state=active]:text-accent hover:bg-transparent hover:text-accent data-[state=inactive]:opacity-50">
-                                  <ArmchairIcon className="w-100 h-100" />
-                              </Button>
-                          </TabsTrigger>
-                      </TabsList>
-                      <BookingWidget activeTab={activeTab}/>
+                  <Tabs defaultValue="jet" className="w-full max-w-7xl mx-auto">
+                    <TabsList className="grid w-full max-w-2xl grid-cols-3 gap-2 bg-black/20 p-2 rounded-lg border border-white/10 backdrop-blur-sm mx-auto mb-4">
+                        <TabsTrigger value="jet" className="flex items-center justify-center flex-col gap-2 p-4 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground h-auto">
+                            <Plane className="h-8 w-8" />
+                            <span className="font-semibold text-sm">Private Jet</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="helicopter" className="flex items-center justify-center flex-col gap-2 p-4 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground h-auto">
+                            <HelicopterIcon className="h-8 w-8" />
+                            <span className="font-semibold text-sm">Helicopter</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="seats" className="flex items-center justify-center flex-col gap-2 p-4 rounded-md data-[state=active]:bg-accent data-[state=active]:text-accent-foreground h-auto">
+                            <ArmchairIcon className="h-8 w-8" />
+                            <span className="font-semibold text-sm">Seats</span>
+                        </TabsTrigger>
+                    </TabsList>
+                      <BookingWidget />
                   </Tabs>
                 </div>
               </div>

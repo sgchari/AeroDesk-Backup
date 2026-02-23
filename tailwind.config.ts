@@ -19,12 +19,6 @@ export default {
       },
     },
     extend: {
-      height: {
-        '100': '25rem',
-      },
-      width: {
-        '100': '25rem',
-      },
       fontFamily: {
         body: ['var(--font-inter)', 'sans-serif'],
         headline: ['var(--font-inter)', 'sans-serif'],
