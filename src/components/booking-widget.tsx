@@ -156,7 +156,7 @@ export function BookingWidget() {
   return (
     <div className="w-full max-w-7xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 bg-transparent p-0 rounded-t-lg max-w-lg mx-auto mb-6 border-b-0">
+            <TabsList className="flex items-center justify-center bg-transparent p-0 rounded-t-lg mx-auto mb-6 border-b-0">
                 <TabsTrigger value="jet" asChild>
                     <Button variant={activeTab === 'jet' ? 'accent' : 'ghost'} className="rounded-full w-12 h-12 p-0 text-white/80 hover:text-white hover:bg-white/10 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all flex items-center justify-center">
                         <Plane className="h-6 w-6" />
