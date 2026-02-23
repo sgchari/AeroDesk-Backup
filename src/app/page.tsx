@@ -199,13 +199,13 @@ export default function Home() {
               </h1>
             </div>
 
-            <div className="relative z-10">
+            <div className="relative z-10 py-12">
               <div className="container">
                 <BookingWidget />
               </div>
             </div>
             
-            <div className="container p-4 pt-40 pb-16 sm:p-6 sm:pt-64 sm:pb-24 md:p-8">
+            <div className="container p-4 pt-48 pb-16 sm:p-6 sm:pt-64 sm:pb-24 md:p-8">
               <div className="mx-auto max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                   A Comprehensive Aviation Ecosystem
