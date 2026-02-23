@@ -168,7 +168,7 @@ export function BookingWidget() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-primary/50 backdrop-blur-md rounded-xl shadow-lg p-4">
+    <div className="w-full max-w-3xl mx-auto border border-white/20 backdrop-blur-md rounded-xl shadow-lg p-2">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="flex justify-center bg-transparent p-0 rounded-lg max-w-md mx-auto">
                 <TabsTrigger value="jet" className="text-white/70 hover:text-white data-[state=active]:text-accent-foreground data-[state=active]:bg-accent data-[state=active]:shadow-lg p-3 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base">
@@ -250,7 +250,7 @@ export function BookingWidget() {
                                 </div>
                                 <div className="flex flex-col lg:flex-row items-stretch border-t border-white/20">
                                     <div className="flex w-full">
-                                        <Input type="number" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} className="border-0 focus-visible:ring-0 w-full lg:w-48 bg-transparent text-center text-white placeholder:text-white" />
+                                        <Input type="text" placeholder="Passengers" min="1" value={passengers} onChange={e => setPassengers(e.target.value)} onFocus={(e) => { e.target.type = 'number'; }} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} className="border-0 focus-visible:ring-0 w-full lg:w-48 bg-transparent text-center text-white placeholder:text-white" />
                                         <Button variant="accent" className="w-full lg:w-auto rounded-none flex-1 lg:flex-none">Request Pricing</Button>
                                     </div>
                                 </div>
