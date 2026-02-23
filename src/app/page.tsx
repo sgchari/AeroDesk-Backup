@@ -219,7 +219,7 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-black">
+    <div className="flex min-h-screen flex-col overflow-x-hidden">
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-hero-pattern bg-cover bg-center" />
         <div className="absolute inset-0 bg-black/50" />

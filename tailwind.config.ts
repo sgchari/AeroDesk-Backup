@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -19,7 +20,7 @@ export default {
     },
     extend: {
       backgroundImage: {
-        'hero-pattern': "url('https://picsum.photos/seed/coupleonthebeach/1920/1080')",
+        'hero-pattern': "url('https://source.unsplash.com/random/1920x1080?landscape,nature')",
       },
       fontFamily: {
         body: ['var(--font-inter)', 'sans-serif'],
