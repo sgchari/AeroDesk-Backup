@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -35,36 +36,36 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 
 const LandingHeader: FC = () => {
   const lastScrollY = useRef(0);
   const [isVisible, setIsVisible] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (!isMobile) {
+      setIsVisible(true);
+      return;
+    }
+
     const handleScroll = () => {
-      if (window.innerWidth < 768) { // Mobile devices
-        const currentScrollY = window.scrollY;
-        if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
-          setIsVisible(false); // Hide on scroll down
-        } else {
-          setIsVisible(true); // Show on scroll up
-        }
-        lastScrollY.current = currentScrollY;
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
+        setIsVisible(false);
       } else {
-        setIsVisible(true); // Always visible on desktop/tablet
+        setIsVisible(true);
       }
+      lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true }); // handleScroll covers resize logic too
-    handleScroll(); // Initial check
 
     return () => {
         window.removeEventListener('scroll', handleScroll);
-        window.removeEventListener('resize', handleScroll);
     };
-  }, []);
+  }, [isMobile]);
 
   const navLinks = [
     { href: '#', label: 'Promotions' },
@@ -77,11 +78,11 @@ const LandingHeader: FC = () => {
     <header
       className={cn(
         'sticky top-0 z-50 w-full text-white transition-transform duration-300 bg-black/30 backdrop-blur-md',
-        !isVisible && '-translate-y-full'
+        !isVisible && isMobile && '-translate-y-full'
       )}
     >
-      <div className="container flex h-20 items-center justify-between">
-        <div className="flex items-center gap-6">
+      <div className="container flex h-20 items-center">
+        <div className="flex flex-1 items-center justify-start gap-6">
           <Link href="/">
             <Logo />
           </Link>
@@ -99,7 +100,7 @@ const LandingHeader: FC = () => {
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-1 items-center justify-end gap-4">
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="tel:+919819754038"
@@ -274,7 +275,7 @@ export default function Home() {
                   {features.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/10 p-6 text-center backdrop-blur-sm"
+                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/15 p-6 text-center backdrop-blur-md"
                     >
                       <feature.icon className="h-10 w-10 text-yellow-300" />
                       <h3 className="mt-4 text-lg font-bold text-white">
@@ -303,7 +304,7 @@ export default function Home() {
               </div>
 
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-sm">
+                <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -330,7 +331,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-sm">
+                <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -360,7 +361,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-sm md:col-span-2 lg:col-span-1">
+                <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md md:col-span-2 lg:col-span-1">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -420,50 +421,48 @@ export default function Home() {
         </main>
         
         <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md">
-          <div className="container py-8">
-            <div className="flex w-full flex-col items-center gap-8 text-center md:flex-row md:items-start md:justify-between md:text-left">
+          <div className="container py-4">
+            <div className="flex w-full flex-col items-center gap-8 md:flex-row md:items-start md:justify-between md:text-left">
               <div className="flex flex-col items-center md:items-start">
                 <Logo />
               </div>
 
-              <div className="flex flex-col gap-8 text-center sm:flex-row sm:gap-16 sm:text-left">
-                <div className="flex flex-col items-center gap-3 sm:items-start">
-                  <h3 className="font-semibold uppercase tracking-wider text-white">
-                    Get In Touch
-                  </h3>
-                  <a
-                    href="tel:+919819754038"
-                    className="inline-flex items-center gap-2 hover:text-white"
-                  >
-                    <Phone className="h-4 w-4" /> +91 98197 54038
-                  </a>
-                  <a
-                    href="tel:+912228222202"
-                    className="inline-flex items-center gap-2 hover:text-white"
-                  >
-                    <Phone className="h-4 w-4" /> +91 22 2822 2202
-                  </a>
-                  <a
-                    href="mailto:info@aerodesk.com"
-                    className="inline-flex items-center gap-2 hover:text-white"
-                  >
-                    <Mail className="h-4 w-4" /> info@aerodesk.com
-                  </a>
-                </div>
-                <div className="flex flex-col items-center gap-3 sm:items-start">
-                  <h3 className="font-semibold uppercase tracking-wider text-white">
-                    Legal
-                  </h3>
-                  <Link href="/terms-of-service" className="hover:text-white">
-                    Terms of Service
-                  </Link>
-                  <Link href="/privacy-policy" className="hover:text-white">
-                    Privacy Policy
-                  </Link>
-                  <Link href="/safety-standards" className="hover:text-white">
-                    Safety Standards
-                  </Link>
-                </div>
+              <div className="flex flex-col items-center gap-3 text-center sm:items-start">
+                <h3 className="font-semibold uppercase tracking-wider text-white">
+                  Get In Touch
+                </h3>
+                <a
+                  href="tel:+919819754038"
+                  className="inline-flex items-center gap-2 hover:text-white"
+                >
+                  <Phone className="h-4 w-4" /> +91 98197 54038
+                </a>
+                <a
+                  href="tel:+912228222202"
+                  className="inline-flex items-center gap-2 hover:text-white"
+                >
+                  <Phone className="h-4 w-4" /> +91 22 2822 2202
+                </a>
+                <a
+                  href="mailto:info@aerodesk.com"
+                  className="inline-flex items-center gap-2 hover:text-white"
+                >
+                  <Mail className="h-4 w-4" /> info@aerodesk.com
+                </a>
+              </div>
+              <div className="flex flex-col items-center gap-3 text-center sm:items-start">
+                <h3 className="font-semibold uppercase tracking-wider text-white">
+                  Legal
+                </h3>
+                <Link href="/terms-of-service" className="hover:text-white">
+                  Terms of Service
+                </Link>
+                <Link href="/privacy-policy" className="hover:text-white">
+                  Privacy Policy
+                </Link>
+                <Link href="/safety-standards" className="hover:text-white">
+                  Safety Standards
+                </Link>
               </div>
 
               <div className="flex flex-col items-center gap-3 text-center md:items-end md:text-right">
@@ -574,12 +573,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-
-
-
-    
-
-
-
