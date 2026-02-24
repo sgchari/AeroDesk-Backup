@@ -141,10 +141,10 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
                       </Link>
                     ))}
                   </nav>
-                  <div className="mt-auto flex flex-col gap-2 border-t border-white/10 bg-black/30 p-4 backdrop-blur-md">
+                  <div className="mt-auto flex flex-col gap-2 border-t border-white/10 bg-black/30 p-3 backdrop-blur-md">
                     <a
                       href="tel:+919819754038"
-                      className="flex items-center gap-2 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
+                      className="flex items-center gap-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
                     >
                       <Phone className="h-4 w-4" />
                       +91 9819754038
@@ -174,9 +174,9 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
 
 const LandingFooter: FC = () => {
     return (
-        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md">
-          <div className="container py-6">
-            <div className="grid w-full grid-cols-1 items-start gap-8 md:grid-cols-4 md:text-left">
+        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-3">
+          <div className="container py-3">
+            <div className="grid w-full grid-cols-1 items-start gap-6 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
                 <Logo />
               </div>

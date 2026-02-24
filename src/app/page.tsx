@@ -138,12 +138,12 @@ const LandingHeader: FC = () => {
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                  <div className="flex h-full flex-col">
-                   <div className="flex h-20 items-center justify-start border-b border-white/10 bg-black/30 px-4 backdrop-blur-md">
-                    <Link href="/">
+                   <div className="flex h-20 shrink-0 items-center justify-start border-b border-white/10 bg-black/30 px-4 backdrop-blur-md">
+                    <Link href="/" className="-ml-2">
                         <Logo />
                     </Link>
                   </div>
-                  <nav className="flex-grow bg-black/10 p-6 backdrop-blur-none">
+                  <nav className="flex-grow bg-black/5 p-6 backdrop-blur-none">
                     {navLinks.map((link) => (
                       <Link
                         key={link.label}
@@ -154,10 +154,10 @@ const LandingHeader: FC = () => {
                       </Link>
                     ))}
                   </nav>
-                  <div className="mt-auto flex flex-col gap-2 border-t border-white/10 bg-black/30 p-4 backdrop-blur-md h-auto">
+                  <div className="mt-auto flex flex-col gap-2 border-t border-white/10 bg-black/30 p-3 backdrop-blur-md">
                     <a
                       href="tel:+919819754038"
-                      className="flex items-center gap-2 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
+                      className="flex items-center gap-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
                     >
                       <Phone className="h-4 w-4" />
                       +91 9819754038
@@ -268,7 +268,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="container p-4 pt-8 sm:p-6 sm:pt-12 md:p-8">
+              <div className="container p-4 pt-8 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                     A Comprehensive Aviation Ecosystem
@@ -299,7 +299,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="bg-transparent pt-8 pb-6 sm:pb-8">
+          <section className="bg-transparent pt-2 pb-6 sm:pb-8">
             <div className="container p-4 sm:p-6 md:p-8">
               <div className="mx-auto mb-12 max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -423,8 +423,8 @@ export default function Home() {
         </main>
         
         <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-3">
-          <div className="container">
-            <div className="grid w-full grid-cols-1 items-start gap-8 md:grid-cols-4 md:text-left">
+          <div className="container py-3">
+            <div className="grid w-full grid-cols-1 items-start gap-6 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
                 <Logo />
               </div>
