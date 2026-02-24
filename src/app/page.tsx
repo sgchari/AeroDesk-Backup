@@ -134,7 +134,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-none bg-black/50 p-0 text-white backdrop-blur-md"
+                className="w-[240px] border-l border-white/10 bg-black/20 p-0 text-white backdrop-blur-lg"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
