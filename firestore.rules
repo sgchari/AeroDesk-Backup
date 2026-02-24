@@ -94,10 +94,11 @@ service cloud.firestore {
      * @principle Secures the core user directory while allowing for efficient, authenticated profile lookups.
      */
     match /users/{userId} {
-      allow get: if isOwner(userId) || isPlatformAdmin();
+      // Any signed-in user can read role mappings for profile lookups.
+      allow get: if isSignedIn();
       allow list: if isPlatformAdmin();
-      // Creation happens during registration, which temporarily authenticates as the new user.
-      allow create: if isOwner(userId);
+      // Creation and writing (for set-merge) happens during registration.
+      allow create, write: if isOwner(userId);
       allow update, delete: if false;
     }
 
