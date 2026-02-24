@@ -85,13 +85,17 @@ export default function RegisterPage() {
         
         let collectionPath = '';
         let docId = user.uid;
-        let userProfileData: any = {};
-        let userMappingData: any = { role: data.role };
+        let specificProfileData: any = {};
         
-        const commonData = {
+        // This is the denormalized user data that will be stored in the top-level /users collection.
+        // It's used by the useUser hook for fast, reliable profile loading.
+        const generalUserData: any = {
             id: user.uid,
             externalAuthId: user.uid,
             email: user.email,
+            role: data.role,
+            firstName,
+            lastName: lastName || 'User',
             status: 'Active',
             createdAt: now,
             updatedAt: now,
@@ -100,11 +104,11 @@ export default function RegisterPage() {
         switch (data.role) {
             case 'Admin':
                 collectionPath = 'platformAdmins';
-                userProfileData = { ...commonData, firstName, lastName: lastName || 'User' };
+                specificProfileData = { ...generalUserData };
                 break;
             case 'Customer':
                 collectionPath = 'customers';
-                userProfileData = { ...commonData, type: 'Individual', firstName, lastName: lastName || 'User' };
+                specificProfileData = { ...generalUserData, type: 'Individual' };
 
                 // Seed a sample RFQ
                 const rfqCollectionRef = collection(firestore, 'charterRFQs');
@@ -127,130 +131,69 @@ export default function RegisterPage() {
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                userProfileData = { ...commonData, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                const operatorCompanyName = `${data.name}'s Company`;
+                generalUserData.company = operatorCompanyName;
+                specificProfileData = { ...generalUserData, companyName: operatorCompanyName, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 
                 // Seed a sample aircraft
                 const aircraftDocRef = doc(collection(firestore, 'operators', user.uid, 'aircrafts'));
-                const sampleAircraft = {
-                    id: aircraftDocRef.id,
-                    operatorId: user.uid,
-                    name: 'Citation XLS+',
-                    model: 'Citation XLS+',
-                    type: 'Mid-size Jet',
-                    tailNumber: 'VT-XYZ',
-                    registration: 'VT-XYZ',
-                    seatingCapacity: 8,
-                    paxCapacity: 8,
-                    homeBase: 'VABB',
-                    status: 'Active'
-                };
+                const sampleAircraft = { id: aircraftDocRef.id, operatorId: user.uid, name: 'Citation XLS+', model: 'Citation XLS+', type: 'Mid-size Jet', tailNumber: 'VT-XYZ', registration: 'VT-XYZ', seatingCapacity: 8, paxCapacity: 8, homeBase: 'VABB', status: 'Active' };
                 setDocumentNonBlocking(aircraftDocRef, sampleAircraft, { merge: true });
 
-                // Seed a sample approved empty leg from this operator
+                // Seed a sample approved empty leg
                 const emptyLegDocRef = doc(collection(firestore, 'emptyLegs'));
-                const sampleEmptyLeg = {
-                    id: emptyLegDocRef.id,
-                    operatorId: user.uid,
-                    aircraftId: aircraftDocRef.id,
-                    departure: 'Delhi (VIDP)',
-                    arrival: 'Jaipur (VIJP)',
-                    departureTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days from now
-                    availableSeats: 6,
-                    status: 'Approved',
-                    adminApprovalStatus: 'Approved',
-                    createdAt: now,
-                    updatedAt: now,
-                };
+                const sampleEmptyLeg = { id: emptyLegDocRef.id, operatorId: user.uid, aircraftId: aircraftDocRef.id, departure: 'Delhi (VIDP)', arrival: 'Jaipur (VIJP)', departureTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), availableSeats: 6, status: 'Approved', adminApprovalStatus: 'Approved', createdAt: now, updatedAt: now };
                 setDocumentNonBlocking(emptyLegDocRef, sampleEmptyLeg, { merge: true });
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                userProfileData = { ...commonData, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                const distCompanyName = `${data.name}'s Agency`;
+                generalUserData.company = distCompanyName;
+                specificProfileData = { ...generalUserData, companyName: distCompanyName, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                userProfileData = { ...commonData, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                const hotelCompanyName = `${data.name}'s Hotel`;
+                generalUserData.company = hotelCompanyName;
+                specificProfileData = { ...generalUserData, companyName: hotelCompanyName, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 
                 // Seed a sample property and room category
                 const propertyDocRef = doc(collection(firestore, 'hotelPartners', user.uid, 'properties'));
-                const sampleProperty = {
-                    id: propertyDocRef.id,
-                    hotelPartnerId: user.uid,
-                    name: 'The Grand Lighthouse',
-                    address: '123 Ocean View Drive',
-                    city: 'Mumbai',
-                    country: 'India',
-                    status: 'Active',
-                    createdAt: now,
-                    updatedAt: now
-                };
+                const sampleProperty = { id: propertyDocRef.id, hotelPartnerId: user.uid, name: 'The Grand Lighthouse', address: '123 Ocean View Drive', city: 'Mumbai', country: 'India', status: 'Active', createdAt: now, updatedAt: now };
                 setDocumentNonBlocking(propertyDocRef, sampleProperty, { merge: true });
-
                 const roomCategoryDocRef = doc(collection(firestore, `hotelPartners/${user.uid}/properties/${propertyDocRef.id}/roomCategories`));
-                const sampleRoomCategory = {
-                    id: roomCategoryDocRef.id,
-                    propertyId: propertyDocRef.id,
-                    name: 'Ocean View Suite',
-                    description: 'A luxurious suite with a stunning view of the Arabian Sea.',
-                    maxOccupancy: 2,
-                    baseRateMin: 15000,
-                    baseRateMax: 25000,
-                    createdAt: now,
-                    updatedAt: now
-                };
+                const sampleRoomCategory = { id: roomCategoryDocRef.id, propertyId: propertyDocRef.id, name: 'Ocean View Suite', description: 'A luxurious suite with a stunning view of the Arabian Sea.', maxOccupancy: 2, baseRateMin: 15000, baseRateMax: 25000, createdAt: now, updatedAt: now };
                 setDocumentNonBlocking(roomCategoryDocRef, sampleRoomCategory, { merge: true });
                 break;
             case 'CTD Admin':
-                const ctdId = user.uid; // Use user's UID as the CTD ID
-                userMappingData.ctdId = ctdId; // Add ctdId to the mapping
+                const ctdId = user.uid;
+                const ctdCompanyName = `${data.name}'s Corp`;
+                generalUserData.ctdId = ctdId;
+                generalUserData.company = ctdCompanyName;
+                generalUserData.role = 'Corporate Admin';
 
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);
-                const ctdData = {
-                    id: ctdId,
-                    companyName: `${data.name}'s Corp`,
-                    adminExternalAuthId: user.uid,
-                    status: 'Active',
-                    createdAt: now,
-                    updatedAt: now,
-                };
+                const ctdData = { id: ctdId, companyName: ctdCompanyName, adminExternalAuthId: user.uid, status: 'Active', createdAt: now, updatedAt: now };
                 setDocumentNonBlocking(ctdDocRef, ctdData, { merge: true });
                 
                 collectionPath = `corporateTravelDesks/${ctdId}/users`;
-                docId = user.uid; // The admin user's doc id is their own uid
-                userProfileData = {
-                    ...commonData,
-                    ctdId: ctdId,
-                    role: 'Corporate Admin', // CTD Admins are given the Corporate Admin role in their desk
-                    firstName,
-                    lastName: lastName || 'User',
-                };
+                specificProfileData = { ...generalUserData };
 
                 // Seed a second 'Requester' user for the same corporate desk
                 const requesterDocRef = doc(collection(firestore, `corporateTravelDesks/${ctdId}/users`));
-                const requesterData = {
-                    id: requesterDocRef.id,
-                    externalAuthId: `requester_${requesterDocRef.id}`, // dummy auth id for a non-login user
-                    ctdId: ctdId,
-                    email: 'employee@example.com',
-                    role: 'Requester',
-                    status: 'Active',
-                    firstName: 'Rahul',
-                    lastName: 'Verma',
-                    createdAt: now,
-                    updatedAt: now,
-                };
+                const requesterData = { id: requesterDocRef.id, externalAuthId: `requester_${requesterDocRef.id}`, ctdId: ctdId, email: 'employee@example.com', role: 'Requester', status: 'Active', firstName: 'Rahul', lastName: 'Verma', createdAt: now, updatedAt: now };
                 setDocumentNonBlocking(requesterDocRef, requesterData, { merge: true });
                 break;
         }
 
-        // Create the user role mapping document
-        const userMappingDocRef = doc(firestore, 'users', user.uid);
-        setDocumentNonBlocking(userMappingDocRef, userMappingData, { merge: true });
+        // Create the denormalized user document in the top-level /users collection
+        const userDocRef = doc(firestore, 'users', user.uid);
+        setDocumentNonBlocking(userDocRef, generalUserData, { merge: true });
 
-        // Create the full user profile document
-        if (collectionPath && Object.keys(userProfileData).length > 0) {
-            const userDocRef = doc(firestore, collectionPath, docId);
-            setDocumentNonBlocking(userDocRef, userProfileData, { merge: true });
+        // Create the full user profile document in its specific, role-based collection
+        if (collectionPath) {
+            const specificDocRef = doc(firestore, collectionPath, docId);
+            setDocumentNonBlocking(specificDocRef, specificProfileData, { merge: true });
         }
         
         toast({

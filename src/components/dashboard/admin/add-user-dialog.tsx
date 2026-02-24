@@ -36,7 +36,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { UserRole } from '@/lib/types';
 import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut } from 'firebase/auth';
-import { doc, collection } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { PlusCircle } from 'lucide-react';
 
 const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
@@ -92,13 +92,15 @@ export function AddUserDialog() {
         
         let collectionPath = '';
         let docId = user.uid;
-        let userProfileData: any = {};
-        let userMappingData: any = { role: data.role };
+        let specificProfileData: any = {};
         
-        const commonData = {
+        const generalUserData: any = {
             id: user.uid,
             externalAuthId: user.uid,
             email: user.email,
+            role: data.role,
+            firstName,
+            lastName: lastName || 'User',
             status: 'Active',
             createdAt: now,
             updatedAt: now,
@@ -107,58 +109,54 @@ export function AddUserDialog() {
         switch (data.role) {
             case 'Admin':
                 collectionPath = 'platformAdmins';
-                userProfileData = { ...commonData, firstName, lastName: lastName || 'User' };
+                specificProfileData = { ...generalUserData };
                 break;
             case 'Customer':
                 collectionPath = 'customers';
-                userProfileData = { ...commonData, type: 'Individual', firstName, lastName: lastName || 'User' };
+                specificProfileData = { ...generalUserData, type: 'Individual' };
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                userProfileData = { ...commonData, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                const operatorCompanyName = `${data.name}'s Company`;
+                generalUserData.company = operatorCompanyName;
+                specificProfileData = { ...generalUserData, companyName: operatorCompanyName, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                userProfileData = { ...commonData, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                const distCompanyName = `${data.name}'s Agency`;
+                generalUserData.company = distCompanyName;
+                specificProfileData = { ...generalUserData, companyName: distCompanyName, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                userProfileData = { ...commonData, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                const hotelCompanyName = `${data.name}'s Hotel`;
+                generalUserData.company = hotelCompanyName;
+                specificProfileData = { ...generalUserData, companyName: hotelCompanyName, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'CTD Admin':
                 const ctdId = user.uid;
-                userMappingData.ctdId = ctdId; // Add ctdId to the mapping
+                const ctdCompanyName = `${data.name}'s Corp`;
+                generalUserData.ctdId = ctdId;
+                generalUserData.company = ctdCompanyName;
+                generalUserData.role = 'Corporate Admin';
 
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);
-                const ctdData = {
-                    id: ctdId,
-                    companyName: `${data.name}'s Corp`,
-                    adminExternalAuthId: user.uid,
-                    status: 'Active',
-                    createdAt: now,
-                    updatedAt: now,
-                };
+                const ctdData = { id: ctdId, companyName: ctdCompanyName, adminExternalAuthId: user.uid, status: 'Active', createdAt: now, updatedAt: now };
                 setDocumentNonBlocking(ctdDocRef, ctdData, { merge: true });
                 
                 collectionPath = `corporateTravelDesks/${ctdId}/users`;
-                docId = user.uid;
-                userProfileData = {
-                    ...commonData,
-                    ctdId: ctdId,
-                    role: 'Corporate Admin',
-                    firstName,
-                    lastName: lastName || 'User',
-                };
+                specificProfileData = { ...generalUserData };
                 break;
         }
 
-        // Create the user role mapping document
-        const userMappingDocRef = doc(firestore, 'users', user.uid);
-        setDocumentNonBlocking(userMappingDocRef, userMappingData, { merge: true });
+        // Create the denormalized user document in the top-level /users collection
+        const userDocRef = doc(firestore, 'users', user.uid);
+        setDocumentNonBlocking(userDocRef, generalUserData, { merge: true });
 
-        if (collectionPath && Object.keys(userProfileData).length > 0) {
-            const userDocRef = doc(firestore, collectionPath, docId);
-            setDocumentNonBlocking(userDocRef, userProfileData, { merge: true });
+        // Create the full user profile document in its specific, role-based collection
+        if (collectionPath && Object.keys(specificProfileData).length > 0) {
+            const specificDocRef = doc(firestore, collectionPath, docId);
+            setDocumentNonBlocking(specificDocRef, specificProfileData, { merge: true });
         }
         
         toast({

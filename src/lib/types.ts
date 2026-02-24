@@ -1,3 +1,4 @@
+
 export type UserRole =
   | 'Customer'
   | 'Operator'
@@ -20,6 +21,7 @@ export type User = {
   avatar?: string;
   createdAt: string;
   updatedAt: string;
+  ctdId?: string;
 };
 
 export type Operator = {
