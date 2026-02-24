@@ -137,13 +137,13 @@ const LandingHeader: FC = () => {
                 className="w-[280px] border-l-0 bg-transparent p-0 text-white"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
-                 <div className="flex h-full flex-col">
-                   <div className="flex h-20 shrink-0 items-center justify-start border-b border-white/10 bg-black/30 px-4 backdrop-blur-md">
-                    <Link href="/" className="-ml-2">
+                 <div className="flex flex-col">
+                   <div className="flex h-16 shrink-0 items-center border-b border-white/10 bg-black/30 px-3 backdrop-blur-md">
+                    <Link href="/" className="-ml-1">
                         <Logo />
                     </Link>
                   </div>
-                  <nav className="flex-grow bg-black/5 p-6 backdrop-blur-none">
+                  <nav className="bg-transparent p-6 backdrop-blur-none">
                     {navLinks.map((link) => (
                       <Link
                         key={link.label}
@@ -154,7 +154,7 @@ const LandingHeader: FC = () => {
                       </Link>
                     ))}
                   </nav>
-                  <div className="mt-auto flex flex-col gap-2 border-t border-white/10 bg-black/30 p-3 backdrop-blur-md">
+                  <div className="flex flex-col gap-2 border-t border-white/10 bg-black/30 p-2 backdrop-blur-md">
                     <a
                       href="tel:+919819754038"
                       className="flex items-center gap-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
@@ -226,7 +226,7 @@ const features = [
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M12.83,6.28a1.5,1.5,0,1,0-1.66-1.66A1.5,1.5,0,0,0,12.83,6.28ZM12,1.5A5.5,5.5,0,0,1,17.5,7,5.43,5.43,0,0,1,13,12.2V16H7.81a2,2,0,0,1-1.8-1.15L3.3,9.17a3,3,0,0,1,2-3.84L7,4.68A5.43,5.43,0,0,1,6.5,7,5.5,5.5,0,0,1,12,1.5Zm7.73,15.75L18.4,14.5a3,3,0,0,0-4.48,0L12,16.42,10.08,14.5a3,3,0,0,0-4.48,0l-1.33,2.75a1,1,0,0,0,1.36,1.36l1.34-2.75A1,1,0,0,1,8,15.54L12,19.2l4-3.66a1,1,0,0,1,1.13-.32l1.34,2.75a1,1,0,0,0,1.36-1.36Z"/>
+        <path d="M12,4.5c-4.43,0-8,0.7-8,1.5S7.57,7.5,12,7.5s8-0.7,8-1.5S16.43,4.5,12,4.5z M19.74,10.68 c-0.29-0.29-0.76-0.29-1.06,0l-1.53,1.53c-0.12,0.12-0.18,0.27-0.18,0.43v1.86l-4.17-2.39v-0.01c0-0.45-0.28-0.85-0.7-1.02 c-1.08-0.43-3.6-1.02-4.52-1.16C7.03,9.88,6.5,10.3,6.5,10.9v0.01c0,0.14,0.04,0.28,0.1,0.4l1.19,2.06l-4.38,2.1 C3.01,15.65,2.8,16,2.8,16.4v0.01c0,0.47,0.3,0.88,0.75,0.98l1.73,0.38c0.2,0.04,0.4,0.04,0.61,0.01 c0.54-0.09,1-0.4,1.23-0.89l0.01,0c0,0,0,0,0,0l1.2-2.8l5.22,2.99l-0.72,2.15c-0.18,0.52-0.01,1.1,0.4,1.49l0.98,0.98 c0.33,0.33,0.85,0.41,1.26,0.21l3.52-1.76c0.41-0.2,0.68-0.6,0.68-1.06V11.8c0-0.41-0.19-0.79-0.5-1.03L19.74,10.68z"/>
     </svg>
 );
 
@@ -268,7 +268,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="container p-4 pt-8 sm:p-6 md:p-8">
+              <div className="container p-4 pt-2 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
                     A Comprehensive Aviation Ecosystem
@@ -422,8 +422,8 @@ export default function Home() {
           </section>
         </main>
         
-        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-3">
-          <div className="container py-3">
+        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-2">
+          <div className="container py-2">
             <div className="grid w-full grid-cols-1 items-start gap-6 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
                 <Logo />

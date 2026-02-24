@@ -124,13 +124,13 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
                 className="w-[280px] border-l-0 bg-transparent p-0 text-white"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
-                 <div className="flex h-full flex-col">
-                  <div className="flex h-20 items-center justify-start border-b border-white/10 bg-black/30 px-4 backdrop-blur-md">
+                 <div className="flex flex-col">
+                  <div className="flex h-16 items-center justify-start border-b border-white/10 bg-black/30 px-3 backdrop-blur-md">
                     <Link href="/">
                       <Logo />
                     </Link>
                   </div>
-                  <nav className="flex-grow p-6">
+                  <nav className="bg-transparent p-6 backdrop-blur-none">
                     {navLinks.map((link) => (
                       <Link
                         key={link.label}
@@ -141,7 +141,7 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
                       </Link>
                     ))}
                   </nav>
-                  <div className="mt-auto flex flex-col gap-2 border-t border-white/10 bg-black/30 p-3 backdrop-blur-md">
+                  <div className="flex flex-col gap-2 border-t border-white/10 bg-black/30 p-2 backdrop-blur-md">
                     <a
                       href="tel:+919819754038"
                       className="flex items-center gap-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
@@ -174,8 +174,8 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
 
 const LandingFooter: FC = () => {
     return (
-        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-3">
-          <div className="container py-3">
+        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-2">
+          <div className="container py-2">
             <div className="grid w-full grid-cols-1 items-start gap-6 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
                 <Logo />
