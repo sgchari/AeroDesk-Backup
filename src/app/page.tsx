@@ -68,8 +68,7 @@ const LandingHeader: FC = () => {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full text-white transition-transform duration-300 bg-black/50 backdrop-blur-md',
-        isVisible ? 'translate-y-0' : '-translate-y-full'
+        'sticky top-0 z-50 w-full text-white transition-transform duration-300 bg-black/50 backdrop-blur-md'
       )}
     >
       <div className="container flex h-20 items-center justify-between">
@@ -126,7 +125,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-none bg-black/50 p-0 text-white backdrop-blur-md"
+                className="w-[240px] border-none bg-transparent p-0 text-white"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
