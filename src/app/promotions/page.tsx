@@ -173,8 +173,8 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
 const LandingFooter: FC = () => {
     return (
         <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md">
-          <div className="container py-8">
-            <div className="grid w-full grid-cols-2 items-start gap-8 md:grid-cols-4 md:text-left">
+          <div className="container py-6">
+            <div className="grid w-full grid-cols-1 items-start gap-8 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
                 <Logo />
               </div>
@@ -306,7 +306,7 @@ const LandingFooter: FC = () => {
                 </div>
             </div>
             </div>
-            <div className="mt-8 border-t border-white/10 pt-8 text-center text-xs text-white/60">
+            <div className="mt-6 border-t border-white/10 pt-6 text-center text-xs text-white/60">
               <p>
                 <span className="font-bold text-white/80">Disclaimer:</span>{' '}
                 This platform facilitates non-scheduled charter operations (NSOP)
