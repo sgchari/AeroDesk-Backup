@@ -109,7 +109,7 @@ service cloud.firestore {
      * @principle Enforces self-service profile management based on document ownership, with admin override.
      */
     match /customers/{customerId} {
-      allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+      allow get: if isOwner(customerId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
       allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
@@ -124,7 +124,7 @@ service cloud.firestore {
      * @principle Restricts access to an operator's own data tree, with admin override.
      */
     match /operators/{operatorId} {
-      allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+      allow get: if isOwner(operatorId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
       allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
@@ -181,7 +181,7 @@ service cloud.firestore {
      * @principle Restricts access to a distributor's own data, with admin override.
      */
     match /distributors/{distributorId} {
-      allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+      allow get: if isOwner(distributorId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
       allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
@@ -196,7 +196,7 @@ service cloud.firestore {
      * @principle Restricts access to a hotel partner's own data tree, with admin override.
      */
     match /hotelPartners/{hotelPartnerId} {
-      allow get: if isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+      allow get: if isOwner(hotelPartnerId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(request.resource.data.externalAuthId);
       allow update: if (isOwner(resource.data.externalAuthId) || isPlatformAdmin()) && isExistingDoc();
@@ -267,9 +267,9 @@ service cloud.firestore {
        * @principle Granular access control within a corporate entity.
        */
       match /users/{ctdUserId} {
-        allow get: if isCTDAdmin(ctdId) || isOwner(resource.data.externalAuthId) || isPlatformAdmin();
+        allow get: if isCTDAdmin(ctdId) || isOwner(ctdUserId) || isPlatformAdmin();
         allow list: if isCTDAdmin(ctdId) || isPlatformAdmin();
-        allow create: if (isOwner(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
+        allow create: if isCTDAdmin(ctdId) && request.resource.data.ctdId == ctdId;
         allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
         allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
       }
