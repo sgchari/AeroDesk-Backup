@@ -138,8 +138,8 @@ const LandingHeader: FC = () => {
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                  <div className="flex h-full flex-col">
-                   <div className="flex h-16 items-center border-b border-white/10 bg-black/30 p-4 backdrop-blur-md">
-                    <Link href="/" className="pl-2">
+                   <div className="flex h-20 items-center justify-start border-b border-white/10 bg-black/30 px-4 backdrop-blur-md">
+                    <Link href="/">
                         <Logo />
                     </Link>
                   </div>
@@ -226,7 +226,7 @@ const features = [
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-        <path d="M12.83,6.28a1.5,1.5,0,1,0-1.66-1.66A1.5,1.5,0,0,0,12.83,6.28ZM12,1.5A5.5,5.5,0,0,1,17.5,7,5.43,5.43,0,0,1,13,12.2V16H7.81a2,2,0,0,1-1.8-1.15L3.3,9.17a3,3,0,0,1,2-3.84L7,4.68A5.43,5.43,0,0,1,6.5,7,5.5,5.5,0,0,1,12,1.5Zm7.73,15.75L18.4,14.5a3,3,0,0,0-4.48,0L12,16.42,10.08,14.5a3,3,0,0,0-4.48,0l-1.33,2.75a1,1,0,0,0,1.36,1.36l1.34-2.75A1,1,0,0,1,8,15.54L12,19.2l4-3.66a1,1,0,0,1,1.13-.32l1.34,2.75a1,1,0,0,0,1.36-1.36Z"/>
+      <path d="M12.83,6.28a1.5,1.5,0,1,0-1.66-1.66A1.5,1.5,0,0,0,12.83,6.28ZM12,1.5A5.5,5.5,0,0,1,17.5,7,5.43,5.43,0,0,1,13,12.2V16H7.81a2,2,0,0,1-1.8-1.15L3.3,9.17a3,3,0,0,1,2-3.84L7,4.68A5.43,5.43,0,0,1,6.5,7,5.5,5.5,0,0,1,12,1.5Zm7.73,15.75L18.4,14.5a3,3,0,0,0-4.48,0L12,16.42,10.08,14.5a3,3,0,0,0-4.48,0l-1.33,2.75a1,1,0,0,0,1.36,1.36l1.34-2.75A1,1,0,0,1,8,15.54L12,19.2l4-3.66a1,1,0,0,1,1.13-.32l1.34,2.75a1,1,0,0,0,1.36-1.36Z"/>
     </svg>
 );
 
