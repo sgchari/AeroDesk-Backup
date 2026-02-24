@@ -145,7 +145,7 @@ export function BookingWidget() {
 
 
   return (
-    <div className="p-4 rounded-lg shadow-2xl border border-white/10 max-w-4xl mx-auto bg-transparent">
+    <div className="p-4 rounded-lg shadow-2xl border border-white/10 max-w-4xl mx-auto bg-black/20 backdrop-blur-md">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent p-0 mb-6">
                  <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
