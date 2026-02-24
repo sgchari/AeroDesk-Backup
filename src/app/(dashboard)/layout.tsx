@@ -10,9 +10,6 @@ export default function DashboardLayout({
 }) {
   return (
     <>
-      <div
-        className="fixed inset-0 -z-10 bg-[#c8c8c8]"
-      />
       <SidebarProvider>
         <Sidebar collapsible="icon">
           <MainSidebar />

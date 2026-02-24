@@ -4,39 +4,46 @@
 
 @layer base {
   :root {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
+    --background: 220 13% 97%; /* F5F6F8 */
+    --foreground: 224 71.4% 4.1%;
 
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
- 
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
- 
-    --primary: 180 82% 45%;
+    --card: 0 0% 100%; /* FFFFFF */
+    --card-foreground: 224 71.4% 4.1%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+
+    --primary: 209 56% 23%; /* 1C3D5A */
     --primary-foreground: 210 20% 98%;
- 
-    --secondary: 220 14.3% 11.2%;
-    --secondary-foreground: 210 20% 98%;
- 
-    --muted: 220 14.3% 11.2%;
-    --muted-foreground: 220 9% 64.5%;
- 
-    --accent: 54 82% 65%;
-    --accent-foreground: 24 9.8% 10%;
- 
-    --destructive: 0 62.8% 30.6%;
+
+    --secondary: 220 14% 90%; /* E5E7EB */
+    --secondary-foreground: 209 56% 23%; /* Deep Aviation Blue */
+
+    --muted: 220 13% 94%; /* A bit lighter than border */
+    --muted-foreground: 220 9% 45%;
+
+    --accent: 220 13% 94%; /* for hover states, similar to muted */
+    --accent-foreground: 224 71.4% 4.1%;
+
+    /* Status Colors */
+    --destructive: 0 79% 63%; /* Soft Red: #F47174 */
     --destructive-foreground: 210 20% 98%;
 
-    --border: 220 13% 18%;
-    --input: 220 13% 18%;
-    --ring: 54 82% 65%;
+    --success: 142 63% 42%; /* Muted Green: #36A269 */
+    --success-foreground: 210 20% 98%;
+
+    --warning: 38 92% 50%; /* Soft Amber: #F59E0B */
+    --warning-foreground: 24 9.8% 10%;
+
+    --border: 220 14% 90%; /* E5E7EB */
+    --input: 220 14% 90%;
+    --ring: 209 56% 23%; /* 1C3D5A */
     
-    --chart-1: 195 75% 45%;
-    --chart-2: 54 90% 50%;
-    --chart-3: 0 72% 51%;
-    --chart-4: 217 91% 60%;
-    --chart-5: 280 88% 60%;
+    --chart-1: 209 56% 23%; /* Deep Blue */
+    --chart-2: 195 75% 45%; /* Teal */
+    --chart-3: 38 92% 50%; /* Amber */
+    --chart-4: 142 63% 42%; /* Muted Green */
+    --chart-5: 0 79% 63%; /* Soft Red */
 
     --radius: 0.5rem;
   }
@@ -47,6 +54,6 @@
     @apply border-border;
   }
   body {
-    @apply text-foreground text-sm;
+    @apply bg-background text-foreground text-sm;
   }
 }

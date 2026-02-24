@@ -90,7 +90,7 @@ export function HotelDashboard() {
                         </TableCell>
                         <TableCell>{req.checkIn}</TableCell>
                         <TableCell>
-                            <Badge variant={req.status === 'Pending' ? 'destructive' : req.status === 'Confirmed' ? 'default' : 'secondary'}>{req.status}</Badge>
+                            <Badge variant={req.status === 'Pending' ? 'warning' : req.status === 'Confirmed' ? 'success' : 'secondary'}>{req.status}</Badge>
                         </TableCell>
                         <TableCell>
                             <DropdownMenu>

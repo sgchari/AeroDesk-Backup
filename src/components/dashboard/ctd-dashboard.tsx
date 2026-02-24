@@ -20,18 +20,9 @@ import { collection, query, where } from "firebase/firestore";
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
         case 'Draft': return 'secondary';
-        case 'Pending Approval': return 'outline';
-        case 'Bidding Open': return 'default';
+        case 'Pending Approval': return 'warning';
+        case 'Bidding Open': return 'success';
         default: return 'secondary';
-    }
-}
-
-const getStatusColor = (status: RfqStatus) => {
-    switch (status) {
-        case 'Bidding Open': return 'bg-green-500';
-        case 'Confirmed': return 'bg-blue-500';
-        case 'Pending Approval': return 'bg-yellow-500';
-        default: return 'bg-gray-500';
     }
 }
 
@@ -99,7 +90,6 @@ export function CTDDashboard() {
                         <TableCell>{rfq.departureDate}</TableCell>
                         <TableCell>
                             <Badge variant={getStatusVariant(rfq.status)}>
-                                <span className={cn("mr-2 h-2 w-2 rounded-full", getStatusColor(rfq.status))}></span>
                                 {rfq.status}
                             </Badge>
                         </TableCell>
