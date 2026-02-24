@@ -1,8 +1,7 @@
-
 'use client';
 
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { useUser as useFirebaseAuthUser, useFirestore } from '@/firebase';
+import { useUser as useFirebaseAuthUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
 import type { User as AppUser, UserRole } from '@/lib/types';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -38,9 +37,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const uid = authUser.uid;
 
       try {
-        // 1. Fetch the user role mapping from the central 'users' collection
+        // 1. Fetch user role mapping
         const userMappingRef = doc(firestore, 'users', uid);
-        const userMappingSnap = await getDoc(userMappingRef);
+        let userMappingSnap;
+        try {
+            userMappingSnap = await getDoc(userMappingRef);
+        } catch (error: any) {
+            if (error.code === 'permission-denied') {
+                errorEmitter.emit('permission-error', new FirestorePermissionError({
+                    operation: 'get',
+                    path: userMappingRef.path,
+                }));
+            }
+            throw error; // Re-throw to be caught by the outer catch
+        }
 
         if (!userMappingSnap.exists()) {
           throw new Error("User role mapping not found. Please complete registration or contact support.");
@@ -78,7 +88,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
         
         // 3. Fetch the full profile document from its specific location
         const profileDocRef = doc(firestore, profilePath);
-        const profileDocSnap = await getDoc(profileDocRef);
+        let profileDocSnap;
+        try {
+            profileDocSnap = await getDoc(profileDocRef);
+        } catch (error: any) {
+            if (error.code === 'permission-denied') {
+                errorEmitter.emit('permission-error', new FirestorePermissionError({
+                    operation: 'get',
+                    path: profileDocRef.path,
+                }));
+            }
+            throw error;
+        }
 
         if (!profileDocSnap.exists()) {
           throw new Error(`User profile document not found at path: ${profilePath}`);
@@ -98,8 +119,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         setAppUser(profileData);
 
       } catch (e: any) {
-        console.error("An error occurred while fetching user profile:", e);
-        setProfileError(e); // Set the specific error
+        // The permission error is already emitted. Just set the local state.
+        setProfileError(e);
         setAppUser(null);
       } finally {
         setProfileLoading(false);
