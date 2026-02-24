@@ -173,7 +173,7 @@ const LandingFooter: FC = () => {
     return (
         <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md">
           <div className="container py-8">
-            <div className="grid w-full grid-cols-2 items-start justify-between gap-8 md:grid-cols-4 md:text-left">
+            <div className="grid w-full grid-cols-2 items-start gap-8 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
                 <Logo />
               </div>
@@ -216,7 +216,7 @@ const LandingFooter: FC = () => {
                 </Link>
               </div>
 
-              <div className="flex flex-col items-start gap-3 md:items-end">
+              <div className="flex flex-col items-start gap-3">
                 <h3 className="font-semibold uppercase tracking-wider text-white">
                   Follow Us
                 </h3>

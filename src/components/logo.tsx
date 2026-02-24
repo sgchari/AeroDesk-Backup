@@ -5,9 +5,9 @@ const AeroLogoIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" {...props}>
         {/* Propeller Blades */}
         <g transform="translate(25 25)">
-            <path d="M 0 -5 C -10 -13, -8 -22, 0 -24 C 8 -22, 10 -13, 0 -5 Z" transform="rotate(0)" fill="hsl(var(--accent))" />
-            <path d="M 0 -5 C -10 -13, -8 -22, 0 -24 C 8 -22, 10 -13, 0 -5 Z" transform="rotate(120)" fill="hsl(var(--accent))" />
-            <path d="M 0 -5 C -10 -13, -8 -22, 0 -24 C 8 -22, 10 -13, 0 -5 Z" transform="rotate(240)" fill="hsl(var(--accent))" />
+            <path d="M 0 -4 C -12 -15, -10 -25, 0 -25 C 10 -25, 12 -15, 0 -4 Z" transform="rotate(0)" fill="hsl(var(--accent))" />
+            <path d="M 0 -4 C -12 -15, -10 -25, 0 -25 C 10 -25, 12 -15, 0 -4 Z" transform="rotate(120)" fill="hsl(var(--accent))" />
+            <path d="M 0 -4 C -12 -15, -10 -25, 0 -25 C 10 -25, 12 -15, 0 -4 Z" transform="rotate(240)" fill="hsl(var(--accent))" />
         </g>
         
         {/* Hub */}
