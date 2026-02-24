@@ -8,7 +8,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export function Header() {
   return (
-    <header className="flex h-20 items-center gap-4 border-b bg-card px-4 md:px-6 sticky top-0 z-30">
+    <header className="flex h-20 items-center gap-4 border-b border-white/10 bg-black/20 backdrop-blur-md px-4 md:px-6 sticky top-0 z-30">
         <SidebarTrigger />
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
             <form className="ml-auto flex-1 sm:flex-initial">
@@ -17,7 +17,7 @@ export function Header() {
                 <Input
                     type="search"
                     placeholder="Search RFQs, Users, Logs..."
-                    className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-background"
+                    className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-background/50"
                 />
                 </div>
             </form>

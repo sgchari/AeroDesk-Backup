@@ -10,6 +10,13 @@ export default function DashboardLayout({
 }) {
   return (
     <>
+      <div
+        className="fixed inset-0 z-[-1] bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
+        }}
+      />
+      <div className="fixed inset-0 z-[-1] bg-black/50" />
       <SidebarProvider>
         <Sidebar collapsible="icon">
           <MainSidebar />

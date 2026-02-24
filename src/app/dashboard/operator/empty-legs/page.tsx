@@ -15,8 +15,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const getStatusVariant = (status: EmptyLeg['status']) => {
     switch (status) {
-        case 'Pending Approval': return 'warning';
-        case 'Approved': return 'success';
+        case 'Pending Approval': return 'destructive';
+        case 'Approved': return 'default';
         case 'Expired': return 'secondary';
         default: return 'outline';
     }

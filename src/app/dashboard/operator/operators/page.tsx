@@ -17,10 +17,10 @@ import React from "react";
 
 const getStatusVariant = (status: Operator['status']) => {
     switch (status) {
-        case 'Pending Approval': return 'warning';
-        case 'Approved': return 'success';
+        case 'Pending Approval': return 'destructive';
+        case 'Approved': return 'default';
         case 'Suspended': return 'secondary';
-        case 'Rejected': return 'destructive';
+        case 'Rejected': return 'outline';
         default: return 'outline';
     }
 }

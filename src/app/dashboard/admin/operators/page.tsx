@@ -20,7 +20,6 @@ const getStatusVariant = (status: Operator['status']) => {
         case 'Pending Approval': return 'destructive';
         case 'Approved': return 'default';
         case 'Suspended': return 'secondary';
-        case 'Rejected': return 'outline';
         default: return 'outline';
     }
 }

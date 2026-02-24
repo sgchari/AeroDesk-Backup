@@ -21,10 +21,10 @@ import { collection, query, where } from "firebase/firestore";
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
         case 'Draft': return 'secondary';
-        case 'Pending Approval': return 'warning';
-        case 'Bidding Open': return 'success';
+        case 'Pending Approval': return 'destructive';
+        case 'Bidding Open': return 'default';
         case 'Operator Selected': return 'default';
-        case 'Confirmed': return 'success';
+        case 'Confirmed': return 'default';
         default: return 'secondary';
     }
 }

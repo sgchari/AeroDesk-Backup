@@ -218,7 +218,7 @@ export default function UserManagementPage() {
                                         <TableCell className="font-medium">{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell><Badge variant="outline">{user.role}</Badge></TableCell>
-                                        <TableCell><Badge variant={user.status === 'Active' || user.status === 'Approved' ? 'success' : user.status === 'Suspended' ? 'warning' : 'secondary'}>{user.status}</Badge></TableCell>
+                                        <TableCell><Badge variant={user.status === 'Active' || user.status === 'Approved' ? 'default' : user.status === 'Suspended' ? 'destructive' : 'secondary'}>{user.status}</Badge></TableCell>
                                         <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                                         <TableCell>
                                             <DropdownMenu>
