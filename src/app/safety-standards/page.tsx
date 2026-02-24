@@ -10,8 +10,17 @@ export default function SafetyStandardsPage() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-        <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/90 backdrop-blur-sm">
+    <div className="w-full">
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30" />
+      </div>
+      <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
+        <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/30 backdrop-blur-md">
             <div className="container flex h-20 items-center justify-between">
                 <div className="flex items-center gap-6">
                     <Link href="/">
@@ -22,17 +31,17 @@ export default function SafetyStandardsPage() {
       </header>
       <main className="flex-1 py-12 md:py-16">
         <div className="container">
-          <Card>
+          <Card className="border-white/10 bg-black/15 backdrop-blur-md text-white">
             <CardHeader>
               <CardTitle className="text-3xl font-headline">
                 AERODESK – SAFETY STANDARDS & OPERATIONAL PRINCIPLES
               </CardTitle>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-white/70">
                 Last Updated: {lastUpdated}
               </p>
             </CardHeader>
-            <CardContent className="prose prose-sm prose-invert max-w-none text-foreground/80">
-              <h2 className="text-xl font-semibold text-foreground">
+            <CardContent className="prose prose-sm prose-invert max-w-none text-white/80">
+              <h2 className="text-xl font-semibold text-white">
                 1. PURPOSE OF THIS DOCUMENT
               </h2>
               <p>
@@ -45,7 +54,7 @@ export default function SafetyStandardsPage() {
                 AeroDesk does not conduct flight operations and does not assume operational control over any aircraft.
               </p>
               
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 2. PLATFORM ROLE IN SAFETY
               </h2>
               <p>
@@ -63,7 +72,7 @@ export default function SafetyStandardsPage() {
                 AeroDesk does not influence flight execution, aircraft dispatch, crew actions, or airworthiness decisions.
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 3. FUNDAMENTAL SAFETY PRINCIPLE
               </h2>
               <p>
@@ -82,7 +91,7 @@ export default function SafetyStandardsPage() {
                 AeroDesk does not certify, validate, or supervise flight safety.
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 4. OPERATOR SAFETY REQUIREMENTS
               </h2>
               <p>All operators using AeroDesk must:</p>
@@ -95,7 +104,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>Operators must ensure that all data presented on AeroDesk is accurate and current.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 5. INFORMATIONAL NATURE OF PLATFORM DATA
               </h2>
               <p>Information displayed on AeroDesk is provided by third-party users.</p>
@@ -108,7 +117,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>Users must independently confirm operational details where required.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 6. CHARTER REQUEST & QUOTATION SAFETY CONTEXT
               </h2>
               <p>Charter Requests (RFQs) and quotations represent commercial and coordination data only.</p>
@@ -121,7 +130,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>Final flight decisions remain under operator authority.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 7. EMPTY-LEG SAFETY PRINCIPLES
               </h2>
               <p>Empty-leg listings on AeroDesk:</p>
@@ -133,7 +142,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>Operators remain responsible for passenger acceptance, weight limits, fuel planning, and safety compliance.</p>
               
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 8. CREW & OPERATIONAL SAFETY
               </h2>
               <p>Crew safety, flight duty time limitations, and operational readiness are:</p>
@@ -143,7 +152,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>The platform does not monitor or enforce crew legality.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 9. HOTEL & ANCILLARY SERVICES SAFETY POSITION
               </h2>
               <p>Accommodation facilitation within AeroDesk:</p>
@@ -154,7 +163,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>Hotels operate as independent service providers.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 10. NO OPERATIONAL CONTROL OR DISPATCH ROLE
               </h2>
               <p>AeroDesk does not function as:</p>
@@ -167,7 +176,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>The platform provides workflow coordination only.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 11. USER SAFETY RESPONSIBILITIES
               </h2>
               <p>All users must:</p>
@@ -179,7 +188,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>Misrepresentation of safety-critical information may result in suspension.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 12. INCIDENTS & IRREGULAR OPERATIONS
               </h2>
               <p>In the event of:</p>
@@ -192,7 +201,7 @@ export default function SafetyStandardsPage() {
               <p>Users must communicate directly with the aircraft operator.</p>
               <p>AeroDesk is not responsible for operational disruptions.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 13. LIMITATION OF SAFETY LIABILITY
               </h2>
               <p>To the maximum extent permitted by law:</p>
@@ -206,7 +215,7 @@ export default function SafetyStandardsPage() {
               </ul>
               <p>Safety oversight is outside platform scope.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 14. SAFETY-ORIENTED DESIGN COMMITMENTS
               </h2>
               <p>AeroDesk commits to maintaining a platform environment that:</p>
@@ -218,7 +227,7 @@ export default function SafetyStandardsPage() {
                 <li>Encourages transparent coordination</li>
               </ul>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 15. REGULATORY ALIGNMENT PRINCIPLE
               </h2>
               <p>AeroDesk is designed to coexist with regulated aviation frameworks.</p>
@@ -230,7 +239,7 @@ export default function SafetyStandardsPage() {
                 <li>Safety management systems</li>
               </ul>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 16. REPORTING SAFETY CONCERNS
               </h2>
               <p>Safety concerns relating to platform misuse may be reported to:</p>
@@ -241,6 +250,7 @@ export default function SafetyStandardsPage() {
           </Card>
         </div>
       </main>
+      </div>
     </div>
   );
 }

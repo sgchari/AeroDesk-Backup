@@ -10,8 +10,17 @@ export default function TermsOfServicePage() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-        <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/90 backdrop-blur-sm">
+    <div className="w-full">
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30" />
+      </div>
+      <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
+        <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/30 backdrop-blur-md">
             <div className="container flex h-20 items-center justify-between">
                 <div className="flex items-center gap-6">
                     <Link href="/">
@@ -22,16 +31,16 @@ export default function TermsOfServicePage() {
       </header>
       <main className="flex-1 py-12 md:py-16">
         <div className="container">
-          <Card>
+          <Card className="border-white/10 bg-black/15 backdrop-blur-md text-white">
             <CardHeader>
               <CardTitle className="text-3xl font-headline">
                 AERODESK – TERMS OF SERVICE
               </CardTitle>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-white/70">
                 Last Updated: {lastUpdated}
               </p>
             </CardHeader>
-            <CardContent className="prose prose-sm prose-invert max-w-none text-foreground/80">
+            <CardContent className="prose prose-sm prose-invert max-w-none text-white/80">
               <p>
                 Welcome to AeroDesk. These Terms of Service (“Terms”) govern your
                 access to and use of the AeroDesk platform, including all
@@ -43,7 +52,7 @@ export default function TermsOfServicePage() {
                 Terms.
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 1. PLATFORM NATURE & ROLE
               </h2>
               <p>
@@ -65,7 +74,7 @@ export default function TermsOfServicePage() {
                 independent hotel partners.
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 2. ELIGIBILITY & ACCOUNT REGISTRATION
               </h2>
               <p>Users must:</p>
@@ -83,10 +92,10 @@ export default function TermsOfServicePage() {
                 accounts.
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 3. USER ROLES & RESPONSIBILITIES
               </h2>
-              <h3 className="font-semibold text-foreground/90">
+              <h3 className="font-semibold text-white/90">
                 Customers / Corporate Users
               </h3>
               <ul>
@@ -94,7 +103,7 @@ export default function TermsOfServicePage() {
                 <li>Review operator quotations</li>
                 <li>Initiate ancillary service requests</li>
               </ul>
-              <h3 className="font-semibold text-foreground/90">Operators</h3>
+              <h3 className="font-semibold text-white/90">Operators</h3>
               <ul>
                 <li>
                   Must hold valid regulatory approvals (NSOP or equivalent)
@@ -105,7 +114,7 @@ export default function TermsOfServicePage() {
                 </li>
                 <li>Solely responsible for flight execution</li>
               </ul>
-              <h3 className="font-semibold text-foreground/90">
+              <h3 className="font-semibold text-white/90">
                 Authorized Distributors
               </h3>
               <ul>
@@ -114,20 +123,20 @@ export default function TermsOfServicePage() {
                   Responsible for passenger data accuracy and compliance
                 </li>
               </ul>
-              <h3 className="font-semibold text-foreground/90">
+              <h3 className="font-semibold text-white/90">
                 Corporate Travel Desks (CTD)
               </h3>
               <ul>
                 <li>Govern internal approval workflows</li>
                 <li>Ensure organizational policy compliance</li>
               </ul>
-              <h3 className="font-semibold text-foreground/90">Hotel Partners</h3>
+              <h3 className="font-semibold text-white/90">Hotel Partners</h3>
               <ul>
                 <li>Provide accommodation confirmations</li>
                 <li>Responsible for fulfillment of lodging services</li>
               </ul>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 4. SERVICE FACILITATION ONLY
               </h2>
               <p>AeroDesk facilitates coordination workflows only.</p>
@@ -142,7 +151,7 @@ export default function TermsOfServicePage() {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 5. PAYMENTS & COMMERCIAL TERMS
               </h2>
               <ul>
@@ -154,7 +163,7 @@ export default function TermsOfServicePage() {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 6. COMPLIANCE & REGULATORY RESPONSIBILITIES
               </h2>
               <p>Users agree to comply with:</p>
@@ -167,7 +176,7 @@ export default function TermsOfServicePage() {
                 Operators remain solely responsible for regulatory compliance.
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 7. DATA ACCURACY & LIABILITY
               </h2>
               <p>Users must provide accurate information.</p>
@@ -180,7 +189,7 @@ export default function TermsOfServicePage() {
               </ul>
               <p>The Platform is provided “as-is”.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 8. PLATFORM AVAILABILITY
               </h2>
               <p>AeroDesk may:</p>
@@ -191,7 +200,7 @@ export default function TermsOfServicePage() {
               </ul>
               <p>No uptime guarantees are provided for pilot environments.</p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 9. INTELLECTUAL PROPERTY
               </h2>
               <p>
@@ -203,7 +212,7 @@ export default function TermsOfServicePage() {
                 Platform.
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 10. ACCOUNT SUSPENSION / TERMINATION
               </h2>
               <p>
@@ -216,7 +225,7 @@ export default function TermsOfServicePage() {
                 <li>Security concerns</li>
               </ul>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 11. LIMITATION OF LIABILITY
               </h2>
               <p>To the maximum extent permitted by law:</p>
@@ -230,14 +239,14 @@ export default function TermsOfServicePage() {
                 </ul>
               </ul>
 
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="text-xl font-semibold text-white">
                 12. GOVERNING LAW
               </h2>
               <p>
                 These Terms shall be governed by the laws of India.
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">13. CONTACT</h2>
+              <h2 className="text-xl font-semibold text-white">13. CONTACT</h2>
               <p>For legal inquiries:</p>
               <p>
                 AeroDesk Legal Desk
@@ -248,6 +257,7 @@ export default function TermsOfServicePage() {
           </Card>
         </div>
       </main>
+      </div>
     </div>
   );
 }
