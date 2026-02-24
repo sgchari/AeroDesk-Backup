@@ -76,7 +76,7 @@ const LandingHeader: FC = () => {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full text-white transition-transform duration-300 bg-black/50 backdrop-blur-md',
+        'sticky top-0 z-50 w-full text-white transition-transform duration-300 bg-black/30 backdrop-blur-md',
         !isVisible && '-translate-y-full'
       )}
     >
@@ -243,7 +243,7 @@ export default function Home() {
           <section className="relative w-full text-white">
             <div className="relative">
               <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
-                <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/30 px-6 py-3 text-lg font-medium backdrop-blur-sm">
+                <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/10 px-6 py-3 text-lg font-medium backdrop-blur-md">
                   <ShieldCheck className="h-6 w-6 text-accent" />
                   Fly Smarter. Stay Premium.
                 </div>
@@ -274,7 +274,7 @@ export default function Home() {
                   {features.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/20 backdrop-blur-md p-6 text-center"
+                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/10 backdrop-blur-md p-6 text-center"
                     >
                       <feature.icon className="h-10 w-10 text-yellow-300" />
                       <h3 className="mt-4 text-lg font-bold text-white">
@@ -303,7 +303,7 @@ export default function Home() {
               </div>
 
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="flex flex-col border-white/10 bg-black/20 backdrop-blur-md">
+                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -330,7 +330,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-black/20 backdrop-blur-md">
+                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -360,7 +360,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-black/20 backdrop-blur-md md:col-span-2 lg:col-span-1">
+                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-md md:col-span-2 lg:col-span-1">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -419,7 +419,7 @@ export default function Home() {
           </section>
         </main>
         
-        <footer className="border-t border-white/10 text-white/80 bg-black/50 backdrop-blur-md">
+        <footer className="border-t border-white/10 text-white/80 bg-black/30 backdrop-blur-md">
           <div className="container py-12">
             <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-center gap-4 sm:items-start">
@@ -576,3 +576,4 @@ export default function Home() {
 
 
     
+
