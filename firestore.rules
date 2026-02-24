@@ -69,9 +69,10 @@ service cloud.firestore {
     
     /**
      * Checks if the user is an administrator of a specific Corporate Travel Desk.
+     * This works because the ctdId is the UID of the admin user.
      */
     function isCTDAdmin(ctdId) {
-        return isSignedIn() && get(/databases/$(database)/documents/corporateTravelDesks/$(ctdId)).data.adminExternalAuthId == request.auth.uid;
+        return isOwner(ctdId);
     }
     
     /**
@@ -253,9 +254,10 @@ service cloud.firestore {
      * @principle Access is restricted to the designated CTD Admin or a Platform Admin.
      */
     match /corporateTravelDesks/{ctdId} {
+      // The CTD Admin is the owner of the CTD document itself.
       allow get: if isCTDAdmin(ctdId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
-      allow create: if isOwner(request.resource.data.adminExternalAuthId);
+      allow create: if isCTDAdmin(ctdId);
       allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
       allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
 
@@ -404,9 +406,10 @@ service cloud.firestore {
      * @principle Secures requests between the requester and the assigned hotel partner.
      */
     match /accommodationRequests/{accommodationRequestId} {
-      allow read: if isPlatformAdmin() || isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId));
+      allow get: if isPlatformAdmin() || isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId));
+      allow list: if isPlatformAdmin() || isOwner(request.query.requesterExternalAuthId) || isOwner(request.query.hotelPartnerId);
       allow create: if isOwner(request.resource.data.requesterExternalAuthId);
-      allow update: if (isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId)) || isPlatformAdmin()) && isExistingDoc();
+      allow update: if (isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId)) || isPlatformAdmin()) && isExistingDoc();
       allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
     }
     
@@ -418,18 +421,24 @@ service cloud.firestore {
      * @principle Secures requests between the operator and the assigned hotel partner by checking denormalized UIDs, avoiding costly and insecure `get` calls.
      */
     match /crewAccommodationRequests/{crewAccommodationRequestId} {
-      allow read: if isPlatformAdmin()
-                    || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)
-                    || (resource.data.hotelPartnerId != null && isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId));
+      // `read` is split into `get` and `list` to avoid using `resource.data` in a `list` rule.
+      allow get: if isPlatformAdmin()
+                    || (resource.data.operatorId != null && isOwner(resource.data.operatorId))
+                    || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId));
 
-      allow create: if request.auth.uid == request.resource.data.operatorId;
+      // List is restricted. Queries must be constrained by operatorId or hotelPartnerId.
+      allow list: if isPlatformAdmin()
+                     || (request.query.keys().hasOnly(['operatorId']) && request.query.operatorId == request.auth.uid)
+                     || (request.query.keys().hasOnly(['hotelPartnerId']) && request.query.hotelPartnerId == request.auth.uid);
+
+      allow create: if isOwner(request.resource.data.operatorId);
 
       allow update: if (isPlatformAdmin()
-                    || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)
-                    || (resource.data.hotelPartnerId != null && isOwner(get(/databases/$(database)/documents/hotelPartners/$(resource.data.hotelPartnerId)).data.externalAuthId)))
+                    || (resource.data.operatorId != null && isOwner(resource.data.operatorId))
+                    || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId)))
                     && isExistingDoc();
 
-      allow delete: if (isPlatformAdmin() || (resource.data.operatorId != null && request.auth.uid == resource.data.operatorId)) && isExistingDoc();
+      allow delete: if (isPlatformAdmin() || (resource.data.operatorId != null && isOwner(resource.data.operatorId))) && isExistingDoc();
     }
 
     //-------------------------------------------------------------------------
@@ -509,3 +518,5 @@ service cloud.firestore {
 
   }
 }
+
+    
