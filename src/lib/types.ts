@@ -103,15 +103,13 @@ export type EmptyLeg = {
 
 export type AccommodationRequest = {
     id: string;
-    charterRequestId?: string;
-    emptyLegId?: string;
+    tripReferenceId: string;
+    tripType: 'Charter' | 'EmptyLeg';
     hotelPartnerId?: string;
-    tripId?: string;
     guestType?: 'Passenger' | 'Crew';
     checkIn: string;
     checkOut: string;
     rooms: number;
-    isCrewAccommodation?: boolean;
     status: 'Pending' | 'Confirmed' | 'Declined';
 }
 
