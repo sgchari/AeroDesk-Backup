@@ -1,4 +1,3 @@
-
 'use client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 import { Logo } from '@/components/logo';
 import {
   Menu,
@@ -326,7 +325,7 @@ const LandingFooter: FC = () => {
 
 export default function PromotionsPage() {
   const firestore = useFirestore();
-  const { toast } = useToast();
+  const router = useRouter();
   const emptyLegsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
@@ -334,15 +333,7 @@ export default function PromotionsPage() {
   const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
 
   const handleRequestSeats = (legId: string) => {
-    toast({
-        title: "Login Required",
-        description: "Please log in or register to request seat allocation.",
-        action: (
-            <Link href="/login">
-                <Button>Login</Button>
-            </Link>
-        )
-    });
+    router.push('/login');
   };
 
   return (
