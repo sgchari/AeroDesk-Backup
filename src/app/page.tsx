@@ -88,7 +88,7 @@ const LandingHeader: FC = () => {
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-6 text-sm md:flex">
+        <nav className="hidden items-center gap-6 text-sm md:flex flex-1 justify-center">
           {navLinks.map((link) => (
             <Link
               key={link.label}
@@ -307,8 +307,8 @@ export default function Home() {
                 <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
-                      <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
-                        <Wallet className="h-6 w-6 text-primary" />
+                      <div className="rounded-full border border-accent/20 bg-accent/10 p-3">
+                        <Wallet className="h-6 w-6 text-accent" />
                       </div>
                       Payment Coordination
                     </CardTitle>
@@ -334,8 +334,8 @@ export default function Home() {
                 <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
-                      <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
-                        <Banknote className="h-6 w-6 text-primary" />
+                      <div className="rounded-full border border-accent/20 bg-accent/10 p-3">
+                        <Banknote className="h-6 w-6 text-accent" />
                       </div>
                       Direct Payment Flow
                     </CardTitle>
@@ -364,8 +364,8 @@ export default function Home() {
                 <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md md:col-span-2 lg:col-span-1">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
-                      <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
-                        <Shield className="h-6 w-6 text-primary" />
+                      <div className="rounded-full border border-accent/20 bg-accent/10 p-3">
+                        <Shield className="h-6 w-6 text-accent" />
                       </div>
                       Our Role & Revenue Model
                     </CardTitle>
@@ -421,13 +421,13 @@ export default function Home() {
         </main>
         
         <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md">
-          <div className="container py-4">
-            <div className="flex w-full flex-col items-center gap-8 md:flex-row md:items-start md:justify-between md:text-left">
-              <div className="flex flex-col items-center md:items-start">
+          <div className="container py-8">
+            <div className="flex w-full flex-wrap items-start justify-between gap-8 md:text-left">
+              <div className="flex flex-col items-start">
                 <Logo />
               </div>
 
-              <div className="flex flex-col items-center gap-3 text-center sm:items-start">
+              <div className="flex flex-col items-start gap-3">
                 <h3 className="font-semibold uppercase tracking-wider text-white">
                   Get In Touch
                 </h3>
@@ -450,7 +450,7 @@ export default function Home() {
                   <Mail className="h-4 w-4" /> info@aerodesk.com
                 </a>
               </div>
-              <div className="flex flex-col items-center gap-3 text-center sm:items-start">
+              <div className="flex flex-col items-start gap-3">
                 <h3 className="font-semibold uppercase tracking-wider text-white">
                   Legal
                 </h3>
@@ -465,7 +465,7 @@ export default function Home() {
                 </Link>
               </div>
 
-              <div className="flex flex-col items-center gap-3 text-center md:items-end md:text-right">
+              <div className="flex flex-col items-start gap-3 md:items-end">
                 <h3 className="font-semibold uppercase tracking-wider text-white">
                   Follow Us
                 </h3>
