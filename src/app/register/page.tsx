@@ -26,9 +26,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import type { UserRole } from '@/lib/types';
-import { useAuth, useFirestore, setDocumentNonBlocking, addDocumentNonBlocking } from '@/firebase';
+import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
-import { doc, collection } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { Logo } from '@/components/logo';
 
 const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
@@ -85,116 +85,62 @@ export default function RegisterPage() {
         
         let collectionPath = '';
         let docId = user.uid;
-        let specificProfileData: any = {};
+        let profileData: any = {};
         
-        // This is the denormalized user data that will be stored in the top-level /users collection.
-        // It's used by the useUser hook for fast, reliable profile loading.
-        const generalUserData: any = {
+        const baseData = {
             id: user.uid,
             externalAuthId: user.uid,
             email: user.email,
-            role: data.role,
-            firstName,
-            lastName: lastName || 'User',
             status: 'Active',
             createdAt: now,
             updatedAt: now,
         };
 
+        const personalData = {
+            ...baseData,
+            firstName,
+            lastName: lastName || 'User',
+        };
+
         switch (data.role) {
             case 'Admin':
                 collectionPath = 'platformAdmins';
-                specificProfileData = { ...generalUserData };
+                profileData = { ...personalData, role: 'Admin' };
                 break;
             case 'Customer':
                 collectionPath = 'customers';
-                specificProfileData = { ...generalUserData, type: 'Individual' };
-
-                // Seed a sample RFQ
-                const rfqCollectionRef = collection(firestore, 'charterRFQs');
-                const sampleRfq = {
-                    customerId: user.uid,
-                    requesterExternalAuthId: user.uid,
-                    customerName: data.name,
-                    tripType: 'Onward',
-                    departure: 'Mumbai (VABB)',
-                    arrival: 'Goa (VOGO)',
-                    departureDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // a week from now
-                    pax: 4,
-                    aircraftType: 'Any Light Jet',
-                    status: 'Bidding Open',
-                    createdAt: now,
-                    updatedAt: now,
-                    bidsCount: 0,
-                };
-                addDocumentNonBlocking(rfqCollectionRef, sampleRfq);
+                profileData = { ...personalData, role: 'Customer', type: 'Individual' };
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                const operatorCompanyName = `${data.name}'s Company`;
-                generalUserData.company = operatorCompanyName;
-                specificProfileData = { ...generalUserData, companyName: operatorCompanyName, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
-                
-                // Seed a sample aircraft
-                const aircraftDocRef = doc(collection(firestore, 'operators', user.uid, 'aircrafts'));
-                const sampleAircraft = { id: aircraftDocRef.id, operatorId: user.uid, name: 'Citation XLS+', model: 'Citation XLS+', type: 'Mid-size Jet', tailNumber: 'VT-XYZ', registration: 'VT-XYZ', seatingCapacity: 8, paxCapacity: 8, homeBase: 'VABB', status: 'Active' };
-                setDocumentNonBlocking(aircraftDocRef, sampleAircraft, { merge: true });
-
-                // Seed a sample approved empty leg
-                const emptyLegDocRef = doc(collection(firestore, 'emptyLegs'));
-                const sampleEmptyLeg = { id: emptyLegDocRef.id, operatorId: user.uid, aircraftId: aircraftDocRef.id, departure: 'Delhi (VIDP)', arrival: 'Jaipur (VIJP)', departureTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), availableSeats: 6, status: 'Approved', adminApprovalStatus: 'Approved', createdAt: now, updatedAt: now };
-                setDocumentNonBlocking(emptyLegDocRef, sampleEmptyLeg, { merge: true });
+                profileData = { ...baseData, role: 'Operator', companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                const distCompanyName = `${data.name}'s Agency`;
-                generalUserData.company = distCompanyName;
-                specificProfileData = { ...generalUserData, companyName: distCompanyName, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                profileData = { ...baseData, role: 'Authorized Distributor', companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                const hotelCompanyName = `${data.name}'s Hotel`;
-                generalUserData.company = hotelCompanyName;
-                specificProfileData = { ...generalUserData, companyName: hotelCompanyName, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
-                
-                // Seed a sample property and room category
-                const propertyDocRef = doc(collection(firestore, 'hotelPartners', user.uid, 'properties'));
-                const sampleProperty = { id: propertyDocRef.id, hotelPartnerId: user.uid, name: 'The Grand Lighthouse', address: '123 Ocean View Drive', city: 'Mumbai', country: 'India', status: 'Active', createdAt: now, updatedAt: now };
-                setDocumentNonBlocking(propertyDocRef, sampleProperty, { merge: true });
-                const roomCategoryDocRef = doc(collection(firestore, `hotelPartners/${user.uid}/properties/${propertyDocRef.id}/roomCategories`));
-                const sampleRoomCategory = { id: roomCategoryDocRef.id, propertyId: propertyDocRef.id, name: 'Ocean View Suite', description: 'A luxurious suite with a stunning view of the Arabian Sea.', maxOccupancy: 2, baseRateMin: 15000, baseRateMax: 25000, createdAt: now, updatedAt: now };
-                setDocumentNonBlocking(roomCategoryDocRef, sampleRoomCategory, { merge: true });
+                profileData = { ...baseData, role: 'Hotel Partner', companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'CTD Admin':
                 const ctdId = user.uid;
                 const ctdCompanyName = `${data.name}'s Corp`;
-                generalUserData.ctdId = ctdId;
-                generalUserData.company = ctdCompanyName;
-                generalUserData.role = 'Corporate Admin';
-
+                
+                // Create the CorporateTravelDesk document
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);
                 const ctdData = { id: ctdId, companyName: ctdCompanyName, adminExternalAuthId: user.uid, status: 'Active', createdAt: now, updatedAt: now };
                 setDocumentNonBlocking(ctdDocRef, ctdData, { merge: true });
                 
+                // Set path for the CTD admin user document
                 collectionPath = `corporateTravelDesks/${ctdId}/users`;
-                specificProfileData = { ...generalUserData };
-
-                // Seed a second 'Requester' user for the same corporate desk
-                const requesterDocRef = doc(collection(firestore, `corporateTravelDesks/${ctdId}/users`));
-                const requesterData = { id: requesterDocRef.id, externalAuthId: `requester_${requesterDocRef.id}`, ctdId: ctdId, email: 'employee@example.com', role: 'Requester', status: 'Active', firstName: 'Rahul', lastName: 'Verma', createdAt: now, updatedAt: now };
-                setDocumentNonBlocking(requesterDocRef, requesterData, { merge: true });
+                profileData = { ...personalData, role: 'Corporate Admin', ctdId: ctdId };
                 break;
         }
 
-        // Create the denormalized user document in the top-level /users collection
-        const userDocRef = doc(firestore, 'users', user.uid);
-        setDocumentNonBlocking(userDocRef, generalUserData, { merge: true });
-
         // Create the full user profile document in its specific, role-based collection
-        if (collectionPath) {
-            const specificDocRef = doc(firestore, collectionPath, docId);
-            setDocumentNonBlocking(specificDocRef, specificProfileData, { merge: true });
-        }
+        const profileDocRef = doc(firestore, collectionPath, docId);
+        setDocumentNonBlocking(profileDocRef, profileData, { merge: true });
         
         toast({
             title: "Registration Successful!",
@@ -224,14 +170,14 @@ export default function RegisterPage() {
             <Card className="w-full max-w-md border-white/10 bg-black/15 text-white backdrop-blur-md">
                 <CardHeader className="text-center">
                     <div className="flex justify-center mb-4">
-                    <Link href="/">
-                        <Logo />
-                    </Link>
+                        <Link href="/">
+                            <Logo />
+                        </Link>
                     </div>
-                <CardTitle className="text-white">Create an Account</CardTitle>
-                <CardDescription className="text-white/80">
-                    Join the AeroDesk platform to streamline your aviation operations.
-                </CardDescription>
+                    <CardTitle className="text-white">Create an Account</CardTitle>
+                    <CardDescription className="text-white/80">
+                        Join the AeroDesk platform to streamline your aviation operations.
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                 <Form {...form}>

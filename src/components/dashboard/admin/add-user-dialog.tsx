@@ -79,12 +79,11 @@ export function AddUserDialog() {
         return;
     }
     try {
-        // IMPORTANT: This will sign out the admin and sign in the new user temporarily.
         const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
         const user = userCredential.user;
 
         await updateProfile(user, { displayName: data.name });
-        sendEmailVerification(user); // Not awaited
+        sendEmailVerification(user);
 
         const [firstName, ...lastNameParts] = data.name.split(' ');
         const lastName = lastNameParts.join(' ');
@@ -92,79 +91,65 @@ export function AddUserDialog() {
         
         let collectionPath = '';
         let docId = user.uid;
-        let specificProfileData: any = {};
+        let profileData: any = {};
         
-        const generalUserData: any = {
+        const baseData = {
             id: user.uid,
             externalAuthId: user.uid,
             email: user.email,
-            role: data.role,
-            firstName,
-            lastName: lastName || 'User',
             status: 'Active',
             createdAt: now,
             updatedAt: now,
         };
 
+        const personalData = {
+            ...baseData,
+            firstName,
+            lastName: lastName || 'User',
+        };
+
         switch (data.role) {
             case 'Admin':
                 collectionPath = 'platformAdmins';
-                specificProfileData = { ...generalUserData };
+                profileData = { ...personalData, role: 'Admin' };
                 break;
             case 'Customer':
                 collectionPath = 'customers';
-                specificProfileData = { ...generalUserData, type: 'Individual' };
+                profileData = { ...personalData, role: 'Customer', type: 'Individual' };
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                const operatorCompanyName = `${data.name}'s Company`;
-                generalUserData.company = operatorCompanyName;
-                specificProfileData = { ...generalUserData, companyName: operatorCompanyName, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                profileData = { ...baseData, role: 'Operator', companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                const distCompanyName = `${data.name}'s Agency`;
-                generalUserData.company = distCompanyName;
-                specificProfileData = { ...generalUserData, companyName: distCompanyName, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                profileData = { ...baseData, role: 'Authorized Distributor', companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                const hotelCompanyName = `${data.name}'s Hotel`;
-                generalUserData.company = hotelCompanyName;
-                specificProfileData = { ...generalUserData, companyName: hotelCompanyName, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                profileData = { ...baseData, role: 'Hotel Partner', companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'CTD Admin':
                 const ctdId = user.uid;
                 const ctdCompanyName = `${data.name}'s Corp`;
-                generalUserData.ctdId = ctdId;
-                generalUserData.company = ctdCompanyName;
-                generalUserData.role = 'Corporate Admin';
-
+                
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);
                 const ctdData = { id: ctdId, companyName: ctdCompanyName, adminExternalAuthId: user.uid, status: 'Active', createdAt: now, updatedAt: now };
                 setDocumentNonBlocking(ctdDocRef, ctdData, { merge: true });
                 
                 collectionPath = `corporateTravelDesks/${ctdId}/users`;
-                specificProfileData = { ...generalUserData };
+                profileData = { ...personalData, role: 'Corporate Admin', ctdId: ctdId };
                 break;
         }
 
-        // Create the denormalized user document in the top-level /users collection
-        const userDocRef = doc(firestore, 'users', user.uid);
-        setDocumentNonBlocking(userDocRef, generalUserData, { merge: true });
-
-        // Create the full user profile document in its specific, role-based collection
-        if (collectionPath && Object.keys(specificProfileData).length > 0) {
-            const specificDocRef = doc(firestore, collectionPath, docId);
-            setDocumentNonBlocking(specificDocRef, specificProfileData, { merge: true });
-        }
+        const profileDocRef = doc(firestore, collectionPath, docId);
+        setDocumentNonBlocking(profileDocRef, profileData, { merge: true });
         
         toast({
             title: "User Created Successfully!",
             description: "A verification email has been sent. You will now be logged out.",
         });
 
-        // Sign out the new user to re-authenticate the admin
         await signOut(auth);
         router.push('/login');
 
@@ -174,9 +159,6 @@ export function AddUserDialog() {
             title: "Creation Failed",
             description: error.message,
         });
-        // If user creation failed, the admin might still be logged in.
-        // If it succeeded but something else failed, the admin might be logged out.
-        // We can try to sign out just in case to force a clean state.
         try {
             await signOut(auth);
             router.push('/login');
