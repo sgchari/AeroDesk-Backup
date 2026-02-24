@@ -108,6 +108,7 @@ export function CreateRfqDialog() {
 
     const rfqData: Omit<CharterRFQ, 'id'> = {
         customerId: user.id,
+        requesterExternalAuthId: user.id,
         customerName: `${user.firstName} ${user.lastName}`,
         tripType: data.tripType,
         departure: data.departure,

@@ -4,7 +4,9 @@ export type UserRole =
   | 'Authorized Distributor'
   | 'CTD Admin'
   | 'Hotel Partner'
-  | 'Admin';
+  | 'Admin'
+  | 'Requester'
+  | 'Corporate Admin';
 
 export type User = {
   id: string;
@@ -43,13 +45,15 @@ export type RfqStatus =
   | 'Bidding Closed'
   | 'Operator Selected'
   | 'Confirmed'
-  | 'Cancelled';
+  | 'Cancelled'
+  | 'Expired';
 
 export type TripType = 'Onward' | 'Return' | 'Multi-City';
 
 export type CharterRFQ = {
   id: string;
   customerId: string;
+  requesterExternalAuthId: string;
   customerName: string;
   tripType: TripType;
   departure: string;

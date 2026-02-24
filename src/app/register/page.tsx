@@ -24,7 +24,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Logo } from '@/components/logo';
 import type { UserRole } from '@/lib/types';
 import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
@@ -109,6 +108,7 @@ export default function RegisterPage() {
                 const sampleRfq = {
                     id: rfqId,
                     customerId: user.uid,
+                    requesterExternalAuthId: user.uid,
                     customerName: data.name,
                     tripType: 'Onward',
                     departure: 'Mumbai (VABB)',
