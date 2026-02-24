@@ -11,12 +11,14 @@ import { Label } from '@/components/ui/label';
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
-      viewBox="0 0 512 512"
-      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
       {...props}
     >
-      <path d="M256 0c-30.9 0-56 25.1-56 56s25.1 56 56 56 56-25.1 56-56-25.1-56-56-56zm0 400c-30.9 0-56 25.1-56 56s25.1 56 56 56 56-25.1 56-56-25.1-56-56-56zm156.4-200c0 30.9-25.1 56-56 56s-56-25.1-56-56 25.1-56 56-56 56 25.1 56 56zm-312.8 0c0 30.9-25.1 56-56 56s-56-25.1-56-56 25.1-56 56-56 56 25.1 56 56zM256 128c-30.9 0-56 25.1-56 56s25.1 56 56 56 56-25.1 56-56-25.1-56-56-56z" />
+        <path d="M12.82,10.76,12,10.33,7.67,8.27,6.25,7.57C4.83,6.86,4,6,4,6A2.34,2.34,0,0,1,6,3.58,2.3,2.3,0,0,1,8.32,5.85c0,.13-.12.28-.27.35l-.28.14-.14,0,.14,0,3.33,2,1.42.86,1.42.85,3.33,2,.14,0-.14,0-.28-.14c-.15-.07-.27-.22-.27-.35A2.3,2.3,0,0,1,17.68,3.58,2.34,2.34,0,0,1,20,6c0,0-.83.86-2.25,1.57Z" />
+        <path d="M13.43,12.39,12,11.57l-1.43.82L9.15,13.22a10.42,10.42,0,0,1-3-2.14,1,1,0,0,1,1.41-1.41,8.41,8.41,0,0,0,3,1.72l1.4-.8.05,0,.05,0,1.4.8a8.41,8.41,0,0,0,3-1.72,1,1,0,1,1,1.41,1.41,10.42,10.42,0,0,1-3,2.14Z" />
+        <path d="M11,14.22,9.7,15.07a.9.9,0,0,0-.45.77v2.88a1,1,0,0,1-2,0V16.38A2.66,2.66,0,0,1,7.91,14L9,13.41l1,.58,1,.59.43.25.14,0,.14,0,.43-.25,1-.59,1-.58,1.13-.59a2.66,2.66,0,0,1,2.66,2.36V18.72a1,1,0,1,1-2,0V15.84a.9.9,0,0,0-.45-.77L13,14.22l-1,.59Z" />
     </svg>
 );
 
@@ -84,7 +86,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                 onBlur={() => {
                     setTimeout(() => setShowSuggestions(false), 150);
                 }}
-                className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
+                className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3"
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
@@ -92,7 +94,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                     {suggestions.map((suggestion, index) => (
                         <div
                             key={index}
-                            className="p-3 hover:bg-white/20 cursor-pointer text-[#C0C0C0] text-sm"
+                            className="p-3 hover:bg-white/20 cursor-pointer text-white text-sm"
                             onMouseDown={(e) => {
                                 e.preventDefault();
                                 handleSelectSuggestion(suggestion);
@@ -146,13 +148,13 @@ export function BookingWidget() {
     <div className="p-4 rounded-lg shadow-2xl border border-white/10 max-w-4xl mx-auto bg-transparent">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent p-0 mb-6">
-                 <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-[#C0C0C0]/80 data-[state=active]:text-[#C0C0C0] hover:bg-white/10">
+                 <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
                     <Plane className="h-10 w-10" />
                 </TabsTrigger>
-                <TabsTrigger value="helicopter" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-[#C0C0C0]/80 data-[state=active]:text-[#C0C0C0] hover:bg-white/10">
+                <TabsTrigger value="helicopter" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
                     <HelicopterIcon className="h-10 w-10" />
                 </TabsTrigger>
-                <TabsTrigger value="seats" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-[#C0C0C0]/80 data-[state=active]:text-[#C0C0C0] hover:bg-white/10">
+                <TabsTrigger value="seats" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
                     <Armchair className="h-10 w-10" />
                 </TabsTrigger>
             </TabsList>
@@ -161,19 +163,19 @@ export function BookingWidget() {
                     <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6 mt-2 mb-6">
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="oneway" id="oneway" className='text-accent border-accent' />
-                            <Label htmlFor="oneway" className="text-[#C0C0C0] cursor-pointer text-sm sm:text-base">
+                            <Label htmlFor="oneway" className="text-white cursor-pointer text-sm sm:text-base">
                                 Oneway
                             </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="round" id="round" className='text-accent border-accent' />
-                            <Label htmlFor="round" className="text-[#C0C0C0] cursor-pointer text-sm sm:text-base">
+                            <Label htmlFor="round" className="text-white cursor-pointer text-sm sm:text-base">
                                 Round
                             </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="multicity" id="multicity" className='text-accent border-accent' />
-                            <Label htmlFor="multicity" className="text-[#C0C0C0] cursor-pointer text-sm sm:text-base">
+                            <Label htmlFor="multicity" className="text-white cursor-pointer text-sm sm:text-base">
                                 Multicity
                             </Label>
                         </div>
@@ -184,9 +186,9 @@ export function BookingWidget() {
                             <div className="grid grid-cols-1 md:grid-cols-5 gap-px rounded-md overflow-hidden border border-white/10">
                                 <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                                 <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
-                                <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
-                                <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
-                                <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
+                                <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
+                                <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
+                                <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
                             </div>
                         </div>
                     )}
@@ -196,13 +198,13 @@ export function BookingWidget() {
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-px rounded-md overflow-hidden border border-white/10">
                                 <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                                 <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
-                                <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
+                                <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-4 gap-px rounded-md overflow-hidden border border-white/10">
-                                <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
-                                <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
-                                <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Date" value={returnDate} onChange={e => setReturnDate(e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
-                                <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Time" value={returnTime} onChange={(e) => setReturnTime(e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
+                                <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
+                                <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
+                                <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Date" value={returnDate} onChange={e => setReturnDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
+                                <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Time" value={returnTime} onChange={(e) => setReturnTime(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
                             </div>
                         </div>
                     )}
@@ -214,8 +216,8 @@ export function BookingWidget() {
                                     <div key={leg.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-px items-stretch rounded-md overflow-hidden border border-white/10">
                                         <AutocompleteInput placeholder="Origin" value={leg.origin} onChange={(val) => handleLegChange(leg.id, 'origin', val)} />
                                         <AutocompleteInput placeholder="Destination" value={leg.destination} onChange={(val) => handleLegChange(leg.id, 'destination', val)} />
-                                        <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={leg.departureDate} onChange={(e) => handleLegChange(leg.id, 'departureDate', e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
-                                        <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Time" value={leg.departureTime} onChange={(e) => handleLegChange(leg.id, 'departureTime', e.target.value)} className="bg-transparent text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
+                                        <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={leg.departureDate} onChange={(e) => handleLegChange(leg.id, 'departureDate', e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
+                                        <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Time" value={leg.departureTime} onChange={(e) => handleLegChange(leg.id, 'departureTime', e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
                                         <div className="flex items-center justify-center bg-transparent">
                                             {legs.length > 1 && (
                                                 <Button variant="ghost" size="icon" onClick={() => removeLeg(leg.id)} className="text-destructive h-full w-full rounded-none hover:bg-destructive/10">
@@ -225,7 +227,7 @@ export function BookingWidget() {
                                         </div>
                                     </div>
                                 ))}
-                                <Button type="button" variant="outline" className="w-full bg-white/10 text-[#C0C0C0] hover:bg-white/20 border-white/20" onClick={addLeg}>
+                                <Button type="button" variant="outline" className="w-full bg-white/10 text-white hover:bg-white/20 border-white/20" onClick={addLeg}>
                                     <Plus className="mr-2 h-4 w-4" /> Add another flight
                                 </Button>
                             </div>
@@ -235,7 +237,7 @@ export function BookingWidget() {
                                     placeholder="Passengers"
                                     value={passengers} 
                                     onChange={e => setPassengers(e.target.value)}
-                                    className="bg-transparent border border-white/10 text-[#C0C0C0] placeholder:text-[#C0C0C0]/70 rounded-md h-full text-center"
+                                    className="bg-transparent border border-white/10 text-white placeholder:text-white/70 rounded-md h-full text-center"
                                 />
                             </div>
                         </div>
@@ -246,8 +248,8 @@ export function BookingWidget() {
                     </div>
                 </div>
             </TabsContent>
-            <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-[#C0C0C0]">Helicopter booking functionality coming soon.</p></TabsContent>
-            <TabsContent value="seats"><p className="text-center p-12 text-lg text-[#C0C0C0]">Seat reservation functionality coming soon.</p></TabsContent>
+            <TabsContent value="helicopter"><p className="text-center p-12 text-lg text-white">Helicopter booking functionality coming soon.</p></TabsContent>
+            <TabsContent value="seats"><p className="text-center p-12 text-lg text-white">Seat reservation functionality coming soon.</p></TabsContent>
         </Tabs>
     </div>
   );
