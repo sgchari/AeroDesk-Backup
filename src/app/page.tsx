@@ -69,7 +69,7 @@ const LandingHeader: FC = () => {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full text-white transition-transform duration-300',
+        'sticky top-0 z-50 w-full text-[#C0C0C0] transition-transform duration-300',
         isScrolled ? 'bg-black/50 backdrop-blur-md' : 'bg-transparent',
         isVisible ? 'translate-y-0' : '-translate-y-full'
       )}
@@ -86,7 +86,7 @@ const LandingHeader: FC = () => {
             <Link
               key={link.label}
               href={link.href}
-              className="font-semibold text-white transition-colors hover:text-white/80"
+              className="font-semibold text-[#C0C0C0] transition-colors hover:text-[#C0C0C0]/80"
             >
               {link.label}
             </Link>
@@ -97,7 +97,7 @@ const LandingHeader: FC = () => {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="tel:+919819754038"
-              className="flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-white/80"
+              className="flex items-center gap-2 text-sm font-semibold text-[#C0C0C0] transition-colors hover:text-[#C0C0C0]/80"
             >
               <Phone className="h-4 w-4" />
               +91 9819754038
@@ -105,7 +105,7 @@ const LandingHeader: FC = () => {
             <Button
               variant="ghost"
               asChild
-              className="font-semibold text-white hover:bg-white/10 hover:text-white"
+              className="font-semibold text-[#C0C0C0] hover:bg-white/10 hover:text-[#C0C0C0]"
             >
               <Link href="/login">Login</Link>
             </Button>
@@ -120,7 +120,7 @@ const LandingHeader: FC = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:bg-white/10 hover:text-white"
+                  className="text-[#C0C0C0] hover:bg-white/10 hover:text-[#C0C0C0]"
                 >
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
@@ -128,7 +128,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-none bg-black/80 p-0 text-white"
+                className="w-[240px] border-none bg-black/20 p-0 text-[#C0C0C0]"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -140,7 +140,7 @@ const LandingHeader: FC = () => {
                       <Link
                         key={link.label}
                         href={link.href}
-                        className="py-2 text-sm text-white/80 transition-colors hover:text-white"
+                        className="py-2 text-sm text-[#C0C0C0]/80 transition-colors hover:text-[#C0C0C0]"
                       >
                         {link.label}
                       </Link>
@@ -149,7 +149,7 @@ const LandingHeader: FC = () => {
                   <div className="mt-auto flex flex-col gap-4 border-t border-white/20 p-6 pt-4">
                     <a
                       href="tel:+919819754038"
-                      className="flex items-center gap-2 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
+                      className="flex items-center gap-2 py-2 text-sm font-medium text-[#C0C0C0]/80 transition-colors hover:text-[#C0C0C0]"
                     >
                       <Phone className="h-4 w-4" />
                       +91 9819754038
@@ -161,7 +161,7 @@ const LandingHeader: FC = () => {
                       <Button
                         variant="ghost"
                         asChild
-                        className="font-semibold text-white hover:bg-white/10"
+                        className="font-semibold text-[#C0C0C0] hover:bg-white/10"
                       >
                         <Link href="/register">Register</Link>
                       </Button>
@@ -234,14 +234,14 @@ export default function Home() {
         <LandingHeader />
 
         <main className="flex-grow">
-          <section className="relative w-full text-white">
+          <section className="relative w-full text-[#C0C0C0]">
             <div className="relative">
               <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
                 <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/30 px-6 py-3 text-lg font-medium backdrop-blur-sm">
                   <ShieldCheck className="h-6 w-6 text-accent" />
                   Fly Smarter. Stay Premium.
                 </div>
-                <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
+                <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-[#C0C0C0] sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
                   Where <span style={{ color: '#EEDC5B' }}>Exceptional Journey</span>{' '}
                   Begins
                 </h1>
@@ -255,10 +255,10 @@ export default function Home() {
 
               <div className="container p-4 pt-16 pb-16 sm:p-6 sm:pt-24 sm:pb-24 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
-                  <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  <h2 className="font-headline text-3xl font-bold tracking-tight text-[#C0C0C0] sm:text-4xl">
                     A Comprehensive Aviation Ecosystem
                   </h2>
-                  <p className="mt-4 text-lg text-white/80">
+                  <p className="mt-4 text-lg text-[#C0C0C0]/80">
                     All your charter needs, coordinated through one intelligent
                     platform.
                   </p>
@@ -268,13 +268,13 @@ export default function Home() {
                   {features.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex flex-col items-center rounded-xl border border-white/10 bg-transparent p-6 text-center"
+                      className="flex flex-col items-center rounded-xl border-white/10 bg-transparent p-6 text-center"
                     >
                       <feature.icon className="h-10 w-10 text-yellow-300" />
-                      <h3 className="mt-4 text-lg font-bold text-white">
+                      <h3 className="mt-4 text-lg font-bold text-[#C0C0C0]">
                         {feature.title}
                       </h3>
-                      <p className="mt-2 text-white/80">
+                      <p className="mt-2 text-[#C0C0C0]/80">
                         {feature.description}
                       </p>
                     </div>
@@ -287,26 +287,26 @@ export default function Home() {
           <section className="bg-transparent py-16 sm:py-24">
             <div className="container p-4 sm:p-6 md:p-8">
               <div className="mx-auto mb-12 max-w-3xl text-center">
-                <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <h2 className="font-headline text-3xl font-bold tracking-tight text-[#C0C0C0] sm:text-4xl">
                   Transparent Payment Coordination
                 </h2>
-                <p className="mt-4 text-lg text-white/80">
+                <p className="mt-4 text-lg text-[#C0C0C0]/80">
                   AeroDesk streamlines the payment process without handling funds,
                   ensuring compliance and transparency for all parties.
                 </p>
               </div>
 
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="flex flex-col border-white/10 bg-transparent text-white">
+                <Card className="flex flex-col border-white/10 bg-transparent">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-white">
+                    <CardTitle className="flex items-center gap-3 text-[#C0C0C0]">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                         <Wallet className="h-6 w-6 text-primary" />
                       </div>
                       Payment Coordination
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="flex-grow space-y-3 text-white/80">
+                  <CardContent className="flex-grow space-y-3 text-[#C0C0C0]/80">
                     <p className="flex items-start gap-3">
                       <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
                       <span>Generate invoices for services.</span>
@@ -324,9 +324,9 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-transparent text-white">
+                <Card className="flex flex-col border-white/10 bg-transparent">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-white">
+                    <CardTitle className="flex items-center gap-3 text-[#C0C0C0]">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                         <Banknote className="h-6 w-6 text-primary" />
                       </div>
@@ -335,28 +335,28 @@ export default function Home() {
                   </CardHeader>
                   <CardContent className="flex-grow space-y-4">
                     <div>
-                      <h4 className="font-semibold text-white">
+                      <h4 className="font-semibold text-[#C0C0C0]">
                         Air Charter Payment
                       </h4>
-                      <p className="text-white/80">
+                      <p className="text-[#C0C0C0]/80">
                         Customer / Corporate / Agent → Pays Operator Directly
                         (offline / bank transfer).
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-white">
+                      <h4 className="font-semibold text-[#C0C0C0]">
                         Hotel Accommodation Payment
                       </h4>
-                      <p className="text-white/80">
+                      <p className="text-[#C0C0C0]/80">
                         Customer / Corporate / Agent → Pays Hotel Directly.
                       </p>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-transparent text-white md:col-span-2 lg:col-span-1">
+                <Card className="flex flex-col border-white/10 bg-transparent md:col-span-2 lg:col-span-1">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-white">
+                    <CardTitle className="flex items-center gap-3 text-[#C0C0C0]">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
                         <Shield className="h-6 w-6 text-primary" />
                       </div>
@@ -365,10 +365,10 @@ export default function Home() {
                   </CardHeader>
                   <CardContent className="flex-grow grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
-                      <h4 className="mb-2 font-semibold text-white">
+                      <h4 className="mb-2 font-semibold text-[#C0C0C0]">
                         Compliance First
                       </h4>
-                      <ul className="space-y-2 text-sm text-white/80">
+                      <ul className="space-y-2 text-sm text-[#C0C0C0]/80">
                         <li className="flex items-start gap-2">
                           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
                           AeroDesk never touches funds.
@@ -388,10 +388,10 @@ export default function Home() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="mb-2 font-semibold text-white">
+                      <h4 className="mb-2 font-semibold text-[#C0C0C0]">
                         How We Earn
                       </h4>
-                      <ul className="space-y-2 text-sm text-white/80">
+                      <ul className="space-y-2 text-sm text-[#C0C0C0]/80">
                         <li className="flex items-start gap-2">
                           <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
                           Subscription fees.
@@ -413,54 +413,54 @@ export default function Home() {
           </section>
         </main>
         
-        <footer className="border-t border-white/10 bg-black/50 text-white/80 backdrop-blur-md">
+        <footer className="border-t border-white/10 text-[#C0C0C0]/80">
           <div className="container py-12">
             <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-center gap-4 sm:items-start">
                 <Logo />
               </div>
-              <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
-                <h3 className="font-semibold uppercase tracking-wider text-white">
+              <div className="flex flex-col items-center gap-3 text-[#C0C0C0]/80 md:items-start">
+                <h3 className="font-semibold uppercase tracking-wider text-[#C0C0C0]">
                   Get In Touch
                 </h3>
                 <a
                   href="tel:+919819754038"
-                  className="inline-flex items-center gap-2 hover:text-white"
+                  className="inline-flex items-center gap-2 hover:text-[#C0C0C0]"
                 >
                   <Phone className="h-4 w-4" /> +91 98197 54038
                 </a>
                 <a
                   href="tel:+912228222202"
-                  className="inline-flex items-center gap-2 hover:text-white"
+                  className="inline-flex items-center gap-2 hover:text-[#C0C0C0]"
                 >
                   <Phone className="h-4 w-4" /> +91 22 2822 2202
                 </a>
                 <a
                   href="mailto:info@aerodesk.com"
-                  className="inline-flex items-center gap-2 hover:text-white"
+                  className="inline-flex items-center gap-2 hover:text-[#C0C0C0]"
                 >
                   <Mail className="h-4 w-4" /> info@aerodesk.com
                 </a>
               </div>
-              <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
-                <h3 className="font-semibold uppercase tracking-wider text-white">
+              <div className="flex flex-col items-center gap-3 text-[#C0C0C0]/80 md:items-start">
+                <h3 className="font-semibold uppercase tracking-wider text-[#C0C0C0]">
                   Legal
                 </h3>
-                <Link href="/terms-of-service" className="hover:text-white">
+                <Link href="/terms-of-service" className="hover:text-[#C0C0C0]">
                   Terms of Service
                 </Link>
-                <Link href="/privacy-policy" className="hover:text-white">
+                <Link href="/privacy-policy" className="hover:text-[#C0C0C0]">
                   Privacy Policy
                 </Link>
-                <Link href="/safety-standards" className="hover:text-white">
+                <Link href="/safety-standards" className="hover:text-[#C0C0C0]">
                   Safety Standards
                 </Link>
               </div>
               <div className="flex flex-col items-center gap-3 md:items-end">
-                <h3 className="font-semibold uppercase tracking-wider text-white">
+                <h3 className="font-semibold uppercase tracking-wider text-[#C0C0C0]">
                   Follow Us
                 </h3>
-                <div className="flex gap-4 text-white/80">
+                <div className="flex gap-4 text-[#C0C0C0]/80">
                   <Link
                     href="#"
                     aria-label="Facebook"
@@ -545,9 +545,9 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="mt-8 border-t border-white/10 pt-8 text-center text-xs text-white/60">
+            <div className="mt-8 border-t border-white/10 pt-8 text-center text-xs text-[#C0C0C0]/60">
               <p>
-                <span className="font-bold text-white/80">Disclaimer:</span>{' '}
+                <span className="font-bold text-[#C0C0C0]/80">Disclaimer:</span>{' '}
                 This platform facilitates non-scheduled charter operations (NSOP)
                 only. It is not an Online Travel Agency (OTA) or a scheduled
                 commercial airline booking system. All flights are subject to
@@ -567,3 +567,6 @@ export default function Home() {
 
 
 
+
+
+    
