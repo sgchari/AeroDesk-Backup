@@ -359,8 +359,7 @@ service cloud.firestore {
      * @principle Public read for approved listings, with writes restricted to the owning operator.
      */
     match /emptyLegs/{emptyLegId} {
-      allow get: if true;
-      allow list: if true;
+      allow get, list: if true;
       allow create: if isOwner(request.resource.data.operatorId);
       allow update: if (isOwner(resource.data.operatorId) || isPlatformAdmin()) && isExistingDoc();
       allow delete: if (isOwner(resource.data.operatorId) || isPlatformAdmin()) && isExistingDoc();
