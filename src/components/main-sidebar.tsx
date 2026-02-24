@@ -85,7 +85,7 @@ export function MainSidebar({ className }: { className?: string }) {
 
   return (
     <>
-      <SidebarHeader className="flex h-16 items-center border-b px-4">
+      <SidebarHeader className="flex h-20 items-center border-b border-white/10 px-4">
         <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
             <Logo />
         </Link>
