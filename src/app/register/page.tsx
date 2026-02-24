@@ -207,7 +207,7 @@ export default function RegisterPage() {
                 break;
             case 'CTD Admin':
                 // For CTD Admin, we create a new CorporateTravelDesk and a CTDUser
-                const ctdId = `ctd_${user.uid}`;
+                const ctdId = user.uid; // Use user's UID as the CTD ID
                 userMappingData.ctdId = ctdId; // Add ctdId to the mapping
 
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);

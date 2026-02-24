@@ -125,7 +125,7 @@ export function AddUserDialog() {
                 userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'CTD Admin':
-                const ctdId = `ctd_${user.uid}`;
+                const ctdId = user.uid;
                 userMappingData.ctdId = ctdId; // Add ctdId to the mapping
 
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);

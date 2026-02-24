@@ -269,7 +269,7 @@ service cloud.firestore {
       match /users/{ctdUserId} {
         allow get: if isCTDAdmin(ctdId) || isOwner(resource.data.externalAuthId) || isPlatformAdmin();
         allow list: if isCTDAdmin(ctdId) || isPlatformAdmin();
-        allow create: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
+        allow create: if (isOwner(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
         allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
         allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
       }
