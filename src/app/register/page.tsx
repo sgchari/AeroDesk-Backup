@@ -269,109 +269,119 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <Link href="/">
-                <Logo />
-              </Link>
-            </div>
-          <CardTitle>Create an Account</CardTitle>
-          <CardDescription>
-            Join the AeroDesk platform to streamline your aviation operations.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ananya Sharma" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="ananya.sharma@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>I am a...</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select a user type" />
-                        </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {registerableRoles.map(role => (
-                                <SelectItem key={role} value={role}>{role}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                    </FormItem>
-                )}
-            />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Creating Account...' : 'Create Account'}
-              </Button>
-            </form>
-          </Form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
-            <Link href="/login" className="underline">
-              Login
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="w-full">
+        <div
+            className="fixed inset-0 z-0 bg-cover bg-center"
+            style={{
+                backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
+            }}
+        >
+            <div className="absolute inset-0 bg-black/30" />
+        </div>
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center bg-transparent p-4">
+            <Card className="w-full max-w-md border-white/10 bg-black/15 text-white backdrop-blur-md">
+                <CardHeader className="text-center">
+                    <div className="flex justify-center mb-4">
+                    <Link href="/">
+                        <Logo />
+                    </Link>
+                    </div>
+                <CardTitle className="text-white">Create an Account</CardTitle>
+                <CardDescription className="text-white/80">
+                    Join the AeroDesk platform to streamline your aviation operations.
+                </CardDescription>
+                </CardHeader>
+                <CardContent>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-white/90">Full Name</FormLabel>
+                            <FormControl>
+                            <Input placeholder="Ananya Sharma" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-white/90">Email Address</FormLabel>
+                            <FormControl>
+                            <Input type="email" placeholder="ananya.sharma@example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="role"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel className="text-white/90">I am a...</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a user type" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {registerableRoles.map(role => (
+                                        <SelectItem key={role} value={role}>{role}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-white/90">Password</FormLabel>
+                            <FormControl>
+                            <Input type="password" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-white/90">Confirm Password</FormLabel>
+                            <FormControl>
+                            <Input type="password" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <Button type="submit" variant="accent" className="w-full" disabled={form.formState.isSubmitting}>
+                        {form.formState.isSubmitting ? 'Creating Account...' : 'Create Account'}
+                    </Button>
+                    </form>
+                </Form>
+                <div className="mt-4 text-center text-sm text-white/80">
+                    Already have an account?{' '}
+                    <Link href="/login" className="font-semibold text-accent underline-offset-4 hover:underline">
+                    Login
+                    </Link>
+                </div>
+                </CardContent>
+            </Card>
+        </div>
     </div>
   );
 }
