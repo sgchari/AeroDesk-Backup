@@ -1,31 +1,19 @@
 
 'use client';
-
-import {
-  useState,
-  useEffect,
-  type FC,
-  useRef,
-} from 'react';
-import { Button } from '@/components/ui/button';
-import { Logo } from '@/components/logo';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { EmptyLeg } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
+import { Logo } from '@/components/logo';
 import {
-  ShieldCheck,
   Menu,
-  FileText,
-  GanttChartSquare,
-  Briefcase,
-  Hotel,
-  Wand2,
   Phone,
   Mail,
-  Wallet,
-  Banknote,
-  Shield,
-  CheckCircle,
-  Armchair,
-  Plane,
 } from 'lucide-react';
 import {
   Sheet,
@@ -33,13 +21,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookingWidget } from '@/components/booking-widget';
 import { cn } from '@/lib/utils';
+import React, { useState, useEffect, type FC, useRef } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 
-const LandingHeader: FC = () => {
+const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
   const lastScrollY = useRef(0);
   const [isVisible, setIsVisible] = useState(true);
   const isMobile = useIsMobile();
@@ -72,7 +59,7 @@ const LandingHeader: FC = () => {
     { href: '#', label: 'Blog' },
     { href: '#', label: 'Media' },
   ];
-
+    
   return (
     <header
       className={cn(
@@ -92,7 +79,7 @@ const LandingHeader: FC = () => {
             <Link
               key={link.label}
               href={link.href}
-              className="font-semibold text-white transition-colors hover:text-white/80"
+              className={cn("font-semibold text-white transition-colors hover:text-white/80", activePage === link.label && "text-accent")}
             >
               {link.label}
             </Link>
@@ -146,7 +133,7 @@ const LandingHeader: FC = () => {
                       <Link
                         key={link.label}
                         href={link.href}
-                        className="py-2 text-sm text-white/80 transition-colors hover:text-white"
+                        className={cn("py-2 text-sm text-white/80 transition-colors hover:text-white", activePage === link.label && "text-accent")}
                       >
                         {link.label}
                       </Link>
@@ -183,236 +170,8 @@ const LandingHeader: FC = () => {
   );
 };
 
-const features = [
-  {
-    icon: FileText,
-    title: 'Flight Request & Lifecycle Tracking',
-    description:
-      'Create charter requests, specify flight and accommodation needs, and maintain visibility across the full request lifecycle.',
-  },
-  {
-    icon: GanttChartSquare,
-    title: 'Operator Quotation & Fleet Management',
-    description:
-      'Operators can respond to charter requests with structured quotations, manage fleet availability, coordinate crew stays and logistics, and create or manage empty-leg opportunities.',
-  },
-  {
-    icon: Briefcase,
-    title: 'Corporate Travel Desk',
-    description:
-      'Corporate Travel Desk users can create charter requests for employees, request jet seat allocations, and coordinate associated accommodation needs.',
-  },
-  {
-    icon: Armchair,
-    title: 'Available Jet Seat Allocation',
-    description:
-      'Access seats on select private jet flights operating on predefined routes',
-  },
-  {
-    icon: Hotel,
-    title: 'Hotel Partner Accommodation',
-    description:
-      'Hotels maintain inventory visibility, configure stay availability, and handle accommodation requests tied to approved charter activity.',
-  },
-  {
-    icon: Wand2,
-    title: 'AI-Assisted Compliance Review',
-    description:
-      'AI-assisted logic evaluates workflow inputs and highlights potential inconsistencies for administrative or operator review.',
-  },
-];
-
-export default function Home() {
-  return (
-    <div className="w-full">
-      {/* Background Layer: Fixed to the viewport, sits behind everything else */}
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
-        }}
-      >
-        <div className="absolute inset-0 bg-black/30" />
-      </div>
-
-      {/* Content Layer: Sits on top of the background and handles scrolling */}
-      <div className="relative z-10 flex min-h-screen flex-col overflow-x-hidden bg-transparent">
-        <LandingHeader />
-
-        <main className="flex-grow">
-          <section className="relative w-full text-white">
-            <div className="relative">
-              <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
-                <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/10 px-6 py-3 text-lg font-medium backdrop-blur-md">
-                  <ShieldCheck className="h-6 w-6 text-accent" />
-                  Fly Smarter. Stay Premium.
-                </div>
-                <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-                  Where <span style={{ color: '#EEDC5B' }}>Exceptional Journey</span>{' '}
-                  Begins
-                </h1>
-              </div>
-
-              <div className="relative z-10 py-6">
-                <div className="container">
-                  <BookingWidget />
-                </div>
-              </div>
-
-              <div className="container p-4 pt-16 pb-16 sm:p-6 sm:pt-24 sm:pb-24 md:p-8">
-                <div className="mx-auto max-w-3xl text-center">
-                  <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    A Comprehensive Aviation Ecosystem
-                  </h2>
-                  <p className="mt-4 text-lg text-white/80">
-                    All your charter needs, coordinated through one intelligent
-                    platform.
-                  </p>
-                </div>
-
-                <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                  {features.map((feature, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/15 p-6 text-center backdrop-blur-md"
-                    >
-                      <feature.icon className="h-10 w-10 text-yellow-300" />
-                      <h3 className="mt-4 text-lg font-bold text-white">
-                        {feature.title}
-                      </h3>
-                      <p className="mt-2 text-white/80">
-                        {feature.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-transparent py-16 sm:py-24">
-            <div className="container p-4 sm:p-6 md:p-8">
-              <div className="mx-auto mb-12 max-w-3xl text-center">
-                <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  Transparent Payment Coordination
-                </h2>
-                <p className="mt-4 text-lg text-white/80">
-                  AeroDesk streamlines the payment process without handling funds,
-                  ensuring compliance and transparency for all parties.
-                </p>
-              </div>
-
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-white">
-                      <Wallet className="h-6 w-6 text-accent" />
-                      Payment Coordination
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow space-y-3 text-white/80">
-                    <p className="flex items-start gap-3">
-                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
-                      <span>Generate invoices for services.</span>
-                    </p>
-                    <p className="flex items-start gap-3">
-                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
-                      <span>Track payment status (Mark as Paid/Pending).</span>
-                    </p>
-                    <p className="flex items-start gap-3">
-                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
-                      <span>
-                        Provide clear payment instructions to all parties.
-                      </span>
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-white">
-                      <Banknote className="h-6 w-6 text-accent" />
-                      Direct Payment Flow
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow space-y-4">
-                    <div>
-                      <h4 className="font-semibold text-white">
-                        Air Charter Payment
-                      </h4>
-                      <p className="text-white/80">
-                        Customer / Corporate / Agent → Pays Operator Directly
-                        (offline / bank transfer).
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-white">
-                        Hotel Accommodation Payment
-                      </h4>
-                      <p className="text-white/80">
-                        Customer / Corporate / Agent → Pays Hotel Directly.
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md md:col-span-2 lg:col-span-1">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-white">
-                      <Shield className="h-6 w-6 text-accent" />
-                      Our Role & Revenue Model
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div>
-                      <h4 className="mb-2 font-semibold text-white">
-                        Compliance First
-                      </h4>
-                      <ul className="space-y-2 text-sm text-white/80">
-                        <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
-                          AeroDesk never touches funds.
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
-                          Zero refund liability.
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
-                          No financial regulatory risk.
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
-                          No OTA classification trigger.
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="mb-2 font-semibold text-white">
-                        How We Earn
-                      </h4>
-                      <ul className="space-y-2 text-sm text-white/80">
-                        <li className="flex items-start gap-2">
-                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
-                          Subscription fees.
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
-                          Participation fees.
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
-                          Coordination / facilitation fees.
-                        </li>
-                      </ul>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </section>
-        </main>
-        
+const LandingFooter: FC = () => {
+    return (
         <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md">
           <div className="container py-8">
             <div className="grid w-full grid-cols-2 items-start justify-between gap-8 md:grid-cols-4 md:text-left">
@@ -562,7 +321,91 @@ export default function Home() {
             </div>
           </div>
         </footer>
-      </div>
+    )
+}
+
+export default function PromotionsPage() {
+  const firestore = useFirestore();
+  const { toast } = useToast();
+  const emptyLegsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
+  }, [firestore]);
+  const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+
+  const handleRequestSeats = (legId: string) => {
+    toast({
+        title: "Login Required",
+        description: "Please log in or register to request seat allocation.",
+        action: (
+            <Link href="/login">
+                <Button>Login</Button>
+            </Link>
+        )
+    });
+  };
+
+  return (
+    <div className="w-full">
+        <div
+            className="fixed inset-0 z-0 bg-cover bg-center"
+            style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
+            }}
+        >
+            <div className="absolute inset-0 bg-black/30" />
+        </div>
+        <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
+            <LandingHeader activePage="Promotions" />
+            <main className="flex-1 py-12 md:py-16">
+                <div className="container">
+                    <Card className="border-white/10 bg-black/15 backdrop-blur-md text-white">
+                        <CardHeader>
+                            <CardTitle className="text-3xl font-headline">
+                            Available Empty Leg Flights
+                            </CardTitle>
+                            <CardDescription className="text-white/80">
+                            One-way flights available. Request seats subject to operator confirmation.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {isLoading ? <Skeleton className="h-64 w-full bg-white/10" /> : (
+                            <Table>
+                                <TableHeader>
+                                <TableRow className="hover:bg-white/10">
+                                    <TableHead className="text-white/90">Flight ID</TableHead>
+                                    <TableHead className="text-white/90">Route</TableHead>
+                                    <TableHead className="text-white/90">Departure</TableHead>
+                                    <TableHead className="text-white/90">Available Seats</TableHead>
+                                    <TableHead className="text-right text-white/90">Action</TableHead>
+                                </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                {emptyLegs?.map((leg: EmptyLeg) => (
+                                    <TableRow key={leg.id} className="border-white/10 hover:bg-white/5">
+                                        <TableCell className="font-medium font-code">{leg.id}</TableCell>
+                                        <TableCell>{leg.departure} to {leg.arrival}</TableCell>
+                                        <TableCell>{new Date(leg.departureTime).toLocaleString()}</TableCell>
+                                        <TableCell className="font-bold text-center">{leg.availableSeats}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Button size="sm" onClick={() => handleRequestSeats(leg.id)}>Request Seat Allocation</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            )}
+                            {(!isLoading && (!emptyLegs || emptyLegs.length === 0)) && (
+                                <div className="text-center py-12 border-2 border-dashed border-white/20 rounded-lg">
+                                    <p className="text-white/70">There are currently no empty leg promotions available.</p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+            </main>
+            <LandingFooter />
+        </div>
     </div>
   );
 }
