@@ -4,12 +4,15 @@ import { Bell, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserNav } from '@/components/user-nav';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { Logo } from './logo';
 
 export function Header() {
+  const { state, isMobile } = useSidebar();
   return (
     <header className="flex h-20 items-center gap-4 border-b border-white/10 bg-black/20 backdrop-blur-md px-4 md:px-6 sticky top-0 z-30">
         <SidebarTrigger />
+        {state === 'collapsed' && !isMobile ? <Logo /> : null}
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
             <form className="ml-auto flex-1 sm:flex-initial">
                 <div className="relative">
