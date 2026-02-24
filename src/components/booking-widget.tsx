@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef } from 'react';
@@ -11,12 +10,12 @@ import { Label } from '@/components/ui/label';
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
+      viewBox="0 0 512 512"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
-        <path d="M14.5 19c-1.21 0-2.33.42-3.25 1.13.33-.23.65-.5.95-.82.88-.95 1.3-2.22 1.3-3.56V15h3v-2h-3v-2h1c.55 0 1-.45 1-1V9c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1c0 .55.45 1 1 1h1v2H7v2h3v.75c0 1.34.42 2.61 1.3 3.56.3.32.62.59.95.82C11.33 19.42 10.21 19 9 19c-2.76 0-5 2.24-5 5h2c0-1.65 1.35-3 3-3s3 1.35 3 3h2c0-1.65 1.35-3 3-3s3 1.35 3 3h2c0-2.76-2.24-5-5-5zM9 9h6V8c0-.55-.45-1-1-1h-4c-.55 0-1 .45-1 1v1zm14 2c0 .55-.45 1-1 1h-1.07c-.36-2.12-1.5-4.03-3.08-5.39-.01-.01 0 0 0 0C17.98 5.79 17.06 5 16 5c-1.18 0-2.24.45-3.03.95-.25.16-.5.33-.74.52-.02 0-.03.01-.05.02-.23.18-.46.36-.67.56-.02.02-.04.03-.06.05-.2.19-.39.39-.57.59-.01.01-.01.02-.02.03-.2.22-.38.45-.55.69-.01.01-.02.03-.02.04-.15.23-.29.46-.41.7-.01.02-.02.04-.02.06-.11.23-.21.46-.29.7-.01.02-.02.04-.03.06-.07.24-.14.48-.19.73-.01.02-.01.03-.02.05-.04.25-.07.5-.09.75v.01c0 .01 0 .02-.01.04-.01.25-.02.5-.02.75h-1.07c-.55 0-1-.45-1-1s.45-1 1-1h1.07C6.01 9.37 8.71 7 12 7c3.48 0 6.36 2.58 6.92 6H23c.55 0 1 .45 1 1z"/>
+        <path d="M369.3 129.5h-25.8c-3.4-33.5-16.1-64.4-35.3-89.4-18.4-24-42.2-40.1-68.2-40.1s-49.8 16.1-68.2 40.1c-19.2 25-31.9 55.9-35.3 89.4H110.7c-5.9 0-10.7 4.8-10.7 10.7v21.3c0 5.9 4.8 10.7 10.7 10.7h21.3v32h-21.3c-5.9 0-10.7 4.8-10.7 10.7v21.3c0 5.9 4.8 10.7 10.7 10.7h21.3c20.3 75.6 77.5 137.9 149.3 162.2V460c-23.7 3.3-42.7 23.4-42.7 47v5h32v-5c0-23.7-18.9-43.7-42.7-47v-86.5c71.9-24.2 129.1-86.6 149.3-162.2H368c5.9 0 10.7-4.8 10.7-10.7v-21.3c0-5.9-4.8-10.7-10.7-10.7h-21.3v-32h22.6c5.9 0 10.7-4.8 10.7-10.7v-21.3c0-5.9-4.8-10.7-10.7-10.7zM240 129.5h-10.7v-10.1c0-3.3 2.9-6.3 6.3-5.2 20.3 6.3 39.4 16.1 53.6 28.5-15.6-8.5-33-13.2-51.5-13.2h-10.7v10.7h13.1zM240 171.5v-32h32v32h-32zm-32 37.3v-21.3h85.3v21.3H208zm160-74.6c-5.3 0-9.6-4.3-9.6-9.6s4.3-9.6 9.6-9.6 9.6 4.3 9.6 9.6-4.3 9.6-9.6 9.6zm-245.3 0c-5.3 0-9.6-4.3-9.6-9.6s4.3-9.6 9.6-9.6 9.6 4.3 9.6 9.6-4.3 9.6-9.6 9.6z" />
     </svg>
 );
 
@@ -143,17 +142,17 @@ export function BookingWidget() {
 
 
   return (
-    <div className="bg-black/20 p-4 rounded-lg shadow-2xl border border-white/10 backdrop-blur-sm max-w-4xl mx-auto">
+    <div className="p-4 rounded-lg shadow-2xl border border-white/10 max-w-4xl mx-auto">
         <Tabs defaultValue="jet" className="w-full">
             <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent p-0 mb-6">
                  <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <Plane className="h-8 w-8" />
+                    <Plane className="h-10 w-10" />
                 </TabsTrigger>
                 <TabsTrigger value="helicopter" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <HelicopterIcon className="h-8 w-8" />
+                    <HelicopterIcon className="h-10 w-10" />
                 </TabsTrigger>
                 <TabsTrigger value="seats" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <Armchair className="h-8 w-8" />
+                    <Armchair className="h-10 w-10" />
                 </TabsTrigger>
             </TabsList>
             <TabsContent value="jet" className="mt-0">
@@ -181,7 +180,7 @@ export function BookingWidget() {
                     
                     {tripType === 'oneway' && (
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-5 gap-px rounded-md overflow-hidden bg-black/30 backdrop-blur-sm border border-white/10">
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-px rounded-md overflow-hidden border border-white/10">
                                 <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                                 <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                                 <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
@@ -193,12 +192,12 @@ export function BookingWidget() {
                     
                     {tripType === 'round' && (
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-px rounded-md overflow-hidden bg-black/30 backdrop-blur-sm border border-white/10">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-px rounded-md overflow-hidden border border-white/10">
                                 <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                                 <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                                 <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" />
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-px rounded-md overflow-hidden bg-black/30 backdrop-blur-sm border border-white/10">
+                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-px rounded-md overflow-hidden border border-white/10">
                                 <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
                                 <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Departure Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
                                 <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Return Date" value={returnDate} onChange={e => setReturnDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
@@ -211,7 +210,7 @@ export function BookingWidget() {
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 {legs.map((leg) => (
-                                    <div key={leg.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-px items-stretch rounded-md overflow-hidden bg-black/30 backdrop-blur-sm border border-white/10">
+                                    <div key={leg.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-px items-stretch rounded-md overflow-hidden border border-white/10">
                                         <AutocompleteInput placeholder="Origin" value={leg.origin} onChange={(val) => handleLegChange(leg.id, 'origin', val)} />
                                         <AutocompleteInput placeholder="Destination" value={leg.destination} onChange={(val) => handleLegChange(leg.id, 'destination', val)} />
                                         <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={leg.departureDate} onChange={(e) => handleLegChange(leg.id, 'departureDate', e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-3" style={{colorScheme: 'dark'}} />
@@ -235,7 +234,7 @@ export function BookingWidget() {
                                     placeholder="Passengers"
                                     value={passengers} 
                                     onChange={e => setPassengers(e.target.value)}
-                                    className="bg-black/30 backdrop-blur-sm border border-white/10 text-white placeholder:text-white/70 rounded-md h-full text-center"
+                                    className="bg-transparent border border-white/10 text-white placeholder:text-white/70 rounded-md h-full text-center"
                                 />
                             </div>
                         </div>
@@ -252,6 +251,3 @@ export function BookingWidget() {
     </div>
   );
 }
-
-    
-    
