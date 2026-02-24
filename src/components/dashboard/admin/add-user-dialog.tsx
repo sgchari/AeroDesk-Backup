@@ -96,6 +96,7 @@ export function AddUserDialog() {
         let userMappingData: any = { role: data.role };
         
         const commonData = {
+            id: user.uid,
             externalAuthId: user.uid,
             email: user.email,
             status: 'Active',
@@ -106,23 +107,23 @@ export function AddUserDialog() {
         switch (data.role) {
             case 'Admin':
                 collectionPath = 'platformAdmins';
-                userProfileData = { ...commonData, id: user.uid, firstName, lastName: lastName || 'User' };
+                userProfileData = { ...commonData, firstName, lastName: lastName || 'User' };
                 break;
             case 'Customer':
                 collectionPath = 'customers';
-                userProfileData = { ...commonData, id: user.uid, type: 'Individual', firstName, lastName: lastName || 'User' };
+                userProfileData = { ...commonData, type: 'Individual', firstName, lastName: lastName || 'User' };
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                userProfileData = { ...commonData, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                userProfileData = { ...commonData, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                userProfileData = { ...commonData, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'CTD Admin':
                 const ctdId = user.uid;
@@ -142,7 +143,11 @@ export function AddUserDialog() {
                 collectionPath = `corporateTravelDesks/${ctdId}/users`;
                 docId = user.uid;
                 userProfileData = {
-                    id: user.uid, externalAuthId: user.uid, ctdId: ctdId, email: user.email, role: 'Corporate Admin', status: 'Active', firstName, lastName: lastName || 'User', createdAt: now, updatedAt: now,
+                    ...commonData,
+                    ctdId: ctdId,
+                    role: 'Corporate Admin',
+                    firstName,
+                    lastName: lastName || 'User',
                 };
                 break;
         }

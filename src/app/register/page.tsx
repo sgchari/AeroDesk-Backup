@@ -26,7 +26,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import type { UserRole } from '@/lib/types';
-import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
+import { useAuth, useFirestore, setDocumentNonBlocking, addDocumentNonBlocking } from '@/firebase';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { doc, collection } from 'firebase/firestore';
 import { Logo } from '@/components/logo';
@@ -89,6 +89,7 @@ export default function RegisterPage() {
         let userMappingData: any = { role: data.role };
         
         const commonData = {
+            id: user.uid,
             externalAuthId: user.uid,
             email: user.email,
             status: 'Active',
@@ -99,17 +100,15 @@ export default function RegisterPage() {
         switch (data.role) {
             case 'Admin':
                 collectionPath = 'platformAdmins';
-                userProfileData = { ...commonData, id: user.uid, firstName, lastName: lastName || 'User' };
+                userProfileData = { ...commonData, firstName, lastName: lastName || 'User' };
                 break;
             case 'Customer':
                 collectionPath = 'customers';
-                userProfileData = { ...commonData, id: user.uid, type: 'Individual', firstName, lastName: lastName || 'User' };
+                userProfileData = { ...commonData, type: 'Individual', firstName, lastName: lastName || 'User' };
 
                 // Seed a sample RFQ
                 const rfqCollectionRef = collection(firestore, 'charterRFQs');
-                const rfqId = doc(rfqCollectionRef).id;
                 const sampleRfq = {
-                    id: rfqId,
                     customerId: user.uid,
                     requesterExternalAuthId: user.uid,
                     customerName: data.name,
@@ -124,17 +123,16 @@ export default function RegisterPage() {
                     updatedAt: now,
                     bidsCount: 0,
                 };
-                setDocumentNonBlocking(doc(rfqCollectionRef, rfqId), sampleRfq, { merge: true });
+                addDocumentNonBlocking(rfqCollectionRef, sampleRfq);
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                userProfileData = { ...commonData, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 
                 // Seed a sample aircraft
-                const aircraftCollectionRef = collection(firestore, 'operators', user.uid, 'aircrafts');
-                const aircraftId = doc(aircraftCollectionRef).id;
+                const aircraftDocRef = doc(collection(firestore, 'operators', user.uid, 'aircrafts'));
                 const sampleAircraft = {
-                    id: aircraftId,
+                    id: aircraftDocRef.id,
                     operatorId: user.uid,
                     name: 'Citation XLS+',
                     model: 'Citation XLS+',
@@ -146,15 +144,14 @@ export default function RegisterPage() {
                     homeBase: 'VABB',
                     status: 'Active'
                 };
-                setDocumentNonBlocking(doc(aircraftCollectionRef, aircraftId), sampleAircraft, { merge: true });
+                setDocumentNonBlocking(aircraftDocRef, sampleAircraft, { merge: true });
 
                 // Seed a sample approved empty leg from this operator
-                const emptyLegsCollectionRef = collection(firestore, 'emptyLegs');
-                const emptyLegId = doc(emptyLegsCollectionRef).id;
+                const emptyLegDocRef = doc(collection(firestore, 'emptyLegs'));
                 const sampleEmptyLeg = {
-                    id: emptyLegId,
+                    id: emptyLegDocRef.id,
                     operatorId: user.uid,
-                    aircraftId: aircraftId,
+                    aircraftId: aircraftDocRef.id,
                     departure: 'Delhi (VIDP)',
                     arrival: 'Jaipur (VIJP)',
                     departureTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days from now
@@ -164,21 +161,20 @@ export default function RegisterPage() {
                     createdAt: now,
                     updatedAt: now,
                 };
-                setDocumentNonBlocking(doc(emptyLegsCollectionRef, emptyLegId), sampleEmptyLeg, { merge: true });
+                setDocumentNonBlocking(emptyLegDocRef, sampleEmptyLeg, { merge: true });
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                userProfileData = { ...commonData, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
+                userProfileData = { ...commonData, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 
                 // Seed a sample property and room category
-                const propertiesCollectionRef = collection(firestore, 'hotelPartners', user.uid, 'properties');
-                const propertyId = doc(propertiesCollectionRef).id;
+                const propertyDocRef = doc(collection(firestore, 'hotelPartners', user.uid, 'properties'));
                 const sampleProperty = {
-                    id: propertyId,
+                    id: propertyDocRef.id,
                     hotelPartnerId: user.uid,
                     name: 'The Grand Lighthouse',
                     address: '123 Ocean View Drive',
@@ -188,13 +184,12 @@ export default function RegisterPage() {
                     createdAt: now,
                     updatedAt: now
                 };
-                setDocumentNonBlocking(doc(propertiesCollectionRef, propertyId), sampleProperty, { merge: true });
+                setDocumentNonBlocking(propertyDocRef, sampleProperty, { merge: true });
 
-                const roomCategoriesCollectionRef = collection(firestore, `hotelPartners/${user.uid}/properties/${propertyId}/roomCategories`);
-                const roomCategoryId = doc(roomCategoriesCollectionRef).id;
+                const roomCategoryDocRef = doc(collection(firestore, `hotelPartners/${user.uid}/properties/${propertyDocRef.id}/roomCategories`));
                 const sampleRoomCategory = {
-                    id: roomCategoryId,
-                    propertyId: propertyId,
+                    id: roomCategoryDocRef.id,
+                    propertyId: propertyDocRef.id,
                     name: 'Ocean View Suite',
                     description: 'A luxurious suite with a stunning view of the Arabian Sea.',
                     maxOccupancy: 2,
@@ -203,10 +198,9 @@ export default function RegisterPage() {
                     createdAt: now,
                     updatedAt: now
                 };
-                setDocumentNonBlocking(doc(roomCategoriesCollectionRef, roomCategoryId), sampleRoomCategory, { merge: true });
+                setDocumentNonBlocking(roomCategoryDocRef, sampleRoomCategory, { merge: true });
                 break;
             case 'CTD Admin':
-                // For CTD Admin, we create a new CorporateTravelDesk and a CTDUser
                 const ctdId = user.uid; // Use user's UID as the CTD ID
                 userMappingData.ctdId = ctdId; // Add ctdId to the mapping
 
@@ -224,24 +218,18 @@ export default function RegisterPage() {
                 collectionPath = `corporateTravelDesks/${ctdId}/users`;
                 docId = user.uid; // The admin user's doc id is their own uid
                 userProfileData = {
-                    id: user.uid,
-                    externalAuthId: user.uid,
+                    ...commonData,
                     ctdId: ctdId,
-                    email: user.email,
                     role: 'Corporate Admin', // CTD Admins are given the Corporate Admin role in their desk
-                    status: 'Active',
                     firstName,
                     lastName: lastName || 'User',
-                    createdAt: now,
-                    updatedAt: now,
                 };
 
                 // Seed a second 'Requester' user for the same corporate desk
-                const ctdUsersCollectionRef = collection(firestore, `corporateTravelDesks/${ctdId}/users`);
-                const requesterId = doc(ctdUsersCollectionRef).id;
+                const requesterDocRef = doc(collection(firestore, `corporateTravelDesks/${ctdId}/users`));
                 const requesterData = {
-                    id: requesterId,
-                    externalAuthId: `requester_${requesterId}`, // dummy auth id for a non-login user
+                    id: requesterDocRef.id,
+                    externalAuthId: `requester_${requesterDocRef.id}`, // dummy auth id for a non-login user
                     ctdId: ctdId,
                     email: 'employee@example.com',
                     role: 'Requester',
@@ -251,7 +239,7 @@ export default function RegisterPage() {
                     createdAt: now,
                     updatedAt: now,
                 };
-                setDocumentNonBlocking(doc(ctdUsersCollectionRef, requesterId), requesterData, { merge: true });
+                setDocumentNonBlocking(requesterDocRef, requesterData, { merge: true });
                 break;
         }
 

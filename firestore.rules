@@ -72,7 +72,7 @@ service cloud.firestore {
      * This works because the ctdId is the UID of the admin user.
      */
     function isCTDAdmin(ctdId) {
-        return isOwner(ctdId);
+        return request.auth.uid == ctdId;
     }
     
     /**
@@ -95,7 +95,7 @@ service cloud.firestore {
      */
     match /users/{userId} {
       // A user should only be able to read their own role mapping.
-      allow get: if isOwner(userId) || isPlatformAdmin();
+      allow get: if request.auth.uid == userId;
       allow list: if isPlatformAdmin();
       // Creation and writing (for set-merge) happens during registration.
       allow create, write: if isOwner(userId);
@@ -255,10 +255,9 @@ service cloud.firestore {
      * @principle Access is restricted to the designated CTD Admin or a Platform Admin.
      */
     match /corporateTravelDesks/{ctdId} {
-      // The CTD Admin is the owner of the CTD document itself.
       allow get: if isCTDAdmin(ctdId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
-      allow create: if isCTDAdmin(ctdId);
+      allow create: if request.auth.uid == ctdId;
       allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
       allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
 
@@ -272,7 +271,7 @@ service cloud.firestore {
       match /users/{ctdUserId} {
         allow get: if isCTDAdmin(ctdId) || isOwner(ctdUserId) || isPlatformAdmin();
         allow list: if isCTDAdmin(ctdId) || isPlatformAdmin();
-        allow create: if isCTDAdmin(ctdId) && request.resource.data.ctdId == ctdId;
+        allow create: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
         allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
         allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
       }
@@ -286,9 +285,9 @@ service cloud.firestore {
        */
       match /approvalRules/{ruleId} {
         allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
-        allow create: if isCTDAdmin(ctdId) && request.resource.data.ctdId == ctdId;
-        allow update: if isCTDAdmin(ctdId) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
-        allow delete: if isCTDAdmin(ctdId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+        allow create: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
+        allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
+        allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
       }
 
       /**
@@ -314,9 +313,9 @@ service cloud.firestore {
        */
       match /policyFlags/{policyFlagId} {
         allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
-        allow create: if isCTDAdmin(ctdId) && request.resource.data.ctdId == ctdId;
-        allow update: if isCTDAdmin(ctdId) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
-        allow delete: if isCTDAdmin(ctdId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
+        allow create: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
+        allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
+        allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
       }
 
       /**
