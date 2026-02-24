@@ -104,7 +104,7 @@ export type EmptyLeg = {
 export type AccommodationRequest = {
     id: string;
     charterRequestId?: string;
-    emptyLegFlightId?: string;
+    emptyLegId?: string;
     hotelPartnerId?: string;
     tripId?: string;
     guestType?: 'Passenger' | 'Crew';

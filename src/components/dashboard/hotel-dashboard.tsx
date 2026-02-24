@@ -84,7 +84,7 @@ export function HotelDashboard() {
                 {requests?.map((req) => (
                     <TableRow key={req.id}>
                         <TableCell className="font-medium font-code">{req.id}</TableCell>
-                        <TableCell className="font-code">{req.charterRequestId || req.emptyLegFlightId}</TableCell>
+                        <TableCell className="font-code">{req.charterRequestId || req.emptyLegId}</TableCell>
                         <TableCell>
                             <Badge variant={req.isCrewAccommodation ? 'outline' : 'secondary'}>{req.isCrewAccommodation ? 'Crew' : 'Passenger'}</Badge>
                         </TableCell>
