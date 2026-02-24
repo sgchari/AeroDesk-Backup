@@ -351,9 +351,9 @@ service cloud.firestore {
     }
 
     /**
-     * @description Manages Empty Leg flight listings.
+     * @description Manages Empty Leg flight listings. Publicly readable for promotions, writeable only by owning operator.
      * @path /emptyLegs/{emptyLegId}
-     * @allow (list) Any authenticated user listing approved empty leg flights.
+     * @allow (list) Any user (public) can list empty leg flights.
      * @deny (create) A customer trying to create an empty leg flight.
      * @principle Public read for approved listings, with writes restricted to the owning operator.
      */
