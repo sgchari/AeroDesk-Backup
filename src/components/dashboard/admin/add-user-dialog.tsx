@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -92,6 +93,7 @@ export function AddUserDialog() {
         let collectionPath = '';
         let docId = user.uid;
         let userProfileData: any = {};
+        let userMappingData: any = { role: data.role };
         
         const commonData = {
             externalAuthId: user.uid,
@@ -112,18 +114,20 @@ export function AddUserDialog() {
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'CTD Admin':
                 const ctdId = `ctd_${user.uid}`;
+                userMappingData.ctdId = ctdId; // Add ctdId to the mapping
+
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);
                 const ctdData = {
                     id: ctdId,
@@ -142,6 +146,10 @@ export function AddUserDialog() {
                 };
                 break;
         }
+
+        // Create the user role mapping document
+        const userMappingDocRef = doc(firestore, 'users', user.uid);
+        setDocumentNonBlocking(userMappingDocRef, userMappingData, { merge: true });
 
         if (collectionPath && Object.keys(userProfileData).length > 0) {
             const userDocRef = doc(firestore, collectionPath, docId);

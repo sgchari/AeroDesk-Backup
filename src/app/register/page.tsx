@@ -86,6 +86,7 @@ export default function RegisterPage() {
         let collectionPath = '';
         let docId = user.uid;
         let userProfileData: any = {};
+        let userMappingData: any = { role: data.role };
         
         const commonData = {
             externalAuthId: user.uid,
@@ -120,13 +121,14 @@ export default function RegisterPage() {
                     aircraftType: 'Any Light Jet',
                     status: 'Bidding Open',
                     createdAt: now,
+                    updatedAt: now,
                     bidsCount: 0,
                 };
                 setDocumentNonBlocking(doc(rfqCollectionRef, rfqId), sampleRfq, { merge: true });
                 break;
             case 'Operator':
                 collectionPath = 'operators';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 
                 // Seed a sample aircraft
                 const aircraftCollectionRef = collection(firestore, 'operators', user.uid, 'aircrafts');
@@ -166,11 +168,11 @@ export default function RegisterPage() {
                 break;
             case 'Authorized Distributor':
                 collectionPath = 'distributors';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 break;
             case 'Hotel Partner':
                 collectionPath = 'hotelPartners';
-                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name };
+                userProfileData = { ...commonData, id: user.uid, companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
                 
                 // Seed a sample property and room category
                 const propertiesCollectionRef = collection(firestore, 'hotelPartners', user.uid, 'properties');
@@ -206,6 +208,8 @@ export default function RegisterPage() {
             case 'CTD Admin':
                 // For CTD Admin, we create a new CorporateTravelDesk and a CTDUser
                 const ctdId = `ctd_${user.uid}`;
+                userMappingData.ctdId = ctdId; // Add ctdId to the mapping
+
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);
                 const ctdData = {
                     id: ctdId,
@@ -224,7 +228,7 @@ export default function RegisterPage() {
                     externalAuthId: user.uid,
                     ctdId: ctdId,
                     email: user.email,
-                    role: 'Corporate Admin',
+                    role: 'Corporate Admin', // CTD Admins are given the Corporate Admin role in their desk
                     status: 'Active',
                     firstName,
                     lastName: lastName || 'User',
@@ -237,7 +241,7 @@ export default function RegisterPage() {
                 const requesterId = doc(ctdUsersCollectionRef).id;
                 const requesterData = {
                     id: requesterId,
-                    externalAuthId: `requester_${requesterId}`, // dummy auth id
+                    externalAuthId: `requester_${requesterId}`, // dummy auth id for a non-login user
                     ctdId: ctdId,
                     email: 'employee@example.com',
                     role: 'Requester',
@@ -251,6 +255,11 @@ export default function RegisterPage() {
                 break;
         }
 
+        // Create the user role mapping document
+        const userMappingDocRef = doc(firestore, 'users', user.uid);
+        setDocumentNonBlocking(userMappingDocRef, userMappingData, { merge: true });
+
+        // Create the full user profile document
         if (collectionPath && Object.keys(userProfileData).length > 0) {
             const userDocRef = doc(firestore, collectionPath, docId);
             setDocumentNonBlocking(userDocRef, userProfileData, { merge: true });
