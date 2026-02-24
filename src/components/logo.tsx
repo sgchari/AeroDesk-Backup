@@ -2,25 +2,34 @@
 import { cn } from '@/lib/utils';
 
 const AeroLogoIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 64 42" xmlns="http://www.w3.org/2000/svg" {...props}>
-        {/* Wings */}
-        <path d="M22 16c-14 2-14 12-22 10 8 8 18 8 22-4z" className="fill-[hsl(var(--accent))]"/>
-        <path d="M18 19c-10 1-10 8-18 6 6 6 14 6 18-2z" className="fill-[hsl(var(--accent))] opacity-70"/>
-        <path d="M42 16c14 2 14 12 22 10-8 8-18 8-22-4z" className="fill-[hsl(var(--accent))]"/>
-        <path d="M46 19c10 1 10 8 18 6-6 6-14 6-18-2z" className="fill-[hsl(var(--accent))] opacity-70"/>
+    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" {...props}>
+        {/* Outlines (Wings, Tail) */}
+        <path d="M 80,45 C 20,20 0,70 0,60 L 0,70 C 20,90 60,95 80,65" fill="hsl(var(--secondary))" />
+        <path d="M 120,45 C 180,20 200,70 200,60 L 200,70 C 180,90 140,95 120,65" fill="hsl(var(--secondary))" />
+        <path d="M100 70 L 100 95 C 100 100, 95 100, 95 100 L 105 100 C 105 100, 100 100, 100 95 Z" fill="hsl(var(--secondary))" />
+
+        {/* Wing Feathers (Accent Color) */}
+        <path d="M 78,50 C 30,35 20,65 15,62 C 30,80 55,83 78,60" fill="hsl(var(--accent))" />
+        <path d="M 76,55 C 45,48 40,70 35,68 C 48,80 60,82 76,65" fill="hsl(var(--accent))" />
+        <path d="M 74,60 C 60,57 58,72 55,71 C 62,80 68,80 74,69" fill="hsl(var(--accent))" />
         
-        {/* Propeller */}
-        <circle cx="32" cy="21" r="10" className="fill-[hsl(var(--secondary))]"/>
-        <path d="M30 31 L 34 31 L 33 36 L 31 36 Z"  className="fill-[hsl(var(--secondary))]"/>
-        <circle cx="32" cy="21" r="8" className="stroke-[hsl(var(--muted))] fill-none" strokeWidth="1.5"/>
-        <circle cx="32" cy="21" r="3" className="fill-[hsl(var(--secondary))]"/>
+        <path d="M 122,50 C 170,35 180,65 185,62 C 170,80 145,83 122,60" fill="hsl(var(--accent))" />
+        <path d="M 124,55 C 155,48 160,70 165,68 C 152,80 140,82 124,65" fill="hsl(var(--accent))" />
+        <path d="M 126,60 C 140,57 142,72 145,71 C 138,80 132,80 126,69" fill="hsl(var(--accent))" />
         
-        {/* Blades */}
-        <g className="fill-[hsl(var(--muted-foreground))]">
-            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(0 32 21)"/>
-            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(120 32 21)"/>
-            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(240 32 21)"/>
+        {/* Propeller Hub */}
+        <circle cx="100" cy="60" r="22" fill="hsl(var(--secondary))" />
+
+        {/* Propeller Blades */}
+        <g transform="translate(100 60)">
+            <path d="M0 -28 L -6 0 Q 0 -5 6 0 Z" transform="rotate(0)" fill="hsl(var(--muted-foreground))" />
+            <path d="M0 -28 L -6 0 Q 0 -5 6 0 Z" transform="rotate(120)" fill="hsl(var(--muted-foreground))" />
+            <path d="M0 -28 L -6 0 Q 0 -5 6 0 Z" transform="rotate(240)" fill="hsl(var(--muted-foreground))" />
         </g>
+        
+        {/* Hub Details */}
+        <circle cx="100" cy="60" r="18" stroke="hsl(var(--muted))" strokeWidth="4" fill="none" />
+        <circle cx="100" cy="60" r="4" fill="hsl(var(--secondary))" />
     </svg>
 );
 
@@ -38,7 +47,7 @@ export function Logo({ className }: { className?: string }) {
                 <span className="font-headline text-xl font-semibold tracking-normal text-white">AERO</span>
                 <span className="font-headline text-xl font-semibold tracking-normal" style={{ color: '#EEDC5B' }}>DESK</span>
             </div>
-            <p className="text-xs text-white/90 -mt-1 whitespace-nowrap">Fly Charter, Stay Premium</p>
+            <p className="text-xs text-white/90 -mt-1 whitespace-nowrap">Organized Charter Network</p>
         </div>
     </div>
   );
