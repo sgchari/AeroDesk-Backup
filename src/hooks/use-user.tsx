@@ -56,8 +56,29 @@ export function UserProvider({ children }: { children: ReactNode }) {
             return; // Profile found, we're done.
           }
         }
+        
+        // 2. If not found, check if it's a CTD Admin who created their own desk.
+        // This is a convention based on the registration logic where ctdId is 'ctd_' + user.uid.
+        const ctdIdForAdmin = `ctd_${uid}`;
+        const ctdAdminUserDocRef = doc(firestore, `corporateTravelDesks/${ctdIdForAdmin}/users`, uid);
+        const ctdAdminDocSnap = await getDoc(ctdAdminUserDocRef);
 
-        // 2. If not found, it might be a CTD user. This will fail for non-admins but that's expected.
+        if (ctdAdminDocSnap.exists()) {
+            const profileData = { ...ctdAdminDocSnap.data(), id: uid } as AppUser;
+            // Also fetch company name from the parent desk.
+            const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdIdForAdmin);
+            const ctdDocSnap = await getDoc(ctdDocRef);
+            if (ctdDocSnap.exists()) {
+                profileData.company = ctdDocSnap.data().companyName;
+            }
+            setAppUser(profileData);
+            setProfileLoading(false);
+            return; // Profile found.
+        }
+
+
+        // 3. If still not found, it might be another type of CTD user (e.g., Requester).
+        // The collectionGroup query is kept as a fallback, but it requires permissive security rules to work for non-admins.
         const ctdUsersQuery = query(collectionGroup(firestore, 'users'), where('externalAuthId', '==', uid));
         const ctdUsersSnap = await getDocs(ctdUsersQuery);
 
@@ -66,7 +87,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             const profileData = { ...userDoc.data(), id: uid } as AppUser;
             
             // For CTD users, we also fetch the company name from the parent desk.
-            if ((profileData.role === 'Corporate Admin' || profileData.role === 'CTD Admin') && (profileData as any).ctdId) {
+            if ((profileData.role === 'Corporate Admin' || profileData.role === 'CTD Admin' || profileData.role === 'Requester') && (profileData as any).ctdId) {
                 const ctdDocRef = doc(firestore, 'corporateTravelDesks', (profileData as any).ctdId);
                 const ctdDocSnap = await getDoc(ctdDocRef);
                 if (ctdDocSnap.exists()) {
@@ -79,7 +100,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             return; // CTD profile found, we're done.
         }
         
-        // 3. If we've reached here, the profile was not found in any location.
+        // 4. If we've reached here, the profile was not found in any location.
         throw new Error("User profile not found in any known collection. Please complete your registration or contact support.");
 
       } catch (e: any) {
@@ -87,7 +108,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         // If a 'permission-denied' error happens, it's most likely from the collectionGroup query, 
         // which is an expected failure for non-corporate users. We can treat this as "profile not found".
         if (e.code === 'permission-denied') {
-            console.warn("A permission error occurred during profile search, which is expected for non-corporate users. This may mean the user's profile document doesn't exist in any of the primary collections.", e);
+            console.warn("A permission error occurred during profile search. This may mean the user's profile document doesn't exist or rules are blocking access.", e);
             // We create a more user-friendly error to display.
             const notFoundError = new Error("User profile not found. Please complete your registration or contact support.");
             setProfileError(notFoundError);

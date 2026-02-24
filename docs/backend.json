@@ -107,7 +107,7 @@
         },
         "status": {
           "type": "string",
-          "description": "Current status of the operator (e.g., 'Pending Approval', 'Approved', 'Suspended')."
+          "description": "Current status of the operator (e.g., 'Pending Approval', 'Approved', 'Suspended', 'Rejected')."
         },
         "mouAcceptedAt": {
           "type": "string",
@@ -321,7 +321,7 @@
         },
         "status": {
           "type": "string",
-          "description": "Current status of the RFQ (e.g., 'Draft', 'Submitted', 'Pending Approval', 'Approved', 'Confirmed', 'Cancelled', 'Expired')."
+          "description": "Current status of the RFQ (e.g., 'Draft', 'Submitted', 'Pending Approval', 'Bidding Open', 'Operator Selected', 'Approved', 'Confirmed', 'Cancelled', 'Expired')."
         },
         "submittedAt": {
           "type": "string",
@@ -1217,7 +1217,7 @@
         },
         "role": {
           "type": "string",
-          "description": "The specific role of the user within the CTD (e.g., 'Requester', 'Approver', 'Corporate Admin')."
+          "description": "The specific role of the user within the CTD (e.g., 'Requester', 'Approver', 'Corporate Admin', 'CTD Admin')."
         },
         "status": {
           "type": "string",
@@ -1298,8 +1298,6 @@
       "required": [
         "id",
         "ctdId",
-        "minCostThreshold",
-        "maxCostThreshold",
         "approverRole",
         "requiredApprovals",
         "order",
