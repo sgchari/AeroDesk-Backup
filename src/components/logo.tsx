@@ -30,7 +30,7 @@ export function Logo({ className }: { className?: string }) {
                 <span className="font-headline text-xl font-semibold tracking-normal text-white">AERO</span>
                 <span className="font-headline text-xl font-semibold tracking-normal" style={{ color: '#EEDC5B' }}>DESK</span>
             </div>
-            <p className="text-xs text-white/90 -mt-1">Organized Charter Platform</p>
+            <p className="text-xs text-white/90 -mt-1 whitespace-nowrap">Organized Charter Platform</p>
         </div>
     </div>
   );
