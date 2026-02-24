@@ -124,13 +124,13 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
                 className="w-[280px] border-l-0 bg-transparent p-0 text-white"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
-                 <div className="flex flex-col">
-                  <div className="flex h-16 items-center justify-start border-b border-white/10 bg-black/30 px-3 backdrop-blur-md">
-                    <Link href="/">
+                 <div>
+                  <div className="flex h-20 items-center justify-start border-b border-white/10 bg-black/30 px-3 backdrop-blur-md">
+                    <Link href="/" className="-ml-4">
                       <Logo />
                     </Link>
                   </div>
-                  <nav className="bg-transparent p-6 backdrop-blur-none">
+                  <nav className="bg-transparent/20 p-6 backdrop-blur-none">
                     {navLinks.map((link) => (
                       <Link
                         key={link.label}
@@ -141,7 +141,7 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
                       </Link>
                     ))}
                   </nav>
-                  <div className="flex flex-col gap-2 border-t border-white/10 bg-black/30 p-2 backdrop-blur-md">
+                  <div className="shrink-0 border-t border-white/10 bg-black/30 p-2 backdrop-blur-md">
                     <a
                       href="tel:+919819754038"
                       className="flex items-center gap-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
@@ -149,7 +149,7 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
                       <Phone className="h-4 w-4" />
                       +91 9819754038
                     </a>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="mt-2 grid grid-cols-2 gap-2">
                       <Button asChild style={{ backgroundColor: '#EEDC5B', color: 'black' }}>
                         <Link href="/login">Login</Link>
                       </Button>
@@ -174,14 +174,14 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
 
 const LandingFooter: FC = () => {
     return (
-        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-2">
-          <div className="container py-2">
-            <div className="grid w-full grid-cols-1 items-start gap-6 md:grid-cols-4 md:text-left">
+        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-1">
+          <div className="container py-1">
+            <div className="grid w-full grid-cols-1 items-start gap-4 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
                 <Logo />
               </div>
 
-              <div className="flex flex-col items-start gap-3">
+              <div className="flex flex-col items-start gap-2">
                 <h3 className="font-semibold uppercase tracking-wider text-white">
                   Get In Touch
                 </h3>
@@ -204,7 +204,7 @@ const LandingFooter: FC = () => {
                   <Mail className="h-4 w-4" /> info@aerodesk.com
                 </a>
               </div>
-              <div className="flex flex-col items-start gap-3">
+              <div className="flex flex-col items-start gap-2">
                 <h3 className="font-semibold uppercase tracking-wider text-white">
                   Legal
                 </h3>
@@ -219,7 +219,7 @@ const LandingFooter: FC = () => {
                 </Link>
               </div>
 
-              <div className="flex flex-col items-start gap-3">
+              <div className="flex flex-col items-start gap-2">
                 <h3 className="font-semibold uppercase tracking-wider text-white">
                   Follow Us
                 </h3>
