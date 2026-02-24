@@ -134,7 +134,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-none bg-black/50 p-0 text-white backdrop-blur-md"
+                className="w-[240px] border-none bg-transparent p-0 text-white"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -420,53 +420,57 @@ export default function Home() {
         </main>
         
         <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md">
-          <div className="container py-12">
-            <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
-              <div className="flex flex-col items-center gap-4 sm:items-start">
+          <div className="container py-8">
+            <div className="flex w-full flex-col items-center gap-8 text-center md:flex-row md:items-start md:justify-between md:text-left">
+              <div className="flex flex-col items-center md:items-start">
                 <Logo />
               </div>
-              <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
-                <h3 className="font-semibold uppercase tracking-wider text-white">
-                  Get In Touch
-                </h3>
-                <a
-                  href="tel:+919819754038"
-                  className="inline-flex items-center gap-2 hover:text-white"
-                >
-                  <Phone className="h-4 w-4" /> +91 98197 54038
-                </a>
-                <a
-                  href="tel:+912228222202"
-                  className="inline-flex items-center gap-2 hover:text-white"
-                >
-                  <Phone className="h-4 w-4" /> +91 22 2822 2202
-                </a>
-                <a
-                  href="mailto:info@aerodesk.com"
-                  className="inline-flex items-center gap-2 hover:text-white"
-                >
-                  <Mail className="h-4 w-4" /> info@aerodesk.com
-                </a>
+
+              <div className="flex flex-col gap-8 text-center sm:flex-row sm:gap-16 sm:text-left">
+                <div className="flex flex-col items-center gap-3 sm:items-start">
+                  <h3 className="font-semibold uppercase tracking-wider text-white">
+                    Get In Touch
+                  </h3>
+                  <a
+                    href="tel:+919819754038"
+                    className="inline-flex items-center gap-2 hover:text-white"
+                  >
+                    <Phone className="h-4 w-4" /> +91 98197 54038
+                  </a>
+                  <a
+                    href="tel:+912228222202"
+                    className="inline-flex items-center gap-2 hover:text-white"
+                  >
+                    <Phone className="h-4 w-4" /> +91 22 2822 2202
+                  </a>
+                  <a
+                    href="mailto:info@aerodesk.com"
+                    className="inline-flex items-center gap-2 hover:text-white"
+                  >
+                    <Mail className="h-4 w-4" /> info@aerodesk.com
+                  </a>
+                </div>
+                <div className="flex flex-col items-center gap-3 sm:items-start">
+                  <h3 className="font-semibold uppercase tracking-wider text-white">
+                    Legal
+                  </h3>
+                  <Link href="/terms-of-service" className="hover:text-white">
+                    Terms of Service
+                  </Link>
+                  <Link href="/privacy-policy" className="hover:text-white">
+                    Privacy Policy
+                  </Link>
+                  <Link href="/safety-standards" className="hover:text-white">
+                    Safety Standards
+                  </Link>
+                </div>
               </div>
-              <div className="flex flex-col items-center gap-3 text-white/80 md:items-start">
-                <h3 className="font-semibold uppercase tracking-wider text-white">
-                  Legal
-                </h3>
-                <Link href="/terms-of-service" className="hover:text-white">
-                  Terms of Service
-                </Link>
-                <Link href="/privacy-policy" className="hover:text-white">
-                  Privacy Policy
-                </Link>
-                <Link href="/safety-standards" className="hover:text-white">
-                  Safety Standards
-                </Link>
-              </div>
-              <div className="flex flex-col items-center gap-3 md:items-end">
+
+              <div className="flex flex-col items-center gap-3 text-center md:items-end md:text-right">
                 <h3 className="font-semibold uppercase tracking-wider text-white">
                   Follow Us
                 </h3>
-                <div className="flex gap-4 text-white/80">
+                <div className="flex gap-4">
                   <Link
                     href="#"
                     aria-label="Facebook"
@@ -549,7 +553,7 @@ export default function Home() {
                     </svg>
                   </Link>
                 </div>
-              </div>
+            </div>
             </div>
             <div className="mt-8 border-t border-white/10 pt-8 text-center text-xs text-white/60">
               <p>
@@ -576,5 +580,6 @@ export default function Home() {
 
 
     
+
 
 
