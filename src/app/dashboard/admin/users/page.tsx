@@ -111,15 +111,15 @@ export default function UserManagementPage() {
                 }
             };
             
-            admins?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Admin', status: u.status, createdAt: u.createdAt }));
-            customers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Customer', status: u.status, createdAt: u.createdAt }));
-            operators?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Operator', status: u.status, createdAt: u.createdAt }));
-            distributors?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Authorized Distributor', status: u.status, createdAt: u.createdAt }));
-            hotelPartners?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Hotel Partner', status: u.status, createdAt: u.createdAt }));
+            admins?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Admin', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
+            customers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Customer', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
+            operators?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Operator', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
+            distributors?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Authorized Distributor', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
+            hotelPartners?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Hotel Partner', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
             ctdUsers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: u.role, status: u.status, createdAt: u.createdAt, ctdId: u.ctdId }));
 
             const normalizedUsers = Array.from(userMap.values());
-            normalizedUsers.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            normalizedUsers.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
             
             setAllUsers(normalizedUsers);
         }
@@ -217,9 +217,9 @@ export default function UserManagementPage() {
                                     <TableRow key={user.id}>
                                         <TableCell className="font-medium">{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
-                                        <TableCell><Badge variant="outline">{user.role}</Badge></TableCell>
+                                        <TableCell><Badge variant="outline">{user.role}</TableCell>
                                         <TableCell><Badge variant={user.status === 'Active' || user.status === 'Approved' ? 'default' : user.status === 'Suspended' ? 'destructive' : 'secondary'}>{user.status}</Badge></TableCell>
-                                        <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</TableCell>
                                         <TableCell>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>

@@ -10,8 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where, orderBy, limit } from "firebase/firestore";
+import { useCollection, useFirestore, useMemoFirebase, errorEmitter, FirestorePermissionError } from "@/firebase";
+import { collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
 
 export function AdminDashboard() {
   const firestore = useFirestore();
@@ -26,16 +27,60 @@ export function AdminDashboard() {
   const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]));
   const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]));
 
+  // Fetch CTD users for an accurate count
+  const { data: ctds, isLoading: ctdsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]));
+  const [ctdUsers, setCtdUsers] = useState<any[]>([]);
+  const [ctdUsersLoading, setCtdUsersLoading] = useState(true);
+
+  useEffect(() => {
+    if (!firestore || ctds === null) {
+      if (!ctdsLoading) {
+        setCtdUsers([]);
+        setCtdUsersLoading(false);
+      }
+      return;
+    }
+    if (ctds.length === 0) {
+      setCtdUsers([]);
+      setCtdUsersLoading(false);
+      return;
+    }
+    const fetchAllCtdUsers = async () => {
+      if (!firestore) return;
+      setCtdUsersLoading(true);
+      try {
+        const allUsersPromises = ctds.map(ctd => {
+          const usersCollectionRef = collection(firestore, `corporateTravelDesks/${ctd.id}/users`);
+          return getDocs(usersCollectionRef);
+        });
+        const allUsersSnapshots = await Promise.all(allUsersPromises);
+        const allUsersData: any[] = [];
+        allUsersSnapshots.forEach(snapshot => {
+          snapshot.forEach(doc => {
+            allUsersData.push({ ...doc.data(), id: doc.id });
+          });
+        });
+        setCtdUsers(allUsersData);
+      } catch (error: any) {
+        console.error("Error fetching CTD users for dashboard:", error);
+      } finally {
+        setCtdUsersLoading(false);
+      }
+    };
+    fetchAllCtdUsers();
+  }, [ctds, firestore, ctdsLoading]);
+
+
   const auditLogsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5)) : null, [firestore]);
   const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery);
 
   const activeRfqsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open')) : null, [firestore]);
   const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery);
   
-  const userCollectionsLoading = adminsLoading || customersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading;
+  const userCollectionsLoading = adminsLoading || customersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading || ctdUsersLoading;
   const isLoading = pendingLegsLoading || userCollectionsLoading || auditLogsLoading || activeRfqsLoading;
 
-  const totalUsers = (admins?.length ?? 0) + (customers?.length ?? 0) + (operators?.length ?? 0) + (distributors?.length ?? 0) + (hotelPartners?.length ?? 0);
+  const totalUsers = (admins?.length ?? 0) + (customers?.length ?? 0) + (operators?.length ?? 0) + (distributors?.length ?? 0) + (hotelPartners?.length ?? 0) + (ctdUsers?.length ?? 0);
   const totalPartners = (distributors?.length ?? 0) + (hotelPartners?.length ?? 0);
   
   const stats = {
