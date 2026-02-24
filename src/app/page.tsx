@@ -1,10 +1,10 @@
-
 'use client';
 
 import {
   useState,
   useEffect,
   type FC,
+  useRef,
 } from 'react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
@@ -38,25 +38,33 @@ import { cn } from '@/lib/utils';
 
 
 const LandingHeader: FC = () => {
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 80) {
-        // Scrolling down
-        setIsVisible(false);
+      if (window.innerWidth < 768) { // Mobile devices
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
+          setIsVisible(false); // Hide on scroll down
+        } else {
+          setIsVisible(true); // Show on scroll up
+        }
+        lastScrollY.current = currentScrollY;
       } else {
-        // Scrolling up
-        setIsVisible(true);
+        setIsVisible(true); // Always visible on desktop/tablet
       }
-      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    window.addEventListener('resize', handleScroll, { passive: true }); // handleScroll covers resize logic too
+    handleScroll(); // Initial check
+
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
 
   const navLinks = [
     { href: '#', label: 'Promotions' },
@@ -68,7 +76,8 @@ const LandingHeader: FC = () => {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full text-white transition-transform duration-300 bg-black/50 backdrop-blur-md'
+        'sticky top-0 z-50 w-full text-white transition-transform duration-300 bg-black/50 backdrop-blur-md',
+        !isVisible && '-translate-y-full'
       )}
     >
       <div className="container flex h-20 items-center justify-between">
@@ -265,7 +274,7 @@ export default function Home() {
                   {features.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex flex-col items-center rounded-xl border-white/10 bg-transparent p-6 text-center"
+                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/30 backdrop-blur-md p-6 text-center"
                     >
                       <feature.icon className="h-10 w-10 text-yellow-300" />
                       <h3 className="mt-4 text-lg font-bold text-white">
@@ -294,7 +303,7 @@ export default function Home() {
               </div>
 
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="flex flex-col border-white/10 bg-transparent">
+                <Card className="flex flex-col border-white/10 bg-black/30 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -321,7 +330,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-transparent">
+                <Card className="flex flex-col border-white/10 bg-black/30 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -351,7 +360,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-transparent md:col-span-2 lg:col-span-1">
+                <Card className="flex flex-col border-white/10 bg-black/30 backdrop-blur-md md:col-span-2 lg:col-span-1">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
