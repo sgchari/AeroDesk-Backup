@@ -87,7 +87,7 @@ const LandingHeader: FC = () => {
           </Link>
         </div>
 
-        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 text-sm md:flex">
+        <nav className="hidden items-center gap-6 text-sm md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.label}
@@ -134,7 +134,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-none bg-transparent p-0 text-white"
+                className="w-[240px] border-none bg-black/50 p-0 text-white backdrop-blur-md"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -274,7 +274,7 @@ export default function Home() {
                   {features.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/10 backdrop-blur-md p-6 text-center"
+                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/10 p-6 text-center backdrop-blur-sm"
                     >
                       <feature.icon className="h-10 w-10 text-yellow-300" />
                       <h3 className="mt-4 text-lg font-bold text-white">
@@ -303,7 +303,7 @@ export default function Home() {
               </div>
 
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-md">
+                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -330,7 +330,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-md">
+                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -360,7 +360,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-md md:col-span-2 lg:col-span-1">
+                <Card className="flex flex-col border-white/10 bg-black/10 backdrop-blur-sm md:col-span-2 lg:col-span-1">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -419,7 +419,7 @@ export default function Home() {
           </section>
         </main>
         
-        <footer className="border-t border-white/10 text-white/80 bg-black/30 backdrop-blur-md">
+        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md">
           <div className="container py-12">
             <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-center gap-4 sm:items-start">
@@ -530,7 +530,7 @@ export default function Home() {
                       </defs>
                       <path
                         fill="url(#ig-gradient)"
-                        d="M12 0C8.74 0 8.333.015 7.053.072 5.775.129 4.905.333 4.14.63c-.784.305-1.459.717-2.126 1.384S.935 3.356.63 4.14C.333 4.905.129 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.057 1.277.261 2.148.558 2.913.306.784.718 1.459 1.384 2.126.667.666 1.342 1.079 2.126 1.384.766.296 1.636.502 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.057 2.148-.262 2.913-.558.784-.305 1.459-.718 2.126-1.384.666-.667 1.079-1.342 1.384-2.126.296-.765.502-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.057-1.277-.262-2.148-.558-2.913-.306-.784-.718-1.459-1.384-2.126C20.659.935 19.984.523 19.2.217c-.765-.297-1.636-.503-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.056 1.17-.249 1.805-.413 2.227-.217.562-.477.96-.896 1.382-.42.419-.819.679-1.381.896-.423.164-1.057.36-2.227.413-1.266.057-1.646.07-4.85.07-3.203 0-3.585-.015-4.85-.071-1.17-.055-1.805-.249-2.227-.415-.562-.217-.96-.477-1.382-.896-.419-.42-.679-.819-.896-1.381-.164-.422-.36-1.057-.413-2.227-.057-1.266-.07-1.646-.07-4.85s.015-3.585.071-4.85c.055-1.17.249 1.805.415-2.227.217-.562.477.96.896-1.382.42-.419.819.679 1.381-.896.422-.164 1.057-.36 2.227-.413C8.415 2.175 8.797 2.16 12 2.16zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"
+                        d="M12 0C8.74 0 8.333.015 7.053.072 5.775.129 4.905.333 4.14.63c-.784.305-1.459.717-2.126 1.384S.935 3.356.63 4.14C.333 4.905.129 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.057 1.277.261 2.148.558 2.913.306.784.718 1.459 1.384 2.126.667.666 1.342 1.079 2.126 1.384.766.296 1.636.502 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.057 2.148-.262 2.913-.558.784-.305 1.459-.718 2.126-1.384.666-.667 1.079-1.342 1.384-2.126.296-.765.502-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.057-1.277-.262-2.148-.558-2.913-.306-.784-.718-1.459-1.384-2.126C20.659.935 19.984.523 19.2.217c-.765-.297-1.636-.503-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.056 1.17-.249 1.805-.413 2.227-.217.562-.477.96-.896 1.382-.42.419-.819.679-1.381.896-.423.164-1.057.36-2.227.413-1.266.057-1.646.07-4.85.07-3.203 0-3.585-.015-4.85-.071-1.17-.055-1.805-.249-2.227-.415-.562-.217-.96-.477-1.382-.896-.419-.42-.679-.819-.896-1.381-.164-.422-.36-1.057-.413-2.227-.057-1.266-.07-1.646-.07-4.85s.015-3.585.071-4.85c.055-1.17.249-1.805.415-2.227.217-.562.477.96.896-1.382.42-.419.819.679 1.381-.896.422-.164 1.057-.36 2.227-.413C8.415 2.175 8.797 2.16 12 2.16zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"
                       />
                     </svg>
                   </Link>
@@ -576,4 +576,5 @@ export default function Home() {
 
 
     
+
 
