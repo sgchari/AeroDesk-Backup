@@ -1,3 +1,4 @@
+
 import { cn } from '@/lib/utils';
 
 const AeroLogoIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -15,10 +16,10 @@ const AeroLogoIcon = (props: React.SVGProps<SVGSVGElement>) => (
         <circle cx="32" cy="21" r="3" className="fill-[hsl(var(--secondary))]"/>
         
         {/* Blades */}
-        <g className="fill-[hsl(var(--muted-foreground))]" transform-origin="32 21">
-            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(0)"/>
-            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(120)"/>
-            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(240)"/>
+        <g className="fill-[hsl(var(--muted-foreground))]">
+            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(0 32 21)"/>
+            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(120 32 21)"/>
+            <path d="M32 21 L 28 8 L 36 8 Z" transform="rotate(240 32 21)"/>
         </g>
     </svg>
 );
