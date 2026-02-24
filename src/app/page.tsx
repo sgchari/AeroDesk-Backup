@@ -38,14 +38,12 @@ import { cn } from '@/lib/utils';
 
 
 const LandingHeader: FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 10);
       if (currentScrollY > lastScrollY && currentScrollY > 80) {
         // Scrolling down
         setIsVisible(false);
@@ -70,8 +68,7 @@ const LandingHeader: FC = () => {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full text-white transition-transform duration-300',
-        isScrolled ? 'bg-black/50 backdrop-blur-md' : 'bg-transparent',
+        'sticky top-0 z-50 w-full text-white transition-transform duration-300 bg-black/50 backdrop-blur-md',
         isVisible ? 'translate-y-0' : '-translate-y-full'
       )}
     >
@@ -129,7 +126,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-none bg-black/20 p-0 text-white"
+                className="w-[240px] border-none bg-black/50 p-0 text-white backdrop-blur-md"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -414,7 +411,7 @@ export default function Home() {
           </section>
         </main>
         
-        <footer className="border-t border-white/10 text-white/80">
+        <footer className="border-t border-white/10 text-white/80 bg-black/50 backdrop-blur-md">
           <div className="container py-12">
             <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-center gap-4 sm:items-start">
