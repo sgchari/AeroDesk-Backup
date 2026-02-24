@@ -129,7 +129,7 @@ const LandingHeader: FC = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border border-white/20 bg-black/10 text-white"
+                className="w-[240px] border border-white/20 bg-black/20 text-white"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 <div className="flex h-full flex-col">
@@ -269,7 +269,7 @@ export default function Home() {
                   {features.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex flex-col items-center rounded-xl border border-white/10 p-6 text-center shadow-lg"
+                      className="flex flex-col items-center rounded-xl border border-white/10 bg-transparent p-6 text-center shadow-lg"
                     >
                       <feature.icon className="h-10 w-10 text-yellow-300" />
                       <h3 className="mt-4 text-lg font-bold text-white">
@@ -298,7 +298,7 @@ export default function Home() {
               </div>
 
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="flex flex-col border-white/10 text-white">
+                <Card className="flex flex-col border-white/10 bg-transparent text-white">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -325,7 +325,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 text-white">
+                <Card className="flex flex-col border-white/10 bg-transparent text-white">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -355,7 +355,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card className="flex flex-col border-white/10 text-white md:col-span-2 lg:col-span-1">
+                <Card className="flex flex-col border-white/10 bg-transparent text-white md:col-span-2 lg:col-span-1">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <div className="rounded-full border border-primary/20 bg-primary/10 p-3">
@@ -554,6 +554,4 @@ export default function Home() {
     </div>
   );
 }
-
-
 
