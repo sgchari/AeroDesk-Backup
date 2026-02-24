@@ -121,14 +121,14 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] border-l border-white/10 bg-black/20 p-0 text-white backdrop-blur-lg"
+                className="w-[240px] border-l border-white/10 bg-transparent p-0 text-white"
               >
                 <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
-                <div className="flex h-full flex-col">
-                  <div className="mb-6 flex items-center justify-between p-6">
+                 <div className="flex h-full flex-col">
+                  <div className="flex items-center justify-start p-6 bg-black/30 backdrop-blur-md border-b border-white/10">
                     <Logo />
                   </div>
-                  <nav className="flex flex-col gap-4 px-6">
+                  <nav className="flex flex-col gap-4 p-6 flex-grow">
                     {navLinks.map((link) => (
                       <Link
                         key={link.label}
@@ -139,7 +139,7 @@ const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
                       </Link>
                     ))}
                   </nav>
-                  <div className="mt-auto flex flex-col gap-4 border-t border-white/20 p-6 pt-4">
+                  <div className="mt-auto flex flex-col gap-4 p-6 pt-4 border-t border-white/10 bg-black/30 backdrop-blur-md">
                     <a
                       href="tel:+919819754038"
                       className="flex items-center gap-2 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"

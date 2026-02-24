@@ -5,13 +5,13 @@ const AeroLogoIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" {...props}>
         {/* Propeller Blades */}
         <g transform="translate(25 25)">
-            <path d="M 0 -4 C -12 -15, -10 -25, 0 -25 C 10 -25, 12 -15, 0 -4 Z" transform="rotate(0)" fill="hsl(var(--accent))" />
-            <path d="M 0 -4 C -12 -15, -10 -25, 0 -25 C 10 -25, 12 -15, 0 -4 Z" transform="rotate(120)" fill="hsl(var(--accent))" />
-            <path d="M 0 -4 C -12 -15, -10 -25, 0 -25 C 10 -25, 12 -15, 0 -4 Z" transform="rotate(240)" fill="hsl(var(--accent))" />
+            <path d="M 0 -4 C 8 -11, 8 -20, 2 -24 L -2 -24 C -8 -20, -8 -11, 0 -4 Z" transform="rotate(0 0 0)" fill="hsl(var(--accent))" />
+            <path d="M 0 -4 C 8 -11, 8 -20, 2 -24 L -2 -24 C -8 -20, -8 -11, 0 -4 Z" transform="rotate(120 0 0)" fill="hsl(var(--accent))" />
+            <path d="M 0 -4 C 8 -11, 8 -20, 2 -24 L -2 -24 C -8 -20, -8 -11, 0 -4 Z" transform="rotate(240 0 0)" fill="hsl(var(--accent))" />
         </g>
         
         {/* Hub */}
-        <circle cx="25" cy="25" r="3" fill="hsl(var(--secondary))" />
+        <circle cx="25" cy="25" r="4" fill="hsl(var(--secondary))" />
     </svg>
 );
 
