@@ -26,6 +26,8 @@ export type User = {
   nsopLicenseNumber?: string; // For operator users
   mouAcceptedAt?: string; // For operator users
   companyName?: string; // For company-based roles
+  city?: string;
+  zone?: 'North' | 'South' | 'East' | 'West' | 'Central';
 };
 
 export type Operator = {
@@ -41,6 +43,8 @@ export type Operator = {
   mouAcceptedAt: string;
   createdAt: string;
   updatedAt: string;
+  city?: string;
+  zone?: 'North' | 'South' | 'East' | 'West' | 'Central';
 };
 
 export type RfqStatus =

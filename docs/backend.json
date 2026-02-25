@@ -147,6 +147,21 @@
         "platformFeeStructure": {
           "type": "string",
           "description": "Defines the structure for participation or coordination fees (e.g., 'Per-RFQ', 'Percentage')."
+        },
+        "city": {
+          "type": "string",
+          "description": "The primary city of operation for the operator."
+        },
+        "zone": {
+          "type": "string",
+          "description": "The geographical zone in India where the operator is based.",
+          "enum": [
+            "North",
+            "South",
+            "East",
+            "West",
+            "Central"
+          ]
         }
       },
       "required": [
@@ -155,7 +170,9 @@
         "companyName",
         "nsopLicenseNumber",
         "status",
-        "mouAcceptedAt"
+        "mouAcceptedAt",
+        "city",
+        "zone"
       ]
     },
     "Aircraft": {

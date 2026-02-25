@@ -12,9 +12,12 @@ export const mockUsers: User[] = [
     { id: 'customer-user-02', email: 'arjun@example.com', firstName: 'Arjun', lastName: 'Mehta', role: 'Customer', status: 'Active', createdAt: "2024-07-26T18:30:00Z", updatedAt: "2024-07-26T18:30:00Z" },
     
     // Operators
-    { id: 'operator-user-01', externalAuthId: 'operator-user-01', email: 'ops@flyco.com', companyName: 'FlyCo Charter', firstName: 'Rajesh', lastName: 'Verma', role: 'Operator', status: 'Approved', createdAt: "2024-07-26T09:00:00Z", updatedAt: "2024-07-26T09:00:00Z", nsopLicenseNumber: "NSOP/FLYCO/2021", mouAcceptedAt: "2024-07-26T09:00:00Z" },
-    { id: 'operator-user-02', externalAuthId: 'operator-user-02', email: 'contact@jetset.aero', companyName: 'JetSetGo Aviation', firstName: 'Vikram', lastName: 'Singh', role: 'Operator', status: 'Pending Approval', createdAt: "2024-07-28T16:00:00Z", updatedAt: "2024-07-28T16:00:00Z", nsopLicenseNumber: "NSOP/JETSET/2023", mouAcceptedAt: "2024-07-28T16:00:00Z" },
-    { id: 'operator-user-03', externalAuthId: 'operator-user-03', email: 'charters@airone.in', companyName: 'AirOne Charters', firstName: 'Anita', lastName: 'Desai', role: 'Operator', status: 'Approved', createdAt: "2024-07-25T10:00:00Z", updatedAt: "2024-07-25T10:00:00Z", nsopLicenseNumber: "NSOP/AIRONE/2020", mouAcceptedAt: "2024-07-25T10:00:00Z" },
+    { id: 'operator-user-01', externalAuthId: 'operator-user-01', email: 'ops@flyco.com', companyName: 'FlyCo Charter', firstName: 'Rajesh', lastName: 'Verma', role: 'Operator', status: 'Approved', createdAt: "2024-07-26T09:00:00Z", updatedAt: "2024-07-26T09:00:00Z", nsopLicenseNumber: "NSOP/FLYCO/2021", mouAcceptedAt: "2024-07-26T09:00:00Z", city: 'Mumbai', zone: 'West' },
+    { id: 'operator-user-02', externalAuthId: 'operator-user-02', email: 'contact@jetset.aero', companyName: 'JetSetGo Aviation', firstName: 'Vikram', lastName: 'Singh', role: 'Operator', status: 'Pending Approval', createdAt: "2024-07-28T16:00:00Z", updatedAt: "2024-07-28T16:00:00Z", nsopLicenseNumber: "NSOP/JETSET/2023", mouAcceptedAt: "2024-07-28T16:00:00Z", city: 'Bengaluru', zone: 'South' },
+    { id: 'operator-user-03', externalAuthId: 'operator-user-03', email: 'charters@airone.in', companyName: 'AirOne Charters', firstName: 'Anita', lastName: 'Desai', role: 'Operator', status: 'Approved', createdAt: "2024-07-25T10:00:00Z", updatedAt: "2024-07-25T10:00:00Z", nsopLicenseNumber: "NSOP/AIRONE/2020", mouAcceptedAt: "2024-07-25T10:00:00Z", city: 'Delhi', zone: 'North' },
+    { id: 'operator-user-04', externalAuthId: 'operator-user-04', email: 'ops@indiair.com', companyName: 'IndiAirways', firstName: 'Suresh', lastName: 'Reddy', role: 'Operator', status: 'Approved', createdAt: "2024-07-24T10:00:00Z", updatedAt: "2024-07-24T10:00:00Z", nsopLicenseNumber: "NSOP/INDAIR/2019", mouAcceptedAt: "2024-07-24T10:00:00Z", city: 'Kolkata', zone: 'East' },
+    { id: 'operator-user-05', externalAuthId: 'operator-user-05', email: 'contact@deccancharters.com', companyName: 'Deccan Charters', firstName: 'Prakash', lastName: 'Rao', role: 'Operator', status: 'Approved', createdAt: "2024-07-23T10:00:00Z", updatedAt: "2024-07-23T10:00:00Z", nsopLicenseNumber: "NSOP/DECCAN/2018", mouAcceptedAt: "2024-07-23T10:00:00Z", city: 'Hyderabad', zone: 'South' },
+    { id: 'operator-user-06', externalAuthId: 'operator-user-06', email: 'info@centralwings.in', companyName: 'Central Wings', firstName: 'Alok', lastName: 'Jain', role: 'Operator', status: 'Suspended', createdAt: "2024-07-22T10:00:00Z", updatedAt: "2024-07-22T10:00:00Z", nsopLicenseNumber: "NSOP/CWINGS/2017", mouAcceptedAt: "2024-07-22T10:00:00Z", city: 'Bhopal', zone: 'Central' },
 
 
     // Corporate Users (CTD)
@@ -44,7 +47,9 @@ export const mockOperators: Operator[] = mockUsers
     status: u.status as 'Pending Approval' | 'Approved' | 'Suspended' | 'Rejected',
     mouAcceptedAt: (u as any).mouAcceptedAt,
     createdAt: u.createdAt,
-    updatedAt: u.updatedAt
+    updatedAt: u.updatedAt,
+    city: (u as any).city,
+    zone: (u as any).zone,
   }));
 
 export const mockRfqs: CharterRFQ[] = [
