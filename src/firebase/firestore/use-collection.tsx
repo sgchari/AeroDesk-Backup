@@ -42,7 +42,7 @@ export function useCollection<T = any>(
   const [data, setData] = useState<WithId<T>[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
-  const { user } = useUser();
+  const { user, isLoading: isUserLoading } = useUser();
   const isDemoMode = !memoizedTargetRefOrQuery?.firestore?.app || memoizedTargetRefOrQuery?.firestore?._isMock;
 
   useEffect(() => {
@@ -61,7 +61,17 @@ export function useCollection<T = any>(
     }
     
     const fetchData = () => {
-        if (!user) {
+        // For demo mode, we need to handle public vs private collections.
+        // Some collections can be viewed without being logged in.
+        const publicPaths = ['emptyLegs'];
+        
+        if (isUserLoading) {
+            // Don't do anything until we know if there is a user or not.
+            return;
+        }
+
+        if (!user && !publicPaths.includes(path)) {
+            // For private collections, if there's no user, clear data and stop.
             setIsLoading(false);
             setData(null);
             return;
@@ -85,7 +95,7 @@ export function useCollection<T = any>(
     // Unsubscribe on cleanup
     return () => unsubscribe();
 
-  }, [user, isDemoMode, demoPath]);
+  }, [user, isUserLoading, isDemoMode, demoPath]);
 
   return { data, isLoading, error };
 }
