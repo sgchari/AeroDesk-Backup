@@ -62,6 +62,7 @@ export const mockOperators: Operator[] = mockUsers
     updatedAt: u.updatedAt,
     city: (u as any).city,
     zone: (u as any).zone,
+    featured: u.id === 'operator-user-01' || u.id === 'operator-user-03',
   }));
 
 export const mockRfqs: CharterRFQ[] = [

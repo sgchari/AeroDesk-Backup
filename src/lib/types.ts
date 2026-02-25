@@ -45,6 +45,7 @@ export type Operator = {
   updatedAt: string;
   city?: string;
   zone?: 'North' | 'South' | 'East' | 'West' | 'Central';
+  featured?: boolean;
 };
 
 export type RfqStatus =
