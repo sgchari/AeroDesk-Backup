@@ -19,14 +19,14 @@ const AeroLogoIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export function Logo({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-3 group", className)}>
-        <div className={cn("p-1.5 rounded-full border-2 border-card bg-transparent")}>
+        <div className={cn("p-1.5 rounded-full border-2 border-white bg-transparent")}>
             <AeroLogoIcon
                 className={cn("h-8 w-8")}
                 />
         </div>
         <div>
             <div className="flex items-baseline">
-                <span className="font-headline text-xl font-semibold tracking-normal text-primary-foreground">AERO</span>
+                <span className="font-headline text-xl font-semibold tracking-normal text-white">AERO</span>
                 <span className="font-headline text-xl font-semibold tracking-normal text-accent">DESK</span>
             </div>
             <p className="text-xs text-muted-foreground -mt-1 whitespace-nowrap">Organized Charter Network</p>
