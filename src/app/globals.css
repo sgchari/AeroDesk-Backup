@@ -4,16 +4,16 @@
 
 @layer base {
   :root {
-    --background: 220 14% 96%;
+    --background: 220 14% 96%; /* Soft Neutral Grey: #F5F6F8 */
     --foreground: 210 10% 16%;
 
-    --card: 0 0% 100%;
+    --card: 0 0% 100%; /* White: #FFFFFF */
     --card-foreground: 210 10% 16%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 210 10% 16%;
 
-    --primary: 212 54% 23%;
+    --primary: 212 54% 23%; /* Deep Aviation Blue: #1C3D5A */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 14% 91%;
@@ -22,8 +22,8 @@
     --muted: 220 14% 91%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 212 54% 23%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 54 83% 67%; /* #EEDC5B */
+    --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -36,13 +36,7 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 212 54% 23%;
-
-    --chart-1: 210 10% 16%;
-    --chart-2: 195 75% 45%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 142 63% 42%;
-    --chart-5: 0 79% 63%;
+    --ring: 212 54% 23%; /* Deep Aviation Blue: #1C3D5A */
     
     --radius: 0.5rem;
   }
@@ -75,12 +69,6 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-
-    --chart-1: 210 40% 98%;
-    --chart-2: 195 75% 45%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 142 63% 42%;
-    --chart-5: 0 79% 63%;
   }
 }
 
