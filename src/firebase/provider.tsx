@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo } from 'react';
@@ -116,22 +115,34 @@ export const useFirebase = (): FirebaseServicesAndUser => {
 
 /** Hook to access Firebase Auth instance. May be null in demo mode. */
 export const useAuth = (): Auth | null => {
-  return useFirebaseContext().auth;
+  const { auth, areServicesAvailable } = useFirebaseContext();
+  // In demo mode, services are not available, so we return a dummy object
+  // to prevent hooks that depend on this from failing.
+  if (!areServicesAvailable) return {} as Auth;
+  return auth;
 };
 
 /** Hook to access Firestore instance. May be null in demo mode. */
 export const useFirestore = (): Firestore | null => {
-  return useFirebaseContext().firestore;
+  const { firestore, areServicesAvailable } = useFirebaseContext();
+  // In demo mode, services are not available, so we return a dummy object
+  // to prevent hooks that depend on this from failing.
+  if (!areServicesAvailable) return {} as Firestore;
+  return firestore;
 };
 
 /** Hook to access Firebase App instance. May be null in demo mode. */
 export const useFirebaseApp = (): FirebaseApp | null => {
-  return useFirebaseContext().firebaseApp;
+  const { firebaseApp, areServicesAvailable } = useFirebaseContext();
+  if (!areServicesAvailable) return {} as FirebaseApp;
+  return firebaseApp;
 };
 
 /** Hook to access Firebase Storage instance. May be null in demo mode. */
 export const useStorage = (): FirebaseStorage | null => {
-    return useFirebaseContext().storage;
+    const { storage, areServicesAvailable } = useFirebaseContext();
+    if (!areServicesAvailable) return {} as FirebaseStorage;
+    return storage;
 };
 
 type MemoFirebase <T> = T & {__memo?: boolean};

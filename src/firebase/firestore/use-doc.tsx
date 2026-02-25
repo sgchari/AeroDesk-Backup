@@ -22,9 +22,6 @@ export interface UseDocResult<T> {
   error: FirestoreError | Error | null; // Error object, or null.
 }
 
-// --- DEMO MODE ---
-const DEMO_MODE = true; // Set to true to use mock data
-
 /**
  * React hook to subscribe to a single Firestore document in real-time.
  * In demo mode, it returns a mock document from '@/lib/data'.
@@ -39,11 +36,13 @@ export function useDoc<T = any>(
   const [data, setData] = useState<WithId<T> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
+  const isDemoMode = !memoizedDocRef?.firestore?.app;
 
   useEffect(() => {
-    if (!DEMO_MODE) {
-      // Original Firebase logic would go here.
+    if (!isDemoMode) {
+      // Original Firebase logic would go here but is not implemented for this demo.
       setIsLoading(false);
+      console.warn("Live mode for useDoc is not implemented in this demo.");
       return;
     }
 
@@ -75,7 +74,7 @@ export function useDoc<T = any>(
         setIsLoading(false);
     }, 300);
 
-  }, [memoizedDocRef]);
+  }, [memoizedDocRef, isDemoMode]);
 
   return { data, isLoading, error };
 }

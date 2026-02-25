@@ -26,9 +26,6 @@ export interface UseCollectionResult<T> {
   error: FirestoreError | Error | null; // Error object, or null.
 }
 
-// --- DEMO MODE ---
-const DEMO_MODE = true; // Set to true to use mock data
-
 /**
  * React hook to subscribe to a Firestore collection or query in real-time.
  * In demo mode, it returns mock data from '@/lib/data'.
@@ -44,13 +41,14 @@ export function useCollection<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   const { user } = useUser();
+  const isDemoMode = !memoizedTargetRefOrQuery?.firestore?.app;
 
   useEffect(() => {
-    if (!DEMO_MODE) {
-      // Original Firebase logic would go here.
-      // For this demo, we do nothing if DEMO_MODE is off.
-      setIsLoading(false);
-      return;
+    // If not in demo mode, use live data (currently not implemented in this branch)
+    if (!isDemoMode) {
+        console.warn("Live mode for useCollection is not implemented in this demo.");
+        setIsLoading(false);
+        return;
     }
     
     // --- DEMO MODE LOGIC ---
@@ -133,7 +131,7 @@ export function useCollection<T = any>(
         setIsLoading(false);
     }, 500); // 500ms delay to simulate network
 
-  }, [memoizedTargetRefOrQuery, user]);
+  }, [memoizedTargetRefOrQuery, user, isDemoMode]);
 
   return { data, isLoading, error };
 }
