@@ -63,7 +63,7 @@ export function useCollection<T = any>(
     const fetchData = () => {
         // For demo mode, we need to handle public vs private collections.
         // Some collections can be viewed without being logged in.
-        const publicPaths = ['emptyLegs'];
+        const publicPaths = ['emptyLegs', 'operators'];
         
         if (isUserLoading) {
             // Don't do anything until we know if there is a user or not.
