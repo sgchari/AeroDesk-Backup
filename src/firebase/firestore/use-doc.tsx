@@ -28,10 +28,12 @@ export interface UseDocResult<T> {
  * @template T Optional type for document data. Defaults to any.
  * @param {DocumentReference<DocumentData> | null | undefined} docRef -
  * The Firestore DocumentReference.
+ * @param {string} [demoPath] - The path to the document for demo mode.
  * @returns {UseDocResult<T>} Object with data, isLoading, error.
  */
 export function useDoc<T = any>(
   memoizedDocRef: (DocumentReference<DocumentData> & {__memo?: boolean}) | null | undefined,
+  demoPath?: string,
 ): UseDocResult<T> {
   const [data, setData] = useState<WithId<T> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -47,24 +49,28 @@ export function useDoc<T = any>(
     }
 
     // --- DEMO MODE LOGIC ---
-    if (!memoizedDocRef) {
+    const path = demoPath;
+    if (!path) {
+        if (memoizedDocRef) { // Allow silent fail if no ref is passed.
+            console.warn(`useDoc called in demo mode without a demoPath.`);
+        }
         setIsLoading(false);
         return;
     }
     
     // Simulate async data fetching
     setTimeout(() => {
-        const { path } = memoizedDocRef;
-        const [collection, docId] = path.split('/');
+        const pathSegments = path.split('/');
+        const collection = pathSegments[0];
+        const docId = pathSegments[1];
 
         let resultData: any = null;
 
         if (collection === 'users' || collection === 'platformAdmins' || collection === 'customers' || collection === 'operators' || collection === 'distributors' || collection === 'hotelPartners') {
            resultData = mockUsers.find(u => u.id === docId);
-        } else if (path.includes('corporateTravelDesks') && path.includes('users')) {
-            const parts = path.split('/');
-            const id = parts[parts.length - 1];
-            resultData = mockUsers.find(u => u.id === id);
+        } else if (collection === 'corporateTravelDesks' && pathSegments[2] === 'users') {
+            const ctdUserId = pathSegments[3];
+            resultData = mockUsers.find(u => u.id === ctdUserId);
         }
         else {
              console.warn(`useDoc: No mock data handler for path: ${path}`);
@@ -74,7 +80,7 @@ export function useDoc<T = any>(
         setIsLoading(false);
     }, 300);
 
-  }, [memoizedDocRef, isDemoMode]);
+  }, [memoizedDocRef, isDemoMode, demoPath]);
 
   return { data, isLoading, error };
 }

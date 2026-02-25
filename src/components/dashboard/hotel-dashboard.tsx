@@ -28,7 +28,7 @@ export function HotelDashboard() {
         limit(5)
     );
   }, [firestore, user]);
-  const { data: requests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery);
+  const { data: requests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery, 'accommodationRequests');
 
   const isLoading = isUserLoading || requestsLoading;
 

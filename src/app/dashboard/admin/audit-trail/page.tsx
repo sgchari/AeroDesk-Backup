@@ -17,7 +17,7 @@ export default function AuditTrailPage() {
         if (!firestore) return null;
         return query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'));
     }, [firestore]);
-    const { data: auditLogs, isLoading } = useCollection<AuditLog>(auditLogsQuery);
+    const { data: auditLogs, isLoading } = useCollection<AuditLog>(auditLogsQuery, 'auditTrails');
 
     return (
         <>

@@ -30,7 +30,7 @@ export default function EmptyLegsPage() {
     if (!firestore || !user) return null;
     return query(collection(firestore, 'emptyLegs'), where('operatorId', '==', user.id));
   }, [firestore, user]);
-  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
   const isLoading = isUserLoading || emptyLegsLoading;
 

@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,17 +19,17 @@ export function AdminDashboard() {
   const firestore = useFirestore();
 
   const pendingLegsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval')) : null, [firestore]);
-  const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery);
+  const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery, 'emptyLegs');
   
   // Fetch all user types for an accurate count
-  const { data: admins, isLoading: adminsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]));
-  const { data: customers, isLoading: customersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'customers') : null, [firestore]));
-  const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]));
-  const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]));
-  const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]));
+  const { data: admins, isLoading: adminsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]), 'platformAdmins');
+  const { data: customers, isLoading: customersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'customers') : null, [firestore]), 'customers');
+  const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]), 'operators');
+  const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]), 'distributors');
+  const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]), 'hotelPartners');
 
   // Fetch CTD users for an accurate count
-  const { data: ctds, isLoading: ctdsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]));
+  const { data: ctds, isLoading: ctdsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]), 'corporateTravelDesks');
   const [ctdUsers, setCtdUsers] = useState<any[]>([]);
   const [ctdUsersLoading, setCtdUsersLoading] = useState(true);
 
@@ -72,10 +73,10 @@ export function AdminDashboard() {
 
 
   const auditLogsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5)) : null, [firestore]);
-  const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery);
+  const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery, 'auditTrails');
 
   const activeRfqsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open')) : null, [firestore]);
-  const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery);
+  const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery, 'charterRFQs');
   
   const userCollectionsLoading = adminsLoading || customersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading || ctdUsersLoading;
   const isLoading = pendingLegsLoading || userCollectionsLoading || auditLogsLoading || activeRfqsLoading;

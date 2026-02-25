@@ -24,7 +24,7 @@ export default function HotelRequestsPage() {
         // A more robust solution might involve a profile lookup.
         return query(collection(firestore, 'accommodationRequests'), where('hotelPartnerId', '==', user.id));
     }, [firestore, user]);
-    const { data: accommodationRequests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery);
+    const { data: accommodationRequests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery, 'accommodationRequests');
 
     const isLoading = isUserLoading || requestsLoading;
 

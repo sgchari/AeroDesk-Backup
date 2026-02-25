@@ -4,7 +4,9 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import type { User as AppUser } from '@/lib/types';
-import { mockUsers } from '@/lib/data';
+import { mockUsers, mockCorporateTravelDesks } from '@/lib/data';
+import { useDoc, useFirestore } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 interface UserContextType {
   user: AppUser | null;
@@ -35,11 +37,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
             const foundUser = mockUsers.find(u => u.id === demoUserId);
             if (foundUser) {
                 // If the user is part of a corporate desk, find their company name
-                if (['CTD Admin', 'Corporate Admin', 'Requester'].includes(foundUser.role)) {
-                    const ctd = mockUsers.find(u => u.role === 'CTD Admin' && u.ctdId === foundUser.ctdId);
+                if (['CTD Admin', 'Corporate Admin', 'Requester'].includes(foundUser.role) && foundUser.ctdId) {
+                    const ctd = mockCorporateTravelDesks.find(d => d.id === foundUser.ctdId);
                     const userWithCompany = {
                         ...foundUser,
-                        company: ctd?.company || "Corporate Inc."
+                        company: ctd?.companyName || "Corporate Inc."
                     };
                     setUser(userWithCompany as AppUser);
                 } else {

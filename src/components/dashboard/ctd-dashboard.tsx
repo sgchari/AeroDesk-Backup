@@ -32,10 +32,9 @@ export function CTDDashboard() {
 
   const rfqsQuery = useMemoFirebase(() => {
     if (!firestore || !user || !user.company) return null;
-    // This query assumes a 'company' field is stored on the RFQ document for corporate RFQs.
     return query(collection(firestore, 'charterRFQs'), where('company', '==', user.company));
   }, [firestore, user]);
-  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
   const isLoading = isUserLoading || rfqsLoading;
 

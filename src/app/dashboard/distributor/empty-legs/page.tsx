@@ -17,7 +17,7 @@ export default function DistributorEmptyLegsPage() {
     if (!firestore) return null;
     return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
   }, [firestore]);
-  const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+  const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
 
   return (

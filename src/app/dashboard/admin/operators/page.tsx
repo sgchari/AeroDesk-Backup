@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -33,7 +34,7 @@ export default function OperatorManagementPage() {
         return collection(firestore, 'operators');
     }, [firestore]);
     
-    const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery);
+    const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery, 'operators');
 
     const handleUpdateStatus = (operatorId: string, status: Operator['status']) => {
         if (!firestore) return;

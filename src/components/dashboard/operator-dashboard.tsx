@@ -23,23 +23,16 @@ export function OperatorDashboard() {
     if (!firestore) return null;
     return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
   }, [firestore]);
-  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
   const aircraftsQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
     return collection(firestore, 'operators', user.id, 'aircrafts');
   }, [firestore, user]);
-  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery);
+  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, user ? `operators/${user.id}/aircrafts` : undefined);
 
   // This is a workaround for demo mode without collectionGroup queries.
-  // We fetch all quotations and filter client-side.
-  const allQuotationsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    // In a real app, this would be a more efficient query.
-    // For the demo, we create a dummy query to trigger the mock data handler.
-    return query(collection(firestore, 'charterRFQs/all/quotations'));
-  }, [firestore, user]);
-  const { data: allQuotations, isLoading: quotationsLoading } = useCollection<Quotation>(allQuotationsQuery);
+  const { data: allQuotations, isLoading: quotationsLoading } = useCollection<Quotation>(null, 'charterRFQs/all/quotations');
 
   const submittedQuotations = allQuotations?.filter(q => q.operatorId === user?.id && q.status === 'Submitted') ?? [];
 

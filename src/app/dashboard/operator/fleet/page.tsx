@@ -21,7 +21,7 @@ export default function FleetManagementPage() {
     if (!firestore || !user) return null;
     return collection(firestore, 'operators', user.id, 'aircrafts');
   }, [firestore, user]);
-  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery);
+  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, user ? `operators/${user.id}/aircrafts` : undefined);
 
   const isLoading = isUserLoading || aircraftsLoading;
 

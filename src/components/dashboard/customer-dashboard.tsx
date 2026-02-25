@@ -38,13 +38,13 @@ export function CustomerDashboard() {
     if (!firestore || !user) return null;
     return query(collection(firestore, 'charterRFQs'), where('customerId', '==', user.id));
   }, [firestore, user]);
-  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery);
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
   const emptyLegsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
   }, [firestore]);
-  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery);
+  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
   const isLoading = isUserLoading || rfqsLoading || emptyLegsLoading;
 

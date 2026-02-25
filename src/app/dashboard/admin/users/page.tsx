@@ -38,13 +38,13 @@ export default function UserManagementPage() {
     const [userToDelete, setUserToDelete] = useState<DisplayUser | null>(null);
     const [userToEdit, setUserToEdit] = useState<DisplayUser | null>(null);
 
-    const { data: admins, isLoading: adminsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]));
-    const { data: customers, isLoading: customersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'customers') : null, [firestore]));
-    const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]));
-    const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]));
-    const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]));
+    const { data: admins, isLoading: adminsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]), 'platformAdmins');
+    const { data: customers, isLoading: customersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'customers') : null, [firestore]), 'customers');
+    const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]), 'operators');
+    const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]), 'distributors');
+    const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]), 'hotelPartners');
     
-    const { data: ctds, isLoading: ctdsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]));
+    const { data: ctds, isLoading: ctdsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]), 'corporateTravelDesks');
     const [ctdUsers, setCtdUsers] = useState<any[]>([]);
     const [ctdUsersLoading, setCtdUsersLoading] = useState(true);
 

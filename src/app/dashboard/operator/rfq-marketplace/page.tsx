@@ -19,7 +19,7 @@ export default function RfqMarketplacePage() {
     if (!firestore) return null;
     return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
   }, [firestore]);
-  const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery);
+  const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
   return (
     <>

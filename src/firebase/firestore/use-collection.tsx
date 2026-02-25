@@ -32,10 +32,12 @@ export interface UseCollectionResult<T> {
  * @template T Optional type for document data. Defaults to any.
  * @param {CollectionReference<DocumentData> | Query<DocumentData> | null | undefined} targetRefOrQuery -
  * The Firestore CollectionReference or Query.
+ * @param {string} [demoPath] - The path to the collection for demo mode.
  * @returns {UseCollectionResult<T>} Object with data, isLoading, error.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
+    demoPath?: string
 ): UseCollectionResult<T> {
   const [data, setData] = useState<WithId<T>[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -52,14 +54,20 @@ export function useCollection<T = any>(
     }
     
     // --- DEMO MODE LOGIC ---
-    if (!user || !memoizedTargetRefOrQuery) {
+    if (!user) {
         setIsLoading(false);
         return;
     }
     
     // Simulate async data fetching
     setTimeout(() => {
-        const { path } = memoizedTargetRefOrQuery as CollectionReference;
+        const path = demoPath;
+        if (!path) {
+            console.warn(`useCollection called in demo mode without a demoPath.`);
+            setIsLoading(false);
+            return;
+        }
+
         const mockData = getMockDataForRole(user.role as UserRole);
 
         let resultData: any[] = [];
@@ -131,7 +139,7 @@ export function useCollection<T = any>(
         setIsLoading(false);
     }, 500); // 500ms delay to simulate network
 
-  }, [memoizedTargetRefOrQuery, user, isDemoMode]);
+  }, [memoizedTargetRefOrQuery, user, isDemoMode, demoPath]);
 
   return { data, isLoading, error };
 }
