@@ -123,150 +123,157 @@ export default function OurNetworkPage() {
     const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery, 'operators');
 
     return (
-        <div className="w-full min-h-screen flex flex-col bg-[#0F172A]">
-            <LandingHeader activePage="Our Network" />
-            
-            <main className="flex-1 relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-                {/* Tactical Background Overlay */}
-                <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" 
-                     style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0F172A]/50 to-[#0F172A] z-0" />
+        <div className="w-full">
+            {/* Background Layer: Replicating Homepage style */}
+            <div
+                className="fixed inset-0 z-0 bg-cover bg-center"
+                style={{
+                    backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
+                }}
+            >
+                <div className="absolute inset-0 bg-black/40" />
+            </div>
 
-                <div className="container relative z-10 max-w-6xl w-full h-[70vh] min-h-[500px]">
-                    
-                    {/* Legend / Stats Panel */}
-                    <div className="absolute top-0 left-0 z-40 w-full sm:w-72 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-xl p-5 shadow-2xl space-y-4">
-                        <div className="space-y-1 border-b border-white/10 pb-3">
-                            <h2 className="text-white font-bold text-lg tracking-tight flex items-center gap-2">
-                                <Zap className="w-4 h-4 text-accent" /> Network Intel
-                            </h2>
-                            <p className="text-xs text-slate-400">Approved NSOP Infrastructure India</p>
-                        </div>
+            <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
+                <LandingHeader activePage="Our Network" />
+                
+                <main className="flex-1 relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+                    <div className="container relative z-10 max-w-6xl w-full h-[70vh] min-h-[500px]">
                         
-                        <div className="space-y-3">
-                            <div className="flex items-center justify-between text-xs">
-                                <span className="text-slate-400 flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-green-400" /> Active Operators
-                                </span>
-                                <span className="text-white font-mono">{operators?.filter(o => o.status === 'Approved').length || 0}</span>
+                        {/* Legend / Stats Panel - Frosted Effect */}
+                        <div className="absolute top-0 left-0 z-40 w-full sm:w-72 bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl p-5 shadow-2xl space-y-4">
+                            <div className="space-y-1 border-b border-white/10 pb-3">
+                                <h2 className="text-white font-bold text-lg tracking-tight flex items-center gap-2">
+                                    <Zap className="w-4 h-4 text-accent" /> Network Intel
+                                </h2>
+                                <p className="text-xs text-slate-300">Approved NSOP Infrastructure India</p>
                             </div>
-                            <div className="flex items-center justify-between text-xs">
-                                <span className="text-slate-400 flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-amber-400" /> Pending Review
-                                </span>
-                                <span className="text-white font-mono">{operators?.filter(o => o.status === 'Pending Approval').length || 0}</span>
-                            </div>
-                            <div className="flex items-center justify-between text-xs">
-                                <span className="text-slate-400 flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-red-500" /> Suspended
-                                </span>
-                                <span className="text-white font-mono">{operators?.filter(o => ['Suspended', 'Rejected'].includes(o.status)).length || 0}</span>
-                            </div>
-                        </div>
-
-                        <div className="pt-2">
-                            <div className="p-3 bg-white/5 rounded-lg border border-white/5">
-                                <p className="text-[10px] leading-relaxed text-slate-500 italic">
-                                    "AeroDesk enforces institutional governance across all operational sectors. Status updates are synchronized in real-time with regulatory filings."
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Main Zonal Map SVG Container */}
-                    <div className="relative w-full h-full flex items-center justify-center">
-                        <svg viewBox="0 0 1000 800" className="w-full h-full drop-shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-                            <defs>
-                                <filter id="glow">
-                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                                    <feMerge>
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
-                            </defs>
-
-                            {/* North Zone - Purple */}
-                            <path 
-                                d="M250 50 L550 50 L650 350 L350 350 Z" 
-                                fill="rgba(99, 102, 241, 0.4)" 
-                                stroke="rgba(255,255,255,0.8)" 
-                                strokeWidth="2" 
-                            />
                             
-                            {/* West Zone - Deep Blue */}
-                            <path 
-                                d="M50 350 L350 350 L400 650 L50 750 Z" 
-                                fill="rgba(37, 99, 235, 0.4)" 
-                                stroke="rgba(255,255,255,0.8)" 
-                                strokeWidth="2" 
-                            />
-
-                            {/* East Zone - Cyan */}
-                            <path 
-                                d="M650 350 L950 350 L900 550 L650 550 Z" 
-                                fill="rgba(6, 182, 212, 0.4)" 
-                                stroke="rgba(255,255,255,0.8)" 
-                                strokeWidth="2" 
-                            />
-
-                            {/* Central Zone - Mid Blue */}
-                            <path 
-                                d="M350 350 L650 350 L650 550 L400 550 Z" 
-                                fill="rgba(59, 130, 246, 0.3)" 
-                                stroke="rgba(255,255,255,0.8)" 
-                                strokeWidth="2" 
-                            />
-
-                            {/* South Zone - Greenish */}
-                            <path 
-                                d="M400 550 L650 550 L600 780 L450 780 Z" 
-                                fill="rgba(16, 185, 129, 0.4)" 
-                                stroke="rgba(255,255,255,0.8)" 
-                                strokeWidth="2" 
-                            />
-
-                            {/* North East - Bright Cyan */}
-                            <path 
-                                d="M750 250 L980 250 L980 450 L850 450 Z" 
-                                fill="rgba(34, 211, 238, 0.5)" 
-                                stroke="rgba(255,255,255,0.8)" 
-                                strokeWidth="2" 
-                            />
-                        </svg>
-
-                        {/* Map Labels (Floating HTML) */}
-                        <div className="absolute top-[15%] left-[50%] -translate-x-1/2 pointer-events-none">
-                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Sector North</span>
-                        </div>
-                        <div className="absolute top-[65%] left-[25%] pointer-events-none">
-                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Sector West</span>
-                        </div>
-                        <div className="absolute top-[65%] left-[75%] pointer-events-none">
-                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Sector East</span>
-                        </div>
-                        <div className="absolute top-[45%] left-[50%] -translate-x-1/2 pointer-events-none">
-                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Central Command</span>
-                        </div>
-                        <div className="absolute top-[85%] left-[50%] -translate-x-1/2 pointer-events-none">
-                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Sector South</span>
-                        </div>
-
-                        {/* Operator Markers Overlay */}
-                        {isLoading ? (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <Skeleton className="w-32 h-32 rounded-full bg-white/5" />
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between text-xs">
+                                    <span className="text-slate-300 flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-green-400" /> Active Operators
+                                    </span>
+                                    <span className="text-white font-mono">{operators?.filter(o => o.status === 'Approved').length || 0}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs">
+                                    <span className="text-slate-300 flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-amber-400" /> Pending Review
+                                    </span>
+                                    <span className="text-white font-mono">{operators?.filter(o => o.status === 'Pending Approval').length || 0}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs">
+                                    <span className="text-slate-300 flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-red-500" /> Suspended
+                                    </span>
+                                    <span className="text-white font-mono">{operators?.filter(o => ['Suspended', 'Rejected'].includes(o.status)).length || 0}</span>
+                                </div>
                             </div>
-                        ) : (
-                            <div className="absolute inset-0 pointer-events-auto">
-                                {operators?.map(op => <OperatorMarker key={op.id} operator={op} />)}
+
+                            <div className="pt-2">
+                                <div className="p-3 bg-white/5 rounded-lg border border-white/5">
+                                    <p className="text-[10px] leading-relaxed text-slate-400 italic">
+                                        "AeroDesk enforces institutional governance across all operational sectors. Status updates are synchronized in real-time."
+                                    </p>
+                                </div>
                             </div>
-                        )}
+                        </div>
+
+                        {/* Main Zonal Map SVG Container - Subtle Frosted Backdrop for the Map card */}
+                        <div className="relative w-full h-full flex items-center justify-center bg-black/10 backdrop-blur-[2px] rounded-3xl border border-white/5 shadow-inner">
+                            <svg viewBox="0 0 1000 800" className="w-full h-full drop-shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                                <defs>
+                                    <filter id="glow">
+                                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+
+                                {/* North Zone - Purple */}
+                                <path 
+                                    d="M250 50 L550 50 L650 350 L350 350 Z" 
+                                    fill="rgba(99, 102, 241, 0.35)" 
+                                    stroke="rgba(255,255,255,0.6)" 
+                                    strokeWidth="2" 
+                                />
+                                
+                                {/* West Zone - Deep Blue */}
+                                <path 
+                                    d="M50 350 L350 350 L400 650 L50 750 Z" 
+                                    fill="rgba(37, 99, 235, 0.35)" 
+                                    stroke="rgba(255,255,255,0.6)" 
+                                    strokeWidth="2" 
+                                />
+
+                                {/* East Zone - Cyan */}
+                                <path 
+                                    d="M650 350 L950 350 L900 550 L650 550 Z" 
+                                    fill="rgba(6, 182, 212, 0.35)" 
+                                    stroke="rgba(255,255,255,0.6)" 
+                                    strokeWidth="2" 
+                                />
+
+                                {/* Central Zone - Mid Blue */}
+                                <path 
+                                    d="M350 350 L650 350 L650 550 L400 550 Z" 
+                                    fill="rgba(59, 130, 246, 0.25)" 
+                                    stroke="rgba(255,255,255,0.6)" 
+                                    strokeWidth="2" 
+                                />
+
+                                {/* South Zone - Greenish */}
+                                <path 
+                                    d="M400 550 L650 550 L600 780 L450 780 Z" 
+                                    fill="rgba(16, 185, 129, 0.35)" 
+                                    stroke="rgba(255,255,255,0.6)" 
+                                    strokeWidth="2" 
+                                />
+
+                                {/* North East - Bright Cyan */}
+                                <path 
+                                    d="M750 250 L980 250 L980 450 L850 450 Z" 
+                                    fill="rgba(34, 211, 238, 0.4)" 
+                                    stroke="rgba(255,255,255,0.6)" 
+                                    strokeWidth="2" 
+                                />
+                            </svg>
+
+                            {/* Map Labels (Floating HTML) */}
+                            <div className="absolute top-[15%] left-[50%] -translate-x-1/2 pointer-events-none">
+                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector North</span>
+                            </div>
+                            <div className="absolute top-[65%] left-[25%] pointer-events-none">
+                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector West</span>
+                            </div>
+                            <div className="absolute top-[65%] left-[75%] pointer-events-none">
+                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector East</span>
+                            </div>
+                            <div className="absolute top-[45%] left-[50%] -translate-x-1/2 pointer-events-none">
+                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Central Command</span>
+                            </div>
+                            <div className="absolute top-[85%] left-[50%] -translate-x-1/2 pointer-events-none">
+                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector South</span>
+                            </div>
+
+                            {/* Operator Markers Overlay */}
+                            {isLoading ? (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Skeleton className="w-32 h-32 rounded-full bg-white/5" />
+                                </div>
+                            ) : (
+                                <div className="absolute inset-0 pointer-events-auto">
+                                    {operators?.map(op => <OperatorMarker key={op.id} operator={op} />)}
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
-            </main>
+                </main>
 
-            <LandingFooter />
+                <LandingFooter />
+            </div>
         </div>
     );
 }
