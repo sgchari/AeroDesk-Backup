@@ -12,6 +12,8 @@ import {
   mockRoomCategories,
   mockEmptyLegSeatAllocationRequests,
   mockOperators,
+  mockBillingRecords,
+  mockFeatureFlags,
 } from './data';
 import { User, UserRole } from './types';
 
@@ -35,6 +37,8 @@ let db = {
   customers: deepCopy(mockUsers.filter(u => u.role === 'Customer')),
   distributors: deepCopy(mockUsers.filter(u => u.role === 'Travel Agency')),
   hotelPartners: deepCopy(mockUsers.filter(u => u.role === 'Hotel Partner')),
+  billingRecords: deepCopy(mockBillingRecords),
+  featureFlags: deepCopy(mockFeatureFlags),
 };
 
 // Simple event emitter
@@ -101,6 +105,8 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             return db.properties.filter(p => p.hotelPartnerId === currentUser.id);
         case 'roomCategories':
             return db.roomCategories;
+        case 'billingRecords': return db.billingRecords;
+        case 'featureFlags': return db.featureFlags;
         default:
             console.warn(`Mock Store: No handler for getCollection path: ${path}`);
             return [];

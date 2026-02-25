@@ -1,5 +1,5 @@
 
-import type { UserRole, User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator } from './types';
+import type { UserRole, User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag } from './types';
 
 // This data is now used for the demo mode.
 
@@ -116,6 +116,22 @@ export const mockAuditLogs: AuditLog[] = [
 
 ];
 
+export const mockBillingRecords: BillingRecord[] = [
+    { id: 'BILL-001', entityName: 'FlyCo Charter', entityId: 'operator-user-01', eventType: 'Subscription', amount: 50000, currency: 'INR', status: 'Paid', date: '2024-07-01T10:00:00Z' },
+    { id: 'BILL-002', entityName: 'Stark Industries', entityId: 'ctd-stark-01', eventType: 'Participation Fee', amount: 15000, currency: 'INR', status: 'Paid', date: '2024-07-15T11:30:00Z' },
+    { id: 'BILL-003', entityName: 'Sky Distributors', entityId: 'distributor-user-01', eventType: 'Subscription', amount: 25000, currency: 'INR', status: 'Overdue', date: '2024-08-01T10:00:00Z' },
+    { id: 'BILL-004', entityName: 'The Grand Hotel Group', entityId: 'hotel-user-01', eventType: 'Coordination Fee', amount: 7500, currency: 'INR', status: 'Pending', date: '2024-08-05T14:00:00Z' },
+    { id: 'BILL-005', entityName: 'AirOne Charters', entityId: 'operator-user-03', eventType: 'Subscription', amount: 50000, currency: 'INR', status: 'Paid', date: '2024-07-05T10:00:00Z' },
+];
+
+export const mockFeatureFlags: FeatureFlag[] = [
+    { id: 'FF-01', name: 'EmptyLegAutoApproval', description: 'Automatically approve empty leg submissions from trusted operators.', isEnabled: false },
+    { id: 'FF-02', name: 'AiComplianceCheck', description: 'Enable AI-powered compliance checks on RFQ special requests.', isEnabled: true },
+    { id: 'FF-03', name: 'DirectHotelBooking', description: 'Allow customers to directly interface with hotel booking systems (experimental).', isEnabled: false },
+    { id: 'FF-04', name: 'DynamicPricingEngine', description: 'Enable dynamic pricing suggestions for empty leg seats.', isEnabled: true },
+];
+
+
 export function getMockDataForRole(role: UserRole) {
     return {
         users: mockUsers,
@@ -129,8 +145,8 @@ export function getMockDataForRole(role: UserRole) {
         corporateTravelDesks: mockCorporateTravelDesks,
         properties: mockProperties,
         roomCategories: mockRoomCategories,
-        seatAllocationRequests: mockEmptyLegSeatAllocationRequests
+        seatAllocationRequests: mockEmptyLegSeatAllocationRequests,
+        billingRecords: mockBillingRecords,
+        featureFlags: mockFeatureFlags
     };
 }
-
-    

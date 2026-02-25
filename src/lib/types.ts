@@ -202,3 +202,21 @@ export type CorporateTravelDesk = {
     createdAt: string;
     updatedAt: string;
 };
+
+export type BillingRecord = {
+    id: string;
+    entityName: string;
+    entityId: string;
+    eventType: 'Subscription' | 'Coordination Fee' | 'Participation Fee';
+    amount: number;
+    currency: 'INR';
+    status: 'Paid' | 'Pending' | 'Overdue';
+    date: string;
+};
+
+export type FeatureFlag = {
+    id: string;
+    name: string;
+    description: string;
+    isEnabled: boolean;
+};
