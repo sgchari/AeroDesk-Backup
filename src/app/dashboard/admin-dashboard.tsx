@@ -11,9 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCollection, useFirestore, useMemoFirebase, errorEmitter, FirestorePermissionError } from "@/firebase";
-import { collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
-import React, { useState, useEffect } from "react";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where, orderBy, limit } from "firebase/firestore";
 
 export function AdminDashboard() {
   const firestore = useFirestore();
@@ -21,56 +20,12 @@ export function AdminDashboard() {
   const pendingLegsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval')) : null, [firestore]);
   const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery, 'emptyLegs');
   
-  // Fetch all user types for an accurate count
-  const { data: admins, isLoading: adminsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]), 'platformAdmins');
-  const { data: customers, isLoading: customersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'customers') : null, [firestore]), 'customers');
+  // Efficiently fetch all users for an accurate count
+  const { data: allUsers, isLoading: usersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]), 'users');
+  
   const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]), 'operators');
   const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]), 'distributors');
   const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]), 'hotelPartners');
-
-  // Fetch CTD users for an accurate count
-  const { data: ctds, isLoading: ctdsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]), 'corporateTravelDesks');
-  const [ctdUsers, setCtdUsers] = useState<any[]>([]);
-  const [ctdUsersLoading, setCtdUsersLoading] = useState(true);
-
-  useEffect(() => {
-    if (!firestore || ctds === null) {
-      if (!ctdsLoading) {
-        setCtdUsers([]);
-        setCtdUsersLoading(false);
-      }
-      return;
-    }
-    if (ctds.length === 0) {
-      setCtdUsers([]);
-      setCtdUsersLoading(false);
-      return;
-    }
-    const fetchAllCtdUsers = async () => {
-      if (!firestore) return;
-      setCtdUsersLoading(true);
-      try {
-        const allUsersPromises = ctds.map(ctd => {
-          const usersCollectionRef = collection(firestore, `corporateTravelDesks/${ctd.id}/users`);
-          return getDocs(usersCollectionRef);
-        });
-        const allUsersSnapshots = await Promise.all(allUsersPromises);
-        const allUsersData: any[] = [];
-        allUsersSnapshots.forEach(snapshot => {
-          snapshot.forEach(doc => {
-            allUsersData.push({ ...doc.data(), id: doc.id });
-          });
-        });
-        setCtdUsers(allUsersData);
-      } catch (error: any) {
-        console.error("Error fetching CTD users for dashboard:", error);
-      } finally {
-        setCtdUsersLoading(false);
-      }
-    };
-    fetchAllCtdUsers();
-  }, [ctds, firestore, ctdsLoading]);
-
 
   const auditLogsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5)) : null, [firestore]);
   const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery, 'auditTrails');
@@ -78,10 +33,9 @@ export function AdminDashboard() {
   const activeRfqsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open')) : null, [firestore]);
   const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery, 'charterRFQs');
   
-  const userCollectionsLoading = adminsLoading || customersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading || ctdUsersLoading;
-  const isLoading = pendingLegsLoading || userCollectionsLoading || auditLogsLoading || activeRfqsLoading;
+  const isLoading = pendingLegsLoading || usersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading || auditLogsLoading || activeRfqsLoading;
 
-  const totalUsers = (admins?.length ?? 0) + (customers?.length ?? 0) + (operators?.length ?? 0) + (distributors?.length ?? 0) + (hotelPartners?.length ?? 0) + (ctdUsers?.length ?? 0);
+  const totalUsers = allUsers?.length ?? 0;
   const totalPartners = (distributors?.length ?? 0) + (hotelPartners?.length ?? 0);
   
   const stats = {
@@ -147,3 +101,5 @@ export function AdminDashboard() {
     </>
   );
 }
+
+    

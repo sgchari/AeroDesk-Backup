@@ -8,16 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking, deleteDocumentNonBlocking, errorEmitter, FirestorePermissionError } from "@/firebase";
-import { UserRole } from "@/lib/types";
-import { collection, doc, getDocs } from "firebase/firestore";
+import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
+import { User as AppUser, UserRole, CorporateTravelDesk } from "@/lib/types"; // Renamed User to AppUser to avoid conflicts
+import { collection, doc } from "firebase/firestore";
 import { MoreHorizontal, Pencil } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AddUserDialog } from "@/components/dashboard/admin/add-user-dialog";
 import { EditUserDialog } from "@/components/dashboard/admin/edit-user-dialog";
-
 
 // A normalized user type for the table
 type DisplayUser = {
@@ -37,97 +36,48 @@ export default function UserManagementPage() {
     const [isUsersLoading, setUsersLoading] = useState(true);
     const [userToDelete, setUserToDelete] = useState<DisplayUser | null>(null);
     const [userToEdit, setUserToEdit] = useState<DisplayUser | null>(null);
-
-    const { data: admins, isLoading: adminsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]), 'platformAdmins');
-    const { data: customers, isLoading: customersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'customers') : null, [firestore]), 'customers');
-    const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]), 'operators');
-    const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]), 'distributors');
-    const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]), 'hotelPartners');
     
-    const { data: ctds, isLoading: ctdsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]), 'corporateTravelDesks');
-    const [ctdUsers, setCtdUsers] = useState<any[]>([]);
-    const [ctdUsersLoading, setCtdUsersLoading] = useState(true);
+    // Efficiently fetch all users and corporate desks in parallel
+    const { data: allUsersRaw, isLoading: usersRawLoading } = useCollection<AppUser>(
+        useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]), 'users'
+    );
+    const { data: ctds, isLoading: ctdsLoading } = useCollection<CorporateTravelDesk>(
+        useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]), 'corporateTravelDesks'
+    );
 
     useEffect(() => {
-        // This effect replaces the collectionGroup query to avoid security rule limitations.
-        // It fetches users from each corporate travel desk individually.
-        if (!firestore || ctds === null) {
-            if (!ctdsLoading) {
-                setCtdUsers([]);
-                setCtdUsersLoading(false);
-            }
-            return;
-        }
-
-        if (ctds.length === 0) {
-            setCtdUsers([]);
-            setCtdUsersLoading(false);
-            return;
-        }
-
-        const fetchAllCtdUsers = async () => {
-            if (!firestore) return;
-            setCtdUsersLoading(true);
-            try {
-                const allUsersPromises = ctds.map(ctd => {
-                    const usersCollectionRef = collection(firestore, `corporateTravelDesks/${ctd.id}/users`);
-                    return getDocs(usersCollectionRef);
-                });
-
-                const allUsersSnapshots = await Promise.all(allUsersPromises);
-                const allUsersData: any[] = [];
-                allUsersSnapshots.forEach(snapshot => {
-                    snapshot.forEach(doc => {
-                        allUsersData.push({ ...doc.data(), id: doc.id });
-                    });
-                });
-                setCtdUsers(allUsersData);
-            } catch (error: any) {
-                const contextualError = new FirestorePermissionError({
-                    path: 'corporateTravelDesks/[ctdId]/users', // Generic path as we don't know which one failed
-                    operation: 'list'
-                });
-                errorEmitter.emit('permission-error', contextualError);
-                console.error("Error fetching CTD users:", error);
-            } finally {
-                setCtdUsersLoading(false);
-            }
-        };
-
-        fetchAllCtdUsers();
-    }, [ctds, firestore, ctdsLoading]);
-
-
-    useEffect(() => {
-        const loading = adminsLoading || customersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading || ctdUsersLoading;
+        const loading = usersRawLoading || ctdsLoading;
         setUsersLoading(loading);
+        if (loading) return;
 
-        if (!loading) {
-            const userMap = new Map<string, DisplayUser>();
+        // Create a lookup map for corporate desk names for efficiency
+        const ctdMap = new Map(ctds?.map(ctd => [ctd.id, ctd.companyName]));
 
-            const addUserToMap = (user: DisplayUser) => {
-                if (!userMap.has(user.id)) {
-                    userMap.set(user.id, user);
-                }
+        const normalizedUsers = allUsersRaw?.map(user => {
+            let name = `${user.firstName} ${user.lastName}`;
+            // For certain roles, the display name is the company name.
+            if (['Operator', 'Travel Agency', 'Hotel Partner'].includes(user.role)) {
+                name = user.companyName || name;
+            }
+            // For CTD users, the company name is looked up from the ctds collection
+            if (user.ctdId && ctdMap.has(user.ctdId) && user.role !== 'CTD Admin') {
+                // name = `${name} (${ctdMap.get(user.ctdId)})`;
+            }
+
+            return {
+                id: user.id,
+                name: name,
+                email: user.email,
+                role: user.role,
+                status: user.status,
+                createdAt: user.createdAt,
+                ctdId: user.ctdId,
             };
-            
-            admins?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Admin', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
-            customers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Customer', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
-            operators?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Operator', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
-            distributors?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Travel Agency', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
-            hotelPartners?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Hotel Partner', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
-            ctdUsers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: u.role, status: u.status, createdAt: u.createdAt, ctdId: u.ctdId }));
+        }).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
 
-            const normalizedUsers = Array.from(userMap.values());
-            normalizedUsers.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-            
-            setAllUsers(normalizedUsers);
-        }
+        setAllUsers(normalizedUsers || []);
 
-    }, [
-        admins, customers, operators, distributors, hotelPartners, ctdUsers,
-        adminsLoading, customersLoading, operatorsLoading, distributorsLoading, hotelPartnersLoading, ctdUsersLoading
-    ]);
+    }, [allUsersRaw, ctds, usersRawLoading, ctdsLoading]);
     
     const getCollectionPathFromRole = (user: DisplayUser): string | null => {
         const { role, ctdId } = user;
@@ -141,6 +91,8 @@ export default function UserManagementPage() {
             case 'CTD Admin':
             case 'Corporate Admin':
             case 'Requester':
+                // For demo mode, we target the corporateTravelDesks/{ctdId}/users path
+                // The mock store handles this by filtering the main 'users' array.
                 return ctdId ? `corporateTravelDesks/${ctdId}/users` : null;
             default:
                 const unhandledRole: never = role;
@@ -155,7 +107,13 @@ export default function UserManagementPage() {
             toast({ title: 'Error', description: 'Invalid user role for status update.', variant: 'destructive' });
             return;
         }
-        const mockUserDocRef = { path: `${collectionPath}/${user.id}` } as any;
+        // In demo mode, we need to use a path the mock store understands for updates.
+        // For roles like 'Operator', the collection is 'operators', not 'users'.
+        const updatePath = ['Admin', 'Customer', 'Requester', 'Corporate Admin', 'CTD Admin'].includes(user.role) 
+            ? collectionPath 
+            : collectionPath.split('/')[0]; // e.g., 'operators' from 'operators/{id}/...'
+
+        const mockUserDocRef = { path: `${updatePath}/${user.id}` } as any;
         updateDocumentNonBlocking(mockUserDocRef, { status });
     };
     
@@ -168,7 +126,11 @@ export default function UserManagementPage() {
             setUserToDelete(null);
             return;
         }
-        const mockUserDocRef = { path: `${collectionPath}/${userToDelete.id}` } as any;
+        const deletePath = ['Admin', 'Customer', 'Requester', 'Corporate Admin', 'CTD Admin'].includes(userToDelete.role) 
+            ? collectionPath 
+            : collectionPath.split('/')[0];
+
+        const mockUserDocRef = { path: `${deletePath}/${userToDelete.id}` } as any;
         
         deleteDocumentNonBlocking(mockUserDocRef);
         setUserToDelete(null);
@@ -280,3 +242,5 @@ export default function UserManagementPage() {
         </>
     );
 }
+
+    
