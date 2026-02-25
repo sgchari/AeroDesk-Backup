@@ -66,12 +66,36 @@ export function useCollection<T = any>(
 
         let resultData: any[] = [];
         
+        // Handle nested collections first
         if (path.startsWith('operators/') && path.endsWith('/aircrafts')) {
-            resultData = mockData.aircrafts.filter(ac => ac.operatorId === user.id);
-        } else {
-            switch(path) {
+            const operatorId = path.split('/')[1];
+            resultData = mockData.aircrafts.filter(ac => ac.operatorId === operatorId);
+        } else if (path.startsWith('charterRFQs/') && path.endsWith('/quotations')) {
+            const rfqId = path.split('/')[1];
+            if (rfqId === 'all') { // Handle the dashboard case
+                resultData = mockData.quotations;
+            } else {
+                resultData = mockData.quotations.filter(q => q.rfqId === rfqId);
+            }
+        } else if (path.startsWith('emptyLegs/') && path.endsWith('/seatAllocationRequests')) {
+            const emptyLegId = path.split('/')[1];
+            resultData = mockData.seatAllocationRequests.filter(sar => sar.emptyLegId === emptyLegId);
+        } else if (path.startsWith('hotelPartners/') && path.endsWith('/properties')) {
+            const hotelPartnerId = path.split('/')[1];
+            resultData = mockData.properties.filter(p => p.hotelPartnerId === hotelPartnerId);
+        } else if (path.includes('/properties/') && path.endsWith('/roomCategories')) {
+            const propertyId = path.split('/')[3];
+            resultData = mockData.roomCategories.filter(rc => rc.propertyId === propertyId);
+        } else if (path.startsWith('corporateTravelDesks/') && path.endsWith('/users')) {
+            const ctdId = path.split('/')[1];
+            resultData = mockUsers.filter(u => u.ctdId === ctdId);
+        }
+        // Handle root collections
+        else {
+            const collectionName = path.split('/')[0];
+            switch(collectionName) {
                 case 'charterRFQs':
-                    resultData = mockData.rfqs.filter(rfq => (user.role === 'Customer' && rfq.customerId === user.id) || user.role === 'Operator' || user.role === 'Admin');
+                    resultData = mockData.rfqs.filter(rfq => (user.role === 'Customer' && rfq.customerId === user.id) || (user.role === 'Requester' && rfq.requesterExternalAuthId === user.id) || user.role === 'Operator' || user.role === 'Admin' || (user.role === 'CTD Admin' && rfq.company === user.company));
                     break;
                 case 'emptyLegs':
                      resultData = mockData.emptyLegs.filter(leg => (user.role === 'Operator' && leg.operatorId === user.id) || (user.role !== 'Operator'));
@@ -80,7 +104,7 @@ export function useCollection<T = any>(
                     resultData = mockData.auditLogs;
                     break;
                 case 'operators':
-                    resultData = mockUsers.filter(u => u.role === 'Operator');
+                    resultData = mockData.operators;
                     break;
                 case 'customers':
                     resultData = mockUsers.filter(u => u.role === 'Customer');
@@ -95,22 +119,13 @@ export function useCollection<T = any>(
                      resultData = mockUsers.filter(u => u.role === 'Hotel Partner');
                     break;
                 case 'corporateTravelDesks':
-                    // In a real app, this would be more complex. Here, just find the CTD admin's company.
-                    const ctdAdmin = mockUsers.find(u => u.role === 'CTD Admin');
-                    if (ctdAdmin) {
-                        resultData = [{ id: ctdAdmin.ctdId, companyName: ctdAdmin.company }];
-                    }
+                    resultData = mockData.corporateTravelDesks;
                     break;
                  case 'accommodationRequests':
                     resultData = mockData.accommodationRequests.filter(req => req.hotelPartnerId === user.id);
                     break;
                 default:
-                    // For nested CTD users, e.g., corporateTravelDesks/{id}/users
-                    if (path.includes('corporateTravelDesks') && path.includes('/users')) {
-                         resultData = mockUsers.filter(u => u.ctdId && path.includes(u.ctdId));
-                    } else {
-                        console.warn(`useCollection: No mock data handler for path: ${path}`);
-                    }
+                    console.warn(`useCollection: No mock data handler for path: ${path}`);
             }
         }
         

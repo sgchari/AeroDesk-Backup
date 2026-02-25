@@ -22,6 +22,9 @@ export type User = {
   createdAt: string;
   updatedAt: string;
   ctdId?: string;
+  externalAuthId?: string; // For consistency
+  nsopLicenseNumber?: string; // For operator users
+  mouAcceptedAt?: string; // For operator users
 };
 
 export type Operator = {
@@ -74,7 +77,7 @@ export type CharterRFQ = {
   company?: string;
 };
 
-export type Bid = {
+export type Quotation = {
   id: string;
   rfqId: string;
   operatorId: string;
@@ -82,9 +85,14 @@ export type Bid = {
   aircraftId: string;
   aircraftName: string;
   price: number;
-  status: 'Submitted' | 'Withdrawn';
+  status: 'Submitted' | 'Withdrawn' | 'Selected' | 'Rejected';
   submittedAt: string;
+  validUntil: string;
 };
+
+// Deprecating Bid in favor of Quotation
+export type Bid = Quotation;
+
 
 export type Aircraft = {
   id: string;
@@ -104,8 +112,34 @@ export type EmptyLeg = {
   arrival: string;
   departureTime: string;
   availableSeats: number;
-  status: 'Pending Approval' | 'Approved' | 'Expired';
+  status: 'Pending Approval' | 'Approved' | 'Expired' | 'Cancelled';
 };
+
+export type EmptyLegSeatAllocationRequest = {
+    id: string;
+    emptyLegId: string;
+    distributorId: string;
+    requesterExternalAuthId: string;
+    numberOfSeats: number;
+    status: 'Requested' | 'Approved' | 'Rejected' | 'Cancelled';
+    requestDateTime: string;
+}
+
+export type Property = {
+    id: string;
+    hotelPartnerId: string;
+    name: string;
+    address: string;
+    city: string;
+    status: 'Active' | 'Inactive';
+}
+
+export type RoomCategory = {
+    id: string;
+    propertyId: string;
+    name: string;
+    maxOccupancy: number;
+}
 
 export type AccommodationRequest = {
     id: string;

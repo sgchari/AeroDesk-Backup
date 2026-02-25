@@ -3,7 +3,7 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { CharterRFQ, Aircraft } from "@/lib/types";
+import type { CharterRFQ, Aircraft, Quotation } from "@/lib/types";
 import { MoreHorizontal, Plane, FileText, CheckCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -31,11 +31,23 @@ export function OperatorDashboard() {
   }, [firestore, user]);
   const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery);
 
-  const isLoading = isUserLoading || rfqsLoading || aircraftsLoading;
+  // This is a workaround for demo mode without collectionGroup queries.
+  // We fetch all quotations and filter client-side.
+  const allQuotationsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    // In a real app, this would be a more efficient query.
+    // For the demo, we create a dummy query to trigger the mock data handler.
+    return query(collection(firestore, 'charterRFQs/all/quotations'));
+  }, [firestore, user]);
+  const { data: allQuotations, isLoading: quotationsLoading } = useCollection<Quotation>(allQuotationsQuery);
+
+  const submittedQuotations = allQuotations?.filter(q => q.operatorId === user?.id && q.status === 'Submitted') ?? [];
+
+  const isLoading = isUserLoading || rfqsLoading || aircraftsLoading || quotationsLoading;
 
   const stats = {
     marketplaceRfqs: rfqs?.length ?? 0,
-    activeBids: 0, // Temporarily disabled to prevent crash
+    activeBids: submittedQuotations.length,
     fleetSize: aircrafts?.length ?? 0,
     totalCrew: 0, // Crew management not yet implemented
   }
