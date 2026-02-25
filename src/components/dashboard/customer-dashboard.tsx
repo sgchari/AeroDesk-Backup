@@ -42,16 +42,20 @@ export function CustomerDashboard() {
 
   const emptyLegsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
+    // In demo mode, we fetch all and filter client-side.
+    return query(collection(firestore, 'emptyLegs'));
   }, [firestore]);
-  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
+  const { data: allEmptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
   const isLoading = isUserLoading || rfqsLoading || emptyLegsLoading;
+
+  // Client-side filtering for demo mode to show only approved legs
+  const approvedEmptyLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved');
 
   const stats = {
     active: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
     completed: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
-    emptyLegs: emptyLegs?.length ?? 0,
+    emptyLegs: approvedEmptyLegs?.length ?? 0,
     total: rfqs?.length ?? 0,
   }
 
@@ -182,7 +186,7 @@ export function CustomerDashboard() {
             </Card>
         )}
 
-        {emptyLegs && emptyLegs.length > 0 && (
+        {approvedEmptyLegs && approvedEmptyLegs.length > 0 && (
             <Card>
                 <CardHeader>
                     <CardTitle>Available Empty Legs</CardTitle>
@@ -202,7 +206,7 @@ export function CustomerDashboard() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {emptyLegs.map((leg: EmptyLeg) => (
+                            {approvedEmptyLegs.map((leg: EmptyLeg) => (
                                 <TableRow key={leg.id}>
                                     <TableCell className="font-medium font-code">{leg.id}</TableCell>
                                     <TableCell>{leg.departure} to {leg.arrival}</TableCell>

@@ -329,11 +329,17 @@ const LandingFooter: FC = () => {
 export default function PromotionsPage() {
   const firestore = useFirestore();
   const router = useRouter();
+
   const emptyLegsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
+    // For demo mode, we fetch all and filter on the client.
+    // In a live app, the where clause would be applied by Firestore.
+    return query(collection(firestore, 'emptyLegs'));
   }, [firestore]);
-  const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
+  const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
+
+  // Client-side filtering for demo mode
+  const emptyLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved');
 
   const handleRequestSeats = (legId: string) => {
     router.push('/login');
