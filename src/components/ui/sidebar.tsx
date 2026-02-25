@@ -24,7 +24,7 @@ const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
-const SIDEBAR_WIDTH_ICON = "3rem"
+const SIDEBAR_WIDTH_ICON = "3.5rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContext = {
@@ -199,7 +199,7 @@ const Sidebar = React.forwardRef<
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
-            className="w-[--sidebar-width] bg-black/20 border-white/10 backdrop-blur-md p-0 text-sidebar-foreground [&>button]:hidden"
+            className="w-[--sidebar-width] bg-card p-0 text-sidebar-foreground [&>button]:hidden"
             style={
               {
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -250,7 +250,7 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-black/20 border-white/10 backdrop-blur-md shadow-md group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border"
+            className="flex h-full w-full flex-col bg-card shadow-md group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border"
           >
             {children}
           </div>
@@ -494,7 +494,7 @@ const SidebarMenu = React.forwardRef<
   <ul
     ref={ref}
     data-sidebar="menu"
-    className={cn("flex w-full min-w-0 flex-col gap-1", className)}
+    className={cn("flex w-full min-w-0 flex-col gap-1 p-2", className)}
     {...props}
   />
 ))

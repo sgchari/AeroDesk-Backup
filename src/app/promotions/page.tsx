@@ -339,7 +339,7 @@ export default function PromotionsPage() {
   const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
   // Client-side filtering for demo mode
-  const emptyLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved');
+  const emptyLegs = allEmptyLegs?.filter(leg => leg.status === 'Published' || leg.status === 'Approved');
 
   const handleRequestSeats = (legId: string) => {
     router.push('/login');

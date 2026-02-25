@@ -1,3 +1,4 @@
+
 'use client';
 import {
   Home,
@@ -27,10 +28,10 @@ const navItems = {
   ],
   Operator: [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/operator/rfq-marketplace', label: 'RFQ Marketplace', icon: GanttChartSquare, color: 'text-amber-500' },
-    { href: '/dashboard/operator/fleet', label: 'My Fleet', icon: Plane, color: 'text-gray-500' },
-    { href: '/dashboard/operator/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/operator/rfq-marketplace', label: 'Charter Requests', icon: GanttChartSquare, color: 'text-amber-500' },
     { href: '/dashboard/operator/empty-legs', label: 'Empty Legs', icon: Plane, color: 'text-green-500' },
+    { href: '/dashboard/operator/fleet', label: 'Fleet & Availability', icon: Plane, color: 'text-gray-500' },
+    { href: '/dashboard/operator/team', label: 'Crew & Logistics', icon: Users, color: 'text-violet-500' },
   ],
   'Authorized Distributor': [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
@@ -85,7 +86,7 @@ export function MainSidebar({ className }: { className?: string }) {
 
   return (
     <>
-      <SidebarHeader className="flex h-20 items-center border-b border-white/10 px-4">
+      <SidebarHeader className="flex h-20 items-center border-b px-4">
         <Link href="/dashboard" className="flex items-center gap-2 font-semibold group-data-[state=collapsed]:hidden">
             <Logo />
         </Link>

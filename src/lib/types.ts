@@ -44,11 +44,15 @@ export type Operator = {
 
 export type RfqStatus =
   | 'Draft'
+  | 'New'
   | 'Submitted'
+  | 'Reviewing'
   | 'Pending Approval'
   | 'Bidding Open'
   | 'Bidding Closed'
   | 'Operator Selected'
+  | 'Quoted'
+  | 'Closed'
   | 'Confirmed'
   | 'Cancelled'
   | 'Expired';
@@ -102,17 +106,20 @@ export type Aircraft = {
   registration: string;
   paxCapacity: number;
   homeBase: string;
+  status: 'Available' | 'Under Maintenance' | 'AOG' | 'Restricted';
 };
 
 export type EmptyLeg = {
   id: string;
   operatorId: string;
   aircraftId: string;
+  aircraftName?: string; // For display
   departure: string;
   arrival: string;
   departureTime: string;
   availableSeats: number;
-  status: 'Pending Approval' | 'Approved' | 'Expired' | 'Cancelled';
+  seatsAllocated?: number; // For display
+  status: 'Pending Approval' | 'Approved' | 'Expired' | 'Cancelled' | 'Draft' | 'Published' | 'Closed';
 };
 
 export type EmptyLegSeatAllocationRequest = {

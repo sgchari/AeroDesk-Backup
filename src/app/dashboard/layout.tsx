@@ -9,22 +9,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <div
-        className="fixed inset-0 z-[-1] bg-cyan-900"
-      />
-      <SidebarProvider>
-        <Sidebar collapsible="icon">
-          <MainSidebar />
-        </Sidebar>
-        <SidebarRail />
-        <SidebarInset className="bg-transparent">
-          <Header />
-          <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-            {children}
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
-    </>
+    <SidebarProvider>
+      <Sidebar collapsible="icon">
+        <MainSidebar />
+      </Sidebar>
+      <SidebarRail />
+      <SidebarInset className="bg-background">
+        <Header />
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+          {children}
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

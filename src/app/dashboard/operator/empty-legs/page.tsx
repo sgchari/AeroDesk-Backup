@@ -15,10 +15,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const getStatusVariant = (status: EmptyLeg['status']) => {
     switch (status) {
-        case 'Pending Approval': return 'destructive';
-        case 'Approved': return 'default';
-        case 'Expired': return 'secondary';
-        default: return 'outline';
+        case 'Draft': return 'secondary';
+        case 'Pending Approval': return 'warning';
+        case 'Published': return 'default';
+        case 'Closed': return 'outline';
+        case 'Expired': return 'outline';
+        case 'Cancelled': return 'destructive';
+        default: return 'secondary';
     }
 }
 
@@ -36,7 +39,7 @@ export default function EmptyLegsPage() {
 
   return (
     <>
-      <PageHeader title="Empty Leg Management" description="Create and manage your empty leg flights.">
+      <PageHeader title="Empty Leg Management" description="Create, publish, and manage your empty leg monetization and positioning flights.">
         <Button>
             <PlusCircle className="mr-2 h-4 w-4" />
             Create Empty Leg
@@ -54,10 +57,11 @@ export default function EmptyLegsPage() {
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>Flight ID</TableHead>
-                    <TableHead>Route</TableHead>
-                    <TableHead>Departure Time</TableHead>
-                    <TableHead>Seats</TableHead>
+                    <TableHead>Aircraft</TableHead>
+                    <TableHead>Sector</TableHead>
+                    <TableHead>Date / Time</TableHead>
+                    <TableHead>Seat Capacity</TableHead>
+                    <TableHead>Seats Allocated</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>
                     <span className="sr-only">Actions</span>
@@ -67,10 +71,11 @@ export default function EmptyLegsPage() {
                 <TableBody>
                 {emptyLegs?.map((leg: EmptyLeg) => (
                     <TableRow key={leg.id}>
-                        <TableCell className="font-medium font-code">{leg.id}</TableCell>
+                        <TableCell className="font-medium">{leg.aircraftName || leg.aircraftId}</TableCell>
                         <TableCell>{leg.departure} to {leg.arrival}</TableCell>
                         <TableCell>{new Date(leg.departureTime).toLocaleString()}</TableCell>
                         <TableCell className="text-center">{leg.availableSeats}</TableCell>
+                        <TableCell className="text-center">{leg.seatsAllocated || 0}</TableCell>
                         <TableCell>
                             <Badge variant={getStatusVariant(leg.status)}>{leg.status}</Badge>
                         </TableCell>
@@ -85,7 +90,9 @@ export default function EmptyLegsPage() {
                                 <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem>Edit Details</DropdownMenuItem>
-                                {leg.status === 'Pending Approval' && <DropdownMenuItem>Withdraw</DropdownMenuItem>}
+                                {leg.status === 'Draft' && <DropdownMenuItem>Publish</DropdownMenuItem>}
+                                {leg.status === 'Published' && <DropdownMenuItem>Close</DropdownMenuItem>}
+                                <DropdownMenuItem className="text-destructive">Withdraw</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>

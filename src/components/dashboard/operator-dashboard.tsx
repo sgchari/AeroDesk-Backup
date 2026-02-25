@@ -3,17 +3,17 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { CharterRFQ, Aircraft, Quotation } from "@/lib/types";
-import { MoreHorizontal, Plane, FileText, CheckCircle, Users } from "lucide-react";
+import type { CharterRFQ, Aircraft, Quotation, EmptyLegSeatAllocationRequest } from "@/lib/types";
+import { FileText, GanttChartSquare, Plane, AlertTriangle, Users, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/hooks/use-user";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { collection, query, where, orderBy, limit } from "firebase/firestore";
+import { Badge } from "../ui/badge";
 
 export function OperatorDashboard() {
   const { user, isLoading: isUserLoading } = useUser();
@@ -21,7 +21,7 @@ export function OperatorDashboard() {
 
   const rfqsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
+    return query(collection(firestore, 'charterRFQs'));
   }, [firestore]);
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
@@ -31,83 +31,77 @@ export function OperatorDashboard() {
   }, [firestore, user]);
   const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, user ? `operators/${user.id}/aircrafts` : undefined);
 
+  const emptyLegsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'emptyLegs'), where('operatorId', '==', user.id));
+  }, [firestore, user]);
+  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<Aircraft>(emptyLegsQuery, user ? `emptyLegs` : undefined);
+
+
   // This is a workaround for demo mode without collectionGroup queries.
   const { data: allQuotations, isLoading: quotationsLoading } = useCollection<Quotation>(null, 'charterRFQs/all/quotations');
+  const { data: allSeatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(null, 'emptyLegs/all/seatAllocationRequests');
 
-  const submittedQuotations = allQuotations?.filter(q => q.operatorId === user?.id && q.status === 'Submitted') ?? [];
-
-  const isLoading = isUserLoading || rfqsLoading || aircraftsLoading || quotationsLoading;
+  const isLoading = isUserLoading || rfqsLoading || aircraftsLoading || quotationsLoading || emptyLegsLoading || seatRequestsLoading;
 
   const stats = {
-    marketplaceRfqs: rfqs?.length ?? 0,
-    activeBids: submittedQuotations.length,
-    fleetSize: aircrafts?.length ?? 0,
-    totalCrew: 0, // Crew management not yet implemented
+    pendingRfqs: rfqs?.filter(r => r.status === 'New' || r.status === 'Bidding Open').length ?? 0,
+    activeQuotations: allQuotations?.filter(q => q.operatorId === user?.id && q.status === 'Submitted').length ?? 0,
+    upcomingEmptyLegs: emptyLegs?.filter(l => l.status === 'Published').length ?? 0,
+    aircraftAlerts: aircrafts?.filter(a => a.status === 'AOG' || a.status === 'Under Maintenance').length ?? 0,
+    seatAllocationRequests: allSeatRequests?.filter(r => r.status === 'Requested').length ?? 0,
+    notifications: 0,
   }
+
+  const activityStream = rfqs?.slice(0, 5) ?? [];
 
   return (
     <>
-      <PageHeader title="Operator Console" description="Manage your quotations, fleet, and view marketplace activity.">
-        <Button asChild variant="outline"><Link href="/dashboard/operator/fleet">Manage Fleet</Link></Button>
-        <Button asChild variant="outline"><Link href="/dashboard/operator/crew">Manage Crew</Link></Button>
-        <Button asChild><Link href="/dashboard/operator/empty-legs">Create Empty Leg</Link></Button>
-      </PageHeader>
+      <PageHeader title="Operator Command Center" description="Immediate situational awareness of your charter operations." />
       
       <StatsGrid>
-        <StatsCard title="Active RFQs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.marketplaceRfqs.toString()} icon={FileText} description="RFQs currently open for bidding" />
-        <StatsCard title="Submitted Quotations" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeBids.toString()} icon={CheckCircle} description="Your active quotations" />
-        <StatsCard title="Fleet Size" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.fleetSize.toString()} icon={Plane} description="Total aircraft in your fleet" />
-        <StatsCard title="Total Crew" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.totalCrew.toString()} icon={Users} description="Pilots and cabin crew" />
+        <StatsCard title="Pending Charter Requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingRfqs.toString()} icon={FileText} description="RFQs needing a quotation" />
+        <StatsCard title="Active Quotations" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeQuotations.toString()} icon={GanttChartSquare} description="Your submitted quotes" />
+        <StatsCard title="Upcoming Empty Legs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.upcomingEmptyLegs.toString()} icon={Plane} description="Published empty leg flights" />
+        <StatsCard title="Aircraft Availability Alerts" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.aircraftAlerts.toString()} icon={AlertTriangle} description="AOG or maintenance issues" />
+        <StatsCard title="Seat Allocation Requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.seatAllocationRequests.toString()} icon={Users} description="Requests for empty leg seats" />
+        <StatsCard title="Operational Notifications" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.notifications.toString()} icon={Bell} description="System & compliance flags" />
       </StatsGrid>
 
       <Card>
-        <CardHeader>
-          <CardTitle>RFQ Marketplace</CardTitle>
-          <CardDescription>
-            Charter requests from customers and corporates, open for quotations.
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+                <CardTitle>Recent Activity Stream</CardTitle>
+                <CardDescription>
+                    Chronological log of the latest platform events.
+                </CardDescription>
+            </div>
+            <Button asChild variant="outline">
+                <Link href="/dashboard/operator/rfq-marketplace">View All RFQs</Link>
+            </Button>
         </CardHeader>
         <CardContent>
            {isLoading ? <Skeleton className="h-40 w-full" /> : (
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>RFQ ID</TableHead>
-                    <TableHead>Customer</TableHead>
+                    <TableHead>Request ID</TableHead>
                     <TableHead>Route</TableHead>
-                    <TableHead>Departure Date</TableHead>
                     <TableHead>PAX</TableHead>
                     <TableHead>Aircraft Type</TableHead>
-                    <TableHead>
-                    <span className="sr-only">Actions</span>
-                    </TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Received</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {rfqs?.map((rfq: CharterRFQ) => (
+                {activityStream.map((rfq: CharterRFQ) => (
                     <TableRow key={rfq.id}>
                         <TableCell className="font-medium font-code">{rfq.id}</TableCell>
-                        <TableCell>{rfq.customerName}</TableCell>
                         <TableCell>{rfq.departure} to {rfq.arrival}</TableCell>
-                        <TableCell>{rfq.departureDate}</TableCell>
                         <TableCell>{rfq.pax}</TableCell>
                         <TableCell>{rfq.aircraftType}</TableCell>
-                        <TableCell>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                <Button aria-haspopup="true" size="icon" variant="ghost">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
-                                </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Submit Quotation</DropdownMenuItem>
-                                <DropdownMenuItem>Withdraw Quotation</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
+                        <TableCell><Badge variant={rfq.status === 'New' || rfq.status === 'Bidding Open' ? 'default' : 'secondary'}>{rfq.status}</Badge></TableCell>
+                        <TableCell>{new Date(rfq.createdAt).toLocaleDateString()}</TableCell>
                     </TableRow>
                 ))}
                 </TableBody>
