@@ -5,7 +5,7 @@ import { useUser } from '@/hooks/use-user';
 import { OperatorDashboard } from '@/components/dashboard/operator-dashboard';
 import { AdminDashboard } from './admin-dashboard';
 import { CTDDashboard } from '@/components/dashboard/ctd-dashboard';
-import { DistributorDashboard } from '@/components/dashboard/distributor-dashboard';
+import { TravelAgencyDashboard } from '@/components/dashboard/travel-agency-dashboard';
 import { HotelDashboard } from '@/components/dashboard/hotel-dashboard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -107,8 +107,8 @@ export default function DashboardPage() {
         return <AdminDashboard />;
       case 'CTD Admin':
         return <CTDDashboard />;
-      case 'Authorized Distributor':
-        return <DistributorDashboard />;
+      case 'Travel Agency':
+        return <TravelAgencyDashboard />;
       case 'Hotel Partner':
         return <HotelDashboard />;
       default:

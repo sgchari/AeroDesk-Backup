@@ -12,7 +12,9 @@ import {
   Settings,
   GanttChartSquare,
   CreditCard,
-  LifeBuoy
+  LifeBuoy,
+  Armchair,
+  History,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -25,8 +27,8 @@ import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMen
 const navItems = {
   Customer: [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/charter-rfq', label: 'My Trips', icon: FileText, color: 'text-blue-500' },
-    { href: '/dashboard/customer/empty-legs', label: 'Available Jet Seats', icon: Plane, color: 'text-green-500' },
+    { href: '/dashboard/customer/my-trips', label: 'My Trips', icon: FileText, color: 'text-blue-500' },
+    { href: '/dashboard/customer/empty-legs', label: 'Available Jet Seats', icon: Armchair, color: 'text-green-500' },
     { href: '#', label: 'Support', icon: LifeBuoy, color: 'text-gray-500' },
   ],
   Operator: [
@@ -34,12 +36,16 @@ const navItems = {
     { href: '/dashboard/operator/rfq-marketplace', label: 'Charter Requests', icon: GanttChartSquare, color: 'text-amber-500' },
     { href: '/dashboard/operator/empty-legs', label: 'Empty Legs', icon: Plane, color: 'text-green-500' },
     { href: '/dashboard/operator/fleet', label: 'Fleet & Availability', icon: Plane, color: 'text-gray-500' },
-    { href: '/dashboard/operator/team', label: 'Crew & Logistics', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/operator/crew', label: 'Crew & Logistics', icon: Users, color: 'text-violet-500' },
   ],
-  'Authorized Distributor': [
+  'Travel Agency': [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/distributor/empty-legs', label: 'Approved Empty Legs', icon: Plane, color: 'text-green-500' },
-    { href: '/dashboard/distributor/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/travel-agency/available-seats', label: 'Available Jet Seats', icon: Armchair, color: 'text-green-500' },
+    { href: '/dashboard/travel-agency/seat-requests', label: 'Seat Requests', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/travel-agency/charter-requests', label: 'Charter Requests', icon: FileText, color: 'text-blue-500' },
+    { href: '/dashboard/travel-agency/accommodation-requests', label: 'Accommodation', icon: Building, color: 'text-orange-500' },
+    { href: '/dashboard/travel-agency/client-activity', label: 'Client Activity', icon: GanttChartSquare, color: 'text-amber-500' },
+    { href: '/dashboard/travel-agency/reports', label: 'Reports / History', icon: History, color: 'text-fuchsia-500' },
   ],
   'CTD Admin': [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },

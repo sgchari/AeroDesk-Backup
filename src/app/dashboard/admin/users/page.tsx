@@ -114,7 +114,7 @@ export default function UserManagementPage() {
             admins?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Admin', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
             customers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: 'Customer', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
             operators?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Operator', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
-            distributors?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Authorized Distributor', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
+            distributors?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Travel Agency', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
             hotelPartners?.forEach(u => addUserToMap({ id: u.id, name: u.companyName, email: u.contactEmail, role: 'Hotel Partner', status: u.status, createdAt: u.createdAt, ctdId: (u as any).ctdId }));
             ctdUsers?.forEach(u => addUserToMap({ id: u.id, name: `${u.firstName} ${u.lastName}`, email: u.email, role: u.role, status: u.status, createdAt: u.createdAt, ctdId: u.ctdId }));
 
@@ -135,7 +135,7 @@ export default function UserManagementPage() {
             case 'Admin': return 'platformAdmins';
             case 'Customer': return 'customers';
             case 'Operator': return 'operators';
-            case 'Authorized Distributor': return 'distributors';
+            case 'Travel Agency': return 'distributors';
             case 'Hotel Partner': return 'hotelPartners';
             // All other roles are assumed to be CTD users.
             case 'CTD Admin':

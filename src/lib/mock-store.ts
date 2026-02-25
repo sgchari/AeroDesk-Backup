@@ -33,7 +33,7 @@ let db = {
   seatAllocationRequests: deepCopy(mockEmptyLegSeatAllocationRequests),
   platformAdmins: deepCopy(mockUsers.filter(u => u.role === 'Admin')),
   customers: deepCopy(mockUsers.filter(u => u.role === 'Customer')),
-  distributors: deepCopy(mockUsers.filter(u => u.role === 'Authorized Distributor')),
+  distributors: deepCopy(mockUsers.filter(u => u.role === 'Travel Agency')),
   hotelPartners: deepCopy(mockUsers.filter(u => u.role === 'Hotel Partner')),
 };
 
@@ -54,6 +54,11 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
     const pathSegments = path.split('/');
     const collectionName = pathSegments[0];
 
+    // Handle special case for collectionGroup simulation
+    if (path === 'emptyLegs/all/seatAllocationRequests') {
+        return db.seatAllocationRequests;
+    }
+
     switch(collectionName) {
         case 'operators':
             if (pathSegments.length > 2 && pathSegments[2] === 'aircrafts') {
@@ -68,7 +73,8 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
                 (currentUser.role === 'Requester' && rfq.requesterExternalAuthId === currentUser.id) || 
                 currentUser.role === 'Operator' || 
                 currentUser.role === 'Admin' || 
-                (currentUser.role === 'CTD Admin' && rfq.company === currentUser.company)
+                (currentUser.role === 'CTD Admin' && rfq.company === currentUser.company) ||
+                (currentUser.role === 'Travel Agency' && rfq.requesterExternalAuthId === currentUser.id)
             );
         case 'emptyLegs':
              return db.emptyLegs.filter(leg => 
@@ -78,7 +84,7 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
         case 'auditTrails': return db.auditTrails;
         case 'customers': return db.users.filter(u => u.role === 'Customer');
         case 'platformAdmins': return db.users.filter(u => u.role === 'Admin');
-        case 'distributors': return db.users.filter(u => u.role === 'Authorized Distributor');
+        case 'distributors': return db.users.filter(u => u.role === 'Travel Agency');
         case 'hotelPartners': return db.users.filter(u => u.role === 'Hotel Partner');
         case 'corporateTravelDesks':
              if (pathSegments.length > 2 && pathSegments[2] === 'users') {
@@ -117,7 +123,7 @@ const getDoc = (path: string): any | null => {
 const addDoc = (path: string, data: any) => {
     const pathSegments = path.split('/');
     const collectionName = pathSegments[0];
-    let newDoc = { ...data, id: `demo-${collectionName}-${Date.now()}` };
+    let newDoc = { ...data, id: `demo-${collectionName.slice(0, 4)}-${Date.now()}` };
 
     if (collectionName === 'emptyLegs' && pathSegments.length > 2 && pathSegments[2] === 'seatAllocationRequests') {
         db.seatAllocationRequests.unshift(newDoc as any);

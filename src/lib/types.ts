@@ -2,7 +2,7 @@
 export type UserRole =
   | 'Customer'
   | 'Operator'
-  | 'Authorized Distributor'
+  | 'Travel Agency'
   | 'CTD Admin'
   | 'Hotel Partner'
   | 'Admin'
@@ -25,6 +25,7 @@ export type User = {
   externalAuthId?: string; // For consistency
   nsopLicenseNumber?: string; // For operator users
   mouAcceptedAt?: string; // For operator users
+  companyName?: string; // For company-based roles
 };
 
 export type Operator = {
@@ -131,6 +132,8 @@ export type EmptyLegSeatAllocationRequest = {
     numberOfSeats: number;
     status: 'Requested' | 'Approved' | 'Rejected' | 'Cancelled';
     requestDateTime: string;
+    clientReference?: string;
+    passengerNotes?: string;
 }
 
 export type Property = {

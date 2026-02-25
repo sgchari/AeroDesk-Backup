@@ -23,8 +23,8 @@ export const mockUsers: User[] = [
     { id: 'requester-user-01', email: 'employee@corp.com', firstName: 'Aisha', lastName: 'Khan', role: 'Requester', company: 'Stark Industries', status: 'Active', createdAt: "2024-07-25T14:10:00Z", updatedAt: "2024-07-25T14:10:00Z", ctdId: 'ctd-stark-01' },
     
     // Partners
-    { id: 'distributor-user-01', email: 'sales@sky-dist.com', firstName: 'Amit', lastName: 'Patel', role: 'Authorized Distributor', company: 'Sky Distributors', status: 'Active', createdAt: "2024-07-24T16:00:00Z", updatedAt: "2024-07-24T16:00:00Z" },
-    { id: 'distributor-user-02', email: 'ria@sky-dist.com', firstName: 'Ria', lastName: 'Singh', role: 'Authorized Distributor', company: 'Sky Distributors', status: 'Active', createdAt: "2024-07-28T10:00:00Z", updatedAt: "2024-07-28T10:00:00Z" },
+    { id: 'distributor-user-01', email: 'sales@sky-dist.com', firstName: 'Amit', lastName: 'Patel', role: 'Travel Agency', company: 'Sky Distributors', status: 'Active', createdAt: "2024-07-24T16:00:00Z", updatedAt: "2024-07-24T16:00:00Z", companyName: "Sky Distributors" },
+    { id: 'distributor-user-02', email: 'ria@sky-dist.com', firstName: 'Ria', lastName: 'Singh', role: 'Travel Agency', company: 'Sky Distributors', status: 'Active', createdAt: "2024-07-28T10:00:00Z", updatedAt: "2024-07-28T10:00:00Z", companyName: "Sky Distributors" },
     { id: 'hotel-user-01', email: 'mgr@grandhotel.com', firstName: 'Meera', lastName: 'Chopra', role: 'Hotel Partner', company: 'The Grand Hotel Group', status: 'Active', createdAt: "2024-07-23T18:00:00Z", updatedAt: "2024-07-23T18:00:00Z" },
 ];
 
@@ -55,6 +55,7 @@ export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-793', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Pune (PNQ)', arrival: 'Ahmedabad (AMD)', departureDate: '2024-09-01', pax: 3, aircraftType: 'Any Light Jet', status: 'Operator Selected', createdAt: '2024-07-29T09:00:00Z', bidsCount: 1 },
     { id: 'RFQ-794', customerId: 'requester-user-01', requesterExternalAuthId: 'requester-user-01', company: 'Stark Industries', customerName: 'Rohan Gupta', tripType: 'Onward', departure: 'Delhi (DEL)', arrival: 'Dubai (DXB)', departureDate: '2024-08-25', pax: 2, aircraftType: 'Any Heavy Jet', status: 'Reviewing', createdAt: '2024-07-30T10:00:00Z', bidsCount: 0, businessPurpose: 'Investor Meeting', costCenter: 'INTL-FIN-Q3' },
     { id: 'RFQ-795', customerId: 'customer-user-02', requesterExternalAuthId: 'customer-user-02', customerName: 'Arjun Mehta', tripType: 'Onward', departure: 'Leh (IXL)', arrival: 'Srinagar (SXR)', departureDate: '2024-09-05', pax: 5, aircraftType: 'Any Turboprop', status: 'Closed', createdAt: '2024-07-20T10:00:00Z', bidsCount: 3 },
+    { id: 'RFQ-796', customerId: 'distributor-user-01', requesterExternalAuthId: 'distributor-user-01', customerName: 'Amit Patel (Client)', tripType: 'Onward', departure: 'Jaipur (JAI)', arrival: 'Udaipur (UDR)', departureDate: '2024-08-22', pax: 4, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-30T15:00:00Z', bidsCount: 0 },
 ];
 
 export const mockAircrafts: Aircraft[] = [
@@ -80,7 +81,8 @@ export const mockEmptyLegs: EmptyLeg[] = [
 ];
 
 export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [
-    { id: 'SAR-501', emptyLegId: 'EL-901', distributorId: 'distributor-user-01', requesterExternalAuthId: 'distributor-user-01', numberOfSeats: 2, status: 'Requested', requestDateTime: '2024-07-30T10:00:00Z' }
+    { id: 'SAR-501', emptyLegId: 'EL-901', distributorId: 'distributor-user-01', requesterExternalAuthId: 'distributor-user-01', numberOfSeats: 2, status: 'Requested', requestDateTime: '2024-07-30T10:00:00Z', clientReference: 'ACME Corp' },
+    { id: 'SAR-502', emptyLegId: 'EL-904', distributorId: 'distributor-user-01', requesterExternalAuthId: 'distributor-user-01', numberOfSeats: 4, status: 'Approved', requestDateTime: '2024-07-31T11:00:00Z', clientReference: 'Smith Family' }
 ];
 
 export const mockProperties: Property[] = [

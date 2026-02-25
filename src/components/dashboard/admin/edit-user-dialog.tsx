@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -58,7 +59,7 @@ const getCollectionPathFromRole = (user: DisplayUser): string | null => {
         case 'Admin': return 'platformAdmins';
         case 'Customer': return 'customers';
         case 'Operator': return 'operators';
-        case 'Authorized Distributor': return 'distributors';
+        case 'Travel Agency': return 'distributors';
         case 'Hotel Partner': return 'hotelPartners';
         // CTD roles are nested under corporateTravelDesks
         case 'CTD Admin':
@@ -109,7 +110,7 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
       updatedAt: new Date().toISOString(),
     };
     
-    const isCompany = ['Operator', 'Authorized Distributor', 'Hotel Partner'].includes(user.role);
+    const isCompany = ['Operator', 'Travel Agency', 'Hotel Partner'].includes(user.role);
 
     if (isCompany) {
         // For these roles, the `name` in the table is the company name.
@@ -122,7 +123,7 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
         profileUpdateData.lastName = lastName || ' '; // Ensure lastName is not undefined
         
         // Some person-based roles also use contactPersonName.
-        if (user.role === 'Operator' || user.role === 'Authorized Distributor' || user.role === 'Hotel Partner') {
+        if (user.role === 'Operator' || user.role === 'Travel Agency' || user.role === 'Hotel Partner') {
             profileUpdateData.contactPersonName = data.name;
         }
     }
@@ -138,7 +139,7 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
 
   if (!user) return null;
 
-  const isCompany = ['Operator', 'Authorized Distributor', 'Hotel Partner'].includes(user.role);
+  const isCompany = ['Operator', 'Travel Agency', 'Hotel Partner'].includes(user.role);
   const nameLabel = isCompany ? 'Company Name' : 'Full Name';
 
   return (

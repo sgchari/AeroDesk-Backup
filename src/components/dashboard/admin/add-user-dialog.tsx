@@ -37,7 +37,7 @@ import type { UserRole } from '@/lib/types';
 import { useAuth, useFirestore, createDemoUser, createDemoCtd } from '@/firebase';
 import { PlusCircle } from 'lucide-react';
 
-const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
+const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Travel Agency', 'Hotel Partner', 'CTD Admin', 'Admin'];
 
 const addUserSchema = z.object({
     name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
