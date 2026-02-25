@@ -135,3 +135,15 @@ export type AuditLog = {
   details: string;
   targetId: string;
 };
+
+export type CorporateTravelDesk = {
+    id: string;
+    companyName: string;
+    adminExternalAuthId: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    address?: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+};

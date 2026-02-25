@@ -3,8 +3,8 @@
 
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useUser as useFirebaseAuthUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
-import type { User as AppUser, UserRole } from '@/lib/types';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import type { User as AppUser, UserRole, CorporateTravelDesk } from '@/lib/types';
+import { doc, getDoc } from 'firebase/firestore';
 
 interface UserContextType {
   user: AppUser | null;
@@ -13,25 +13,6 @@ interface UserContextType {
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
-
-// Maps a user role to the collection where their full profile is stored.
-const getCollectionPathForRole = (role: UserRole, ctdId?: string): string | null => {
-    switch (role) {
-        case 'Admin': return 'platformAdmins';
-        case 'Customer': return 'customers';
-        case 'Operator': return 'operators';
-        case 'Authorized Distributor': return 'distributors';
-        case 'Hotel Partner': return 'hotelPartners';
-        // CTD roles are nested under corporateTravelDesks.
-        case 'CTD Admin':
-        case 'Corporate Admin':
-        case 'Requester':
-            return ctdId ? `corporateTravelDesks/${ctdId}/users` : null;
-        default:
-            return null;
-    }
-};
-
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const { user: authUser, isUserLoading: isAuthLoading, userError } = useFirebaseAuthUser();
@@ -54,58 +35,65 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const fetchUserProfile = async () => {
       setProfileLoading(true);
       setProfileError(null);
+      const userMappingRef = doc(firestore, 'users', authUser.uid);
       
       try {
-        // This is a simplified approach for the demo. In a production app,
-        // you would ideally have a single 'users' collection with a 'role' field to query.
-        const userCollections: { role: UserRole, path: string }[] = [
-            { role: 'Admin', path: 'platformAdmins' },
-            { role: 'Customer', path: 'customers' },
-            { role: 'Operator', path: 'operators' },
-            { role: 'Authorized Distributor', path: 'distributors' },
-            { role: 'Hotel Partner', path: 'hotelPartners' },
-        ];
-        
-        let userProfile: AppUser | null = null;
-
-        // 1. Check top-level collections
-        for (const { path } of userCollections) {
-            const userDocRef = doc(firestore, path, authUser.uid);
-            const userDocSnap = await getDoc(userDocRef);
-            if (userDocSnap.exists()) {
-                userProfile = userDocSnap.data() as AppUser;
-                break;
-            }
-        }
-        
-        // 2. If not found, check all corporate travel desks
-        if (!userProfile) {
-            const ctdsCollectionRef = collection(firestore, 'corporateTravelDesks');
-            const ctdsSnapshot = await getDocs(ctdsCollectionRef);
-
-            for (const ctdDoc of ctdsSnapshot.docs) {
-                const ctdUserDocRef = doc(firestore, `corporateTravelDesks/${ctdDoc.id}/users`, authUser.uid);
-                const ctdUserDocSnap = await getDoc(ctdUserDocRef);
-                if (ctdUserDocSnap.exists()) {
-                    userProfile = ctdUserDocSnap.data() as AppUser;
-                    break;
-                }
-            }
+        const userMappingSnap = await getDoc(userMappingRef);
+        if (!userMappingSnap.exists()) {
+            throw new Error("User profile not found. Please complete your registration or contact support.");
         }
 
-        if (userProfile) {
-            setAppUser(userProfile);
+        const userMapping = userMappingSnap.data() as { role: UserRole, ctdId?: string };
+        const { role, ctdId } = userMapping;
+        
+        let collectionPath: string | null = null;
+        if (role === 'CTD Admin' || role === 'Corporate Admin' || role === 'Requester') {
+            if (!ctdId) throw new Error("Corporate user profile is missing 'ctdId'.");
+            collectionPath = `corporateTravelDesks/${ctdId}/users`;
         } else {
-            throw new Error("User profile not found in any collection. Please complete your registration or contact support.");
+            const roleToCollectionMap: Record<UserRole, string> = {
+                'Admin': 'platformAdmins',
+                'Customer': 'customers',
+                'Operator': 'operators',
+                'Authorized Distributor': 'distributors',
+                'Hotel Partner': 'hotelPartners',
+                // CTD roles are handled above
+                'CTD Admin': '', 
+                'Corporate Admin': '',
+                'Requester': ''
+            };
+            collectionPath = roleToCollectionMap[role];
         }
+
+        if (!collectionPath) {
+            throw new Error(`Invalid user role "${role}" found in profile.`);
+        }
+
+        const userDocRef = doc(firestore, collectionPath, authUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (!userDocSnap.exists()) {
+            throw new Error(`User document not found in '${collectionPath}'.`);
+        }
+        
+        let userProfile = userDocSnap.data() as AppUser;
+
+        // If the user is part of a corporate desk, fetch the company name and merge it.
+        if (userProfile.ctdId) {
+            const ctdDocRef = doc(firestore, 'corporateTravelDesks', userProfile.ctdId);
+            const ctdDocSnap = await getDoc(ctdDocRef);
+            if (ctdDocSnap.exists()) {
+                const ctdData = ctdDocSnap.data() as CorporateTravelDesk;
+                // Add company name to the user profile object
+                userProfile.company = ctdData.companyName;
+            } else {
+                 console.warn(`CTD document with ID ${userProfile.ctdId} not found.`);
+            }
+        }
+
+        setAppUser(userProfile);
 
       } catch (error: any) {
-        if (error.code === 'permission-denied') {
-          errorEmitter.emit('permission-error', new FirestorePermissionError({
-              operation: 'get',
-              path: `profile/${authUser.uid}`, // Generic path
-          }));
-        }
         setProfileError(error);
         setAppUser(null);
       } finally {
