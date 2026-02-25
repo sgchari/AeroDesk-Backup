@@ -49,10 +49,6 @@ service cloud.firestore {
       return isSignedIn() && exists(/databases/$(database)/documents/platformAdmins/$(request.auth.uid));
     }
     
-    function isCTDAdmin(ctdId) {
-        return isOwner(ctdId);
-    }
-    
     function isRfqOwner(rfqId) {
         return isSignedIn() && get(/databases/$(database)/documents/charterRFQs/$(rfqId)).data.requesterExternalAuthId == request.auth.uid;
     }
@@ -61,10 +57,15 @@ service cloud.firestore {
     // User & Organization Root Collections
     //-------------------------------------------------------------------------
     
-    // The 'users' collection is deprecated in favor of direct profile lookups.
-    // This rule is left for reference but is not actively used by the new `useUser` hook.
     match /users/{userId} {
-      allow read, write: if false;
+      // Allow any signed-in user to read the role mapping, which is essential for profile loading.
+      // The data here (role, ctdId) is not sensitive.
+      allow get: if isSignedIn();
+      allow list: if false;
+      // Only the user themselves can create or modify their own mapping document.
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
     }
 
     match /customers/{customerId} {
@@ -142,43 +143,45 @@ service cloud.firestore {
     }
 
     match /corporateTravelDesks/{ctdId} {
-      allow get: if isCTDAdmin(ctdId) || isPlatformAdmin();
+      // The CTD admin is the owner of this document.
+      allow get: if isOwner(ctdId) || isPlatformAdmin();
       allow list: if isPlatformAdmin();
       allow create: if isOwner(ctdId);
-      allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
+      allow update: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
+      allow delete: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
 
       match /users/{ctdUserId} {
-        allow get: if isCTDAdmin(ctdId) || isOwner(ctdUserId) || isPlatformAdmin();
-        allow list: if isCTDAdmin(ctdId) || isPlatformAdmin();
-        allow create: if isCTDAdmin(ctdId) && request.resource.data.ctdId == ctdId;
-        allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
-        allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
+        // A CTD admin can read all users in their desk. A user can read their own profile.
+        allow get: if isOwner(ctdId) || isOwner(ctdUserId) || isPlatformAdmin();
+        allow list: if isOwner(ctdId) || isPlatformAdmin();
+        allow create: if isOwner(ctdId) && request.resource.data.ctdId == ctdId;
+        allow update: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
+        allow delete: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
       }
       
       match /approvalRules/{ruleId} {
-        allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
-        allow create: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
-        allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
-        allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
+        allow get, list: if isOwner(ctdId) || isPlatformAdmin();
+        allow create: if (isOwner(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
+        allow update: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
+        allow delete: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
       }
 
       match /approvalLogs/{logId} {
-        allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
+        allow get, list: if isOwner(ctdId) || isPlatformAdmin();
         allow create: if isOwner(request.resource.data.approverExternalAuthId) && request.resource.data.ctdId == ctdId;
         allow update: if false;
         allow delete: if false;
       }
       
       match /policyFlags/{policyFlagId} {
-        allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
-        allow create: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
-        allow update: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
-        allow delete: if (isCTDAdmin(ctdId) || isPlatformAdmin()) && isExistingDoc();
+        allow get, list: if isOwner(ctdId) || isPlatformAdmin();
+        allow create: if (isOwner(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
+        allow update: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
+        allow delete: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
       }
 
       match /approvalPerformanceMetrics/{metricId} {
-        allow get, list: if isCTDAdmin(ctdId) || isPlatformAdmin();
+        allow get, list: if isOwner(ctdId) || isPlatformAdmin();
         allow create: if false;
         allow update: if false;
         allow delete: if false;
@@ -222,7 +225,7 @@ service cloud.firestore {
 
     match /accommodationRequests/{accommodationRequestId} {
       allow get: if isPlatformAdmin() || isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId));
-      allow list: if isPlatformAdmin() || isOwner(request.query.requesterExternalAuthId) || isOwner(request.query.hotelPartnerId);
+      allow list: if isPlatformAdmin() || (request.query.keys().hasAny(['requesterExternalAuthId']) && request.query.requesterExternalAuthId == request.auth.uid) || (request.query.keys().hasAny(['hotelPartnerId']) && request.query.hotelPartnerId == request.auth.uid);
       allow create: if isOwner(request.resource.data.requesterExternalAuthId);
       allow update: if (isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId)) || isPlatformAdmin()) && isExistingDoc();
       allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();

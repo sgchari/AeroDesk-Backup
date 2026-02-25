@@ -40,7 +40,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       try {
         const userMappingSnap = await getDoc(userMappingRef);
         if (!userMappingSnap.exists()) {
-            throw new Error("User profile not found. Please complete your registration or contact support.");
+            throw new Error("User profile mapping not found. Please complete your registration or contact support.");
         }
 
         const userMapping = userMappingSnap.data() as { role: UserRole, ctdId?: string };
@@ -94,7 +94,17 @@ export function UserProvider({ children }: { children: ReactNode }) {
         setAppUser(userProfile);
 
       } catch (error: any) {
-        setProfileError(error);
+        let specificError = error;
+        // If the error is a permission error, emit a more detailed, contextual error.
+        if (error.code === 'permission-denied') {
+            specificError = new FirestorePermissionError({
+                operation: 'get',
+                path: error.customData?._path?.toString() || userMappingRef.path,
+            });
+            errorEmitter.emit('permission-error', specificError);
+        }
+        // Set the original or a new error for local state.
+        setProfileError(specificError);
         setAppUser(null);
       } finally {
         setProfileLoading(false);
