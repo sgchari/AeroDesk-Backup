@@ -9,7 +9,9 @@ export function LandingFooter() {
           <div className="container py-1">
             <div className="grid w-full grid-cols-1 items-start gap-4 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
-                <Logo />
+                <Link href="/">
+                  <Logo />
+                </Link>
               </div>
 
               <div className="flex flex-col items-start gap-2">
