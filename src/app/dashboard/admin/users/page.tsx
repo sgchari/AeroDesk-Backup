@@ -150,22 +150,17 @@ export default function UserManagementPage() {
     };
     
     const handleUpdateStatus = (user: DisplayUser, status: string) => {
-        if (!firestore) return;
         const collectionPath = getCollectionPathFromRole(user);
         if (!collectionPath) {
             toast({ title: 'Error', description: 'Invalid user role for status update.', variant: 'destructive' });
             return;
         }
-        const userDocRef = doc(firestore, collectionPath, user.id);
-        updateDocumentNonBlocking(userDocRef, { status });
-        toast({
-            title: "User Status Updated",
-            description: `${user.name}'s status has been updated to ${status}.`,
-        });
+        const mockUserDocRef = { path: `${collectionPath}/${user.id}` } as any;
+        updateDocumentNonBlocking(mockUserDocRef, { status });
     };
     
     const handleDeleteUser = () => {
-        if (!firestore || !userToDelete) return;
+        if (!userToDelete) return;
 
         const collectionPath = getCollectionPathFromRole(userToDelete);
         if (!collectionPath) {
@@ -173,14 +168,9 @@ export default function UserManagementPage() {
             setUserToDelete(null);
             return;
         }
-        const userDocRef = doc(firestore, collectionPath, userToDelete.id);
+        const mockUserDocRef = { path: `${collectionPath}/${userToDelete.id}` } as any;
         
-        deleteDocumentNonBlocking(userDocRef);
-        
-        toast({
-            title: "User Deleted",
-            description: `${userToDelete.name} has been deleted. Note: This does not remove them from Firebase Authentication.`,
-        });
+        deleteDocumentNonBlocking(mockUserDocRef);
         setUserToDelete(null);
     };
 

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -11,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useCollection, useFirestore, updateDocumentNonBlocking, useMemoFirebase } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Operator } from "@/lib/types";
-import { collection, doc } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { MoreHorizontal } from "lucide-react";
 
 const getStatusVariant = (status: Operator['status']) => {
@@ -33,12 +32,10 @@ export default function OperatorManagementPage() {
     );
 
     const handleUpdateStatus = (operatorId: string, status: Operator['status']) => {
-        if (!firestore) {
-            toast({ title: 'Error', description: 'Database service is not available.', variant: 'destructive'});
-            return;
-        }
-        const operatorDocRef = doc(firestore, 'operators', operatorId);
-        updateDocumentNonBlocking(operatorDocRef, { status });
+        // The non-blocking update function is already wired to the mock store for demo mode.
+        // It just needs a mock reference with a `path` property.
+        const mockOperatorDocRef = { path: `operators/${operatorId}` } as any;
+        updateDocumentNonBlocking(mockOperatorDocRef, { status });
     };
 
     return (
