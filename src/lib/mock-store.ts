@@ -96,6 +96,11 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             if (!currentUser) return [];
             return db.accommodationRequests.filter(req => req.hotelPartnerId === currentUser.id);
         case 'users': return db.users; // Generic user collection for all roles
+        case 'properties':
+            if (!currentUser) return [];
+            return db.properties.filter(p => p.hotelPartnerId === currentUser.id);
+        case 'roomCategories':
+            return db.roomCategories;
         default:
             console.warn(`Mock Store: No handler for getCollection path: ${path}`);
             return [];
@@ -216,3 +221,5 @@ export const mockStore = {
   updateDoc,
   deleteDoc
 };
+
+    
