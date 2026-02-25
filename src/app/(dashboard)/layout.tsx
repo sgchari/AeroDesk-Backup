@@ -15,9 +15,9 @@ export default function DashboardLayout({
           <MainSidebar />
         </Sidebar>
         <SidebarRail />
-        <SidebarInset className="bg-transparent">
+        <SidebarInset className="bg-background">
           <Header />
-          <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-transparent">
+          <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
             {children}
           </main>
         </SidebarInset>
