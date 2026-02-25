@@ -93,10 +93,10 @@ export const mockProperties: Property[] = [
 ];
 
 export const mockRoomCategories: RoomCategory[] = [
-    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with a king-sized bed and city views.' },
-    { id: 'RC-SUI-MUM', propertyId: 'PROP-01', name: 'Executive Suite', maxOccupancy: 3, beddingType: 'King + Sofa', baseCapacity: 2, description: 'A luxurious suite with a separate living area.' },
-    { id: 'RC-PRES-DEL', propertyId: 'PROP-02', name: 'Maharaja Suite', maxOccupancy: 4, beddingType: 'Two Queens', baseCapacity: 4, description: 'An opulent suite with heritage decor and premium amenities.' },
-    { id: 'RC-VIL-GOA', propertyId: 'PROP-03', name: 'Beach Villa', maxOccupancy: 4, beddingType: 'King + Twin', baseCapacity: 2, description: 'A private villa with direct access to the beach.' },
+    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with a king-sized bed and city views.', imageUrl: 'https://picsum.photos/seed/room1/600/400' },
+    { id: 'RC-SUI-MUM', propertyId: 'PROP-01', name: 'Executive Suite', maxOccupancy: 3, beddingType: 'King + Sofa', baseCapacity: 2, description: 'A luxurious suite with a separate living area.', imageUrl: 'https://picsum.photos/seed/room2/600/400' },
+    { id: 'RC-PRES-DEL', propertyId: 'PROP-02', name: 'Maharaja Suite', maxOccupancy: 4, beddingType: 'Two Queens', baseCapacity: 4, description: 'An opulent suite with heritage decor and premium amenities.', imageUrl: 'https://picsum.photos/seed/room3/600/400' },
+    { id: 'RC-VIL-GOA', propertyId: 'PROP-03', name: 'Beach Villa', maxOccupancy: 4, beddingType: 'King + Twin', baseCapacity: 2, description: 'A private villa with direct access to the beach.', imageUrl: 'https://picsum.photos/seed/room4/600/400' },
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
