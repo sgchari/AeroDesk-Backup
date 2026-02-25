@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -140,17 +141,40 @@ export function BookingWidget() {
   return (
     <div className="p-4 rounded-lg shadow-2xl border border-white/10 max-w-4xl mx-auto bg-black/20 backdrop-blur-md">
         <Tabs defaultValue="jet" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent p-0 mb-6">
-                 <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <Plane className="h-8 w-8" />
-                </TabsTrigger>
-                <TabsTrigger value="helicopter" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <HelicopterIcon className="h-8 w-8" />
-                </TabsTrigger>
-                <TabsTrigger value="seats" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
-                    <Armchair className="h-8 w-8" />
-                </TabsTrigger>
-            </TabsList>
+            <TooltipProvider>
+                <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent p-0 mb-6">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <TabsTrigger value="jet" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
+                                <Plane className="h-8 w-8" />
+                            </TabsTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Charter a private jet</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <TabsTrigger value="helicopter" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
+                                <HelicopterIcon className="h-8 w-8" />
+                            </TabsTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Charter a helicopter</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                        <TabsTrigger value="seats" className="flex flex-col gap-2 p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
+                            <Armchair className="h-8 w-8" />
+                        </TabsTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                        <p>Book a seat on an empty leg flight</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TabsList>
+            </TooltipProvider>
             <TabsContent value="jet" className="mt-0">
                 <div className="space-y-4">
                     <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-6 mt-2 mb-4">
@@ -248,5 +272,7 @@ export function BookingWidget() {
   );
 }
 
+
+    
 
     
