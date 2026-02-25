@@ -255,7 +255,7 @@ service cloud.firestore {
     //-------------------------------------------------------------------------
 
     match /platformAdmins/{adminId} {
-      allow get: if isOwner(adminId) || isPlatformAdmin();
+      allow get: if isOwner(adminId);
       allow list: if isPlatformAdmin();
       allow create: if isOwner(adminId);
       allow update: if isOwner(adminId) || isPlatformAdmin();
