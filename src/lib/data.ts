@@ -87,16 +87,16 @@ export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[]
 ];
 
 export const mockProperties: Property[] = [
-    { id: 'PROP-01', hotelPartnerId: 'hotel-user-01', name: 'The Grand Mumbai', address: '123 Marine Drive, Mumbai', city: 'Mumbai', status: 'Active', propertyType: 'Luxury Hotel', imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop' },
-    { id: 'PROP-02', hotelPartnerId: 'hotel-user-01', name: 'The Palace Delhi', address: '456 Connaught Place, Delhi', city: 'Delhi', status: 'Active', propertyType: 'Heritage Hotel', imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbb5eb?q=80&w=2070&auto=format&fit=crop' },
-    { id: 'PROP-03', hotelPartnerId: 'hotel-user-01', name: 'Goa Beach Resort', address: '789 Baga Beach, Goa', city: 'Goa', status: 'Inactive', propertyType: 'Resort', imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1925&auto=format&fit=crop' },
+    { id: 'PROP-01', hotelPartnerId: 'hotel-user-01', name: 'The Grand Mumbai', address: '123 Marine Drive, Mumbai', city: 'Mumbai', status: 'Active', propertyType: 'Luxury Hotel', imageUrl: 'https://picsum.photos/seed/hotel1/600/400' },
+    { id: 'PROP-02', hotelPartnerId: 'hotel-user-01', name: 'The Palace Delhi', address: '456 Connaught Place, Delhi', city: 'Delhi', status: 'Active', propertyType: 'Heritage Hotel', imageUrl: 'https://picsum.photos/seed/hotel2/600/400' },
+    { id: 'PROP-03', hotelPartnerId: 'hotel-user-01', name: 'Goa Beach Resort', address: '789 Baga Beach, Goa', city: 'Goa', status: 'Inactive', propertyType: 'Resort', imageUrl: 'https://picsum.photos/seed/hotel3/600/400' },
 ];
 
 export const mockRoomCategories: RoomCategory[] = [
-    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with a king-sized bed and city views.', imageUrl: 'https://picsum.photos/seed/room1/600/400' },
-    { id: 'RC-SUI-MUM', propertyId: 'PROP-01', name: 'Executive Suite', maxOccupancy: 3, beddingType: 'King + Sofa', baseCapacity: 2, description: 'A luxurious suite with a separate living area.', imageUrl: 'https://picsum.photos/seed/room2/600/400' },
-    { id: 'RC-PRES-DEL', propertyId: 'PROP-02', name: 'Maharaja Suite', maxOccupancy: 4, beddingType: 'Two Queens', baseCapacity: 4, description: 'An opulent suite with heritage decor and premium amenities.', imageUrl: 'https://picsum.photos/seed/room3/600/400' },
-    { id: 'RC-VIL-GOA', propertyId: 'PROP-03', name: 'Beach Villa', maxOccupancy: 4, beddingType: 'King + Twin', baseCapacity: 2, description: 'A private villa with direct access to the beach.', imageUrl: 'https://picsum.photos/seed/room4/600/400' },
+    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with a king-sized bed and stunning city views. Includes a work desk and a modern bathroom.', imageUrl: 'https://picsum.photos/seed/room1/600/400' },
+    { id: 'RC-SUI-MUM', propertyId: 'PROP-01', name: 'Executive Suite', maxOccupancy: 3, beddingType: 'King + Sofa', baseCapacity: 2, description: 'A luxurious suite featuring a separate living area, perfect for business travelers needing extra space.', imageUrl: 'https://picsum.photos/seed/room2/600/400' },
+    { id: 'RC-PRES-DEL', propertyId: 'PROP-02', name: 'Maharaja Suite', maxOccupancy: 4, beddingType: 'Two Queens', baseCapacity: 4, description: 'An opulent suite with traditional heritage decor, premium amenities, and a view of the city palace.', imageUrl: 'https://picsum.photos/seed/room3/600/400' },
+    { id: 'RC-VIL-GOA', propertyId: 'PROP-03', name: 'Beach Villa', maxOccupancy: 4, beddingType: 'King + Twin', baseCapacity: 2, description: 'A private villa offering direct access to the beach, a private plunge pool, and lush garden surroundings.', imageUrl: 'https://picsum.photos/seed/room4/600/400' },
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
