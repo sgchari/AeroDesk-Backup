@@ -159,7 +159,7 @@ export default function ProfilePage() {
     return (
       <div className="space-y-4">
         <PageHeader title="My Profile" description="Manage your personal and contact information." />
-        <Card>
+        <Card className="bg-background">
           <CardHeader>
             <Skeleton className="h-8 w-48" />
             <Skeleton className="h-4 w-64" />
@@ -187,7 +187,7 @@ export default function ProfilePage() {
   return (
     <>
       <PageHeader title="My Profile" description="Manage your personal and contact information." />
-      <Card>
+      <Card className="bg-background">
         <CardHeader>
           <CardTitle>Profile Details</CardTitle>
           <CardDescription>

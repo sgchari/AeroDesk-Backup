@@ -45,7 +45,7 @@ export default function EmptyLegsPage() {
             Create Empty Leg
         </Button>
       </PageHeader>
-      <Card>
+      <Card className="bg-background">
         <CardHeader>
           <CardTitle>Your Empty Legs</CardTitle>
           <CardDescription>

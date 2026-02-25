@@ -5,7 +5,7 @@ export default function PartnerManagementPage() {
     return (
         <>
             <PageHeader title="Partner Management" description="Onboard and manage hotel partners and authorized distributors." />
-            <Card>
+            <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>All Partners</CardTitle>
                     <CardDescription>

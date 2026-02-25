@@ -12,7 +12,7 @@ export default function HotelPropertiesPage() {
                     Add New Property
                 </Button>
             </PageHeader>
-            <Card>
+            <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>Your Properties</CardTitle>
                     <CardDescription>

@@ -5,7 +5,7 @@ export default function PlatformApprovalsPage() {
     return (
         <>
             <PageHeader title="Platform Approvals" description="Review and approve empty-legs, operator verifications, and other workflows." />
-            <Card>
+            <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>Pending Queue</CardTitle>
                     <CardDescription>

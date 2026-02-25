@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useCollection, useFirestore, updateDocumentNonBlocking, useMemoFirebase } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Operator } from "@/lib/types";
-import { collection } from "firebase/firestore";
+import { collection, doc } from "firebase/firestore";
 import { MoreHorizontal } from "lucide-react";
 
 const getStatusVariant = (status: Operator['status']) => {
@@ -41,7 +41,7 @@ export default function OperatorManagementPage() {
     return (
         <>
             <PageHeader title="Operator Management" description="Approve, reject, and manage all NSOP operators on the platform." />
-            <Card>
+            <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>All Operators</CardTitle>
                     <CardDescription>

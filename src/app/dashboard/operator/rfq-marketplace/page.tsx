@@ -38,7 +38,7 @@ export default function RfqMarketplacePage() {
       <PageHeader title="Charter Requests Management" description="Replace email chaos. Review all active charter requests and submit your quotations.">
          <Button>Submit General Quotation</Button>
       </PageHeader>
-      <Card>
+      <Card className="bg-background">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>

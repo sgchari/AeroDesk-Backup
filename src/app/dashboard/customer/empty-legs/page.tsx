@@ -21,7 +21,7 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
     };
 
     return (
-        <Card className="flex flex-col">
+        <Card className="bg-background flex flex-col">
             <CardHeader>
                 <CardDescription className="font-code">{leg.aircraftName || leg.aircraftId}</CardDescription>
                 <CardTitle>{leg.departure} to {leg.arrival}</CardTitle>

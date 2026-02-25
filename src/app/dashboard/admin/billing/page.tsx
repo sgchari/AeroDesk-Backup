@@ -5,7 +5,7 @@ export default function BillingPage() {
     return (
         <>
             <PageHeader title="Billing Records" description="View platform subscription and participation fee records." />
-            <Card>
+            <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>All Billing Records</CardTitle>
                     <CardDescription>

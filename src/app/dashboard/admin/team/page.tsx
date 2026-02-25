@@ -12,7 +12,7 @@ export default function TeamManagementPage() {
                     Add Admin User
                 </Button>
             </PageHeader>
-            <Card>
+            <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>AeroDesk Administrators</CardTitle>
                     <CardDescription>

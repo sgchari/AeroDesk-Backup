@@ -180,7 +180,7 @@ export default function UserManagementPage() {
             <PageHeader title="User Management" description="Create, approve, and manage all platform users and their roles.">
                  <AddUserDialog />
             </PageHeader>
-            <Card>
+            <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>All Platform Users</CardTitle>
                     <CardDescription>

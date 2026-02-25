@@ -12,7 +12,7 @@ export default function TeamManagementPage() {
                     Add Staff Member
                 </Button>
             </PageHeader>
-            <Card>
+            <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>Your Hotel Staff</CardTitle>
                     <CardDescription>

@@ -68,7 +68,7 @@ export function OperatorDashboard() {
         <StatsCard title="Operational Notifications" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.notifications.toString()} icon={Bell} description="System & compliance flags" />
       </StatsGrid>
 
-      <Card>
+      <Card className="bg-background">
         <CardHeader className="flex flex-row items-center justify-between">
             <div>
                 <CardTitle>Recent Activity Stream</CardTitle>

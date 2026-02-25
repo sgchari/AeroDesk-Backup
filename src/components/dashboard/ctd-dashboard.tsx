@@ -58,7 +58,7 @@ export function CTDDashboard() {
         <StatsCard title="Confirmed Corporate Trips" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.confirmed.toString()} icon={CheckCircle} description="Successfully confirmed charters" />
       </StatsGrid>
 
-      <Card>
+      <Card className="bg-background">
         <CardHeader>
           <CardTitle>Corporate Charter RFQs</CardTitle>
           <CardDescription>

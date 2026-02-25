@@ -31,7 +31,7 @@ export default function HotelRequestsPage() {
   return (
     <>
       <PageHeader title="Accommodation Requests" description="Manage all incoming accommodation requests for your properties." />
-      <Card>
+      <Card className="bg-background">
         <CardHeader>
           <CardTitle>All Requests</CardTitle>
           <CardDescription>

@@ -53,7 +53,7 @@ export function HotelDashboard() {
         <StatsCard title="Response Time" value="~2.5 hrs" icon={Clock} description="Your average response time" />
       </StatsGrid>
 
-      <Card>
+      <Card className="bg-background">
         <CardHeader className="flex flex-row items-center justify-between">
             <div>
                 <CardTitle>Recent Accommodation Requests</CardTitle>

@@ -42,7 +42,7 @@ const getStatusInfo = (status: RfqStatus): { text: string; icon: React.ElementTy
 const TripCard = ({ rfq }: { rfq: CharterRFQ }) => {
     const statusInfo = getStatusInfo(rfq.status);
     return (
-        <Card className="flex flex-col">
+        <Card className="bg-background flex flex-col">
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{rfq.departure} <ArrowRight className="inline h-4 w-4 mx-1" /> {rfq.arrival}</CardTitle>

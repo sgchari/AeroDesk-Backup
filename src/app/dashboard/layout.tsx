@@ -14,7 +14,7 @@ export default function DashboardLayout({
         <MainSidebar />
       </Sidebar>
       <SidebarRail />
-      <SidebarInset className="bg-background">
+      <SidebarInset className="bg-card">
         <Header />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           {children}

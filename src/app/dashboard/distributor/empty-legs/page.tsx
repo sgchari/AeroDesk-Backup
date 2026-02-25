@@ -31,7 +31,7 @@ export default function DistributorEmptyLegsPage() {
   return (
     <>
       <PageHeader title="Approved Empty Legs" description="View and manage seat allocations for available empty leg flights." />
-      <Card>
+      <Card className="bg-background">
         <CardHeader>
           <CardTitle>All Available Flights</CardTitle>
           <CardDescription>
