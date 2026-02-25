@@ -1,62 +1,21 @@
+
 'use client';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
-import { useAuth } from '@/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-  password: z.string().min(1, { message: 'Password is required.' }),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+import { mockUsers } from '@/lib/data';
+import type { User } from '@/lib/types';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { toast } = useToast();
-  const auth = useAuth();
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
-
-  const onSubmit = async (data: LoginFormValues) => {
-    try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      toast({
-        title: 'Login Successful!',
-        description: 'Redirecting to your dashboard...',
-      });
-      router.push('/dashboard');
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: error.message || 'An unexpected error occurred.',
-      });
-    }
+  const handleDemoLogin = (user: User) => {
+    // In demo mode, we use localStorage to simulate a login session.
+    localStorage.setItem('demoUserId', user.id);
+    router.push('/dashboard');
   };
 
   return (
@@ -77,48 +36,27 @@ export default function LoginPage() {
                 <Logo />
               </Link>
             </div>
-            <CardTitle className="text-white">Login to AeroDesk</CardTitle>
-            <CardDescription className="text-white/80">Enter your email and password to access your dashboard.</CardDescription>
+            <CardTitle className="text-white">AeroDesk Demo</CardTitle>
+            <CardDescription className="text-white/80">Select a user role to explore the dashboard.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-white/90">Email Address</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="name@example.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-white/90">Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" variant="accent" className="w-full" disabled={form.formState.isSubmitting}>
-                  {form.formState.isSubmitting ? 'Logging in...' : 'Login'}
+            <div className="grid grid-cols-2 gap-4">
+              {mockUsers.map(user => (
+                <Button 
+                  key={user.id} 
+                  variant="outline"
+                  className="bg-transparent text-white hover:bg-white/10 hover:text-white"
+                  onClick={() => handleDemoLogin(user)}>
+                    Login as {user.role}
                 </Button>
-              </form>
-            </Form>
-            <div className="mt-4 text-center text-sm text-white/80">
-              Don&apos;t have an account?{' '}
+              ))}
+            </div>
+            <div className="mt-6 text-center text-sm text-white/80">
+              This is a read-only demo with mock data.
+              <br />
               <Link href="/register" className="font-semibold text-accent underline-offset-4 hover:underline">
-                Register
-              </Link>
+                Register for a live account
+              </Link> is disabled.
             </div>
           </CardContent>
         </Card>

@@ -39,12 +39,12 @@ export default function RootLayout({
           process.env.NODE_ENV === 'development' ? 'debug-screens' : ''
         )}
       >
-        <FirebaseClientProvider>
-          <UserProvider>
+        <UserProvider>
+          <FirebaseClientProvider>
             {children}
             <Toaster />
-          </UserProvider>
-        </FirebaseClientProvider>
+          </FirebaseClientProvider>
+        </UserProvider>
       </body>
     </html>
   );

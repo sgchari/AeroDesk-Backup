@@ -1,16 +1,17 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import {
   Query,
-  onSnapshot,
   DocumentData,
   FirestoreError,
-  QuerySnapshot,
   CollectionReference,
 } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
+import { getMockDataForRole, mockUsers } from '@/lib/data';
+import { useUser } from '@/hooks/use-user';
+import type { UserRole } from '@/lib/types';
+
 
 /** Utility type to add an 'id' field to a given type T. */
 export type WithId<T> = T & { id: string };
@@ -25,85 +26,99 @@ export interface UseCollectionResult<T> {
   error: FirestoreError | Error | null; // Error object, or null.
 }
 
+// --- DEMO MODE ---
+const DEMO_MODE = true; // Set to true to use mock data
+
 /**
  * React hook to subscribe to a Firestore collection or query in real-time.
- * Handles nullable references/queries.
- * 
- *
- * IMPORTANT! YOU MUST MEMOIZE the inputted memoizedTargetRefOrQuery or BAD THINGS WILL HAPPEN
- * use useMemo to memoize it per React guidence.  Also make sure that it's dependencies are stable
- * references
- *  
+ * In demo mode, it returns mock data from '@/lib/data'.
  * @template T Optional type for document data. Defaults to any.
  * @param {CollectionReference<DocumentData> | Query<DocumentData> | null | undefined} targetRefOrQuery -
- * The Firestore CollectionReference or Query. Waits if null/undefined.
+ * The Firestore CollectionReference or Query.
  * @returns {UseCollectionResult<T>} Object with data, isLoading, error.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
 ): UseCollectionResult<T> {
-  type ResultItemType = WithId<T>;
-  type StateDataType = ResultItemType[] | null;
-
-  const [data, setData] = useState<StateDataType>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [data, setData] = useState<WithId<T>[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
+  const { user } = useUser();
 
   useEffect(() => {
-    if (!memoizedTargetRefOrQuery) {
-      setData(null);
+    if (!DEMO_MODE) {
+      // Original Firebase logic would go here.
+      // For this demo, we do nothing if DEMO_MODE is off.
       setIsLoading(false);
-      setError(null);
       return;
     }
-
-    setIsLoading(true);
-    setError(null);
-
-    const unsubscribe = onSnapshot(
-      memoizedTargetRefOrQuery,
-      (snapshot: QuerySnapshot<DocumentData>) => {
-        const results: ResultItemType[] = [];
-        for (const doc of snapshot.docs) {
-          results.push({ ...(doc.data() as T), id: doc.id });
-        }
-        setData(results);
-        setError(null);
+    
+    // --- DEMO MODE LOGIC ---
+    if (!user || !memoizedTargetRefOrQuery) {
         setIsLoading(false);
-      },
-      (error: FirestoreError) => {
-        let path: string;
-        // A CollectionReference has a .path property.
-        // A Query does not have a public path property, so we must differentiate.
-        if (memoizedTargetRefOrQuery.type === 'collection') {
-            path = (memoizedTargetRefOrQuery as CollectionReference).path;
+        return;
+    }
+    
+    // Simulate async data fetching
+    setTimeout(() => {
+        const { path } = memoizedTargetRefOrQuery as CollectionReference;
+        const mockData = getMockDataForRole(user.role as UserRole);
+
+        let resultData: any[] = [];
+        
+        if (path.startsWith('operators/') && path.endsWith('/aircrafts')) {
+            resultData = mockData.aircrafts.filter(ac => ac.operatorId === user.id);
         } else {
-            // This is a more complex query (e.g., with where, orderBy, or collectionGroup).
-            // There's no universal, public property on a Query object to get its path.
-            // Using a placeholder is the safest option to avoid relying on internal, unstable properties.
-            path = '[Unavailable for complex query]';
+            switch(path) {
+                case 'charterRFQs':
+                    resultData = mockData.rfqs.filter(rfq => (user.role === 'Customer' && rfq.customerId === user.id) || user.role === 'Operator' || user.role === 'Admin');
+                    break;
+                case 'emptyLegs':
+                     resultData = mockData.emptyLegs.filter(leg => (user.role === 'Operator' && leg.operatorId === user.id) || (user.role !== 'Operator'));
+                    break;
+                case 'auditTrails':
+                    resultData = mockData.auditLogs;
+                    break;
+                case 'operators':
+                    resultData = mockUsers.filter(u => u.role === 'Operator');
+                    break;
+                case 'customers':
+                    resultData = mockUsers.filter(u => u.role === 'Customer');
+                    break;
+                case 'platformAdmins':
+                    resultData = mockUsers.filter(u => u.role === 'Admin');
+                    break;
+                case 'distributors':
+                     resultData = mockUsers.filter(u => u.role === 'Authorized Distributor');
+                    break;
+                case 'hotelPartners':
+                     resultData = mockUsers.filter(u => u.role === 'Hotel Partner');
+                    break;
+                case 'corporateTravelDesks':
+                    // In a real app, this would be more complex. Here, just find the CTD admin's company.
+                    const ctdAdmin = mockUsers.find(u => u.role === 'CTD Admin');
+                    if (ctdAdmin) {
+                        resultData = [{ id: ctdAdmin.ctdId, companyName: ctdAdmin.company }];
+                    }
+                    break;
+                 case 'accommodationRequests':
+                    resultData = mockData.accommodationRequests.filter(req => req.hotelPartnerId === user.id);
+                    break;
+                default:
+                    // For nested CTD users, e.g., corporateTravelDesks/{id}/users
+                    if (path.includes('corporateTravelDesks') && path.includes('/users')) {
+                         resultData = mockUsers.filter(u => u.ctdId && path.includes(u.ctdId));
+                    } else {
+                        console.warn(`useCollection: No mock data handler for path: ${path}`);
+                    }
+            }
         }
+        
+        setData(resultData as WithId<T>[]);
+        setIsLoading(false);
+    }, 500); // 500ms delay to simulate network
 
-        const contextualError = new FirestorePermissionError({
-          operation: 'list',
-          path,
-        })
-
-        setError(contextualError)
-        setData(null)
-        setIsLoading(false)
-
-        // trigger global error propagation
-        errorEmitter.emit('permission-error', contextualError);
-      }
-    );
-
-    return () => unsubscribe();
-  }, [memoizedTargetRefOrQuery]); // Re-run if the target query/reference changes.
-  
-  if(memoizedTargetRefOrQuery && !memoizedTargetRefOrQuery.__memo) {
-    throw new Error('A query passed to useCollection was not properly memoized using useMemoFirebase. This will cause infinite loops.');
-  }
+  }, [memoizedTargetRefOrQuery, user]);
 
   return { data, isLoading, error };
 }

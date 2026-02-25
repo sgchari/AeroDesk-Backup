@@ -2,9 +2,8 @@
 'use client';
 
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { useUser as useFirebaseAuthUser, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
-import type { User as AppUser, UserRole, CorporateTravelDesk } from '@/lib/types';
-import { doc, getDoc } from 'firebase/firestore';
+import type { User as AppUser } from '@/lib/types';
+import { mockUsers } from '@/lib/data';
 
 interface UserContextType {
   user: AppUser | null;
@@ -15,110 +14,44 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const { user: authUser, isUserLoading: isAuthLoading, userError } = useFirebaseAuthUser();
-  const firestore = useFirestore();
-  const [appUser, setAppUser] = useState<AppUser | null>(null);
-  const [isProfileLoading, setProfileLoading] = useState(true);
-  const [profileError, setProfileError] = useState<Error | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (isAuthLoading) {
-      setProfileLoading(true);
-      return;
-    }
-    if (!authUser || !firestore) {
-      setAppUser(null);
-      setProfileLoading(false);
-      return;
-    }
+    // In demo mode, we check localStorage to see which user is "logged in".
+    setLoading(true);
+    try {
+        const demoUserId = localStorage.getItem('demoUserId');
+        if (demoUserId) {
+            const foundUser = mockUsers.find(u => u.id === demoUserId);
+            if (foundUser) {
+                // In a real app, you'd fetch the full profile. Here, we use the mock.
+                // We add the company name for CTD users for the demo dashboard.
+                 if (foundUser.role === 'CTD Admin') {
+                    const ctdAdminWithCompany = {
+                        ...foundUser,
+                        company: "Corporate Inc." // Add mock company name
+                    };
+                    setUser(ctdAdminWithCompany as AppUser);
+                } else {
+                    setUser(foundUser as AppUser);
+                }
 
-    const fetchUserProfile = async () => {
-      setProfileLoading(true);
-      setProfileError(null);
-      const userMappingRef = doc(firestore, 'users', authUser.uid);
-      
-      try {
-        const userMappingSnap = await getDoc(userMappingRef);
-        if (!userMappingSnap.exists()) {
-            throw new Error("User profile mapping not found. Please complete your registration or contact support.");
-        }
-
-        const userMapping = userMappingSnap.data() as { role: UserRole, ctdId?: string };
-        const { role, ctdId } = userMapping;
-        
-        let collectionPath: string | null = null;
-        if (role === 'CTD Admin' || role === 'Corporate Admin' || role === 'Requester') {
-            if (!ctdId) throw new Error("Corporate user profile is missing 'ctdId'.");
-            collectionPath = `corporateTravelDesks/${ctdId}/users`;
-        } else {
-            const roleToCollectionMap: Record<UserRole, string> = {
-                'Admin': 'platformAdmins',
-                'Customer': 'customers',
-                'Operator': 'operators',
-                'Authorized Distributor': 'distributors',
-                'Hotel Partner': 'hotelPartners',
-                // CTD roles are handled above
-                'CTD Admin': '', 
-                'Corporate Admin': '',
-                'Requester': ''
-            };
-            collectionPath = roleToCollectionMap[role];
-        }
-
-        if (!collectionPath) {
-            throw new Error(`Invalid user role "${role}" found in profile.`);
-        }
-
-        const userDocRef = doc(firestore, collectionPath, authUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
-
-        if (!userDocSnap.exists()) {
-            throw new Error(`User document not found in '${collectionPath}'.`);
-        }
-        
-        let userProfile = userDocSnap.data() as AppUser;
-
-        // If the user is part of a corporate desk, fetch the company name and merge it.
-        if (userProfile.ctdId) {
-            const ctdDocRef = doc(firestore, 'corporateTravelDesks', userProfile.ctdId);
-            const ctdDocSnap = await getDoc(ctdDocRef);
-            if (ctdDocSnap.exists()) {
-                const ctdData = ctdDocSnap.data() as CorporateTravelDesk;
-                // Add company name to the user profile object
-                userProfile.company = ctdData.companyName;
             } else {
-                 console.warn(`CTD document with ID ${userProfile.ctdId} not found.`);
+                setError(new Error("Demo user not found. Please log in again."));
+                localStorage.removeItem('demoUserId');
             }
         }
+        // If no demoUserId, user remains null (logged out state).
+    } catch(e: any) {
+        setError(e);
+    } finally {
+        setLoading(false);
+    }
+  }, []);
 
-        setAppUser(userProfile);
-
-      } catch (error: any) {
-        let specificError = error;
-        // If the error is a permission error, emit a more detailed, contextual error.
-        if (error.code === 'permission-denied') {
-            specificError = new FirestorePermissionError({
-                operation: 'get',
-                path: error.customData?._path?.toString() || userMappingRef.path,
-            });
-            errorEmitter.emit('permission-error', specificError);
-        }
-        // Set the original or a new error for local state.
-        setProfileError(specificError);
-        setAppUser(null);
-      } finally {
-        setProfileLoading(false);
-      }
-    };
-
-    fetchUserProfile();
-  }, [authUser, isAuthLoading, firestore]);
-
-  const value = {
-    user: appUser,
-    isLoading: isAuthLoading || isProfileLoading,
-    error: userError || profileError,
-  };
+  const value = { user, isLoading, error };
 
   return (
     <UserContext.Provider value={value}>

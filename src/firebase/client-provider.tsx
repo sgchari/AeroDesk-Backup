@@ -1,25 +1,33 @@
+
 'use client';
 
-import React, { useMemo, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { FirebaseProvider } from '@/firebase/provider';
-import { initializeFirebase } from '@/firebase';
+// In demo mode, we don't initialize a live Firebase connection.
+// We pass null services to the provider.
 
 interface FirebaseClientProviderProps {
   children: ReactNode;
 }
 
+const DEMO_MODE = true;
+
 export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
-  const firebaseServices = useMemo(() => {
-    // Initialize Firebase on the client side, once per component mount.
-    return initializeFirebase();
-  }, []); // Empty dependency array ensures this runs only once on mount
+  // In demo mode, the firebase services are not needed as data is mocked.
+  // We pass null to the provider to prevent initialization attempts.
+  const services = {
+    firebaseApp: null,
+    auth: null,
+    firestore: null,
+    storage: null,
+  };
 
   return (
     <FirebaseProvider
-      firebaseApp={firebaseServices.firebaseApp}
-      auth={firebaseServices.auth}
-      firestore={firebaseServices.firestore}
-      storage={firebaseServices.storage}
+      firebaseApp={services.firebaseApp}
+      auth={services.auth}
+      firestore={services.firestore}
+      storage={services.storage}
     >
       {children}
     </FirebaseProvider>
