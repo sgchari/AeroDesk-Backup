@@ -238,3 +238,28 @@ export type BlogPost = {
   date: string;
   isFeatured?: boolean;
 };
+
+export type PressRelease = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  category: 'Announcement' | 'Platform Update' | 'Partnership';
+};
+
+export type MediaMention = {
+  id: string;
+  publication: string;
+  title: string;
+  snippet: string;
+  date: string;
+  logoUrl?: string;
+};
+
+export type BrandAsset = {
+  id: string;
+  title: string;
+  type: 'Logo' | 'Imagery' | 'Guidelines' | 'Cockpit';
+  imageUrl: string;
+  fileSize: string;
+};

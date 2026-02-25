@@ -1,5 +1,5 @@
 
-import type { UserRole, User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, BlogPost } from './types';
+import type { UserRole, User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, BlogPost, PressRelease, MediaMention, BrandAsset } from './types';
 
 // This data is now used for the demo mode.
 
@@ -189,6 +189,71 @@ export const mockBlogPosts: BlogPost[] = [
   }
 ];
 
+export const mockPressReleases: PressRelease[] = [
+  {
+    id: 'pr-1',
+    title: 'Strategic Expansion: AeroDesk Integrates Mumbai International Heliport Network',
+    description: 'Enhancing Tier-1 connectivity through unified helicopter charter coordination workflows.',
+    date: '2024-07-30',
+    category: 'Partnership'
+  },
+  {
+    id: 'pr-2',
+    title: 'Platform Intelligence: Rollout of Compliance Engine v2.0',
+    description: 'Introducing automated DGCA alignment checks for NSOP operator submissions.',
+    date: '2024-07-25',
+    category: 'Platform Update'
+  },
+  {
+    id: 'pr-3',
+    title: 'AeroDesk Exceeds 50 Verified NSOP Operators in Indian Ecosystem',
+    description: 'Milestone reached in digitizing India’s non-scheduled aviation infrastructure.',
+    date: '2024-07-15',
+    category: 'Announcement'
+  }
+];
+
+export const mockMediaMentions: MediaMention[] = [
+  {
+    id: 'mm-1',
+    publication: 'The Economic Times',
+    title: 'Digitalizing Indian Skies: The AeroDesk Approach',
+    snippet: '"AeroDesk is filling a critical gap in India’s aviation governance framework..."',
+    date: '2024-07-28'
+  },
+  {
+    id: 'mm-2',
+    publication: 'Aviation Week',
+    title: 'Tier-2 Connectivity and the Rise of Charter Ecosystems',
+    snippet: 'Analysis of how coordination platforms are enabling seasonal flight optimization.',
+    date: '2024-07-20'
+  }
+];
+
+export const mockBrandAssets: BrandAsset[] = [
+  {
+    id: 'ba-1',
+    title: 'AeroDesk Logo Pack',
+    type: 'Logo',
+    imageUrl: 'https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=400',
+    fileSize: '4.2 MB'
+  },
+  {
+    id: 'ba-2',
+    title: 'Executive Fleet Visuals',
+    type: 'Imagery',
+    imageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=400',
+    fileSize: '12.8 MB'
+  },
+  {
+    id: 'ba-3',
+    title: 'Platform UI Showcase',
+    type: 'Cockpit',
+    imageUrl: 'https://images.unsplash.com/photo-11754481387410-7c8c9350372c?q=80&w=400',
+    fileSize: '8.1 MB'
+  }
+];
+
 
 export function getMockDataForRole(role: UserRole) {
     return {
@@ -206,6 +271,9 @@ export function getMockDataForRole(role: UserRole) {
         seatAllocationRequests: mockEmptyLegSeatAllocationRequests,
         billingRecords: mockBillingRecords,
         featureFlags: mockFeatureFlags,
-        blogPosts: mockBlogPosts
+        blogPosts: mockBlogPosts,
+        pressReleases: mockPressReleases,
+        mediaMentions: mockMediaMentions,
+        brandAssets: mockBrandAssets
     };
 }
