@@ -25,15 +25,19 @@ const zoneStyles: Record<Zone, string> = {
 const operatorPositions: Record<string, { top: string; left: string }> = {
     // North
     'Delhi': { top: '30%', left: '50%' },
+    'Jaipur': { top: '35%', left: '40%' },
     // West
     'Mumbai': { top: '50%', left: '20%' },
+    'Ahmedabad': { top: '40%', left: '25%' },
+    'Pune': { top: '55%', left: '25%' },
     // South
-    'Bengaluru': { top: '60%', left: '50%' },
-    'Hyderabad': { top: '30%', left: '60%' },
+    'Bengaluru': { top: '70%', left: '50%' },
+    'Hyderabad': { top: '60%', left: '55%' },
+    'Chennai': { top: '80%', left: '60%' },
     // East
-    'Kolkata': { top: '40%', left: '70%' },
+    'Kolkata': { top: '40%', left: '80%' },
     // Central
-    'Bhopal': { top: '50%', left: '50%' },
+    'Bhopal': { top: '45%', left: '50%' },
 };
 
 const OperatorPin = ({ operator }: { operator: Operator }) => {
