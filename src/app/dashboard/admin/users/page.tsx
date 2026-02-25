@@ -27,6 +27,7 @@ type DisplayUser = {
     status: string;
     createdAt: string;
     ctdId?: string;
+    linkedEntity?: string;
 };
 
 export default function UserManagementPage() {
@@ -55,14 +56,18 @@ export default function UserManagementPage() {
 
         const normalizedUsers = allUsersRaw?.map(user => {
             let name = `${user.firstName} ${user.lastName}`;
-            // For certain roles, the display name is the company name.
-            if (['Operator', 'Travel Agency', 'Hotel Partner'].includes(user.role)) {
-                name = user.companyName || name;
+            let linkedEntity = '-';
+
+            // For entity-based roles, the main name is the company name.
+            if (['Operator', 'Travel Agency', 'Hotel Partner', 'CTD Admin'].includes(user.role)) {
+                name = user.companyName || (user.ctdId ? ctdMap.get(user.ctdId) : name) || 'N/A';
             }
-            // For CTD users, the company name is looked up from the ctds collection
-            if (user.ctdId && ctdMap.has(user.ctdId) && user.role !== 'CTD Admin') {
-                // name = `${name} (${ctdMap.get(user.ctdId)})`;
+            
+            // For other corporate users, their name is primary, and company is the linked entity.
+            if (['Corporate Admin', 'Requester'].includes(user.role) && user.ctdId && ctdMap.has(user.ctdId)) {
+                linkedEntity = ctdMap.get(user.ctdId) || '-';
             }
+
 
             return {
                 id: user.id,
@@ -72,6 +77,7 @@ export default function UserManagementPage() {
                 status: user.status,
                 createdAt: user.createdAt,
                 ctdId: user.ctdId,
+                linkedEntity: linkedEntity,
             };
         }).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
 
@@ -91,8 +97,6 @@ export default function UserManagementPage() {
             case 'CTD Admin':
             case 'Corporate Admin':
             case 'Requester':
-                // For demo mode, we target the corporateTravelDesks/{ctdId}/users path
-                // The mock store handles this by filtering the main 'users' array.
                 return ctdId ? `corporateTravelDesks/${ctdId}/users` : null;
             default:
                 const unhandledRole: never = role;
@@ -139,14 +143,14 @@ export default function UserManagementPage() {
 
     return (
         <>
-            <PageHeader title="User Management" description="Create, approve, and manage all platform users and their roles.">
+            <PageHeader title="User & Entity Governance" description="Create, approve, and manage all platform users and their roles.">
                  <AddUserDialog />
             </PageHeader>
             <Card className="bg-card">
                 <CardHeader>
-                    <CardTitle>All Platform Users</CardTitle>
+                    <CardTitle>All Platform Entities</CardTitle>
                     <CardDescription>
-                        A combined list of all users across all roles on the platform.
+                        A combined list of all users and entities across all roles on the platform.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -154,10 +158,10 @@ export default function UserManagementPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Email</TableHead>
+                                    <TableHead>User / Entity</TableHead>
                                     <TableHead>Role</TableHead>
-                                    <TableHead>Status</TableHead>
+                                    <TableHead>Approval Status</TableHead>
+                                    <TableHead>Linked Entity</TableHead>
                                     <TableHead>Registered On</TableHead>
                                     <TableHead>
                                         <span className="sr-only">Actions</span>
@@ -167,10 +171,13 @@ export default function UserManagementPage() {
                             <TableBody>
                                 {allUsers.map((user: DisplayUser) => (
                                     <TableRow key={user.id}>
-                                        <TableCell className="font-medium">{user.name}</TableCell>
-                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>
+                                            <div className="font-medium">{user.name}</div>
+                                            <div className="text-xs text-muted-foreground">{user.email}</div>
+                                        </TableCell>
                                         <TableCell><Badge variant="outline">{user.role}</Badge></TableCell>
-                                        <TableCell><Badge variant={user.status === 'Active' || user.status === 'Approved' ? 'default' : user.status === 'Suspended' ? 'destructive' : 'secondary'}>{user.status}</Badge></TableCell>
+                                        <TableCell><Badge variant={user.status === 'Active' || user.status === 'Approved' ? 'success' : user.status === 'Suspended' ? 'destructive' : 'warning'}>{user.status}</Badge></TableCell>
+                                        <TableCell className="text-sm text-muted-foreground">{user.linkedEntity}</TableCell>
                                         <TableCell>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</TableCell>
                                         <TableCell>
                                             <DropdownMenu>
@@ -224,8 +231,8 @@ export default function UserManagementPage() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the user&apos;s profile data
-                            from Firestore. It will not remove the user from Firebase Authentication.
+                            This action cannot be undone. This will permanently delete the user's profile data
+                            from the database. It will not remove the user from Firebase Authentication.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -242,5 +249,3 @@ export default function UserManagementPage() {
         </>
     );
 }
-
-    

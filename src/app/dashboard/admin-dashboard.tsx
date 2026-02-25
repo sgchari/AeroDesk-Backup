@@ -3,10 +3,10 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShieldCheck, Users, Plane, Briefcase, GanttChartSquare } from "lucide-react";
+import { ShieldCheck, Users, Plane, Briefcase, GanttChartSquare, Bell, Package, AlertCircle } from "lucide-react";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
-import { AuditLog } from "@/lib/types";
+import { AuditLog, Operator } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -20,12 +20,11 @@ export function AdminDashboard() {
   const pendingLegsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval')) : null, [firestore]);
   const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery, 'emptyLegs');
   
-  // Efficiently fetch all users for an accurate count
-  const { data: allUsers, isLoading: usersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]), 'users');
+  const pendingOperatorsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'operators'), where('status', '==', 'Pending Approval')) : null, [firestore]);
+  const { data: pendingOperators, isLoading: pendingOperatorsLoading } = useCollection<Operator>(pendingOperatorsQuery, 'operators');
   
-  const { data: operators, isLoading: operatorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]), 'operators');
-  const { data: distributors, isLoading: distributorsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]), 'distributors');
-  const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]), 'hotelPartners');
+  const { data: allUsers, isLoading: usersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]), 'users');
+  const { data: allEmptyLegs, isLoading: emptyLegsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'emptyLegs') : null, [firestore]), 'emptyLegs');
 
   const auditLogsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5)) : null, [firestore]);
   const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery, 'auditTrails');
@@ -33,37 +32,38 @@ export function AdminDashboard() {
   const activeRfqsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open')) : null, [firestore]);
   const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery, 'charterRFQs');
   
-  const isLoading = pendingLegsLoading || usersLoading || operatorsLoading || distributorsLoading || hotelPartnersLoading || auditLogsLoading || activeRfqsLoading;
+  const isLoading = pendingLegsLoading || pendingOperatorsLoading || usersLoading || emptyLegsLoading || auditLogsLoading || activeRfqsLoading;
 
-  const totalUsers = allUsers?.length ?? 0;
-  const totalPartners = (distributors?.length ?? 0) + (hotelPartners?.length ?? 0);
+  const totalPendingApprovals = (pendingLegs?.length ?? 0) + (pendingOperators?.length ?? 0);
   
   const stats = {
-    pendingApprovals: pendingLegs?.length ?? 0,
-    activeUsers: totalUsers,
-    operators: operators?.length ?? 0,
-    partners: totalPartners,
-    activeRfqs: activeRfqs?.length ?? 0,
+    pendingApprovals: totalPendingApprovals,
+    activeEntities: allUsers?.length ?? 0,
+    openCharterActivity: activeRfqs?.length ?? 0,
+    emptyLegActivity: allEmptyLegs?.length ?? 0,
+    complianceFlags: 0, // Mocked
+    billingAlerts: 0, // Mocked
   }
 
   return (
     <>
-      <PageHeader title="Admin Control Tower" description="Oversee all platform activity and ensure compliance." />
+      <PageHeader title="Governance Command Center" description="Instant platform situational awareness and compliance oversight." />
       
       <div className="grid gap-6">
         <StatsGrid>
             <StatsCard title="Pending Approvals" href="/dashboard/admin/approvals" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingApprovals.toString()} icon={ShieldCheck} description="Items awaiting review" />
-            <StatsCard title="Active Users" href="/dashboard/admin/users" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeUsers.toString()} icon={Users} description="Across all roles" />
-            <StatsCard title="Operators" href="/dashboard/admin/operators" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.operators.toString()} icon={Plane} description="Verified NSOP operators" />
-            <StatsCard title="Partners" href="/dashboard/admin/partners" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.partners.toString()} icon={Briefcase} description="Hotels & Distributors" />
-            <StatsCard title="Active RFQs" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeRfqs.toString()} icon={GanttChartSquare} description="Open for bidding" />
+            <StatsCard title="Active Entities" href="/dashboard/admin/users" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeEntities.toString()} icon={Package} description="Users, operators, partners" />
+            <StatsCard title="Open Charter Activity" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.openCharterActivity.toString()} icon={GanttChartSquare} description="RFQs open for bidding" />
+            <StatsCard title="Empty Leg Activity" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.emptyLegActivity.toString()} icon={Plane} description="Total published empty legs" />
+            <StatsCard title="Compliance Flags" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.complianceFlags.toString()} icon={AlertCircle} description="Workflows needing review" />
+            <StatsCard title="Billing Alerts" href="/dashboard/admin/billing" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.billingAlerts.toString()} icon={Bell} description="Overdue & pending items" />
         </StatsGrid>
         <Card className="bg-card">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>Recent Audit Trail</CardTitle>
                     <CardDescription>
-                        The latest activities recorded on the platform.
+                        The latest high-priority activities recorded on the platform.
                     </CardDescription>
                 </div>
                 <Button asChild variant="outline">
@@ -76,8 +76,7 @@ export function AdminDashboard() {
                     <TableHeader>
                     <TableRow>
                         <TableHead>Timestamp</TableHead>
-                        <TableHead>User</TableHead>
-                        <TableHead>Role</TableHead>
+                        <TableHead>Actor / Role</TableHead>
                         <TableHead>Action</TableHead>
                         <TableHead>Target ID</TableHead>
                     </TableRow>
@@ -86,8 +85,10 @@ export function AdminDashboard() {
                     {recentLogs?.map((log: AuditLog) => (
                         <TableRow key={log.id}>
                             <TableCell>{new Date(log.timestamp).toLocaleString()}</TableCell>
-                            <TableCell>{log.user}</TableCell>
-                            <TableCell><Badge variant="secondary">{log.role}</Badge></TableCell>
+                            <TableCell>
+                                <div className="font-medium">{log.user}</div>
+                                <div className="text-xs text-muted-foreground">{log.role}</div>
+                            </TableCell>
                             <TableCell className="font-medium">{log.action}</TableCell>
                             <TableCell className="font-code text-xs">{log.targetId}</TableCell>
                         </TableRow>
@@ -101,5 +102,3 @@ export function AdminDashboard() {
     </>
   );
 }
-
-    

@@ -1,10 +1,11 @@
+
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function BillingPage() {
     return (
         <>
-            <PageHeader title="Billing Records" description="View platform subscription and participation fee records." />
+            <PageHeader title="Billing & Financial Governance" description="View platform subscription fees, participation records, and financial events." />
             <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>All Billing Records</CardTitle>
@@ -13,7 +14,9 @@ export default function BillingPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>Billing records table will be displayed here.</p>
+                    <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                        <p className="text-muted-foreground">Billing records and financial governance tools will be displayed here.</p>
+                    </div>
                 </CardContent>
             </Card>
         </>

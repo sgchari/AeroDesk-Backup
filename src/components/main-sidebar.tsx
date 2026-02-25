@@ -16,6 +16,7 @@ import {
   Armchair,
   History,
   BedDouble,
+  Package,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -65,15 +66,15 @@ const navItems = {
   ],
   Admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/admin/approvals', label: 'Platform Approvals', icon: ShieldCheck, color: 'text-green-500' },
-    { href: '/dashboard/admin/users', label: 'User Management', icon: Users, color: 'text-violet-500' },
-    { href: '/dashboard/admin/operators', label: 'Operator Management', icon: Plane, color: 'text-gray-500' },
-    { href: '/dashboard/admin/partners', label: 'Partner Management', icon: Briefcase, color: 'text-rose-500' },
-    { href: '/dashboard/admin/corporates', label: 'Corporate Management', icon: Building, color: 'text-orange-500' },
-    { href: '/dashboard/admin/team', label: 'Manage Team', icon: Users, color: 'text-indigo-500' },
+    { href: '/dashboard/admin/approvals', label: 'Approvals & Compliance', icon: ShieldCheck, color: 'text-green-500' },
+    { href: '/dashboard/admin/users', label: 'User & Entity Governance', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/admin/operators', label: 'Operator Governance', icon: Plane, color: 'text-gray-500' },
+    { href: '/dashboard/admin/partners', label: 'Partner Governance', icon: Briefcase, color: 'text-rose-500' },
+    { href: '/dashboard/admin/corporates', label: 'Corporate Governance', icon: Building, color: 'text-orange-500' },
     { href: '/dashboard/admin/audit-trail', label: 'Audit Trail', icon: FileText, color: 'text-amber-500' },
-    { href: '/dashboard/admin/billing', label: 'Billing Records', icon: CreditCard, color: 'text-lime-500' },
-    { href: '/dashboard/admin/settings', label: 'Platform Settings', icon: Settings, color: 'text-blue-500' },
+    { href: '/dashboard/admin/billing', label: 'Billing & Financials', icon: CreditCard, color: 'text-lime-500' },
+    { href: '/dashboard/admin/team', label: 'Admin Team Governance', icon: Users, color: 'text-indigo-500' },
+    { href: '/dashboard/admin/settings', label: 'System Controls', icon: Settings, color: 'text-blue-500' },
   ],
 };
 

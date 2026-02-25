@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -15,9 +16,10 @@ import { MoreHorizontal } from "lucide-react";
 
 const getStatusVariant = (status: Operator['status']) => {
     switch (status) {
-        case 'Pending Approval': return 'destructive';
-        case 'Approved': return 'default';
-        case 'Suspended': return 'secondary';
+        case 'Pending Approval': return 'warning';
+        case 'Approved': return 'success';
+        case 'Suspended': return 'destructive';
+        case 'Rejected': return 'destructive';
         default: return 'outline';
     }
 }
@@ -38,7 +40,7 @@ export default function OperatorManagementPage() {
 
     return (
         <>
-            <PageHeader title="Operator Management" description="Approve, reject, and manage all NSOP operators on the platform." />
+            <PageHeader title="Operator Governance" description="Approve, reject, and manage all NSOP operators on the platform." />
             <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>All Operators</CardTitle>
@@ -99,6 +101,11 @@ export default function OperatorManagementPage() {
                                                         </DropdownMenuItem>
                                                     )}
                                                      {op.status === 'Suspended' && (
+                                                        <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Approved')}>
+                                                            Re-approve
+                                                        </DropdownMenuItem>
+                                                    )}
+                                                     {(op.status === 'Rejected') && (
                                                         <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Approved')}>
                                                             Re-approve
                                                         </DropdownMenuItem>

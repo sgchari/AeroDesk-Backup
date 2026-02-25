@@ -21,7 +21,7 @@ export default function AuditTrailPage() {
 
     return (
         <>
-            <PageHeader title="Platform Audit Trail" description="A complete, immutable log of all actions performed across the platform.">
+            <PageHeader title="Platform Audit Trail" description="A complete, immutable log of all actions performed across the platform for forensic review.">
                 <Button variant="outline">
                     <Download className="mr-2 h-4 w-4" />
                     Export as CSV
@@ -29,7 +29,7 @@ export default function AuditTrailPage() {
             </PageHeader>
             <Card className="bg-card">
                 <CardHeader>
-                    <CardTitle>All Events</CardTitle>
+                    <CardTitle>All Logged Events</CardTitle>
                     <CardDescription>
                         Search and filter through all recorded events for governance and compliance review.
                     </CardDescription>
@@ -40,22 +40,24 @@ export default function AuditTrailPage() {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Timestamp</TableHead>
-                                    <TableHead>User</TableHead>
-                                    <TableHead>Role</TableHead>
-                                    <TableHead>Action</TableHead>
-                                    <TableHead>Details</TableHead>
-                                    <TableHead>Target ID</TableHead>
+                                    <TableHead>Actor / Role</TableHead>
+                                    <TableHead>Action Type</TableHead>
+                                    <TableHead>Entity Affected</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                             {auditLogs?.map((log: AuditLog) => (
                                 <TableRow key={log.id}>
                                     <TableCell className="text-xs">{new Date(log.timestamp).toLocaleString()}</TableCell>
-                                    <TableCell>{log.user}</TableCell>
-                                    <TableCell><Badge variant="secondary">{log.role}</Badge></TableCell>
+                                    <TableCell>
+                                        <div className="font-medium">{log.user}</div>
+                                        <Badge variant="secondary" className="mt-1">{log.role}</Badge>
+                                    </TableCell>
                                     <TableCell className="font-medium">{log.action}</TableCell>
-                                    <TableCell className="text-xs text-muted-foreground">{log.details}</TableCell>
-                                    <TableCell className="font-code text-xs">{log.targetId}</TableCell>
+                                    <TableCell>
+                                        <div className="text-xs text-muted-foreground">{log.details}</div>
+                                        <div className="font-code text-xs">{log.targetId}</div>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                             </TableBody>
