@@ -1,5 +1,5 @@
 
-import type { UserRole, User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag } from './types';
+import type { UserRole, User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, BlogPost } from './types';
 
 // This data is now used for the demo mode.
 
@@ -149,6 +149,46 @@ export const mockFeatureFlags: FeatureFlag[] = [
     { id: 'FF-04', name: 'DynamicPricingEngine', description: 'Enable dynamic pricing suggestions for empty leg seats.', isEnabled: true },
 ];
 
+export const mockBlogPosts: BlogPost[] = [
+  {
+    id: 'post-1',
+    title: 'Yield Optimization: Navigating Empty Leg Pricing in 2024',
+    excerpt: 'A technical analysis of dynamic pricing models used to maximize asset utilization during seasonal positioning flights.',
+    category: 'Empty Leg Insights',
+    imageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=2070&auto=format&fit=crop',
+    author: 'AeroDesk Intel',
+    date: '2024-07-30',
+    isFeatured: true
+  },
+  {
+    id: 'post-2',
+    title: 'NSOP Compliance: New Directives for Indian Charter Operations',
+    excerpt: 'Detailed breakdown of recent regulatory changes affecting non-scheduled operator permits and operational safety standards.',
+    category: 'Industry',
+    imageUrl: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080',
+    author: 'Governance Desk',
+    date: '2024-07-28'
+  },
+  {
+    id: 'post-3',
+    title: 'Corporate Travel: Integrating Jet Seat Allocation into Travel Policy',
+    excerpt: 'How Corporate Travel Desks are leveraging empty leg inventory to reduce executive travel overhead without sacrificing privacy.',
+    category: 'Corporate Travel',
+    imageUrl: 'https://images.unsplash.com/photo-11754481387410-7c8c9350372c?q=80&w=1080',
+    author: 'Ecosystem Strategy',
+    date: '2024-07-25'
+  },
+  {
+    id: 'post-4',
+    title: 'Operator Perspectives: Fleet Modernization Trends in South Asia',
+    excerpt: 'Observing the shift towards mid-size jets as infrastructure improves across Tier-2 Indian cities.',
+    category: 'Operator',
+    imageUrl: 'https://images.unsplash.com/photo-1727640024516-ae12e5b9e90d?q=80&w=1080',
+    author: 'Network Intel',
+    date: '2024-07-22'
+  }
+];
+
 
 export function getMockDataForRole(role: UserRole) {
     return {
@@ -165,6 +205,7 @@ export function getMockDataForRole(role: UserRole) {
         roomCategories: mockRoomCategories,
         seatAllocationRequests: mockEmptyLegSeatAllocationRequests,
         billingRecords: mockBillingRecords,
-        featureFlags: mockFeatureFlags
+        featureFlags: mockFeatureFlags,
+        blogPosts: mockBlogPosts
     };
 }

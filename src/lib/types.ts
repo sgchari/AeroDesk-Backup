@@ -226,3 +226,15 @@ export type FeatureFlag = {
     description: string;
     isEnabled: boolean;
 };
+
+export type BlogPost = {
+  id: string;
+  title: string;
+  excerpt: string;
+  content?: string;
+  category: 'Insights' | 'Industry' | 'Operator' | 'Market Trends' | 'Empty Leg Insights' | 'Corporate Travel';
+  imageUrl: string;
+  author: string;
+  date: string;
+  isFeatured?: boolean;
+};
