@@ -217,7 +217,7 @@ export default function UserManagementPage() {
                                     <TableRow key={user.id}>
                                         <TableCell className="font-medium">{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
-                                        <TableCell><Badge variant="outline">{user.role}</TableCell>
+                                        <TableCell><Badge variant="outline">{user.role}</Badge></TableCell>
                                         <TableCell><Badge variant={user.status === 'Active' || user.status === 'Approved' ? 'default' : user.status === 'Suspended' ? 'destructive' : 'secondary'}>{user.status}</Badge></TableCell>
                                         <TableCell>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</TableCell>
                                         <TableCell>
