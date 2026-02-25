@@ -2,6 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import type { User as AppUser } from '@/lib/types';
 import { mockUsers } from '@/lib/data';
 
@@ -9,6 +10,7 @@ interface UserContextType {
   user: AppUser | null;
   isLoading: boolean;
   error: Error | null;
+  logout: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -17,41 +19,47 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const pathname = usePathname();
+
+  const logout = () => {
+    localStorage.removeItem('demoUserId');
+    setUser(null);
+  };
 
   useEffect(() => {
-    // In demo mode, we check localStorage to see which user is "logged in".
     setLoading(true);
+    setError(null);
     try {
         const demoUserId = localStorage.getItem('demoUserId');
         if (demoUserId) {
             const foundUser = mockUsers.find(u => u.id === demoUserId);
             if (foundUser) {
-                // In a real app, you'd fetch the full profile. Here, we use the mock.
-                // We add the company name for CTD users for the demo dashboard.
-                 if (foundUser.role === 'CTD Admin') {
-                    const ctdAdminWithCompany = {
+                // If the user is part of a corporate desk, find their company name
+                if (['CTD Admin', 'Corporate Admin', 'Requester'].includes(foundUser.role)) {
+                    const ctd = mockUsers.find(u => u.role === 'CTD Admin' && u.ctdId === foundUser.ctdId);
+                    const userWithCompany = {
                         ...foundUser,
-                        company: "Corporate Inc." // Add mock company name
+                        company: ctd?.company || "Corporate Inc."
                     };
-                    setUser(ctdAdminWithCompany as AppUser);
+                    setUser(userWithCompany as AppUser);
                 } else {
                     setUser(foundUser as AppUser);
                 }
-
             } else {
                 setError(new Error("Demo user not found. Please log in again."));
-                localStorage.removeItem('demoUserId');
+                logout(); // Clear invalid user ID
             }
+        } else {
+            setUser(null); // No user ID found, so ensure user is logged out
         }
-        // If no demoUserId, user remains null (logged out state).
     } catch(e: any) {
         setError(e);
     } finally {
         setLoading(false);
     }
-  }, []);
+  }, [pathname]); // Re-run this effect whenever the user navigates
 
-  const value = { user, isLoading, error };
+  const value = { user, isLoading, error, logout };
 
   return (
     <UserContext.Provider value={value}>
