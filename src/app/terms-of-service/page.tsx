@@ -1,6 +1,7 @@
-import { Logo } from '@/components/logo';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
+import { LandingFooter } from '@/components/landing-footer';
+import { LandingHeader } from '@/components/landing-header';
 
 export default function TermsOfServicePage() {
   const lastUpdated = new Date().toLocaleDateString('en-US', {
@@ -20,15 +21,7 @@ export default function TermsOfServicePage() {
         <div className="absolute inset-0 bg-black/30" />
       </div>
       <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
-        <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/30 backdrop-blur-md">
-            <div className="container flex h-20 items-center justify-between">
-                <div className="flex items-center gap-6">
-                    <Link href="/">
-                        <Logo />
-                    </Link>
-                </div>
-            </div>
-      </header>
+        <LandingHeader />
       <main className="flex-1 py-12 md:py-16">
         <div className="container">
           <Card className="border-white/10 bg-black/15 backdrop-blur-md text-white">
@@ -257,6 +250,7 @@ export default function TermsOfServicePage() {
           </Card>
         </div>
       </main>
+      <LandingFooter />
       </div>
     </div>
   );
