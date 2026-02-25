@@ -143,26 +143,36 @@ export type Property = {
     address: string;
     city: string;
     status: 'Active' | 'Inactive';
-}
+    propertyType?: string;
+    imageUrl?: string;
+};
 
 export type RoomCategory = {
     id: string;
     propertyId: string;
     name: string;
+    description?: string;
     maxOccupancy: number;
-}
+    beddingType?: string;
+    baseCapacity?: number;
+    imageUrl?: string;
+};
 
 export type AccommodationRequest = {
     id: string;
     tripReferenceId: string;
     tripType: 'Charter' | 'EmptyLeg';
     hotelPartnerId?: string;
+    propertyId?: string;
+    propertyName?: string;
     guestType?: 'Passenger' | 'Crew';
+    guestName?: string;
     checkIn: string;
     checkOut: string;
     rooms: number;
-    status: 'Pending' | 'Confirmed' | 'Declined';
-}
+    status: 'Pending' | 'Confirmed' | 'Declined' | 'Awaiting Clarification';
+    specialRequests?: string;
+};
 
 export type HotelPartner = {
   id: string;

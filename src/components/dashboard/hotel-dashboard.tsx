@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, BedDouble, Calendar, Check, Clock } from "lucide-react";
+import { MoreHorizontal, BedDouble, Calendar, Check, Clock, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
@@ -34,8 +34,9 @@ export function HotelDashboard() {
 
   const stats = {
     pending: requests?.filter(r => r.status === 'Pending').length ?? 0,
-    confirmed: requests?.filter(r => r.status === 'Confirmed').length ?? 0,
-    totalRooms: requests?.reduce((acc, r) => acc + (r.rooms || 0), 0) ?? 0,
+    upcomingCheckIns: requests?.filter(r => r.status === 'Confirmed' && new Date(r.checkIn) > new Date()).length ?? 0,
+    activeOccupancy: requests?.filter(r => r.status === 'Confirmed' && new Date(r.checkIn) <= new Date() && new Date(r.checkOut) > new Date()).reduce((acc, r) => acc + r.rooms, 0) ?? 0,
+    availabilityAlerts: 0, // Mocked for now
   }
 
   return (
@@ -47,10 +48,10 @@ export function HotelDashboard() {
       </PageHeader>
       
       <StatsGrid>
-        <StatsCard title="Pending Requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pending.toString()} icon={Calendar} description="Awaiting your confirmation" />
-        <StatsCard title="Confirmed Stays" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.confirmed.toString()} icon={Check} description="Bookings confirmed" />
-        <StatsCard title="Total Rooms (Recent)" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.totalRooms.toString()} icon={BedDouble} description="Rooms in recent requests" />
-        <StatsCard title="Response Time" value="~2.5 hrs" icon={Clock} description="Your average response time" />
+        <StatsCard title="Pending Stay Requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pending.toString()} icon={Clock} description="Awaiting your confirmation" />
+        <StatsCard title="Upcoming Check-Ins" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.upcomingCheckIns.toString()} icon={Calendar} description="In the next 7 days" />
+        <StatsCard title="Active Occupancy" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeOccupancy.toString()} icon={BedDouble} description="Rooms via AeroDesk" />
+        <StatsCard title="Availability Alerts" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.availabilityAlerts.toString()} icon={AlertTriangle} description="Potential conflicts" />
       </StatsGrid>
 
       <Card className="bg-card">
@@ -71,8 +72,8 @@ export function HotelDashboard() {
                 <TableHeader>
                 <TableRow>
                     <TableHead>Request ID</TableHead>
-                    <TableHead>Trip ID</TableHead>
-                    <TableHead>Guest Type</TableHead>
+                    <TableHead>Guest</TableHead>
+                    <TableHead>Property</TableHead>
                     <TableHead>Check-in</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>
@@ -84,11 +85,9 @@ export function HotelDashboard() {
                 {requests?.map((req) => (
                     <TableRow key={req.id}>
                         <TableCell className="font-medium font-code">{req.id}</TableCell>
-                        <TableCell className="font-code">{req.tripReferenceId}</TableCell>
-                        <TableCell>
-                            <Badge variant={req.guestType === 'Crew' ? 'outline' : 'secondary'}>{req.guestType}</Badge>
-                        </TableCell>
-                        <TableCell>{req.checkIn}</TableCell>
+                        <TableCell>{req.guestName || 'N/A'}</TableCell>
+                        <TableCell>{req.propertyName}</TableCell>
+                        <TableCell>{new Date(req.checkIn).toLocaleDateString()}</TableCell>
                         <TableCell>
                             <Badge variant={req.status === 'Pending' ? 'warning' : req.status === 'Confirmed' ? 'success' : 'secondary'}>{req.status}</Badge>
                         </TableCell>
@@ -106,9 +105,9 @@ export function HotelDashboard() {
                                 {req.status === 'Pending' && (
                                     <>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem>Accept</DropdownMenuItem>
-                                        <DropdownMenuItem disabled>Propose Alternate</DropdownMenuItem>
-                                        <DropdownMenuItem>Decline (with reason)</DropdownMenuItem>
+                                        <DropdownMenuItem>Accept Request</DropdownMenuItem>
+                                        <DropdownMenuItem>Decline Request</DropdownMenuItem>
+                                        <DropdownMenuItem>Send Message / Query</DropdownMenuItem>
                                     </>
                                 )}
                                 {req.status === 'Confirmed' && (
@@ -125,6 +124,11 @@ export function HotelDashboard() {
                 </TableBody>
             </Table>
            )}
+           {(!isLoading && (!requests || requests.length === 0)) && (
+                <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                    <p className="text-muted-foreground">No recent accommodation requests found.</p>
+                </div>
+            )}
         </CardContent>
       </Card>
     </>

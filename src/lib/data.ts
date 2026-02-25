@@ -48,8 +48,8 @@ export const mockOperators: Operator[] = mockUsers
   }));
 
 export const mockRfqs: CharterRFQ[] = [
-    { id: 'RFQ-789', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-10', pax: 4, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-28T12:00:00Z', bidsCount: 2 },
-    { id: 'RFQ-790', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Bengaluru (BLR)', arrival: 'Goa (GOI)', departureDate: '2024-08-15', returnDate: '2024-08-18', pax: 2, aircraftType: 'Any Turboprop', status: 'Confirmed', createdAt: '2024-07-27T15:00:00Z', bidsCount: 1 },
+    { id: 'RFQ-789', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-10', pax: 4, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-28T12:00:00Z', bidsCount: 2, hotelRequired: true },
+    { id: 'RFQ-790', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Bengaluru (BLR)', arrival: 'Goa (GOI)', departureDate: '2024-08-15', returnDate: '2024-08-18', pax: 2, aircraftType: 'Any Turboprop', status: 'Confirmed', createdAt: '2024-07-27T15:00:00Z', bidsCount: 1, hotelRequired: true },
     { id: 'RFQ-791', customerId: 'requester-user-01', requesterExternalAuthId: 'requester-user-01', company: 'Stark Industries', customerName: 'Aisha Khan', tripType: 'Onward', departure: 'Chennai (MAA)', arrival: 'Hyderabad (HYD)', departureDate: '2024-08-12', pax: 6, aircraftType: 'Any Mid-size Jet', status: 'Pending Approval', createdAt: '2024-07-28T14:00:00Z', bidsCount: 0, businessPurpose: 'Quarterly Review', costCenter: 'EXEC-Q3-24' },
     { id: 'RFQ-792', customerId: 'customer-user-02', requesterExternalAuthId: 'customer-user-02', customerName: 'Arjun Mehta', tripType: 'Onward', departure: 'Kolkata (CCU)', arrival: 'Bagdogra (IXB)', departureDate: '2024-08-20', pax: 8, aircraftType: 'Any', status: 'New', createdAt: '2024-07-29T11:00:00Z', bidsCount: 0 },
     { id: 'RFQ-793', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Pune (PNQ)', arrival: 'Ahmedabad (AMD)', departureDate: '2024-09-01', pax: 3, aircraftType: 'Any Light Jet', status: 'Operator Selected', createdAt: '2024-07-29T09:00:00Z', bidsCount: 1 },
@@ -78,6 +78,7 @@ export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-902', operatorId: 'operator-user-01', aircraftId: 'AC-VTSKY', aircraftName: 'King Air 350', departure: 'Goa (GOI)', arrival: 'Bengaluru (BLR)', departureTime: '2024-08-07T10:00:00Z', availableSeats: 6, seatsAllocated: 0, status: 'Draft' },
     { id: 'EL-903', operatorId: 'operator-user-03', aircraftId: 'AC-VTGLO', aircraftName: 'Global 6000', departure: 'Hyderabad (HYD)', arrival: 'Chennai (MAA)', departureTime: '2024-08-09T18:00:00Z', availableSeats: 5, seatsAllocated: 5, status: 'Closed' },
     { id: 'EL-904', operatorId: 'operator-user-03', aircraftId: 'AC-VTPC', aircraftName: 'Pilatus PC-12', departure: 'Udaipur (UDR)', arrival: 'Jaipur (JAI)', departureTime: '2024-08-11T12:00:00Z', availableSeats: 7, seatsAllocated: 0, status: 'Published' },
+    { id: 'EL-905', operatorId: 'operator-user-01', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Ahmedabad (AMD)', arrival: 'Pune (PNQ)', departureTime: '2024-08-13T09:00:00Z', availableSeats: 8, seatsAllocated: 0, status: 'Pending Approval' },
 ];
 
 export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [
@@ -86,19 +87,23 @@ export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[]
 ];
 
 export const mockProperties: Property[] = [
-    { id: 'PROP-01', hotelPartnerId: 'hotel-user-01', name: 'The Grand Mumbai', address: '123 Marine Drive, Mumbai', city: 'Mumbai', status: 'Active' },
-    { id: 'PROP-02', hotelPartnerId: 'hotel-user-01', name: 'The Grand Delhi', address: '456 Connaught Place, Delhi', city: 'Delhi', status: 'Active' },
+    { id: 'PROP-01', hotelPartnerId: 'hotel-user-01', name: 'The Grand Mumbai', address: '123 Marine Drive, Mumbai', city: 'Mumbai', status: 'Active', propertyType: 'Luxury Hotel', imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop' },
+    { id: 'PROP-02', hotelPartnerId: 'hotel-user-01', name: 'The Palace Delhi', address: '456 Connaught Place, Delhi', city: 'Delhi', status: 'Active', propertyType: 'Heritage Hotel', imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbb5eb?q=80&w=2070&auto=format&fit=crop' },
+    { id: 'PROP-03', hotelPartnerId: 'hotel-user-01', name: 'Goa Beach Resort', address: '789 Baga Beach, Goa', city: 'Goa', status: 'Inactive', propertyType: 'Resort', imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1925&auto=format&fit=crop' },
 ];
 
 export const mockRoomCategories: RoomCategory[] = [
-    { id: 'RC-DLX', propertyId: 'PROP-01', name: 'Deluxe Room', maxOccupancy: 2 },
-    { id: 'RC-SUI', propertyId: 'PROP-01', name: 'Suite', maxOccupancy: 3 },
-    { id: 'RC-PRES', propertyId: 'PROP-02', name: 'Presidential Suite', maxOccupancy: 4 },
+    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with a king-sized bed and city views.' },
+    { id: 'RC-SUI-MUM', propertyId: 'PROP-01', name: 'Executive Suite', maxOccupancy: 3, beddingType: 'King + Sofa', baseCapacity: 2, description: 'A luxurious suite with a separate living area.' },
+    { id: 'RC-PRES-DEL', propertyId: 'PROP-02', name: 'Maharaja Suite', maxOccupancy: 4, beddingType: 'Two Queens', baseCapacity: 4, description: 'An opulent suite with heritage decor and premium amenities.' },
+    { id: 'RC-VIL-GOA', propertyId: 'PROP-03', name: 'Beach Villa', maxOccupancy: 4, beddingType: 'King + Twin', baseCapacity: 2, description: 'A private villa with direct access to the beach.' },
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
-    { id: 'ACC-301', tripReferenceId: 'RFQ-790', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', guestType: 'Passenger', checkIn: '2024-08-15', checkOut: '2024-08-18', rooms: 1, status: 'Pending' },
-    { id: 'ACC-302', tripReferenceId: 'RFQ-789', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', guestType: 'Crew', checkIn: '2024-08-10', checkOut: '2024-08-11', rooms: 2, status: 'Confirmed' },
+    { id: 'ACC-301', tripReferenceId: 'RFQ-790', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-03', propertyName: 'Goa Beach Resort', guestType: 'Passenger', guestName: 'Sanjana Kumar', checkIn: '2024-08-15', checkOut: '2024-08-18', rooms: 1, status: 'Pending', specialRequests: 'Ocean view room preferred.' },
+    { id: 'ACC-302', tripReferenceId: 'RFQ-789', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-02', propertyName: 'The Palace Delhi', guestType: 'Crew', guestName: 'Capt. R. Verma +1', checkIn: '2024-08-10', checkOut: '2024-08-11', rooms: 2, status: 'Confirmed', specialRequests: 'Quiet rooms on a high floor.' },
+    { id: 'ACC-303', tripReferenceId: 'RFQ-793', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestType: 'Passenger', guestName: 'Arjun Mehta', checkIn: '2024-09-01', checkOut: '2024-09-03', rooms: 1, status: 'Declined' },
+    { id: 'ACC-304', tripReferenceId: 'EL-901', tripType: 'EmptyLeg', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestType: 'Passenger', guestName: 'ACME Corp Guest', checkIn: '2024-08-05', checkOut: '2024-08-06', rooms: 2, status: 'Awaiting Clarification', specialRequests: 'Need two separate non-smoking rooms.' },
 ];
 
 export const mockAuditLogs: AuditLog[] = [

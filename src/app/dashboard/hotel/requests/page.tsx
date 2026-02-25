@@ -9,24 +9,43 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { AccommodationRequest } from "@/lib/types";
 import { useUser } from "@/hooks/use-user";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking } from "@/firebase";
+import { collection, query, where, doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
+const getStatusVariant = (status: AccommodationRequest['status']) => {
+    switch(status) {
+        case 'Pending': return 'warning';
+        case 'Confirmed': return 'success';
+        case 'Declined': return 'destructive';
+        case 'Awaiting Clarification': return 'secondary';
+        default: return 'outline';
+    }
+}
 
 export default function HotelRequestsPage() {
     const { user, isLoading: isUserLoading } = useUser();
     const firestore = useFirestore();
+    const { toast } = useToast();
 
     const requestsQuery = useMemoFirebase(() => {
         if (!firestore || !user) return null;
-        // This assumes the hotel partner's user ID is their hotelPartnerId.
-        // A more robust solution might involve a profile lookup.
         return query(collection(firestore, 'accommodationRequests'), where('hotelPartnerId', '==', user.id));
     }, [firestore, user]);
     const { data: accommodationRequests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery, 'accommodationRequests');
 
     const isLoading = isUserLoading || requestsLoading;
+
+    const handleUpdateStatus = (requestId: string, status: AccommodationRequest['status']) => {
+        if (!firestore) return;
+        const requestDocRef = doc(firestore, 'accommodationRequests', requestId);
+        updateDocumentNonBlocking(requestDocRef, { status });
+        toast({
+            title: "Request Updated",
+            description: `The request has been marked as ${status}.`,
+        });
+    }
 
   return (
     <>
@@ -44,10 +63,9 @@ export default function HotelRequestsPage() {
                 <TableHeader>
                 <TableRow>
                     <TableHead>Request ID</TableHead>
-                    <TableHead>Trip ID</TableHead>
-                    <TableHead>Guest Type</TableHead>
-                    <TableHead>Check-in</TableHead>
-                    <TableHead>Check-out</TableHead>
+                    <TableHead>Guest</TableHead>
+                    <TableHead>Property</TableHead>
+                    <TableHead>Stay Dates</TableHead>
                     <TableHead>Rooms</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>
@@ -59,15 +77,12 @@ export default function HotelRequestsPage() {
                 {accommodationRequests?.map((req) => (
                     <TableRow key={req.id}>
                         <TableCell className="font-medium font-code">{req.id}</TableCell>
-                        <TableCell className="font-code">{req.tripReferenceId}</TableCell>
+                        <TableCell>{req.guestName || 'N/A'}</TableCell>
+                        <TableCell>{req.propertyName}</TableCell>
+                        <TableCell>{new Date(req.checkIn).toLocaleDateString()} - {new Date(req.checkOut).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-center">{req.rooms}</TableCell>
                         <TableCell>
-                            <Badge variant={req.guestType === 'Crew' ? 'outline' : 'secondary'}>{req.guestType}</Badge>
-                        </TableCell>
-                        <TableCell>{req.checkIn}</TableCell>
-                        <TableCell>{req.checkOut}</TableCell>
-                        <TableCell>{req.rooms}</TableCell>
-                        <TableCell>
-                            <Badge variant={req.status === 'Pending' ? 'destructive' : req.status === 'Confirmed' ? 'default' : 'secondary'}>{req.status}</Badge>
+                            <Badge variant={getStatusVariant(req.status)}>{req.status}</Badge>
                         </TableCell>
                         <TableCell>
                             <DropdownMenu>
@@ -83,9 +98,16 @@ export default function HotelRequestsPage() {
                                 {req.status === 'Pending' && (
                                     <>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem>Accept</DropdownMenuItem>
-                                        <DropdownMenuItem>Propose Alternate</DropdownMenuItem>
-                                        <DropdownMenuItem>Decline (with reason)</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleUpdateStatus(req.id, 'Confirmed')}>Accept Request</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleUpdateStatus(req.id, 'Declined')}>Decline Request</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleUpdateStatus(req.id, 'Awaiting Clarification')}>Send Message / Query</DropdownMenuItem>
+                                    </>
+                                )}
+                                 {req.status === 'Awaiting Clarification' && (
+                                    <>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem onClick={() => handleUpdateStatus(req.id, 'Confirmed')}>Accept Request</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleUpdateStatus(req.id, 'Declined')}>Decline Request</DropdownMenuItem>
                                     </>
                                 )}
                                 {req.status === 'Confirmed' && (
@@ -101,6 +123,11 @@ export default function HotelRequestsPage() {
                 ))}
                 </TableBody>
             </Table>
+            )}
+             {(!isLoading && (!accommodationRequests || accommodationRequests.length === 0)) && (
+                <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                    <p className="text-muted-foreground">No accommodation requests found.</p>
+                </div>
             )}
         </CardContent>
       </Card>

@@ -27,7 +27,7 @@ import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMen
 const navItems = {
   Customer: [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/customer/my-trips', label: 'My Trips', icon: FileText, color: 'text-blue-500' },
+    { href: '/dashboard/charter-rfq', label: 'My Trips', icon: FileText, color: 'text-blue-500' },
     { href: '/dashboard/customer/empty-legs', label: 'Available Jet Seats', icon: Armchair, color: 'text-green-500' },
     { href: '#', label: 'Support', icon: LifeBuoy, color: 'text-gray-500' },
   ],
@@ -57,8 +57,9 @@ const navItems = {
   'Hotel Partner': [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
     { href: '/dashboard/hotel/requests', label: 'Accommodation Requests', icon: Briefcase, color: 'text-rose-500' },
-    { href: '/dashboard/hotel/properties', label: 'My Properties', icon: Building, color: 'text-orange-500' },
+    { href: '/dashboard/hotel/properties', label: 'Properties', icon: Building, color: 'text-orange-500' },
     { href: '/dashboard/hotel/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/hotel/reports', label: 'Reports', icon: BarChart2, color: 'text-fuchsia-500' },
   ],
   Admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-sky-500' },
