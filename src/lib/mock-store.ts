@@ -116,20 +116,22 @@ const getDoc = (path: string): any | null => {
 
 const addDoc = (path: string, data: any) => {
     const pathSegments = path.split('/');
-    const collection = pathSegments[0];
-    let newDoc = { ...data, id: `demo-${collection}-${Date.now()}` };
+    const collectionName = pathSegments[0];
+    let newDoc = { ...data, id: `demo-${collectionName}-${Date.now()}` };
 
-    if (collection === 'charterRFQs') {
-        db.charterRFQs.unshift(newDoc);
-    } else if (collection === 'users' || collection === 'platformAdmins' || collection === 'customers' || collection === 'operators' || collection === 'distributors' || collection === 'hotelPartners') {
-        db.users.unshift(newDoc); // Add to the main users array
-        if ((db as any)[collection]) {
-            (db as any)[collection].unshift(newDoc); // Also add to specific array if exists
+    if (collectionName === 'emptyLegs' && pathSegments.length > 2 && pathSegments[2] === 'seatAllocationRequests') {
+        db.seatAllocationRequests.unshift(newDoc as any);
+    } else if (collectionName === 'charterRFQs') {
+        db.charterRFQs.unshift(newDoc as any);
+    } else if (['users', 'platformAdmins', 'customers', 'operators', 'distributors', 'hotelPartners'].includes(collectionName)) {
+        db.users.unshift(newDoc as any); // Add to the main users array
+        if ((db as any)[collectionName]) {
+            (db as any)[collectionName].unshift(newDoc as any); // Also add to specific array if exists
         }
-    } else if (collection === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'users') {
-         db.users.unshift(newDoc);
-    } else if ((db as any)[collection]) {
-        (db as any)[collection].unshift(newDoc);
+    } else if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'users') {
+         db.users.unshift(newDoc as any);
+    } else if ((db as any)[collectionName]) {
+        (db as any)[collectionName].unshift(newDoc as any);
     } else {
          console.warn(`Mock Store: No handler for addDoc path: ${path}`);
     }

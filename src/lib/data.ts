@@ -24,6 +24,7 @@ export const mockUsers: User[] = [
     
     // Partners
     { id: 'distributor-user-01', email: 'sales@sky-dist.com', firstName: 'Amit', lastName: 'Patel', role: 'Authorized Distributor', company: 'Sky Distributors', status: 'Active', createdAt: "2024-07-24T16:00:00Z", updatedAt: "2024-07-24T16:00:00Z" },
+    { id: 'distributor-user-02', email: 'ria@sky-dist.com', firstName: 'Ria', lastName: 'Singh', role: 'Authorized Distributor', company: 'Sky Distributors', status: 'Active', createdAt: "2024-07-28T10:00:00Z", updatedAt: "2024-07-28T10:00:00Z" },
     { id: 'hotel-user-01', email: 'mgr@grandhotel.com', firstName: 'Meera', lastName: 'Chopra', role: 'Hotel Partner', company: 'The Grand Hotel Group', status: 'Active', createdAt: "2024-07-23T18:00:00Z", updatedAt: "2024-07-23T18:00:00Z" },
 ];
 

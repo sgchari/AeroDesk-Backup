@@ -8,16 +8,24 @@ import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { collection, query } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState } from "react";
+import { RequestSeatAllocationDialog } from "@/components/dashboard/distributor/request-seat-allocation-dialog";
 
 export default function DistributorEmptyLegsPage() {
   const firestore = useFirestore();
+  const [legToRequest, setLegToRequest] = useState<EmptyLeg | null>(null);
+
   const emptyLegsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
+    // Fetch all legs; filtering happens client-side for demo
+    return query(collection(firestore, 'emptyLegs'));
   }, [firestore]);
-  const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
+  const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
+  
+  // Client-side filtering to show only approved legs
+  const emptyLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved');
 
 
   return (
@@ -61,8 +69,7 @@ export default function DistributorEmptyLegsPage() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Request Seat Allocation</DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => setLegToRequest(leg)}>Request Seat Allocation</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>
@@ -71,8 +78,18 @@ export default function DistributorEmptyLegsPage() {
                 </TableBody>
             </Table>
             )}
+            {(!isLoading && (!emptyLegs || emptyLegs.length === 0)) && (
+                <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                    <p className="text-muted-foreground">There are no approved empty legs available.</p>
+                </div>
+            )}
         </CardContent>
       </Card>
+      <RequestSeatAllocationDialog 
+        emptyLeg={legToRequest}
+        open={!!legToRequest}
+        onOpenChange={(open) => !open && setLegToRequest(null)}
+      />
     </>
   );
 }
