@@ -89,10 +89,17 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Only redirect if loading is complete, there is no user, AND there was no error.
-    // This prevents redirecting when the profile is still loading or if there was a specific profile loading error.
-    if (!isLoading && !user && !error) {
-      router.replace('/login');
+    if (isLoading) {
+      return; // Wait until loading is finished.
+    }
+
+    // This part of the effect runs only when isLoading is false.
+    if (!user && !error) {
+      // Before redirecting, do one final check of localStorage to prevent race conditions.
+      const demoUserId = localStorage.getItem('demoUserId');
+      if (!demoUserId) {
+        router.replace('/login');
+      }
     }
   }, [user, isLoading, error, router]);
 
