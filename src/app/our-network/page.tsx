@@ -1,7 +1,6 @@
 
 'use client';
 
-import { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Operator } from '@/lib/types';
@@ -9,51 +8,48 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
+import { Info, ShieldCheck, Zap, AlertCircle } from 'lucide-react';
 
 const operatorPositions: Record<string, { top: string; left: string }> = {
-    // North
-    'Delhi': { top: '25%', left: '52%' },
-    'Jaipur': { top: '32%', left: '46%' },
-    'Chandigarh': { top: '18%', left: '51%' },
-    'Lucknow': { top: '30%', left: '62%' },
-    // West
-    'Mumbai': { top: '55%', left: '35%' },
-    'Ahmedabad': { top: '45%', left: '32%' },
-    'Pune': { top: '60%', left: '40%' },
-    'Goa': { top: '70%', left: '40%' },
-    // South
-    'Bengaluru': { top: '78%', left: '52%' },
-    'Hyderabad': { top: '65%', left: '55%' },
-    'Chennai': { top: '82%', left: '60%' },
-    'Cochin': { top: '88%', left: '48%' },
-    // East
-    'Kolkata': { top: '48%', left: '85%' },
+    // North (Purple Zone)
+    'Delhi': { top: '22%', left: '48%' },
+    'Chandigarh': { top: '16%', left: '46%' },
+    'Lucknow': { top: '28%', left: '58%' },
+    'Jaipur': { top: '30%', left: '42%' },
+    // West (Deep Blue Zone)
+    'Mumbai': { top: '58%', left: '32%' },
+    'Ahmedabad': { top: '45%', left: '30%' },
+    'Pune': { top: '62%', left: '36%' },
+    // South (Green Zone)
+    'Bengaluru': { top: '78%', left: '48%' },
+    'Hyderabad': { top: '65%', left: '52%' },
+    'Chennai': { top: '82%', left: '58%' },
+    'Cochin': { top: '88%', left: '45%' },
+    // East (Cyan/Teal Zone)
+    'Kolkata': { top: '48%', left: '82%' },
+    'Bhubaneswar': { top: '58%', left: '75%' },
+    // Central (Mid Blue Zone)
+    'Bhopal': { top: '46%', left: '50%' },
+    'Nagpur': { top: '55%', left: '55%' },
+    'Indore': { top: '48%', left: '43%' },
+    // North East (Bright Cyan Zone)
     'Guwahati': { top: '35%', left: '92%' },
-    'Bhubaneswar': { top: '55%', left: '78%' },
-    'Raipur': { top: '52%', left: '68%' },
-    // Central
-    'Bhopal': { top: '46%', left: '53%' },
-    'Nagpur': { top: '55%', left: '58%' },
-    'Indore': { top: '48%', left: '45%' },
 };
 
 const getStatusConfig = (status: Operator['status']) => {
     switch (status) {
         case 'Approved':
             return {
-                base: 'bg-green-500',
+                base: 'bg-green-400',
                 pulse: 'pulse-green',
-                glow: 'shadow-[0_0_12px_2px_rgba(74,222,128,0.5)]',
                 label: 'success',
             };
         case 'Pending Approval':
             return {
                 base: 'bg-amber-400',
                 pulse: 'pulse-amber',
-                glow: 'shadow-[0_0_12px_2px_rgba(251,191,36,0.5)]',
                 label: 'warning',
             };
         case 'Suspended':
@@ -61,14 +57,12 @@ const getStatusConfig = (status: Operator['status']) => {
             return {
                 base: 'bg-red-500',
                 pulse: 'pulse-red',
-                glow: 'shadow-[0_0_12px_2px_rgba(239,68,68,0.5)]',
                 label: 'destructive',
             };
         default:
             return {
-                base: 'bg-gray-500',
+                base: 'bg-slate-400',
                 pulse: '',
-                glow: 'shadow-[0_0_12px_2px_rgba(107,114,128,0.5)]',
                 label: 'secondary',
             };
     }
@@ -85,121 +79,194 @@ const OperatorMarker = ({ operator }: { operator: Operator }) => {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger
-                    className="absolute z-20"
+                    className="absolute z-30"
                     style={{ top: position.top, left: position.left, transform: 'translate(-50%, -50%)' }}
                 >
-                    <div className={cn("relative flex items-center justify-center", isFeatured ? 'w-4 h-4' : 'w-3 h-3')}>
+                    <div className={cn("relative flex items-center justify-center", isFeatured ? 'w-5 h-5' : 'w-3 h-3')}>
                         <div className={cn(
                             "absolute rounded-full",
-                             isFeatured ? 'w-4 h-4' : 'w-3 h-3',
+                             isFeatured ? 'w-6 h-6 border border-white/30' : 'w-4 h-4',
                              statusConfig.pulse
                         )} />
-                         {isFeatured && (
-                            <div className={cn("absolute w-3 h-3 rounded-full border-2", `border-green-400/50`)} />
-                         )}
-                        <div className={cn("w-1.5 h-1.5 rounded-full", statusConfig.base)} />
+                        <div className={cn(
+                            "rounded-full transition-transform hover:scale-150 duration-300 shadow-[0_0_10px_rgba(255,255,255,0.2)]", 
+                            isFeatured ? 'w-2.5 h-2.5' : 'w-1.5 h-1.5',
+                            statusConfig.base
+                        )} />
                     </div>
                 </TooltipTrigger>
-                <TooltipContent className="bg-popover text-popover-foreground border-white/10">
-                    <p className="font-bold">{operator.companyName}</p>
-                    <p className="text-sm text-muted-foreground">{operator.city}</p>
-                    <Badge variant={statusConfig.label as any} className="mt-1">{operator.status}</Badge>
+                <TooltipContent className="bg-slate-950/90 text-white border-white/10 backdrop-blur-md p-3">
+                    <div className="space-y-1">
+                        <p className="font-bold text-sm tracking-tight">{operator.companyName}</p>
+                        <p className="text-xs text-slate-400 flex items-center gap-1">
+                            <Info className="w-3 h-3" /> {operator.city}, India
+                        </p>
+                        <div className="pt-1">
+                            <Badge variant={statusConfig.label as any} className="text-[10px] h-4 px-1.5">
+                                {operator.status.toUpperCase()}
+                            </Badge>
+                        </div>
+                    </div>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
     );
 };
 
-
 export default function OurNetworkPage() {
     const firestore = useFirestore();
     const operatorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        // In demo mode, we need to allow this collection to be public.
         return collection(firestore, 'operators');
     }, [firestore]);
     
     const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery, 'operators');
 
-    const zones = [
-        { name: 'North', x: 250, y: 50, width: 400, height: 250 },
-        { name: 'West', x: 50, y: 300, width: 400, height: 350 },
-        { name: 'Central', x: 450, y: 300, width: 250, height: 200 },
-        { name: 'East', x: 700, y: 200, width: 250, height: 300 },
-        { name: 'South', x: 450, y: 500, width: 400, height: 250 },
-    ];
-
     return (
-        <div className="w-full">
-            <div
-                className="fixed inset-0 z-0 bg-cover bg-center"
-                style={{
-                backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
-                }}
-            >
-                <div className="absolute inset-0 bg-black/30" />
-            </div>
-            <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
-                <LandingHeader activePage="Our Network" />
-                <main className="flex-1 py-12 md:py-16">
-                    <div className="container">
-                        <Card className="border-white/10 bg-black/15 backdrop-blur-md text-white">
-                             <CardHeader>
-                                <CardTitle className="text-3xl font-headline">Our Operator Network</CardTitle>
-                                <CardDescription className="text-white/80">Visualizing our network of approved operators across India.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                {isLoading ? (
-                                    <Skeleton className="w-full aspect-[10/7] bg-white/10" />
-                                ) : (
-                                    <div className="relative w-full aspect-[10/7]">
-                                        <svg viewBox="0 0 1000 700" className="absolute inset-0 w-full h-full">
-                                            {/* India Map Outline */}
-                                            <path 
-                                                d="M495.2 167.9c-2.4-8.8-9.9-15.4-19-16.4-14.7-1.7-29.4-2.8-44.1-3.3-11.4-.4-22.8-.6-34.3-.5-7.5.1-15 .2-22.5.4-15.4.4-30.8.2-46.1.7-12.7.4-25.5.8-38.2 1.2-11.4.3-22.8.8-34.2 1.2-12.5.5-25.1.8-37.6 1.3-15.2.6-30.3 1.2-45.4 2-10.3.5-20.6.1-30.9.1-3.6 0-7.3.1-10.9.3-11.6.5-23.2.1-34.8-.4-3.5-.2-7.1-.2-10.6-.2-15.1-.2-30.2.1-45.3.6-11.9.4-23.8.9-35.6 1.6-11.6.7-23.2 1.5-34.7 2.7-5.9.6-11.9 1.2-17.7 2-5.4.7-10.8 1.4-16.2 2.2-1.9.3-3.8.6-5.7.9-1.2.2-2.3.4-3.5.6-2.1.3-4.2.6-6.3.9-6.3.9-12.7 1.6-19 2.5-6.8 1-13.6 1.8-20.4 2.8-1.7.2-3.3.5-5 .7-1.1.2-2.1.3-3.2.5-2.2.3-4.4.6-6.6.9-.9.1-1.7.2-2.6.4-1.7.2-3.4.4-5.1.7-2.3.4-4.5.7-6.8 1.1-2.9.5-5.7 1-8.6 1.5-3.3.6-6.5 1.2-9.8 1.8-2.1.4-4.2.8-6.3 1.2-.6.1-1.1.2-1.7.3-3.9.7-7.8 1.4-11.7 2.2-1.9.4-3.8.8-5.7 1.2-1.9.4-3.7.8-5.6 1.2-1.4.3-2.8.6-4.2.9-2.8.6-5.6 1.2-8.4 1.8-1.4.3-2.8.6-4.2.9-2.8.6-5.5 1.2-8.3 1.8-4.1.9-8.2 1.8-12.2 2.8-10.1 2.3-20.1 4.7-29.9 7.4-6.4 1.8-12.8 3.6-19.1 5.6-2.5.8-5 1.6-7.5 2.4-1.2.4-2.5.8-3.7 1.2-3.1 1-6.1 2-9.2 3.1-2.5.9-4.9 1.8-7.3 2.7-3.6 1.3-7.2 2.7-10.7 4.1-1.7.7-3.4 1.4-5.1 2.1-4.2 1.8-8.4 3.6-12.5 5.5-2.5 1.2-5 2.4-7.5 3.6-1.2.6-2.4 1.2-3.6 1.8-1.8.9-3.6 1.8-5.4 2.7-1.8.9-3.6 1.8-5.3 2.7-3.5 1.8-7 3.6-10.4 5.5-2.3 1.3-4.6 2.6-6.9 3.9-3.4 1.9-6.8 3.8-10.1 5.8-1.6 1-3.2 2-4.8 3-1.6 1-3.2 2-4.7 3-1.6 1-3.1 2-4.7 3-3.1 2-6.2 4-9.3 6-2.3 1.5-4.6 3-6.9 4.5-1.5 1-3 2-4.5 3-1.5 1-3 2-4.4 3-1.5 1-2.9 2-4.4 3-1.4 1-2.9 2-4.3 3-1.4 1-2.8 2-4.2 3-1.4 1-2.8 2-4.1 3-1.3 1-2.6 2-3.9 3-1.3 1-2.6 2-3.8 3-1.2 1-2.4 2-3.6 3-1.2 1-2.4 2-3.5 3-1.1 1-2.2 2-3.3 3-1.1 1-2.2 2-3.2 3-1 1-2 2-3 3-1 1-2 2-2.9 3-.9 1-1.8 2-2.7 3-.9 1-1.8 2-2.6 3-.8 1-1.6 2-2.4 3-.8 1-1.5 2-2.3 3-.7.9-1.4 1.9-2.1 2.8-.7.9-1.4 1.8-2 2.7-.6.9-1.2 1.7-1.8 2.6-.6.9-1.1 1.7-1.7 2.6-.5.8-1 1.6-1.5 2.4-.5.8-1 1.6-1.4 2.4-.4.8-.8 1.5-1.2 2.3-.4.8-.8 1.5-1.1 2.3-.3.7-.7 1.4-1 2.1-.3.7-.6 1.4-.9 2.1-.3.7-.5 1.3-.8 2-.2.6-.4 1.2-.6 1.8-.2.6-.3 1.2-.5 1.8-.1.6-.2 1.2-.3 1.7-.1.6-.2 1.1-.3 1.7-.1.5-.1 1-.2 1.5-.1.5-.1 1-.2 1.5,0 .5-.1 1-.1 1.4,0 .5,0 .9,0 1.4,0 .4,0 .9,0 1.3,0 .4,0 .9,0 1.3,0 .4,0 .8,0 1.2,0 .4.1.8.1 1.2.1.4.1.8.1 1.2.2.4.1.8.1 1.2.2.8.2 1.6.3 2.4.5.8.2 1.6.4 2.4.6.4.1.8.2 1.2.3.4.1.8.2 1.2.3.4.1.8.2 1.2.3 1.2.3 2.4.6 3.6.9.8.2 1.6.4 2.4.6.8.2 1.6.4 2.4.6.8.2 1.6.4 2.4.6 1.6.4 3.2.8 4.7 1.2.8.2 1.5.4 2.3.6.8.2 1.5.4 2.3.6.7.2 1.4.3 2.1.5.7.2 1.4.3 2.1.5.7.2 1.4.3 2.1.5.7.2 1.4.3 2.1.5.7.2 1.4.3 2.1.5.7.2 1.3.3 2 .5.7.2 1.3.3 2 .5.6.2 1.2.3 1.8.5.6.2 1.2.3 1.8.5.6.2 1.2.3 1.8.5.6.2 1.2.3 1.7.5.6.1 1.1.3 1.7.4.5.1.9.3 1.4.4.5.1.9.3 1.4.4.4.1.8.3 1.2.4.4.1.8.3 1.2.4.4.1.8.3 1.2.4.4.1.8.3 1.2.4.4.1.8.3 1.2.4.4.1.8.3 1.2.4.4.1.8.3 1.2.4h39.1c2.1-1.3 4.2-2.5 6.2-3.8 2-1.3 4-2.5 6-3.8 2-1.3 4-2.5 5.9-3.8 1.9-1.2 3.8-2.5 5.7-3.7 1.9-1.2 3.7-2.4 5.6-3.6 1.9-1.2 3.7-2.4 5.6-3.6 1.8-1.2 3.6-2.4 5.4-3.6 1.8-1.2 3.6-2.4 5.3-3.6 1.7-1.2 3.4-2.3 5.1-3.5 1.7-1.1 3.4-2.3 5.1-3.4 1.7-1.1 3.3-2.2 5-3.3 1.7-1.1 3.3-2.2 5-3.3 1.6-1.1 3.2-2.1 4.8-3.2 1.6-1.1 3.2-2.1 4.7-3.2 1.5-1 3-2 4.5-3 1.5-1 3-2 4.4-3 1.4-1 2.8-2 4.2-3 1.4-1 2.8-2 4.1-3 1.3-1 2.6-2 3.9-3 1.3-1 2.6-2 3.8-3 1.2-1 2.4-2 3.6-3 1.2-1 2.4-2 3.5-3 1.1-1 2.2-2 3.3-3 1.1-1 2.2-2 3.2-3 1-1 2-2 3-3 1-1 2-2 2.9-3 .9-1 1.8-2 2.7-3 .9-1 1.8-2 2.6-3 .8-1 1.6-2 2.4-3 .8-1 1.5-2 2.3-3 .7-.9 1.4-1.9 2.1-2.8.7-.9 1.4-1.8 2-2.7.6-.9 1.2-1.7 1.8-2.6.6-.9 1.1-1.7 1.7-2.6.5-.8 1-1.6 1.5-2.4.5-.8 1-1.6 1.4-2.4.4-.8.8-1.5 1.2-2.3.4-.8.8-1.5 1.1-2.3.3-.7.7-1.4 1-2.1.3-.7.6-1.4.9-2.1.3-.7.5-1.3.8-2 .2-.6.4-1.2.6-1.8.2-.6.3-1.2.5-1.8.1-.6.2-1.2.3-1.7.1-.6.2-1.1.3-1.7.1-.5.1-1 .2-1.5.1-.5.1-1 .2-1.5,0-.5.1-1 .1-1.4,0-.5,0-.9,0-1.4,0-.4,0-.9,0-1.3,0-.4,0-.9,0-1.3,0-.4,0-.8,0-1.2,0-.4,0-.8,0-1.2,0-.4,0-.8,0-1.2,0-.4,0-.8,0-1.2-.1-.8-.2-1.6-.4-2.4-.2-.8-.4-1.6-.6-2.4-.1-.4-.2-.8-.3-1.2-.1-.4-.2-.8-.3-1.2-.2-1.2-.4-2.4-.7-3.6-.2-.8-.4-1.6-.6-2.4-.2-.8-.4-1.6-.6-2.4-.2-.8-.4-1.6-.6-2.4-.4-1.6-.8-3.2-1.2-4.7-.2-.8-.4-1.5-.6-2.3-.2-.8-.4-1.5-.6-2.3-.2-.7-.3-1.4-.5-2.1-.2-.7-.3-1.4-.5-2.1-.1-.7-.3-1.4-.4-2.1-.1-.7-.3-1.4-.4-2.1-.1-.7-.3-1.4-.4-2.1-.2-.7-.3-1.3-.5-2-.1-.6-.3-1.2-.4-1.8-.1-.6-.3-1.2-.4-1.8-.1-.6-.3-1.2-.4-1.8-.2-.6-.3-1.2-.5-1.7-.1-.6-.2-1.1-.3-1.7-.1-.5-.2-.9-.3-1.4-.1-.5-.2-.9-.3-1.4-.1-.4-.1-.8-.2-1.2-.1-.4-.1-.8-.2-1.2-.1-.4-.2-.8-.2-1.2-.1-.4-.2-.8-.2-1.2-.2-1.5-.4-3-1.3-4.4-1.4-2.1-3.2-3.9-5.2-5.4-1.3-1-2.7-1.9-4.1-2.8-1.4-.9-2.8-1.8-4.2-2.6-2.9-1.7-5.8-3.3-8.8-4.8-1.5-.7-3-1.4-4.5-2.1-1.5-.7-3-1.4-4.5-2.1-1.5-.7-3-1.3-4.5-2-1.5-.6-3-1.2-4.4-1.8-1.4-.6-2.9-1.2-4.3-1.7-1.4-.6-2.9-1.1-4.3-1.7-2.9-1.1-5.8-2.2-8.7-3.2-1.4-.5-2.9-1-4.3-1.5-1.4-.5-2.9-1-4.3-1.4-1.4-.5-2.8-.9-4.2-1.4-2.8-.9-5.7-1.7-8.5-2.5-1.4-.4-2.8-.8-4.2-1.2-1.4-.4-2.8-.8-4.2-1.2-1.4-.4-2.8-.8-4.2-1.2-1.4-.4-2.8-.7-4.2-1.1-2.8-.7-5.6-1.4-8.4-2-2.8-.7-5.6-1.3-8.3-1.9-2.7-.6-5.4-1.2-8.1-1.7-2.7-.5-5.4-1-8.1-1.5-2.6-.5-5.3-1-7.9-1.4-2.6-.4-5.2-.9-7.8-1.3-2.6-.4-5.1-.8-7.7-1.2-2.6-.4-5.1-.8-7.7-1.1-2.5-.4-5-.7-7.5-1-2.5-.3-5-.6-7.5-.9-2.5-.3-5-.6-7.4-.8-2.4-.3-4.9-.5-7.3-.7-2.4-.2-4.8-.4-7.2-.6-2.4-.2-4.8-.4-7.1-.5-4.7-.3-9.4-.5-14.1-.6-4.7-.1-9.4-.2-14.1-.2-4.7-.1-9.3-.1-14,0-4.7,0-9.3.1-14 .2-4.6.1-9.2.2-13.8.4-4.5.2-9.1.4-13.6.6-4.4.2-8.9.4-13.3.7-4.3.2-8.6.5-12.9.8-4.2.3-8.4.6-12.6.9-4.1.3-8.2.7-12.3 1.1-4..4-8.1.8-12.1 1.2-4,.4-8..8-11.9 1.3-3.9.4-7.8.9-11.7 1.4-3.8.5-7.6 1-11.4 1.5-3.8.5-7.5 1-11.3 1.6-3.7.5-7.4 1.1-11.1 1.7-3.6.6-7.2 1.2-10.8 1.8-3.5.6-7.1 1.2-10.6 1.8-3.4.6-6.8 1.2-10.2 1.9-3.3.6-6.6 1.3-9.9 2-3.2.6-6.4 1.3-9.6 2-3.1.7-6.2 1.3-9.3 2-3..7-6.1 1.4-9.1 2.1-3,.7-5.9 1.4-8.9 2.1-2.9.7-5.8 1.5-8.7 2.2-2.8.7-5.6 1.5-8.4 2.3-2.7.8-5.4 1.6-8.1 2.4-2.6.8-5.2 1.7-7.8 2.5-2.5.8-5.1 1.7-7.6 2.6-2.4.9-4.9 1.8-7.3 2.7-2.3.9-4.6 1.8-6.9 2.7-2.2.9-4.4 1.8-6.6 2.8-2.1.9-4.2 1.8-6.3 2.8-2.1.9-4.1 1.9-6.2 2.8-2,.9-4 1.9-6 2.9-2,1-3.9 2-5.9 3-1.9,1-3.8 2-5.7 3-1.8,1-3.6 2-5.4 3-1.8,1-3.5 2-5.3 3-1.7,1-3.4 2-5.1 3-1.7,1-3.3 2-5 3-1.6,1-3.2 2-4.8 3-1.6,1-3.2 2-4.7 3-1.5,1-3.1 2-4.6 3-1.5,1-3 2-4.5 3-1.5,1-3 2-4.4 3-1.4,1-2.9 2-4.3 3-1.4,1-2.8 2-4.2 3-1.4,1-2.8 2-4.1 3-1.3,1-2.6 2-3.9 3-1.3,1-2.6 2-3.8 3-1.2,1-2.4 2-3.6 3-1.2,1-2.4 2-3.5 3-1.1,1-2.2 2-3.3 3-1.1,1-2.2 2-3.2 3-1,1-2,2-3,3-1,1-2,2-2.9,3-.9,1-1.8,2-2.7,3-.9,1-1.8,2-2.6,3-.8,1-1.6,2-2.4,3-.8,1-1.5,2-2.3,3-.7.9-1.4,1.9-2.1,2.8-.7.9-1.4,1.8-2,2.7-.6.9-1.2,1.7-1.8,2.6-.6.9-1.1,1.7-1.7,2.6-.5.8-1,1.6-1.5,2.4-.5.8-1,1.6-1.4,2.4-.4.8-.8,1.5-1.2,2.3-.4.8-.8,1.5-1.1,2.3-.3.7-.7,1.4-1,2.1-.3.7-.6,1.4-.9,2.1-.3.7-.5,1.3-.8,2-.2.6-.4,1.2-.6,1.8-.2.6-.3,1.2-.5,1.8-.1.6-.2,1.2-.3,1.7-.1.6-.2,1.1-.3,1.7-.1.5-.1,1-.2,1.5-.1.5-.1,1-.2,1.5,0,.5-.1,1-.1,1.4,0,.5,0,.9,0,1.4,0,.4,0,.9,0,1.3,0,.4,0,.9,0,1.3,0,.4.1.8.1,1.2.1.4.1.8.1,1.2.1.4.1.8.2,1.2.1.4.2.8.2,1.2.2.8.3,1.6.5,2.4.7.8.2,1.6.4,2.4.6.4.1.8.2,1.2.3.4.1.8.2,1.2.3.4.1.8.2,1.2.3,1.2.3,2.4.6,3.6.9.8.2,1.6.4,2.4.6.8.2,1.6.4,2.4.6.8.2,1.6.4,2.4.6,1.6.4,3.2.8,4.7,1.2.8.2,1.5.4,2.3.6.8.2,1.5.4,2.3.6.7.2,1.4.3,2.1.5.7.2,1.4.3,2.1.5.7.2,1.4.3,2.1.5.7.2,1.4.3,2.1.5.7.2,1.4.3,2.1.5.7.2,1.3.3,2,.5.7.2,1.3.3,2,.5.6.2,1.2.3,1.8.5.6.2,1.2.3,1.8.5.6.2,1.2.3,1.8.5.6.2,1.2.3,1.7.5.6.1,1.1.3,1.7.4.5.1.9.3,1.4.4.5.1.9.3,1.4.4.4.1.8.3,1.2.4.4.1.8.3,1.2.4.4.1.8.3,1.2.4.4.1.8.3,1.2.4.4.1.8.3,1.2.4.4.1.8.3,1.2.4.4.1.8.3,1.2.4h22.8c-2.3-2.3-5.7-3.1-8.7-2.1l-1.1.4c-.1,0-.1.1-.2.1L97.5,52.2c-2.8,1.8-4.6,4.9-4.8,8.2l-4.7,69.5c-.1,2.2.6,4.4,2,6.1l20.4,25.2c1.7,2.1,2.8,4.7,2.8,7.5v28.8c0,3.3-1.5,6.4-4,8.4l-19.8,15.6c-2,1.6-4.5,2.4-7.1,2.4H38c-4.6,0-8.3,3.7-8.3,8.3v27c0,4.6,3.7,8.3,8.3,8.3h19.3c3,0,5.8,1.2,7.9,3.4l27.1,27.1c1.5,1.5,2.4,3.6,2.4,5.7v3.2c0,1.2-.5,2.4-1.3,3.3l-13.4,14.6c-1.9,2.1-2.9,4.8-2.7,7.5l2.4,37.3c.3,4,3.6,7.1,7.6,7.1h13.9c1.9,0,3.8.7,5.2,2l14.3,13.8c2.1,2.1,5,3.2,8,3.2h15.9c3.3,0,6.4-1.3,8.7-3.6l45.4-45.4c2.3-2.3,3.6-5.4,3.6-8.7v-21.7c0-2.2-.9-4.4-2.5-5.9l-10.1-10.1c-1.6-1.6-2.5-3.8-2.5-5.9V340c0,3-1.2,5.8-3.4,7.9L161,299.5c-2.1-2.1-3.4-5-3.4-8v-10.8c0,3,1.2,5.8,3.4,7.9l19.4,19.4c2.1,2.1,3.4,5,3.4,8v11.8c0,1.7-.7,3.4-1.9,4.6L158,206.1c-1.6-1.6-3.8-2.5-5.9-2.5h-10.1c-4.6,0-8.3-3.7-8.3-8.3v-11.8c0-3,1.2,5.8,3.4,7.9l36.5,36.5c2.1,2.1,5,3.4,8,3.4h11.8c3,0,5.8,1.2,7.9,3.4l29.4,29.4c1,1,2.4,1.6,3.8,1.6h17.9c2.1,0,4-.8,5.5-2.2l30.4-30.4c2.3-2.3,5.4-3.6,8.7-3.6h25.4c4.6,0,8.3,3.7,8.3,8.3v13.6c0,2.1-.8,4-2.2,5.5l-19.3,19.3c-1.5,1.5-2.2,3.5-2.2,5.5v19.4c0,4.6,3.7,8.3,8.3,8.3h10c3,0,5.8,1.2,7.9,3.4l27.1,27.1c2.1,2.1,3.4,5,3.4,8V281c0,4.6-3.7,8.3-8.3,8.3h-10c-3.3,0-6.4,1.3-8.7,3.6L341,338.3c-2.3,2.3-3.6,5.4-3.6,8.7v10c0,3.3,1.3,6.4,3.6,8.7l13.6,13.6c2.3,2.3,3.6,5.4,3.6,8.7v23.2c0,4.6-3.7,8.3-8.3,8.3h-11.8c-2.8,0-5.4,1.1-7.4,3.1L301,452.4c-2.3,2.3-5.4,3.6-8.7,3.6h-27.6c-4.6,0-8.3-3.7-8.3-8.3v-11.8c0-3-1.2-5.8-3.4-7.9l-36.5-36.5c-2.1-2.1-5-3.4-8-3.4h-10c-4.6,0-8.3-3.7-8.3-8.3v-10c0,3.3,1.3,6.4,3.6,8.7l23.2,23.2c2.3,2.3,3.6,5.4,3.6,8.7v25.4c0,4.6,3.7-8.3,8.3-8.3h13.6c3,0,5.8-1.2,7.9-3.4l30.4-30.4c2.3-2.3,5.4-3.6,8.7-3.6h21.7c3.3,0,6.4,1.3,8.7,3.6l21.7,21.7c2.3,2.3,3.6,5.4,3.6,8.7V340c0,4.6,3.7,8.3,8.3,8.3h10c3,0,5.8,1.2,7.9,3.4l19.4,19.4c2.1,2.1,3.4,5,3.4,8v11.8c0,4.6-3.7,8.3-8.3,8.3h-10.1c-2.1,0,4-.8,5.5,2.2l-23.2,23.2c-1.5,1.5-2.2,3.5-2.2,5.5v19.4c0,3,1.2,5.8,3.4,7.9l27.1,27.1c2.1,2.1,5,3.4,8,3.4h19.3c4.6,0,8.3,3.7,8.3,8.3v27c0,3.3-1.3,6.4-3.6,8.7L97.9,545.9c-2.3,2.3-3.6,5.4-3.6,8.7V565h209.6l-50.6-50.6c-2.3-2.3-3.6-5.4-3.6-8.7v-13.6c0-4.6,3.7,8.3,8.3-8.3h10c3,0,5.8,1.2,7.9-3.4l36.5-36.5c2.1-2.1-5-3.4-8-3.4h11.8c4.6,0,8.3,3.7,8.3,8.3v11.8c0-3-1.2-5.8-3.4-7.9L301,496.6c-2.1-2.1-3.4,5-3.4,8v10.8c0,4.6,3.7,8.3,8.3,8.3h10.1c2.1,0,4,.8,5.5,2.2l23.2,23.2c1.5,1.5,2.2,3.5,2.2,5.5v10c0,2.8-1.1,5.4-3.1,7.4l-17.4,17.4c-2,2-3.1,4.7-3.1,7.4V612h27.6c2.8,0,5.4-1.1,7.4-3.1l31.5-31.5c2-2,3.1-4.7,3.1-7.4v-11.8c0-4.6,3.7-8.3,8.3-8.3h23.2c2.8,0,5.4-1.1,7.4-3.1l13.6-13.6c2-2,3.1-4.7,3.1-7.4v-27.6c0-2.8-1.1-5.4-3.1-7.4L452.4,470c-2-2-4.7-3.1-7.4-3.1h-11.8c-4.6,0-8.3-3.7-8.3-8.3v-23.2c0-3-1.2-5.8-3.4-7.9L385,394.1c-2.1-2.1-5-3.4-8-3.4h-10c-4.6,0-8.3-3.7-8.3-8.3V359c0,3.3,1.3,6.4,3.6,8.7l27.1,27.1c2.1-2.1-5-3.4-8-3.4h10c4.6,0,8.3,3.7,8.3,8.3v19.4c0,2.1-.8,4-2.2,5.5l-19.3,19.3c-1.5,1.5-2.2,3.5-2.2,5.5v13.6c0,4.6,3.7,8.3,8.3,8.3h25.4c3.3,0,6.4-1.3,8.7-3.6l30.4-30.4c2.3-2.3,3.6-5.4,3.6-8.7V250c0-3-1.2-5.8-3.4-7.9l-29.4-29.4c-2.1-2.1-5-3.4-8-3.4h-17.9c-1.4,0-2.8-.6-3.8-1.6l-36.5-36.5c-2.1-2.1-3.4-5-3.4-8V154c0-4.6-3.7-8.3-8.3-8.3h-11.8c-3,0-5.8-1.2-7.9-3.4L270.8,119c-2.1-2.1-5-3.4-8-3.4h-11.8c-3,0-5.8-1.2-7.9-3.4L228.1,134c-1.2,1.2-1.9,2.8-1.9,4.6v11.8c0,4.6,3.7,8.3,8.3,8.3h10.1c2.1,0,4-.8,5.5-2.2l23.2-23.2c1.5,1.5,2.2-3.5,2.2-5.5v-10c0-2.8,1.1,5.4,3.1,7.4l17.4,17.4c2,2,3.1,4.7,3.1,7.4V82.3c0-4.6-3.7-8.3-8.3-8.3H301c-3.3,0-6.4,1.3-8.7,3.6L261.9,108c-2.3,2.3-5.4,3.6-8.7,3.6h-27.6c-4.6,0-8.3-3.7-8.3-8.3V82.3c0-3-1.2-5.8-3.4-7.9L191,51.2c-2.1-2.1-5-3.4-8-3.4h-19.3c-4.6,0-8.3-3.7-8.3-8.3V14.5c0-3.3,1.3-6.4,3.6-8.7L162.7,2.2c2.3-2.3,5.7-3.1,8.7-2.1l1.1.4c.1,0,.1.1.2.1l55.4,19.8z"
-                                                fill="transparent"
-                                                stroke="hsl(var(--primary)/0.7)"
-                                                strokeWidth="1.5"
-                                                strokeDasharray="4 4"
-                                                strokeLinecap="round"
-                                            />
-                                            {/* Zone Rectangles */}
-                                            {zones.map(zone => (
-                                                <rect
-                                                    key={zone.name}
-                                                    x={zone.x}
-                                                    y={zone.y}
-                                                    width={zone.width}
-                                                    height={zone.height}
-                                                    fill="transparent"
-                                                    stroke="hsla(var(--border)/0.5)"
-                                                    strokeWidth="1"
-                                                    strokeDasharray="3 3"
-                                                />
-                                            ))}
-                                        </svg>
+        <div className="w-full min-h-screen flex flex-col bg-[#0F172A]">
+            <LandingHeader activePage="Our Network" />
+            
+            <main className="flex-1 relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+                {/* Tactical Background Overlay */}
+                <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" 
+                     style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0F172A]/50 to-[#0F172A] z-0" />
 
-                                        {/* Zone Labels */}
-                                        {zones.map(zone => (
-                                            <div
-                                                key={zone.name}
-                                                className="absolute z-10 -translate-y-1/2"
-                                                style={{ top: `${zone.y}px`, left: `${zone.x + 10}px`}}
-                                            >
-                                                <Badge variant="secondary" className="border-white/20">{zone.name}</Badge>
-                                            </div>
-                                        ))}
-                                        
-                                        {/* Operator Markers */}
-                                        {operators?.map(op => <OperatorMarker key={op.id} operator={op} />)}
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
+                <div className="container relative z-10 max-w-6xl w-full h-[70vh] min-h-[500px]">
+                    
+                    {/* Legend / Stats Panel */}
+                    <div className="absolute top-0 left-0 z-40 w-full sm:w-72 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-xl p-5 shadow-2xl space-y-4">
+                        <div className="space-y-1 border-b border-white/10 pb-3">
+                            <h2 className="text-white font-bold text-lg tracking-tight flex items-center gap-2">
+                                <Zap className="w-4 h-4 text-accent" /> Network Intel
+                            </h2>
+                            <p className="text-xs text-slate-400">Approved NSOP Infrastructure India</p>
+                        </div>
+                        
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between text-xs">
+                                <span className="text-slate-400 flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-400" /> Active Operators
+                                </span>
+                                <span className="text-white font-mono">{operators?.filter(o => o.status === 'Approved').length || 0}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs">
+                                <span className="text-slate-400 flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-amber-400" /> Pending Review
+                                </span>
+                                <span className="text-white font-mono">{operators?.filter(o => o.status === 'Pending Approval').length || 0}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs">
+                                <span className="text-slate-400 flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-red-500" /> Suspended
+                                </span>
+                                <span className="text-white font-mono">{operators?.filter(o => ['Suspended', 'Rejected'].includes(o.status)).length || 0}</span>
+                            </div>
+                        </div>
+
+                        <div className="pt-2">
+                            <div className="p-3 bg-white/5 rounded-lg border border-white/5">
+                                <p className="text-[10px] leading-relaxed text-slate-500 italic">
+                                    "AeroDesk enforces institutional governance across all operational sectors. Status updates are synchronized in real-time with regulatory filings."
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </main>
-                <LandingFooter />
-            </div>
+
+                    {/* Main Zonal Map SVG Container */}
+                    <div className="relative w-full h-full flex items-center justify-center">
+                        <svg viewBox="0 0 1000 800" className="w-full h-full drop-shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                            <defs>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+
+                            {/* North Zone - Purple */}
+                            <path 
+                                d="M250 50 L550 50 L650 350 L350 350 Z" 
+                                fill="rgba(99, 102, 241, 0.4)" 
+                                stroke="rgba(255,255,255,0.8)" 
+                                strokeWidth="2" 
+                            />
+                            
+                            {/* West Zone - Deep Blue */}
+                            <path 
+                                d="M50 350 L350 350 L400 650 L50 750 Z" 
+                                fill="rgba(37, 99, 235, 0.4)" 
+                                stroke="rgba(255,255,255,0.8)" 
+                                strokeWidth="2" 
+                            />
+
+                            {/* East Zone - Cyan */}
+                            <path 
+                                d="M650 350 L950 350 L900 550 L650 550 Z" 
+                                fill="rgba(6, 182, 212, 0.4)" 
+                                stroke="rgba(255,255,255,0.8)" 
+                                strokeWidth="2" 
+                            />
+
+                            {/* Central Zone - Mid Blue */}
+                            <path 
+                                d="M350 350 L650 350 L650 550 L400 550 Z" 
+                                fill="rgba(59, 130, 246, 0.3)" 
+                                stroke="rgba(255,255,255,0.8)" 
+                                strokeWidth="2" 
+                            />
+
+                            {/* South Zone - Greenish */}
+                            <path 
+                                d="M400 550 L650 550 L600 780 L450 780 Z" 
+                                fill="rgba(16, 185, 129, 0.4)" 
+                                stroke="rgba(255,255,255,0.8)" 
+                                strokeWidth="2" 
+                            />
+
+                            {/* North East - Bright Cyan */}
+                            <path 
+                                d="M750 250 L980 250 L980 450 L850 450 Z" 
+                                fill="rgba(34, 211, 238, 0.5)" 
+                                stroke="rgba(255,255,255,0.8)" 
+                                strokeWidth="2" 
+                            />
+                        </svg>
+
+                        {/* Map Labels (Floating HTML) */}
+                        <div className="absolute top-[15%] left-[50%] -translate-x-1/2 pointer-events-none">
+                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Sector North</span>
+                        </div>
+                        <div className="absolute top-[65%] left-[25%] pointer-events-none">
+                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Sector West</span>
+                        </div>
+                        <div className="absolute top-[65%] left-[75%] pointer-events-none">
+                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Sector East</span>
+                        </div>
+                        <div className="absolute top-[45%] left-[50%] -translate-x-1/2 pointer-events-none">
+                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Central Command</span>
+                        </div>
+                        <div className="absolute top-[85%] left-[50%] -translate-x-1/2 pointer-events-none">
+                            <span className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase">Sector South</span>
+                        </div>
+
+                        {/* Operator Markers Overlay */}
+                        {isLoading ? (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <Skeleton className="w-32 h-32 rounded-full bg-white/5" />
+                            </div>
+                        ) : (
+                            <div className="absolute inset-0 pointer-events-auto">
+                                {operators?.map(op => <OperatorMarker key={op.id} operator={op} />)}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </main>
+
+            <LandingFooter />
         </div>
     );
 }
