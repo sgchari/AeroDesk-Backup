@@ -27,7 +27,7 @@ export default function TermsOfServicePage() {
           <Card className="border-white/10 bg-black/15 backdrop-blur-md text-white">
             <CardHeader>
               <CardTitle className="text-3xl font-headline">
-                AERODESK – TERMS OF SERVICE
+                TERMS OF SERVICE
               </CardTitle>
               <p className="text-sm text-white/70">
                 Last Updated: {lastUpdated}

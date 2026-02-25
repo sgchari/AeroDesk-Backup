@@ -27,7 +27,7 @@ export default function SafetyStandardsPage() {
           <Card className="border-white/10 bg-black/15 backdrop-blur-md text-white">
             <CardHeader>
               <CardTitle className="text-3xl font-headline">
-                AERODESK – SAFETY STANDARDS & OPERATIONAL PRINCIPLES
+                SAFETY STANDARDS & OPERATIONAL PRINCIPLES
               </CardTitle>
               <p className="text-sm text-white/70">
                 Last Updated: {lastUpdated}
