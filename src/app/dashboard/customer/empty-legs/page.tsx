@@ -7,7 +7,7 @@ import type { EmptyLeg } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plane, Users, Calendar } from "lucide-react";
+import { Users, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 
@@ -23,8 +23,9 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
     return (
         <Card className="bg-card flex flex-col">
             <CardHeader>
-                <CardDescription className="font-code">{leg.aircraftName || leg.aircraftId}</CardDescription>
+                <CardDescription>{leg.operatorName || 'Private Operator'}</CardDescription>
                 <CardTitle>{leg.departure} to {leg.arrival}</CardTitle>
+                <CardDescription className="font-code pt-1">{leg.aircraftName || leg.aircraftId}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-3">
                  <div className="flex items-center text-sm text-muted-foreground">

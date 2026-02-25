@@ -114,6 +114,7 @@ export type Aircraft = {
 export type EmptyLeg = {
   id: string;
   operatorId: string;
+  operatorName?: string; // For display
   aircraftId: string;
   aircraftName?: string; // For display
   departure: string;

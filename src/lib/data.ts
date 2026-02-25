@@ -74,11 +74,11 @@ export const mockQuotations: Quotation[] = [
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
-    { id: 'EL-901', operatorId: 'operator-user-01', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Delhi (DEL)', arrival: 'Mumbai (BOM)', departureTime: '2024-08-05T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published' },
-    { id: 'EL-902', operatorId: 'operator-user-01', aircraftId: 'AC-VTSKY', aircraftName: 'King Air 350', departure: 'Goa (GOI)', arrival: 'Bengaluru (BLR)', departureTime: '2024-08-07T10:00:00Z', availableSeats: 6, seatsAllocated: 0, status: 'Draft' },
-    { id: 'EL-903', operatorId: 'operator-user-03', aircraftId: 'AC-VTGLO', aircraftName: 'Global 6000', departure: 'Hyderabad (HYD)', arrival: 'Chennai (MAA)', departureTime: '2024-08-09T18:00:00Z', availableSeats: 5, seatsAllocated: 5, status: 'Closed' },
-    { id: 'EL-904', operatorId: 'operator-user-03', aircraftId: 'AC-VTPC', aircraftName: 'Pilatus PC-12', departure: 'Udaipur (UDR)', arrival: 'Jaipur (JAI)', departureTime: '2024-08-11T12:00:00Z', availableSeats: 7, seatsAllocated: 0, status: 'Published' },
-    { id: 'EL-905', operatorId: 'operator-user-01', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Ahmedabad (AMD)', arrival: 'Pune (PNQ)', departureTime: '2024-08-13T09:00:00Z', availableSeats: 8, seatsAllocated: 0, status: 'Pending Approval' },
+    { id: 'EL-901', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Delhi (DEL)', arrival: 'Mumbai (BOM)', departureTime: '2024-08-05T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published' },
+    { id: 'EL-902', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTSKY', aircraftName: 'King Air 350', departure: 'Goa (GOI)', arrival: 'Bengaluru (BLR)', departureTime: '2024-08-07T10:00:00Z', availableSeats: 6, seatsAllocated: 0, status: 'Draft' },
+    { id: 'EL-903', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTGLO', aircraftName: 'Global 6000', departure: 'Hyderabad (HYD)', arrival: 'Chennai (MAA)', departureTime: '2024-08-09T18:00:00Z', availableSeats: 5, seatsAllocated: 5, status: 'Closed' },
+    { id: 'EL-904', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTPC', aircraftName: 'Pilatus PC-12', departure: 'Udaipur (UDR)', arrival: 'Jaipur (JAI)', departureTime: '2024-08-11T12:00:00Z', availableSeats: 7, seatsAllocated: 0, status: 'Published' },
+    { id: 'EL-905', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Ahmedabad (AMD)', arrival: 'Pune (PNQ)', departureTime: '2024-08-13T09:00:00Z', availableSeats: 8, seatsAllocated: 0, status: 'Pending Approval' },
 ];
 
 export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [
