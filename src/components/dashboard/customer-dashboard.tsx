@@ -2,37 +2,89 @@
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { CharterRFQ, RfqStatus, EmptyLeg } from "@/lib/types";
-import { MoreHorizontal, FileText, Clock, CheckCircle, Plane, Hotel } from "lucide-react";
+import type { CharterRFQ, RfqStatus } from "@/lib/types";
+import { MoreHorizontal, FileText, Clock, CheckCircle, Plane, Hotel, AlertTriangle, ArrowRight, Gavel, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { StatsCard } from "@/components/dashboard/shared/stats-card";
-import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
+import React from "react";
+import { cn } from "@/lib/utils";
 
-const getStatusVariant = (status: RfqStatus) => {
+const getStatusInfo = (status: RfqStatus): { text: string; icon: React.ElementType; className: string } => {
     switch (status) {
-        case 'Draft': return 'secondary';
-        case 'Pending Approval': return 'destructive';
-        case 'Bidding Open': return 'default';
-        case 'Operator Selected': return 'default';
-        case 'Confirmed': return 'default';
-        default: return 'secondary';
+        case 'Draft':
+        case 'New':
+        case 'Submitted':
+            return { text: 'Submitted', icon: FileText, className: 'text-gray-500 bg-gray-100' };
+        case 'Pending Approval':
+        case 'Reviewing':
+            return { text: 'Under Review', icon: Clock, className: 'text-amber-600 bg-amber-100' };
+        case 'Bidding Open':
+            return { text: 'Bidding Open', icon: Gavel, className: 'text-blue-600 bg-blue-100' };
+        case 'Operator Selected':
+            return { text: 'Operator Selected', icon: CheckCircle, className: 'text-indigo-600 bg-indigo-100' };
+        case 'Confirmed':
+            return { text: 'Confirmed', icon: CheckCircle, className: 'text-green-600 bg-green-100' };
+        case 'Cancelled':
+        case 'Expired':
+        case 'Closed':
+            return { text: 'Closed', icon: XCircle, className: 'text-gray-500 bg-gray-100' };
+        default:
+            return { text: status, icon: AlertTriangle, className: 'text-red-600 bg-red-100' };
     }
 }
+
+const TripCard = ({ rfq }: { rfq: CharterRFQ }) => {
+    const statusInfo = getStatusInfo(rfq.status);
+    return (
+        <Card className="flex flex-col">
+            <CardHeader>
+                <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{rfq.departure} <ArrowRight className="inline h-4 w-4 mx-1" /> {rfq.arrival}</CardTitle>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                        <Button aria-haspopup="true" size="icon" variant="ghost" className="h-8 w-8 -mt-2 -mr-2">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                        </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem>Compare Quotations</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+                <CardDescription className="font-code text-xs">{rfq.id}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-grow space-y-3 text-sm">
+                <div className="flex items-center text-muted-foreground">
+                    <Plane className="mr-2 h-4 w-4" />
+                    <span>{new Date(rfq.departureDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                </div>
+                 <div className="flex items-center text-muted-foreground">
+                    {rfq.hotelRequired ? <Hotel className="mr-2 h-4 w-4 text-blue-500" /> : <Hotel className="mr-2 h-4 w-4" /> }
+                    <span>{rfq.hotelRequired ? 'Hotel stay requested' : 'No hotel requested'}</span>
+                </div>
+            </CardContent>
+            <CardFooter>
+                 <Badge className={cn("w-full justify-center", statusInfo.className)}>
+                    <statusInfo.icon className="mr-2 h-4 w-4"/>
+                    {statusInfo.text}
+                </Badge>
+            </CardFooter>
+        </Card>
+    );
+};
 
 export function CustomerDashboard() {
   const { user, isLoading: isUserLoading } = useUser();
   const firestore = useFirestore();
-  const { toast } = useToast();
 
   const rfqsQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
@@ -40,189 +92,38 @@ export function CustomerDashboard() {
   }, [firestore, user]);
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
-  const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    // In demo mode, we fetch all and filter client-side.
-    return query(collection(firestore, 'emptyLegs'));
-  }, [firestore]);
-  const { data: allEmptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
+  const isLoading = isUserLoading || rfqsLoading;
 
-  const isLoading = isUserLoading || rfqsLoading || emptyLegsLoading;
-
-  // Client-side filtering for demo mode to show only approved legs
-  const approvedEmptyLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved');
-
-  const stats = {
-    active: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
-    completed: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
-    emptyLegs: approvedEmptyLegs?.length ?? 0,
-    total: rfqs?.length ?? 0,
-  }
-
-  const confirmedTrips = rfqs?.filter(r => r.status === 'Confirmed') ?? [];
-
-  const handleRequestHotel = (rfqId: string) => {
-    toast({
-        title: "Hotel Accommodation Request Sent",
-        description: `Your request for trip ${rfqId} has been sent to partner hotels for confirmation.`,
-    });
-  };
-
-  const handleRequestSeats = (legId: string) => {
-    toast({
-        title: "Seat Allocation Request Sent",
-        description: `Your request for seats on flight ${legId} is subject to operator confirmation.`,
-    });
-  };
-  
   return (
     <>
-      <PageHeader title="Customer Dashboard" description="Manage your charter requests and view their status.">
+      <PageHeader title="My Trips" description="Manage your flight requests and view their status.">
         <CreateRfqDialog />
       </PageHeader>
       
-      <div className="grid gap-6">
-        <StatsGrid>
-            <StatsCard title="Total RFQs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.total.toString()} icon={FileText} description="All requests submitted" />
-            <StatsCard title="Active Bidding" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.active.toString()} icon={Clock} description="RFQs currently open for bids" />
-            <StatsCard title="Available Empty Legs" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.emptyLegs.toString()} icon={Plane} description="Available one-way flights for seat allocation" />
-            <StatsCard title="Confirmed Trips" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.completed.toString()} icon={CheckCircle} description="Successfully confirmed charters" />
-        </StatsGrid>
-
-        <Card>
-            <CardHeader>
-            <CardTitle>My Charter RFQs</CardTitle>
-            <CardDescription>
-                A list of your recent Requests for Quotation and their status.
-            </CardDescription>
-            </CardHeader>
-            <CardContent>
-                {isLoading ? <Skeleton className="h-40 w-full" /> : (
-                <Table>
-                    <TableHeader>
-                    <TableRow>
-                        <TableHead>RFQ ID</TableHead>
-                        <TableHead>Route</TableHead>
-                        <TableHead>Departure Date</TableHead>
-                        <TableHead>PAX</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Quotations</TableHead>
-                        <TableHead>
-                        <span className="sr-only">Actions</span>
-                        </TableHead>
-                    </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                    {rfqs?.map((rfq: CharterRFQ) => (
-                        <TableRow key={rfq.id}>
-                            <TableCell className="font-medium font-code">{rfq.id}</TableCell>
-                            <TableCell>{rfq.departure} to {rfq.arrival}</TableCell>
-                            <TableCell>{rfq.departureDate}</TableCell>
-                            <TableCell>{rfq.pax}</TableCell>
-                            <TableCell>
-                                <Badge variant={getStatusVariant(rfq.status)}>
-                                    {rfq.status}
-                                </Badge>
-                            </TableCell>
-                            <TableCell>{rfq.bidsCount}</TableCell>
-                            <TableCell>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
-                                    </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                                    <DropdownMenuItem>Compare Quotations</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                    </TableBody>
-                </Table>
-                )}
-            </CardContent>
-        </Card>
-        
-        {confirmedTrips.length > 0 && (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Confirmed Trips & Ancillary Services</CardTitle>
-                    <CardDescription>
-                        Your trips are confirmed. You can now request linked services like accommodation.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Trip ID</TableHead>
-                                <TableHead>Route</TableHead>
-                                <TableHead>Departure Date</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {confirmedTrips.map((trip: CharterRFQ) => (
-                                <TableRow key={trip.id}>
-                                    <TableCell className="font-medium font-code">{trip.id}</TableCell>
-                                    <TableCell>{trip.departure} to {trip.arrival}</TableCell>
-                                    <TableCell>{trip.departureDate}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Button size="sm" variant="outline" onClick={() => handleRequestHotel(trip.id)}>
-                                            <Hotel className="mr-2 h-4 w-4" />
-                                            Request Accommodation
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-        )}
-
-        {approvedEmptyLegs && approvedEmptyLegs.length > 0 && (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Available Empty Legs</CardTitle>
-                    <CardDescription>
-                        One-way flights available. Request seats subject to operator confirmation.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Flight ID</TableHead>
-                                <TableHead>Route</TableHead>
-                                <TableHead>Departure</TableHead>
-                                <TableHead>Available Seats</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {approvedEmptyLegs.map((leg: EmptyLeg) => (
-                                <TableRow key={leg.id}>
-                                    <TableCell className="font-medium font-code">{leg.id}</TableCell>
-                                    <TableCell>{leg.departure} to {leg.arrival}</TableCell>
-                                    <TableCell>{new Date(leg.departureTime).toLocaleString()}</TableCell>
-                                    <TableCell className="font-bold text-center">{leg.availableSeats}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Button size="sm" onClick={() => handleRequestSeats(leg.id)}>Request Seat Allocation</Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full" />
+        </div>
+      ) : (
+        <>
+            {rfqs && rfqs.length > 0 ? (
+                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {rfqs.map(rfq => <TripCard key={rfq.id} rfq={rfq} />)}
+                </div>
+            ) : (
+                <div className="text-center py-20 border-2 border-dashed rounded-lg">
+                    <FileText className="mx-auto h-12 w-12 text-muted-foreground"/>
+                    <h3 className="mt-4 text-lg font-semibold">No Trips Requested Yet</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">Get started by creating your first flight request.</p>
+                    <div className="mt-6">
+                        <CreateRfqDialog />
+                    </div>
+                </div>
+            )}
+        </>
+      )}
     </>
   );
 }

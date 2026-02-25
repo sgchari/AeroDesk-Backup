@@ -1,0 +1,89 @@
+'use client';
+
+import { PageHeader } from "@/components/dashboard/shared/page-header";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query } from "firebase/firestore";
+import type { EmptyLeg } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plane, Users, Calendar } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+
+const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
+    const { toast } = useToast();
+    const handleRequestSeats = (legId: string) => {
+        toast({
+            title: "Seat Allocation Request Sent",
+            description: `Your request for seats on flight ${legId} is subject to operator confirmation.`,
+        });
+    };
+
+    return (
+        <Card className="flex flex-col">
+            <CardHeader>
+                <CardDescription className="font-code">{leg.aircraftName || leg.aircraftId}</CardDescription>
+                <CardTitle>{leg.departure} to {leg.arrival}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow space-y-3">
+                 <div className="flex items-center text-sm text-muted-foreground">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    <span>{new Date(leg.departureTime).toLocaleString()}</span>
+                </div>
+                <div className="flex items-center text-sm text-muted-foreground">
+                    <Users className="mr-2 h-4 w-4" />
+                    <span>{leg.availableSeats} Seats Available</span>
+                </div>
+                {/* Mock tag for demo */}
+                <Badge variant="secondary">Popular Sector</Badge>
+            </CardContent>
+            <CardFooter>
+                <Button className="w-full" onClick={() => handleRequestSeats(leg.id)}>Request Seat Access</Button>
+            </CardFooter>
+        </Card>
+    );
+};
+
+
+export default function AvailableJetSeatsPage() {
+    const firestore = useFirestore();
+    const emptyLegsQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        // For demo mode, we fetch all and filter on the client.
+        return query(collection(firestore, 'emptyLegs'));
+    }, [firestore]);
+    const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
+
+    const availableLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved' || leg.status === 'Published');
+
+    return (
+        <>
+            <PageHeader
+                title="Available Jet Seats"
+                description="Explore one-way empty leg flights. Seat requests are subject to operator confirmation."
+            />
+            {isLoading ? (
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <Skeleton className="h-64 w-full" />
+                    <Skeleton className="h-64 w-full" />
+                    <Skeleton className="h-64 w-full" />
+                </div>
+            ) : (
+                <>
+                    {availableLegs && availableLegs.length > 0 ? (
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {availableLegs.map(leg => (
+                                <EmptyLegCard key={leg.id} leg={leg} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                             <p className="text-muted-foreground">There are currently no empty leg opportunities available.</p>
+                        </div>
+                    )}
+                </>
+            )}
+        </>
+    );
+}

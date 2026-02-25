@@ -79,6 +79,7 @@ export type CharterRFQ = {
   businessPurpose?: string;
   costCenter?: string;
   company?: string;
+  hotelRequired?: boolean;
 };
 
 export type Quotation = {

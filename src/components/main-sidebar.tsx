@@ -11,7 +11,8 @@ import {
   BarChart2,
   Settings,
   GanttChartSquare,
-  CreditCard
+  CreditCard,
+  LifeBuoy
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -24,7 +25,9 @@ import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMen
 const navItems = {
   Customer: [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/charter-rfq', label: 'My Charter RFQs', icon: FileText, color: 'text-blue-500' },
+    { href: '/dashboard/charter-rfq', label: 'My Trips', icon: FileText, color: 'text-blue-500' },
+    { href: '/dashboard/customer/empty-legs', label: 'Available Jet Seats', icon: Plane, color: 'text-green-500' },
+    { href: '#', label: 'Support', icon: LifeBuoy, color: 'text-gray-500' },
   ],
   Operator: [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },

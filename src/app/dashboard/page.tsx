@@ -2,7 +2,6 @@
 'use client';
 
 import { useUser } from '@/hooks/use-user';
-import { CustomerDashboard } from '@/components/dashboard/customer-dashboard';
 import { OperatorDashboard } from '@/components/dashboard/operator-dashboard';
 import { AdminDashboard } from './admin-dashboard';
 import { CTDDashboard } from '@/components/dashboard/ctd-dashboard';
@@ -12,6 +11,78 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from "@/components/dashboard/shared/page-header";
+import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { ArrowRight, Plane, Armchair, Calendar, LifeBuoy } from "lucide-react";
+import Link from "next/link";
+
+const quickLinks = [
+    {
+        title: "Charter a Flight",
+        description: "Request a private flight for any journey.",
+        icon: Plane,
+        href: "/dashboard/charter-rfq",
+        cta: "New Request"
+    },
+    {
+        title: "Available Jet Seats",
+        description: "Explore and request seats on empty leg flights.",
+        icon: Armchair,
+        href: "/dashboard/customer/empty-legs",
+        cta: "View Seats"
+    },
+    {
+        title: "Multi-City Journey",
+        description: "Plan a complex trip with multiple stops.",
+        icon: Calendar,
+        href: "/dashboard/charter-rfq",
+        cta: "Plan Journey"
+    },
+    {
+        title: "Support & Concierge",
+        description: "Contact our team for assistance.",
+        icon: LifeBuoy,
+        href: "#",
+        cta: "Get Help"
+    }
+];
+
+function CustomerGateway() {
+    return (
+        <>
+            <PageHeader 
+                title="Fly Without Convention"
+                description="Your private aviation journey, perfectly coordinated. What would you like to do today?"
+            >
+                <CreateRfqDialog />
+            </PageHeader>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {quickLinks.map(link => (
+                    <Card key={link.title} className="group hover:border-primary transition-colors">
+                        <CardHeader className="flex-row items-center gap-4 space-y-0">
+                            <div className="p-3 bg-muted rounded-lg">
+                                <link.icon className="h-6 w-6 text-muted-foreground" />
+                            </div>
+                            <div>
+                                <CardTitle>{link.title}</CardTitle>
+                                <CardDescription>{link.description}</CardDescription>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                             <Button asChild variant="link" className="p-0">
+                                <Link href={link.href}>
+                                    {link.cta}
+                                    <ArrowRight className="ml-2 h-4 w-4"/>
+                                </Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        </>
+    )
+}
 
 export default function DashboardPage() {
   const { user, isLoading, error } = useUser();
@@ -29,7 +100,7 @@ export default function DashboardPage() {
     if (!user) return null;
     switch (user.role) {
       case 'Customer':
-        return <CustomerDashboard />;
+        return <CustomerGateway />;
       case 'Operator':
         return <OperatorDashboard />;
       case 'Admin':

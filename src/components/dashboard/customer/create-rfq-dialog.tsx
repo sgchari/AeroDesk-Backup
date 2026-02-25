@@ -39,7 +39,8 @@ import { z } from "zod";
 import { useUser } from "@/hooks/use-user";
 import { addDocumentNonBlocking, useFirestore } from "@/firebase";
 import { collection } from "firebase/firestore";
-import { CharterRFQ } from "@/lib/types";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const baseRfqSchema = z.object({
   tripType: z.enum(["Onward", "Return", "Multi-City"], { required_error: "Trip type is required." }),
@@ -53,6 +54,7 @@ const baseRfqSchema = z.object({
   aircraftType: z.string().min(1, "Aircraft type is required."),
   catering: z.string().optional(),
   specialRequirements: z.string().optional(),
+  hotelRequired: z.boolean().default(false).optional(),
 });
 
 const ctdRfqSchema = baseRfqSchema.extend({
@@ -95,6 +97,7 @@ export function CreateRfqDialog() {
       aircraftType: "Any Light Jet",
       catering: "",
       specialRequirements: "",
+      hotelRequired: false,
       ...(isCtdUser ? { businessPurpose: "", costCenter: "" } : {}),
     },
   });
@@ -131,6 +134,7 @@ export function CreateRfqDialog() {
         ...(data.returnDate && { returnDate: data.returnDate }),
         ...(data.catering && { catering: data.catering }),
         ...(data.specialRequirements && { specialRequirements: data.specialRequirements }),
+        ...(data.hotelRequired && { hotelRequired: data.hotelRequired }),
         ...(isCtdUser && { businessPurpose: data.businessPurpose, costCenter: data.costCenter, company: user.company }),
     });
     
@@ -148,14 +152,14 @@ export function CreateRfqDialog() {
       <DialogTrigger asChild>
         <Button>
           <FilePlus className="mr-2 h-4 w-4" />
-          Create Charter RFQ
+          Request a Flight
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle>New Charter Request for Quotation</DialogTitle>
+          <DialogTitle>Request a Flight</DialogTitle>
           <DialogDescription>
-            Complete the form to generate an RFQ. This will be sent to verified operators for quotations.
+            Let us know your journey details and we will coordinate with our network of operators.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -165,7 +169,7 @@ export function CreateRfqDialog() {
                 name="tripType"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Trip Type</FormLabel>
+                    <FormLabel>Journey Profile</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                         <SelectTrigger>
@@ -173,7 +177,7 @@ export function CreateRfqDialog() {
                         </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                        <SelectItem value="Onward">Onward</SelectItem>
+                        <SelectItem value="Onward">One-Way</SelectItem>
                         <SelectItem value="Return">Return</SelectItem>
                         <SelectItem value="Multi-City">Multi-City</SelectItem>
                         </SelectContent>
@@ -218,7 +222,7 @@ export function CreateRfqDialog() {
                 name="departure"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Departure</FormLabel>
+                    <FormLabel>From</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Mumbai (VABB)" {...field} />
                     </FormControl>
@@ -231,7 +235,7 @@ export function CreateRfqDialog() {
                 name="arrival"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Arrival</FormLabel>
+                    <FormLabel>To</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Delhi (VIDP)" {...field} />
                     </FormControl>
@@ -276,7 +280,7 @@ export function CreateRfqDialog() {
                     name="pax"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Passengers</FormLabel>
+                        <FormLabel>Number of Guests</FormLabel>
                         <FormControl>
                         <Input type="number" min="1" {...field} />
                         </FormControl>
@@ -289,7 +293,7 @@ export function CreateRfqDialog() {
                     name="aircraftType"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Aircraft Preference</FormLabel>
+                        <FormLabel>Aircraft Preference (Optional)</FormLabel>
                         <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
@@ -318,9 +322,9 @@ export function CreateRfqDialog() {
               name="catering"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Catering Request</FormLabel>
+                  <FormLabel>Catering & Special Requests</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="e.g., Vegetarian meals, specific beverages..." {...field} />
+                    <Textarea placeholder="e.g., Vegetarian meals, specific beverages, wheelchair access..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -332,9 +336,9 @@ export function CreateRfqDialog() {
               name="specialRequirements"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Special Requirements</FormLabel>
+                  <FormLabel>Additional Notes</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="e.g., Wheelchair access, medical equipment, pet travel. For Multi-City, please detail your itinerary here." {...field} />
+                    <Textarea placeholder="e.g., Pet travel, medical equipment. For Multi-City, please detail your full itinerary here." {...field} />
                   </FormControl>
                    {tripType === 'Multi-City' && <FormDescription>Please provide the full itinerary for your multi-city trip here.</FormDescription>}
                   <FormMessage />
@@ -342,8 +346,32 @@ export function CreateRfqDialog() {
               )}
             />
 
+            <FormField
+                control={form.control}
+                name="hotelRequired"
+                render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                            <FormLabel className="text-base">
+                            Destination Stay
+                            </FormLabel>
+                            <FormDescription>
+                            Would you like us to arrange a hotel stay at your destination?
+                            </FormDescription>
+                        </div>
+                        <FormControl>
+                            <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}
+            />
+
+
             <DialogFooter className="pt-4">
-                <Button type="submit">Submit RFQ</Button>
+                <Button type="submit">Submit Flight Request</Button>
             </DialogFooter>
           </form>
         </Form>
