@@ -7,7 +7,7 @@ import {
   DocumentData,
   FirestoreError,
 } from 'firebase/firestore';
-import { mockUsers } from '@/lib/data';
+import { mockStore } from '@/lib/mock-store';
 
 /** Utility type to add an 'id' field to a given type T. */
 type WithId<T> = T & { id: string };
@@ -38,7 +38,7 @@ export function useDoc<T = any>(
   const [data, setData] = useState<WithId<T> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
-  const isDemoMode = !memoizedDocRef?.firestore?.app;
+  const isDemoMode = !memoizedDocRef?.firestore?.app || memoizedDocRef?.firestore?._isMock;
 
   useEffect(() => {
     if (!isDemoMode) {
@@ -58,27 +58,23 @@ export function useDoc<T = any>(
         return;
     }
     
-    // Simulate async data fetching
-    setTimeout(() => {
-        const pathSegments = path.split('/');
-        const collection = pathSegments[0];
-        const docId = pathSegments[1];
-
-        let resultData: any = null;
-
-        if (collection === 'users' || collection === 'platformAdmins' || collection === 'customers' || collection === 'operators' || collection === 'distributors' || collection === 'hotelPartners') {
-           resultData = mockUsers.find(u => u.id === docId);
-        } else if (collection === 'corporateTravelDesks' && pathSegments[2] === 'users') {
-            const ctdUserId = pathSegments[3];
-            resultData = mockUsers.find(u => u.id === ctdUserId);
+    const fetchData = () => {
+        try {
+            const docData = mockStore.getDoc(path);
+            setData(docData as WithId<T> | null);
+        } catch (e: any) {
+            setError(e);
+        } finally {
+            setIsLoading(false);
         }
-        else {
-             console.warn(`useDoc: No mock data handler for path: ${path}`);
-        }
-        
-        setData(resultData as WithId<T> | null);
-        setIsLoading(false);
-    }, 300);
+    };
+    
+    fetchData(); // Initial fetch
+
+    const unsubscribe = mockStore.subscribe(fetchData);
+    
+    return () => unsubscribe();
+
 
   }, [memoizedDocRef, isDemoMode, demoPath]);
 

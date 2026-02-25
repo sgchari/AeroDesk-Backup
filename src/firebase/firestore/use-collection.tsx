@@ -8,7 +8,7 @@ import {
   FirestoreError,
   CollectionReference,
 } from 'firebase/firestore';
-import { getMockDataForRole, mockUsers } from '@/lib/data';
+import { mockStore } from '@/lib/mock-store';
 import { useUser } from '@/hooks/use-user';
 import type { UserRole } from '@/lib/types';
 
@@ -43,7 +43,7 @@ export function useCollection<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   const { user } = useUser();
-  const isDemoMode = !memoizedTargetRefOrQuery?.firestore?.app;
+  const isDemoMode = !memoizedTargetRefOrQuery?.firestore?.app || memoizedTargetRefOrQuery?.firestore?._isMock;
 
   useEffect(() => {
     // If not in demo mode, use live data (currently not implemented in this branch)
@@ -54,92 +54,38 @@ export function useCollection<T = any>(
     }
     
     // --- DEMO MODE LOGIC ---
-    if (!user) {
+    const path = demoPath;
+    if (!path) {
         setIsLoading(false);
         return;
     }
     
-    // Simulate async data fetching
-    setTimeout(() => {
-        const path = demoPath;
-        if (!path) {
-            console.warn(`useCollection called in demo mode without a demoPath.`);
+    const fetchData = () => {
+        if (!user) {
             setIsLoading(false);
+            setData(null);
             return;
         }
 
-        const mockData = getMockDataForRole(user.role as UserRole);
-
-        let resultData: any[] = [];
-        
-        // Handle nested collections first
-        if (path.startsWith('operators/') && path.endsWith('/aircrafts')) {
-            const operatorId = path.split('/')[1];
-            resultData = mockData.aircrafts.filter(ac => ac.operatorId === operatorId);
-        } else if (path.startsWith('charterRFQs/') && path.endsWith('/quotations')) {
-            const rfqId = path.split('/')[1];
-            if (rfqId === 'all') { // Handle the dashboard case
-                resultData = mockData.quotations;
-            } else {
-                resultData = mockData.quotations.filter(q => q.rfqId === rfqId);
-            }
-        } else if (path.startsWith('emptyLegs/') && path.endsWith('/seatAllocationRequests')) {
-            const emptyLegId = path.split('/')[1];
-            resultData = mockData.seatAllocationRequests.filter(sar => sar.emptyLegId === emptyLegId);
-        } else if (path.startsWith('hotelPartners/') && path.endsWith('/properties')) {
-            const hotelPartnerId = path.split('/')[1];
-            resultData = mockData.properties.filter(p => p.hotelPartnerId === hotelPartnerId);
-        } else if (path.includes('/properties/') && path.endsWith('/roomCategories')) {
-            const propertyId = path.split('/')[3];
-            resultData = mockData.roomCategories.filter(rc => rc.propertyId === propertyId);
-        } else if (path.startsWith('corporateTravelDesks/') && path.endsWith('/users')) {
-            const ctdId = path.split('/')[1];
-            resultData = mockUsers.filter(u => u.ctdId === ctdId);
+        try {
+            const mockData = mockStore.getCollection(path, user);
+            setData(mockData as WithId<T>[]);
+        } catch (e: any) {
+            setError(e);
+        } finally {
+            setIsLoading(false);
         }
-        // Handle root collections
-        else {
-            const collectionName = path.split('/')[0];
-            switch(collectionName) {
-                case 'charterRFQs':
-                    resultData = mockData.rfqs.filter(rfq => (user.role === 'Customer' && rfq.customerId === user.id) || (user.role === 'Requester' && rfq.requesterExternalAuthId === user.id) || user.role === 'Operator' || user.role === 'Admin' || (user.role === 'CTD Admin' && rfq.company === user.company));
-                    break;
-                case 'emptyLegs':
-                     resultData = mockData.emptyLegs.filter(leg => (user.role === 'Operator' && leg.operatorId === user.id) || (user.role !== 'Operator'));
-                    break;
-                case 'auditTrails':
-                    resultData = mockData.auditLogs;
-                    break;
-                case 'operators':
-                    resultData = mockData.operators;
-                    break;
-                case 'customers':
-                    resultData = mockUsers.filter(u => u.role === 'Customer');
-                    break;
-                case 'platformAdmins':
-                    resultData = mockUsers.filter(u => u.role === 'Admin');
-                    break;
-                case 'distributors':
-                     resultData = mockUsers.filter(u => u.role === 'Authorized Distributor');
-                    break;
-                case 'hotelPartners':
-                     resultData = mockUsers.filter(u => u.role === 'Hotel Partner');
-                    break;
-                case 'corporateTravelDesks':
-                    resultData = mockData.corporateTravelDesks;
-                    break;
-                 case 'accommodationRequests':
-                    resultData = mockData.accommodationRequests.filter(req => req.hotelPartnerId === user.id);
-                    break;
-                default:
-                    console.warn(`useCollection: No mock data handler for path: ${path}`);
-            }
-        }
-        
-        setData(resultData as WithId<T>[]);
-        setIsLoading(false);
-    }, 500); // 500ms delay to simulate network
+    };
+    
+    fetchData(); // Initial fetch
 
-  }, [memoizedTargetRefOrQuery, user, isDemoMode, demoPath]);
+    // Subscribe to changes in the mock store
+    const unsubscribe = mockStore.subscribe(fetchData);
+
+    // Unsubscribe on cleanup
+    return () => unsubscribe();
+
+  }, [user, isDemoMode, demoPath]);
 
   return { data, isLoading, error };
 }

@@ -8,13 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking } from "@/firebase";
+import { useCollection, useFirestore, updateDocumentNonBlocking } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Operator } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { collection, doc } from "firebase/firestore";
 import { MoreHorizontal } from "lucide-react";
-import React from "react";
 
 const getStatusVariant = (status: Operator['status']) => {
     switch (status) {
@@ -29,21 +27,18 @@ export default function OperatorManagementPage() {
     const firestore = useFirestore();
     const { toast } = useToast();
     
-    const operatorsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return collection(firestore, 'operators');
-    }, [firestore]);
-    
-    const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery, 'operators');
+    const { data: operators, isLoading } = useCollection<Operator>(
+        useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]), 
+        'operators'
+    );
 
     const handleUpdateStatus = (operatorId: string, status: Operator['status']) => {
-        if (!firestore) return;
+        if (!firestore) {
+            toast({ title: 'Error', description: 'Database service is not available.', variant: 'destructive'});
+            return;
+        }
         const operatorDocRef = doc(firestore, 'operators', operatorId);
         updateDocumentNonBlocking(operatorDocRef, { status });
-        toast({
-            title: "Operator Status Updated",
-            description: `The operator has been ${status.toLowerCase()}.`,
-        });
     };
 
     return (

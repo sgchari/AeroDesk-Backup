@@ -3,22 +3,25 @@
 
 import React, { type ReactNode } from 'react';
 import { FirebaseProvider } from '@/firebase/provider';
-// In demo mode, we don't initialize a live Firebase connection.
-// We pass null services to the provider.
 
 interface FirebaseClientProviderProps {
   children: ReactNode;
 }
 
-const DEMO_MODE = true;
+const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || true;
+
+// In demo mode, we need to provide a mock firestore object that can be identified.
+const mockFirestore = {
+  _isMock: true,
+  app: isDemoMode ? { name: '[DEMO]', automaticDataCollectionEnabled: false } : null,
+};
 
 export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
-  // In demo mode, the firebase services are not needed as data is mocked.
-  // We pass null to the provider to prevent initialization attempts.
   const services = {
     firebaseApp: null,
+    // Provide a mock firestore object in demo mode.
+    firestore: isDemoMode ? (mockFirestore as any) : null,
     auth: null,
-    firestore: null,
     storage: null,
   };
 

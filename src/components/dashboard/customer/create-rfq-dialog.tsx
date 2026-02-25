@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -101,12 +102,19 @@ export function CreateRfqDialog() {
   const tripType = form.watch("tripType");
 
   const onSubmit = (data: RfqFormValues) => {
-    if (!user || !firestore) {
-      toast({ title: 'Error', description: 'User or database not available.', variant: 'destructive'});
+    if (!user) {
+      toast({ title: 'Error', description: 'User not found.', variant: 'destructive'});
       return;
     }
+    
+    if (!firestore) {
+        toast({ title: 'Error', description: 'Database service is not available.', variant: 'destructive'});
+        return;
+    }
 
-    const rfqData: Omit<CharterRFQ, 'id'> = {
+    const rfqCollectionRef = collection(firestore, 'charterRFQs');
+
+    addDocumentNonBlocking(rfqCollectionRef, {
         customerId: user.id,
         requesterExternalAuthId: user.id,
         customerName: `${user.firstName} ${user.lastName}`,
@@ -123,20 +131,9 @@ export function CreateRfqDialog() {
         ...(data.returnDate && { returnDate: data.returnDate }),
         ...(data.catering && { catering: data.catering }),
         ...(data.specialRequirements && { specialRequirements: data.specialRequirements }),
-    };
-
-    if (isCtdUser) {
-        rfqData.businessPurpose = data.businessPurpose;
-        rfqData.costCenter = data.costCenter;
-        rfqData.company = user.company;
-    }
-    
-    addDocumentNonBlocking(collection(firestore, 'charterRFQs'), rfqData);
-    
-    toast({
-      title: "RFQ Submitted",
-      description: "Your Request for Quotation has been submitted.",
+        ...(isCtdUser && { businessPurpose: data.businessPurpose, costCenter: data.costCenter, company: user.company }),
     });
+    
     setOpen(false);
     form.reset();
   };

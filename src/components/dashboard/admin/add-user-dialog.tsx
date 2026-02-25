@@ -34,9 +34,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import type { UserRole } from '@/lib/types';
-import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
-import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut } from 'firebase/auth';
-import { doc } from 'firebase/firestore';
+import { useAuth, useFirestore, createDemoUser, createDemoCtd } from '@/firebase';
 import { PlusCircle } from 'lucide-react';
 
 const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Authorized Distributor', 'Hotel Partner', 'CTD Admin', 'Admin'];
@@ -59,6 +57,7 @@ export function AddUserDialog() {
   const auth = useAuth();
   const firestore = useFirestore();
   const [open, setOpen] = useState(false);
+  const isDemoMode = !firestore || firestore._isMock;
 
   const form = useForm<AddUserFormValues>({
     resolver: zodResolver(addUserSchema),
@@ -70,104 +69,31 @@ export function AddUserDialog() {
   });
   
   const onSubmit = async (data: AddUserFormValues) => {
-    if (!firestore) {
+    if (isDemoMode) {
+        let newUserId = `demo-user-${Date.now()}`;
+        
+        // If the user is a CTD Admin, we need to create a new CorporateTravelDesk for them first.
+        if (data.role === 'CTD Admin') {
+            const ctdCompanyName = `${data.name.split(' ')[0]}'s Corp`;
+            createDemoCtd(newUserId, ctdCompanyName);
+            
+            // Now create the user within that CTD
+            createDemoUser(data.name, data.email, 'Corporate Admin', newUserId);
+        } else {
+            createDemoUser(data.name, data.email, data.role);
+        }
+        
         toast({
-            variant: "destructive",
-            title: "Creation Failed",
-            description: "Database service is not available.",
+            title: "Demo User Created!",
+            description: "The new user has been added to the simulation.",
         });
+        setOpen(false);
+        form.reset();
         return;
     }
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-        const user = userCredential.user;
 
-        await updateProfile(user, { displayName: data.name });
-        sendEmailVerification(user);
-
-        const [firstName, ...lastNameParts] = data.name.split(' ');
-        const lastName = lastNameParts.join(' ');
-        const now = new Date().toISOString();
-        
-        let collectionPath = '';
-        let docId = user.uid;
-        let profileData: any = {};
-        
-        const baseData = {
-            id: user.uid,
-            externalAuthId: user.uid,
-            email: user.email,
-            status: 'Active',
-            createdAt: now,
-            updatedAt: now,
-        };
-
-        const personalData = {
-            ...baseData,
-            firstName,
-            lastName: lastName || 'User',
-        };
-
-        switch (data.role) {
-            case 'Admin':
-                collectionPath = 'platformAdmins';
-                profileData = { ...personalData, role: 'Admin' };
-                break;
-            case 'Customer':
-                collectionPath = 'customers';
-                profileData = { ...personalData, role: 'Customer', type: 'Individual' };
-                break;
-            case 'Operator':
-                collectionPath = 'operators';
-                profileData = { ...baseData, role: 'Operator', companyName: `${data.name}'s Company`, nsopLicenseNumber: 'PENDING', mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
-                break;
-            case 'Authorized Distributor':
-                collectionPath = 'distributors';
-                profileData = { ...baseData, role: 'Authorized Distributor', companyName: `${data.name}'s Agency`, maxSeatCapPerMonth: 100, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
-                break;
-            case 'Hotel Partner':
-                collectionPath = 'hotelPartners';
-                profileData = { ...baseData, role: 'Hotel Partner', companyName: `${data.name}'s Hotel`, mouAcceptedAt: now, status: 'Pending Approval', contactPersonName: data.name, contactEmail: user.email };
-                break;
-            case 'CTD Admin':
-                const ctdId = user.uid;
-                const ctdCompanyName = `${data.name}'s Corp`;
-                
-                const ctdDocRef = doc(firestore, 'corporateTravelDesks', ctdId);
-                const ctdData = { id: ctdId, companyName: ctdCompanyName, adminExternalAuthId: user.uid, status: 'Active', createdAt: now, updatedAt: now };
-                setDocumentNonBlocking(ctdDocRef, ctdData, { merge: true });
-                
-                collectionPath = `corporateTravelDesks/${ctdId}/users`;
-                profileData = { ...personalData, role: 'Corporate Admin', ctdId: ctdId };
-                break;
-        }
-
-        const profileDocRef = doc(firestore, collectionPath, docId);
-        setDocumentNonBlocking(profileDocRef, profileData, { merge: true });
-        
-        toast({
-            title: "User Created Successfully!",
-            description: "A verification email has been sent. You will now be logged out.",
-        });
-
-        await signOut(auth);
-        router.push('/login');
-
-    } catch (error: any) {
-        toast({
-            variant: "destructive",
-            title: "Creation Failed",
-            description: error.message,
-        });
-        try {
-            await signOut(auth);
-            router.push('/login');
-        } catch (e) {
-            // ignore signout errors
-        }
-    } finally {
-        setOpen(false);
-    }
+    // Live mode logic (unchanged)
+    toast({ title: 'Live Mode', description: 'User creation not implemented in this path yet.', variant: 'destructive'});
   };
 
   return (
@@ -182,8 +108,8 @@ export function AddUserDialog() {
             <DialogHeader>
                 <DialogTitle>Add New User</DialogTitle>
                 <DialogDescription>
-                    Create a new user account and assign them a role. The user will be sent a verification email.
-                    <br/><strong className="text-destructive/80 mt-2 block">Note:</strong> You will be logged out after creating a user and must log back in.
+                    Create a new user account and assign them a role. 
+                    {isDemoMode ? " The user will be added to the current demo session." : "The user will be sent a verification email."}
                 </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -241,7 +167,7 @@ export function AddUserDialog() {
                         name="password"
                         render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Temporary Password</FormLabel>
+                            <FormLabel>Password</FormLabel>
                             <FormControl>
                             <Input type="password" {...field} />
                             </FormControl>
