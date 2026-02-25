@@ -28,7 +28,7 @@ export default function BlogPage() {
 
   return (
     <div className="w-full">
-      {/* Fixed Homepage Background for consistency */}
+      {/* Fixed Background Layer */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
@@ -44,7 +44,7 @@ export default function BlogPage() {
         <main className="flex-1 py-12 md:py-16">
           <div className="container px-4">
             
-            {/* 2. Hero / Header Section */}
+            {/* Editorial Header */}
             <div className="mb-16 max-w-2xl">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4 font-headline">
                 Insights from Private Aviation & Travel Intelligence
@@ -54,7 +54,7 @@ export default function BlogPage() {
               </p>
             </div>
 
-            {/* 🥇 Featured Article Section */}
+            {/* Featured Article Section */}
             <section className="mb-20">
               <Card className="overflow-hidden border-white/10 bg-black/30 backdrop-blur-xl group hover:border-primary/50 transition-all duration-500">
                 <div className="grid md:grid-cols-2 gap-0">
@@ -92,7 +92,7 @@ export default function BlogPage() {
               </Card>
             </section>
 
-            {/* 🥉 Category / Topic Filter Bar */}
+            {/* Subtle Filter Bar */}
             <nav className="flex flex-wrap items-center gap-8 mb-12 border-b border-white/10 pb-6">
               {categories.map((cat) => (
                 <button
@@ -107,7 +107,7 @@ export default function BlogPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
               
-              {/* 🥈 Latest Articles Grid */}
+              {/* Latest Articles Grid */}
               <div className="lg:col-span-8">
                 <h3 className="text-xl font-semibold text-white mb-8 flex items-center gap-2">
                   <BookOpen className="h-5 w-5 text-accent" />
@@ -144,10 +144,9 @@ export default function BlogPage() {
                 </div>
               </div>
 
-              {/* 5. Sidebar */}
+              {/* Minimalist Sidebar */}
               <aside className="lg:col-span-4 space-y-12">
                 
-                {/* Search */}
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
                   <Input 
@@ -156,7 +155,6 @@ export default function BlogPage() {
                   />
                 </div>
 
-                {/* Popular Reads */}
                 <div className="space-y-6">
                   <h3 className="text-sm font-bold uppercase tracking-widest text-white/40 flex items-center gap-2">
                     <TrendingUp className="h-4 w-4" />
@@ -181,7 +179,6 @@ export default function BlogPage() {
                   </div>
                 </div>
 
-                {/* Newsletter */}
                 <Card className="border-white/10 bg-accent/5 backdrop-blur-xl p-6">
                   <div className="flex flex-col gap-4">
                     <div className="p-3 bg-accent/10 rounded-full w-fit">
@@ -206,7 +203,6 @@ export default function BlogPage() {
                   </div>
                 </Card>
 
-                {/* Featured Topics */}
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold uppercase tracking-widest text-white/40">
                     Featured Topics

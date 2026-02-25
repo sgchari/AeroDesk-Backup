@@ -10,31 +10,33 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
-import { Info, ShieldCheck, Zap, AlertCircle } from 'lucide-react';
+import { Info, ShieldCheck, Zap } from 'lucide-react';
 
 const operatorPositions: Record<string, { top: string; left: string }> = {
-    // North (Purple Zone)
+    // North
     'Delhi': { top: '22%', left: '48%' },
     'Chandigarh': { top: '16%', left: '46%' },
     'Lucknow': { top: '28%', left: '58%' },
     'Jaipur': { top: '30%', left: '42%' },
-    // West (Deep Blue Zone)
+    // West
     'Mumbai': { top: '58%', left: '32%' },
     'Ahmedabad': { top: '45%', left: '30%' },
     'Pune': { top: '62%', left: '36%' },
-    // South (Green Zone)
+    'Goa': { top: '72%', left: '38%' },
+    // South
     'Bengaluru': { top: '78%', left: '48%' },
     'Hyderabad': { top: '65%', left: '52%' },
     'Chennai': { top: '82%', left: '58%' },
     'Cochin': { top: '88%', left: '45%' },
-    // East (Cyan/Teal Zone)
+    // East
     'Kolkata': { top: '48%', left: '82%' },
     'Bhubaneswar': { top: '58%', left: '75%' },
-    // Central (Mid Blue Zone)
+    // Central
     'Bhopal': { top: '46%', left: '50%' },
     'Nagpur': { top: '55%', left: '55%' },
     'Indore': { top: '48%', left: '43%' },
-    // North East (Bright Cyan Zone)
+    'Raipur': { top: '52%', left: '62%' },
+    // North East
     'Guwahati': { top: '35%', left: '92%' },
 };
 
@@ -124,7 +126,7 @@ export default function OurNetworkPage() {
 
     return (
         <div className="w-full">
-            {/* Background Layer: Replicating Homepage style */}
+            {/* Background Layer: Consistent Homepage Atmosphere */}
             <div
                 className="fixed inset-0 z-0 bg-cover bg-center"
                 style={{
@@ -140,7 +142,7 @@ export default function OurNetworkPage() {
                 <main className="flex-1 relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
                     <div className="container relative z-10 max-w-6xl w-full h-[70vh] min-h-[500px]">
                         
-                        {/* Legend / Stats Panel - Frosted Effect */}
+                        {/* Legend / Stats Panel */}
                         <div className="absolute top-0 left-0 z-40 w-full sm:w-72 bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl p-5 shadow-2xl space-y-4">
                             <div className="space-y-1 border-b border-white/10 pb-3">
                                 <h2 className="text-white font-bold text-lg tracking-tight flex items-center gap-2">
@@ -179,69 +181,59 @@ export default function OurNetworkPage() {
                             </div>
                         </div>
 
-                        {/* Main Zonal Map SVG Container - Subtle Frosted Backdrop for the Map card */}
+                        {/* Zonal Map SVG Container */}
                         <div className="relative w-full h-full flex items-center justify-center bg-black/10 backdrop-blur-[2px] rounded-3xl border border-white/5 shadow-inner">
                             <svg viewBox="0 0 1000 800" className="w-full h-full drop-shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-                                <defs>
-                                    <filter id="glow">
-                                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                                        <feMerge>
-                                            <feMergeNode in="coloredBlur"/>
-                                            <feMergeNode in="SourceGraphic"/>
-                                        </feMerge>
-                                    </filter>
-                                </defs>
-
-                                {/* North Zone - Purple */}
+                                {/* North Zone */}
                                 <path 
                                     d="M250 50 L550 50 L650 350 L350 350 Z" 
-                                    fill="rgba(99, 102, 241, 0.35)" 
+                                    fill="rgba(99, 102, 241, 0.25)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
                                 
-                                {/* West Zone - Deep Blue */}
+                                {/* West Zone */}
                                 <path 
                                     d="M50 350 L350 350 L400 650 L50 750 Z" 
-                                    fill="rgba(37, 99, 235, 0.35)" 
+                                    fill="rgba(37, 99, 235, 0.25)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
 
-                                {/* East Zone - Cyan */}
+                                {/* East Zone */}
                                 <path 
                                     d="M650 350 L950 350 L900 550 L650 550 Z" 
-                                    fill="rgba(6, 182, 212, 0.35)" 
+                                    fill="rgba(6, 182, 212, 0.25)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
 
-                                {/* Central Zone - Mid Blue */}
+                                {/* Central Zone */}
                                 <path 
                                     d="M350 350 L650 350 L650 550 L400 550 Z" 
-                                    fill="rgba(59, 130, 246, 0.25)" 
+                                    fill="rgba(59, 130, 246, 0.15)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
 
-                                {/* South Zone - Greenish */}
+                                {/* South Zone */}
                                 <path 
                                     d="M400 550 L650 550 L600 780 L450 780 Z" 
-                                    fill="rgba(16, 185, 129, 0.35)" 
+                                    fill="rgba(16, 185, 129, 0.25)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
 
-                                {/* North East - Bright Cyan */}
+                                {/* North East Zone */}
                                 <path 
                                     d="M750 250 L980 250 L980 450 L850 450 Z" 
-                                    fill="rgba(34, 211, 238, 0.4)" 
+                                    fill="rgba(34, 211, 238, 0.3)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
                             </svg>
 
-                            {/* Map Labels (Floating HTML) */}
+                            {/* Floating HTML Labels */}
                             <div className="absolute top-[15%] left-[50%] -translate-x-1/2 pointer-events-none">
                                 <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector North</span>
                             </div>
@@ -258,7 +250,7 @@ export default function OurNetworkPage() {
                                 <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector South</span>
                             </div>
 
-                            {/* Operator Markers Overlay */}
+                            {/* Operator Markers */}
                             {isLoading ? (
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <Skeleton className="w-32 h-32 rounded-full bg-white/5" />

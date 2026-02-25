@@ -14,7 +14,7 @@ import { Download, ExternalLink, FileText, Share2, Mail, Newspaper, Image as Ima
 export default function MediaPage() {
   return (
     <div className="w-full">
-      {/* Fixed Background - Consistent with Homepage */}
+      {/* Background Layer */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
@@ -30,8 +30,8 @@ export default function MediaPage() {
         <main className="flex-1 py-12 md:py-16">
           <div className="container px-4">
             
-            {/* 1. Media Page Header / Hero Section */}
-            <div className="mb-16 max-w-2xl">
+            {/* Corporate Header */}
+            <div className="mb-16 max-w-2xl text-left">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4 font-headline">
                 Media & Announcements
               </h1>
@@ -42,10 +42,10 @@ export default function MediaPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
               
-              {/* Left Column: Announcements & Coverage */}
+              {/* Primary Content Column */}
               <div className="lg:col-span-8 space-y-16">
                 
-                {/* 🥇 Press Releases / Announcements Section */}
+                {/* Press Releases Section */}
                 <section>
                   <h2 className="text-xl font-bold text-white mb-8 flex items-center gap-2">
                     <Newspaper className="h-5 w-5 text-accent" />
@@ -83,7 +83,7 @@ export default function MediaPage() {
                   </div>
                 </section>
 
-                {/* 🥈 Brand & Platform Coverage Section */}
+                {/* Institutional Visibility Section */}
                 <section>
                   <h2 className="text-xl font-bold text-white mb-8 flex items-center gap-2">
                     <Share2 className="h-5 w-5 text-accent" />
@@ -110,7 +110,7 @@ export default function MediaPage() {
                   </div>
                 </section>
 
-                {/* 🥉 Visual Media / Brand Assets Section */}
+                {/* Curated Visual Assets Section */}
                 <section>
                   <h2 className="text-xl font-bold text-white mb-8 flex items-center gap-2">
                     <ImageIcon className="h-5 w-5 text-accent" />
@@ -136,10 +136,9 @@ export default function MediaPage() {
 
               </div>
 
-              {/* Right Column: Resource Kit & Contact */}
+              {/* Resource & Contact Sidebar */}
               <aside className="lg:col-span-4 space-y-8">
                 
-                {/* Media Resource Kit */}
                 <Card className="border-accent/20 bg-accent/5 backdrop-blur-xl">
                   <CardHeader>
                     <CardTitle className="text-lg text-white">Resource Kit</CardTitle>
@@ -165,7 +164,6 @@ export default function MediaPage() {
                   </CardContent>
                 </Card>
 
-                {/* Press Contact */}
                 <Card className="border-white/10 bg-black/30 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="text-lg text-white">Press Contact</CardTitle>

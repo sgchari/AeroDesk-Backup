@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -7,7 +8,7 @@ import type { EmptyLeg } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Calendar } from "lucide-react";
+import { Users, Calendar, Plane } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 
@@ -21,26 +22,38 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
     };
 
     return (
-        <Card className="bg-card flex flex-col">
-            <CardHeader>
-                <CardDescription>{leg.operatorName || 'Private Operator'}</CardDescription>
-                <CardTitle>{leg.departure} to {leg.arrival}</CardTitle>
-                <CardDescription className="font-code pt-1">{leg.aircraftName || leg.aircraftId}</CardDescription>
+        <Card className="bg-card flex flex-col hover:border-primary/50 transition-colors">
+            <CardHeader className="pb-3">
+                <div className="flex justify-between items-start gap-2">
+                    <div className="space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
+                            {leg.operatorName || 'Private Operator'}
+                        </span>
+                        <CardTitle className="text-base line-clamp-1">{leg.departure} to {leg.arrival}</CardTitle>
+                    </div>
+                    <Badge variant="outline" className="font-code text-[10px] shrink-0">
+                        {leg.aircraftName || 'Jet'}
+                    </Badge>
+                </div>
             </CardHeader>
             <CardContent className="flex-grow space-y-3">
                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    <span>{new Date(leg.departureTime).toLocaleString()}</span>
+                    <Calendar className="mr-2 h-4 w-4 text-accent/60" />
+                    <span>{new Date(leg.departureTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                 </div>
                 <div className="flex items-center text-sm text-muted-foreground">
-                    <Users className="mr-2 h-4 w-4" />
+                    <Users className="mr-2 h-4 w-4 text-accent/60" />
                     <span>{leg.availableSeats} Seats Available</span>
                 </div>
-                {/* Mock tag for demo */}
-                <Badge variant="secondary">Popular Sector</Badge>
+                <div className="flex items-center text-sm text-muted-foreground">
+                    <Plane className="mr-2 h-4 w-4 text-accent/60" />
+                    <span className="font-code text-xs uppercase tracking-tighter">{leg.id}</span>
+                </div>
             </CardContent>
-            <CardFooter>
-                <Button className="w-full" onClick={() => handleRequestSeats(leg.id)}>Request Seat Access</Button>
+            <CardFooter className="pt-0">
+                <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => handleRequestSeats(leg.id)}>
+                    Request Seat Access
+                </Button>
             </CardFooter>
         </Card>
     );
@@ -51,7 +64,6 @@ export default function AvailableJetSeatsPage() {
     const firestore = useFirestore();
     const emptyLegsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        // For demo mode, we fetch all and filter on the client.
         return query(collection(firestore, 'emptyLegs'));
     }, [firestore]);
     const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
@@ -62,10 +74,11 @@ export default function AvailableJetSeatsPage() {
         <>
             <PageHeader
                 title="Available Jet Seats"
-                description="Explore one-way empty leg flights. Seat requests are subject to operator confirmation."
+                description="Explore exclusive empty leg opportunities. Seat allocations are managed via authorized distributors or direct request."
             />
             {isLoading ? (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <Skeleton className="h-64 w-full" />
                     <Skeleton className="h-64 w-full" />
                     <Skeleton className="h-64 w-full" />
                     <Skeleton className="h-64 w-full" />
@@ -79,8 +92,8 @@ export default function AvailableJetSeatsPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                             <p className="text-muted-foreground">There are currently no empty leg opportunities available.</p>
+                        <div className="text-center py-20 border-2 border-dashed rounded-lg bg-card/50">
+                             <p className="text-muted-foreground">There are currently no active empty leg opportunities synchronized.</p>
                         </div>
                     )}
                 </>
