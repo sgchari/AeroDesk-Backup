@@ -94,7 +94,7 @@ export default function ProfilePage() {
 
 
   const onSubmit = async (data: ProfileFormValues) => {
-    if (!user || !firestore || !auth.currentUser) {
+    if (!user || !firestore || !auth?.currentUser) {
       toast({ title: 'Error', description: 'You must be logged in to update your profile.', variant: 'destructive' });
       return;
     }
@@ -159,7 +159,7 @@ export default function ProfilePage() {
     return (
       <div className="space-y-4">
         <PageHeader title="My Profile" description="Manage your personal and contact information." />
-        <Card className="bg-background">
+        <Card className="bg-card">
           <CardHeader>
             <Skeleton className="h-8 w-48" />
             <Skeleton className="h-4 w-64" />
@@ -187,7 +187,7 @@ export default function ProfilePage() {
   return (
     <>
       <PageHeader title="My Profile" description="Manage your personal and contact information." />
-      <Card className="bg-background">
+      <Card className="bg-card">
         <CardHeader>
           <CardTitle>Profile Details</CardTitle>
           <CardDescription>

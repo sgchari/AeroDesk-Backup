@@ -42,7 +42,7 @@ export default function TeamManagementPage() {
                     Add Team Member
                 </Button>
             </PageHeader>
-            <Card className="bg-background">
+            <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>Your Team</CardTitle>
                     <CardDescription>

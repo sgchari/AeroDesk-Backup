@@ -4,71 +4,71 @@
 
 @layer base {
   :root {
-    --background: 220 14% 96%; /* Soft Neutral Grey: #F5F6F8 */
-    --foreground: 210 10% 16%;
+    --background: 224 21% 14%; /* Dark desaturated blue */
+    --foreground: 210 20% 98%; /* Light grey/white */
 
-    --card: 0 0% 100%; /* White: #FFFFFF */
-    --card-foreground: 210 10% 16%;
+    --card: 224 21% 18%; /* Slightly lighter dark blue */
+    --card-foreground: 210 20% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 10% 16%;
+    --popover: 224 21% 14%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 212 54% 23%; /* Deep Aviation Blue: #1C3D5A */
-    --primary-foreground: 0 0% 100%;
+    --primary: 54 83% 67%; /* Yellow Accent */
+    --primary-foreground: 222.2 47.4% 11.2%; /* Dark text for yellow */
 
-    --secondary: 220 14% 91%;
-    --secondary-foreground: 210 10% 16%;
+    --secondary: 224 21% 25%; /* Lighter blue for secondary elements */
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 220 14% 91%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 224 21% 25%;
+    --muted-foreground: 215 20% 65%; /* Dimmer text */
 
-    --accent: 54 83% 67%; /* #EEDC5B */
+    --accent: 54 83% 67%; /* Yellow Accent */
     --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
-
+    
     --success: 142 63% 42%;
     --success-foreground: 210 20% 98%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 24 9.8% 10%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 212 54% 23%; /* Deep Aviation Blue: #1C3D5A */
+    --border: 224 21% 25%; /* Lighter than card */
+    --input: 224 21% 25%;
+    --ring: 54 83% 67%; /* Yellow Accent for focus rings */
     
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 224 21% 14%;
+    --foreground: 210 20% 98%;
 
-    --card: 222 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 224 21% 18%;
+    --card-foreground: 210 20% 98%;
 
-    --popover: 222 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 224 21% 14%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 54 83% 67%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 224 21% 25%;
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 224 21% 25%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 54 83% 67%; /* #EEDC5B from landing page */
+    --accent: 54 83% 67%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 224 21% 25%;
+    --input: 224 21% 25%;
+    --ring: 54 83% 67%;
   }
 }
 

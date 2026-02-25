@@ -104,7 +104,7 @@ export function AdminDashboard() {
             <StatsCard title="Partners" href="/dashboard/admin/partners" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.partners.toString()} icon={Briefcase} description="Hotels & Distributors" />
             <StatsCard title="Active RFQs" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeRfqs.toString()} icon={GanttChartSquare} description="Open for bidding" />
         </StatsGrid>
-        <Card className="bg-background">
+        <Card className="bg-card">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>Recent Audit Trail</CardTitle>

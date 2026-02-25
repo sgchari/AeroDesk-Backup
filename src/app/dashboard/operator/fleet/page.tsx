@@ -54,7 +54,7 @@ export default function FleetManagementPage() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {aircrafts?.map((ac: Aircraft) => (
-                <Card key={ac.id} className="bg-background flex flex-col">
+                <Card key={ac.id} className="bg-card flex flex-col">
                     <CardHeader>
                         <div className="flex items-start justify-between">
                             <div>

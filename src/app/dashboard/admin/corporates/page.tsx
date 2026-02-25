@@ -5,7 +5,7 @@ export default function CorporateManagementPage() {
     return (
         <>
             <PageHeader title="Corporate Management" description="Approve Corporate Travel Desk (CTD) accounts and configure approval hierarchies." />
-            <Card className="bg-background">
+            <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>All Corporate Accounts</CardTitle>
                     <CardDescription>

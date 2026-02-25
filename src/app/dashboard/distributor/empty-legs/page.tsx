@@ -25,13 +25,13 @@ export default function DistributorEmptyLegsPage() {
   const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
   
   // Client-side filtering to show only approved legs
-  const emptyLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved');
+  const emptyLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved' || leg.status === 'Published');
 
 
   return (
     <>
       <PageHeader title="Approved Empty Legs" description="View and manage seat allocations for available empty leg flights." />
-      <Card className="bg-background">
+      <Card className="bg-card">
         <CardHeader>
           <CardTitle>All Available Flights</CardTitle>
           <CardDescription>

@@ -42,7 +42,7 @@ const getStatusInfo = (status: RfqStatus): { text: string; icon: React.ElementTy
 const TripCard = ({ rfq }: { rfq: CharterRFQ }) => {
     const statusInfo = getStatusInfo(rfq.status);
     return (
-        <Card className="bg-background flex flex-col">
+        <Card className="bg-card flex flex-col">
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{rfq.departure} <ArrowRight className="inline h-4 w-4 mx-1" /> {rfq.arrival}</CardTitle>
@@ -68,7 +68,7 @@ const TripCard = ({ rfq }: { rfq: CharterRFQ }) => {
                     <span>{new Date(rfq.departureDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                 </div>
                  <div className="flex items-center text-muted-foreground">
-                    {rfq.hotelRequired ? <Hotel className="mr-2 h-4 w-4 text-blue-500" /> : <Hotel className="mr-2 h-4 w-4" /> }
+                    {rfq.hotelRequired ? <Hotel className="mr-2 h-4 w-4 text-primary" /> : <Hotel className="mr-2 h-4 w-4" /> }
                     <span>{rfq.hotelRequired ? 'Hotel stay requested' : 'No hotel requested'}</span>
                 </div>
             </CardContent>

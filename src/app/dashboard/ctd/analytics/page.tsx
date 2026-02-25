@@ -5,7 +5,7 @@ export default function CTDAnalyticsPage() {
     return (
         <>
             <PageHeader title="Corporate Travel Analytics" description="Analyze your organization's charter spending and travel patterns." />
-            <Card className="bg-background">
+            <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>Travel Spend Overview</CardTitle>
                     <CardDescription>

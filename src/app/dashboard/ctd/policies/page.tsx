@@ -12,7 +12,7 @@ export default function CTDPoliciesPage() {
                     New Policy Rule
                 </Button>
             </PageHeader>
-            <Card className="bg-background">
+            <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>Active Policies</CardTitle>
                     <CardDescription>

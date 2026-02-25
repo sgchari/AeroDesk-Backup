@@ -5,7 +5,7 @@ export default function PlatformSettingsPage() {
     return (
         <>
             <PageHeader title="Platform Settings" description="Configure global settings for the AeroDesk platform." />
-            <Card className="bg-background">
+            <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>General Settings</CardTitle>
                     <CardDescription>

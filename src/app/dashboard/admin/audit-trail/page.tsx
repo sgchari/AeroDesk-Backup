@@ -27,7 +27,7 @@ export default function AuditTrailPage() {
                     Export as CSV
                 </Button>
             </PageHeader>
-            <Card className="bg-background">
+            <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>All Events</CardTitle>
                     <CardDescription>

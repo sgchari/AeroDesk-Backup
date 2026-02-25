@@ -12,7 +12,7 @@ export default function CrewManagementPage() {
                     Add Crew Member
                 </Button>
             </PageHeader>
-            <Card className="bg-background">
+            <Card className="bg-card">
                 <CardHeader>
                     <CardTitle>Your Crew</CardTitle>
                     <CardDescription>

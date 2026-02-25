@@ -59,7 +59,7 @@ function CustomerGateway() {
             </PageHeader>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {quickLinks.map(link => (
-                    <Card key={link.title} className="bg-background group hover:border-primary transition-colors">
+                    <Card key={link.title} className="bg-card group hover:border-primary transition-colors">
                         <CardHeader className="flex-row items-center gap-4 space-y-0">
                             <div className="p-3 bg-muted rounded-lg">
                                 <link.icon className="h-6 w-6 text-muted-foreground" />

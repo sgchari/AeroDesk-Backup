@@ -32,7 +32,7 @@ export function DistributorDashboard() {
         <StatsCard title="Distributor Seat Cap" value="100" icon={Users} description="Monthly allocation limit" />
       </StatsGrid>
 
-      <Card className="bg-background">
+      <Card className="bg-card">
         <CardHeader>
           <CardTitle>Approved Empty Legs</CardTitle>
           <CardDescription>
