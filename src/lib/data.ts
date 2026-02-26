@@ -155,7 +155,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Yield Optimization: Navigating Empty Leg Pricing in 2024',
     excerpt: 'A technical analysis of dynamic pricing models used to maximize asset utilization during seasonal positioning flights.',
     category: 'Empty Leg Insights',
-    imageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=2070&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=1080',
     author: 'AeroDesk Intel',
     date: '2024-07-30',
     isFeatured: true
@@ -174,7 +174,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Corporate Travel: Integrating Jet Seat Allocation into Travel Policy',
     excerpt: 'How Corporate Travel Desks are leveraging empty leg inventory to reduce executive travel overhead without sacrificing privacy.',
     category: 'Corporate Travel',
-    imageUrl: 'https://images.unsplash.com/photo-11754481387410-7c8c9350372c?q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1080',
     author: 'Ecosystem Strategy',
     date: '2024-07-25'
   },
@@ -183,7 +183,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Operator Perspectives: Fleet Modernization Trends in South Asia',
     excerpt: 'Observing the shift towards mid-size jets as infrastructure improves across Tier-2 Indian cities.',
     category: 'Operator',
-    imageUrl: 'https://images.unsplash.com/photo-1727640024516-ae12e5b9e90d?q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1520437358207-323b43b50729?q=80&w=1080',
     author: 'Network Intel',
     date: '2024-07-22'
   },
@@ -201,7 +201,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Sustainability in Charter: Biofuels and Modern Engine Efficiency',
     excerpt: 'Assessing the adoption of Sustainable Aviation Fuel (SAF) among NSOP operators in the Indian subcontinent.',
     category: 'Market Trends',
-    imageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1080',
     author: 'Eco Intel',
     date: '2024-07-18'
   },
@@ -210,7 +210,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'High-Net-Worth Mobility: Seasonal Shifts in Private Aviation Demand',
     excerpt: 'Analyzing travel patterns during the peak summer and winter seasons across major metropolitan hubs.',
     category: 'Market Trends',
-    imageUrl: 'https://images.unsplash.com/photo-1520437358207-323b43b50729?q=80&w=1080',
+    imageUrl: 'https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=1080',
     author: 'Data Analytics',
     date: '2024-07-15'
   },
@@ -303,7 +303,7 @@ export const mockBrandAssets: BrandAsset[] = [
     id: 'ba-3',
     title: 'Platform UI Showcase',
     type: 'Cockpit',
-    imageUrl: 'https://images.unsplash.com/photo-11754481387410-7c8c9350372c?q=80&w=400',
+    imageUrl: 'https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=400',
     fileSize: '8.1 MB'
   }
 ];
