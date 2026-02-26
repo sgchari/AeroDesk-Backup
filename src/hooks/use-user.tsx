@@ -1,17 +1,15 @@
 
 'use client';
 
-import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import React, { createContext, useContext, ReactNode, useState, useEffect, useCallback } from 'react';
 import type { User as AppUser } from '@/lib/types';
 import { mockUsers, mockCorporateTravelDesks } from '@/lib/data';
-import { useDoc, useFirestore } from '@/firebase';
-import { doc } from 'firebase/firestore';
 
 interface UserContextType {
   user: AppUser | null;
   isLoading: boolean;
   error: Error | null;
+  login: (uid: string) => void;
   logout: () => void;
 }
 
@@ -21,18 +19,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const pathname = usePathname();
 
-  const logout = () => {
-    localStorage.removeItem('demoUserId');
-    setUser(null);
-  };
-
-  useEffect(() => {
+  // Memoized fetch function to ensure stability
+  const fetchUser = useCallback(() => {
     setLoading(true);
     setError(null);
     try {
-        const demoUserId = localStorage.getItem('demoUserId');
+        const demoUserId = typeof window !== 'undefined' ? localStorage.getItem('demoUserId') : null;
         if (demoUserId) {
             const foundUser = mockUsers.find(u => u.id === demoUserId);
             if (foundUser) {
@@ -48,20 +41,36 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     setUser(foundUser as AppUser);
                 }
             } else {
-                setError(new Error("Demo user not found. Please log in again."));
-                logout(); // Clear invalid user ID
+                setError(new Error("Demo user session invalid. Please log in again."));
+                localStorage.removeItem('demoUserId');
+                setUser(null);
             }
         } else {
-            setUser(null); // No user ID found, so ensure user is logged out
+            setUser(null);
         }
     } catch(e: any) {
         setError(e);
     } finally {
         setLoading(false);
     }
-  }, [pathname]); // Re-run this effect whenever the user navigates
+  }, []);
 
-  const value = { user, isLoading, error, logout };
+  // Initialize once on mount
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  const login = (uid: string) => {
+    localStorage.setItem('demoUserId', uid);
+    fetchUser();
+  };
+
+  const logout = () => {
+    localStorage.removeItem('demoUserId');
+    setUser(null);
+  };
+
+  const value = { user, isLoading, error, login, logout };
 
   return (
     <UserContext.Provider value={value}>

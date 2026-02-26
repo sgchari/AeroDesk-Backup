@@ -90,13 +90,12 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (isLoading) {
-      return; // Wait until loading is finished.
+      return; 
     }
 
-    // This part of the effect runs only when isLoading is false.
     if (!user && !error) {
-      // Before redirecting, do one final check of localStorage to prevent race conditions.
-      const demoUserId = localStorage.getItem('demoUserId');
+      // Check local storage one last time to avoid race conditions during transitions
+      const demoUserId = typeof window !== 'undefined' ? localStorage.getItem('demoUserId') : null;
       if (!demoUserId) {
         router.replace('/login');
       }
@@ -121,29 +120,29 @@ export default function DashboardPage() {
       case 'Hotel Partner':
         return <HotelDashboard />;
       default:
-        return <div className="p-4">Invalid user role. Please contact support.</div>;
+        return <div className="p-4">Invalid user role context. Please contact platform support.</div>;
     }
   };
 
-  if (isLoading || (!user && !error)) {
+  if (isLoading) {
     return <DashboardSkeleton />;
   }
 
   if (error) {
     return (
         <div className="p-4 rounded-md border border-destructive bg-destructive/10 text-destructive-foreground">
-            <h3 className="font-bold">Error Loading Profile</h3>
-            <p>There was a problem loading your user data. This can happen if your user profile is not correctly configured in the database.</p>
-            <p className="text-xs mt-2">Details: {error.message}</p>
+            <h3 className="font-bold">Governance Context Error</h3>
+            <p>There was a problem loading your institutional profile. This often occurs if the session token has expired or the database record is missing.</p>
+            <p className="text-xs mt-2 font-code">Details: {error.message}</p>
             <Button variant="link" onClick={() => router.replace('/login')} className="p-0 mt-2 text-destructive-foreground">
-              Return to Login
+              Re-authenticate to Platform
             </Button>
         </div>
     )
   }
 
   return (
-    <div>
+    <div className="animate-in fade-in duration-500">
       {renderDashboard()}
     </div>
   );

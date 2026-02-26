@@ -10,13 +10,15 @@ import { mockUsers } from '@/lib/data';
 import type { User } from '@/lib/types';
 import { LandingHeader } from '@/components/landing-header';
 import { LandingFooter } from '@/components/landing-footer';
+import { useUser } from '@/hooks/use-user';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useUser();
 
   const handleDemoLogin = (user: User) => {
-    // In demo mode, we use localStorage to simulate a login session.
-    localStorage.setItem('demoUserId', user.id);
+    // Call context login to stabilize state before navigation
+    login(user.id);
     router.push('/dashboard');
   };
 
