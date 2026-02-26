@@ -1,7 +1,8 @@
 
 import type { UserRole, User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, BlogPost, PressRelease, MediaMention, BrandAsset } from './types';
+import { PlaceHolderImages } from './placeholder-images';
 
-// This data is now used for the demo mode.
+const getImg = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl || '';
 
 export const mockUsers: User[] = [
     // Admins
@@ -81,7 +82,7 @@ export const mockAircrafts: Aircraft[] = [
     { id: 'AC-VTSKY', operatorId: 'operator-user-01', name: 'King Air 350', type: 'Turboprop', registration: 'VT-SKY', paxCapacity: 9, homeBase: 'Delhi (DEL)', status: 'Under Maintenance' },
     { id: 'AC-VTJET', operatorId: 'operator-user-02', name: 'Cessna Citation XLS', type: 'Mid-size Jet', registration: 'VT-JET', paxCapacity: 9, homeBase: 'Bengaluru (BLR)', status: 'Available' },
     { id: 'AC-VTGLO', operatorId: 'operator-user-03', name: 'Global 6000', type: 'Heavy Jet', registration: 'VT-GLO', paxCapacity: 14, homeBase: 'Delhi (DEL)', status: 'AOG' },
-    { id: 'AC-VTPC', operatorId: 'operator-user-03', name: 'Pilatus PC-12', type: 'Turboprop', registration: 'VT-PC', paxCapacity: 8, homeBase: 'Mumbai (BOM)', status: 'Available' },
+    { id: 'AC-VTSKY', operatorId: 'operator-user-03', name: 'Pilatus PC-12', type: 'Turboprop', registration: 'VT-PC', paxCapacity: 8, homeBase: 'Mumbai (BOM)', status: 'Available' },
 ];
 
 export const mockQuotations: Quotation[] = [
@@ -155,7 +156,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Yield Optimization: Navigating Empty Leg Pricing in 2024',
     excerpt: 'A technical analysis of dynamic pricing models used to maximize asset utilization during seasonal positioning flights.',
     category: 'Empty Leg Insights',
-    imageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=1080',
+    imageUrl: getImg('blog-1'),
     author: 'AeroDesk Intel',
     date: '2024-07-30',
     isFeatured: true
@@ -165,7 +166,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'NSOP Compliance: New Directives for Indian Charter Operations',
     excerpt: 'Detailed breakdown of recent regulatory changes affecting non-scheduled operator permits and operational safety standards.',
     category: 'Industry',
-    imageUrl: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080',
+    imageUrl: getImg('blog-2'),
     author: 'Governance Desk',
     date: '2024-07-28'
   },
@@ -174,7 +175,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Corporate Travel: Integrating Jet Seat Allocation into Travel Policy',
     excerpt: 'How Corporate Travel Desks are leveraging empty leg inventory to reduce executive travel overhead without sacrificing privacy.',
     category: 'Corporate Travel',
-    imageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1080',
+    imageUrl: getImg('blog-3'),
     author: 'Ecosystem Strategy',
     date: '2024-07-25'
   },
@@ -183,7 +184,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Operator Perspectives: Fleet Modernization Trends in South Asia',
     excerpt: 'Observing the shift towards mid-size jets as infrastructure improves across Tier-2 Indian cities.',
     category: 'Operator',
-    imageUrl: 'https://images.unsplash.com/photo-1520437358207-323b43b50729?q=80&w=1080',
+    imageUrl: getImg('blog-4'),
     author: 'Network Intel',
     date: '2024-07-22'
   },
@@ -192,7 +193,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'The Future of Tier-2 Connectivity: Regional Airports Expansion',
     excerpt: 'How the UDAN scheme and private infrastructure investments are transforming regional travel accessibility.',
     category: 'Industry',
-    imageUrl: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1080',
+    imageUrl: getImg('blog-5'),
     author: 'Infrastructure Desk',
     date: '2024-07-20'
   },
@@ -201,7 +202,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Sustainability in Charter: Biofuels and Modern Engine Efficiency',
     excerpt: 'Assessing the adoption of Sustainable Aviation Fuel (SAF) among NSOP operators in the Indian subcontinent.',
     category: 'Market Trends',
-    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1080',
+    imageUrl: getImg('blog-6'),
     author: 'Eco Intel',
     date: '2024-07-18'
   },
@@ -210,7 +211,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'High-Net-Worth Mobility: Seasonal Shifts in Private Aviation Demand',
     excerpt: 'Analyzing travel patterns during the peak summer and winter seasons across major metropolitan hubs.',
     category: 'Market Trends',
-    imageUrl: 'https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=1080',
+    imageUrl: getImg('blog-7'),
     author: 'Data Analytics',
     date: '2024-07-15'
   },
@@ -219,7 +220,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Cybersecurity in Flight Ops: Protecting High-Value Passenger Data',
     excerpt: 'Institutional protocols for maintaining data integrity and privacy in digitized charter coordination workflows.',
     category: 'Insights',
-    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1080',
+    imageUrl: getImg('blog-8'),
     author: 'Security Ops',
     date: '2024-07-12'
   },
@@ -228,7 +229,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'The Rise of Hybrid-Electric Vertical Take-Off (eVTOL) in India',
     excerpt: 'Evaluating the feasibility of urban air mobility solutions for Tier-1 Indian traffic congestion.',
     category: 'Industry',
-    imageUrl: 'https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=1080',
+    imageUrl: getImg('blog-9'),
     author: 'Innovation Desk',
     date: '2024-07-10'
   },
@@ -237,7 +238,7 @@ export const mockBlogPosts: BlogPost[] = [
     title: 'Medical Evacuation (MEDEVAC): Infrastructure & Response Protocols',
     excerpt: 'A review of the specialized logistics required for life-critical charter operations in remote regions.',
     category: 'Insights',
-    imageUrl: 'https://images.unsplash.com/photo-1516504013220-0fc147b5c60c?q=80&w=1080',
+    imageUrl: getImg('blog-10'),
     author: 'Medical Logistics',
     date: '2024-07-05'
   }

@@ -21,61 +21,61 @@
     {
       "id": "blog-1",
       "description": "Private jet on a runway at sunset",
-      "imageUrl": "https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1635668422724-fffb2201f951?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cHJpdmF0ZSUyMGpldHxlbnwwfHx8fDE3NzIwMTk3MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "private jet"
     },
     {
       "id": "blog-2",
       "description": "Pilot checking flight documents",
-      "imageUrl": "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1758292581042-21a187fbbdd4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmbGlnaHQlMjBvcGVyYXRpb25zfGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "flight operations"
     },
     {
       "id": "blog-3",
       "description": "Luxury jet interior seating",
-      "imageUrl": "https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1764916195723-423db270f477?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8amV0JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzcyMDgyNzM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "jet interior"
     },
     {
       "id": "blog-4",
       "description": "Executive mid-size jet in flight",
-      "imageUrl": "https://images.unsplash.com/photo-1520437358207-323b43b50729?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1678419214383-2391a9118c24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxleGVjdXRpdmUlMjBqZXR8ZW58MHx8fHwxNzcyMDgyNzM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "executive jet"
     },
     {
       "id": "blog-5",
       "description": "Regional airport hangar",
-      "imageUrl": "https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1651463833423-5f1a6e7159a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhaXJwb3J0JTIwaGFuZ2FyfGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "airport hangar"
     },
     {
       "id": "blog-6",
       "description": "Aircraft engine close up",
-      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1696238628662-e820babaf1e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhaXJjcmFmdCUyMGVuZ2luZXxlbnwwfHx8fDE3NzIwODI3MzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "aircraft engine"
     },
     {
       "id": "blog-7",
       "description": "Metropolitan city skyline from above",
-      "imageUrl": "https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1536031696538-924fe11c7037?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2l0eSUyMGFlcmlhbHxlbnwwfHx8fDE3NzE5ODY0MjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "city aerial"
     },
     {
       "id": "blog-8",
       "description": "Cybersecurity digital grid",
-      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjeWJlcnNlY3VyaXR5fGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cybersecurity"
     },
     {
       "id": "blog-9",
       "description": "Modern vertical take-off craft concept",
-      "imageUrl": "https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1692128237627-e756e994b048?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YXZpYXRpb24lMjB0ZWNofGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "aviation tech"
     },
     {
       "id": "blog-10",
       "description": "Medical transport aircraft",
-      "imageUrl": "https://images.unsplash.com/photo-1516504013220-0fc147b5c60c?q=80&w=1080",
+      "imageUrl": "https://picsum.photos/seed/blog10/1200/800",
       "imageHint": "medevac jet"
     },
     {
