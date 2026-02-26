@@ -14,6 +14,7 @@ import {
   mockOperators,
   mockBillingRecords,
   mockFeatureFlags,
+  mockPolicyFlags,
 } from './data';
 import { User, UserRole } from './types';
 
@@ -39,6 +40,7 @@ let db = {
   hotelPartners: deepCopy(mockUsers.filter(u => u.role === 'Hotel Partner')),
   billingRecords: deepCopy(mockBillingRecords),
   featureFlags: deepCopy(mockFeatureFlags),
+  policyFlags: deepCopy(mockPolicyFlags),
 };
 
 // Simple event emitter
@@ -95,6 +97,10 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
                 const ctdId = pathSegments[1];
                 return db.users.filter(u => u.ctdId === ctdId);
              }
+             if (pathSegments.length > 2 && pathSegments[2] === 'policyFlags') {
+                const ctdId = pathSegments[1];
+                return db.policyFlags.filter(p => p.ctdId === ctdId);
+             }
              return db.corporateTravelDesks;
         case 'accommodationRequests':
             if (!currentUser) return [];
@@ -113,6 +119,7 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             return db.roomCategories;
         case 'billingRecords': return db.billingRecords;
         case 'featureFlags': return db.featureFlags;
+        case 'policyFlags': return db.policyFlags;
         default:
             console.warn(`Mock Store: No handler for getCollection path: ${path}`);
             return [];
@@ -146,6 +153,8 @@ const addDoc = (path: string, data: any) => {
         db.seatAllocationRequests.unshift(newDoc as any);
     } else if (collectionName === 'charterRFQs') {
         db.charterRFQs.unshift(newDoc as any);
+    } else if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'policyFlags') {
+        db.policyFlags.unshift(newDoc as any);
     } else if (['users', 'platformAdmins', 'customers', 'operators', 'distributors', 'hotelPartners'].includes(collectionName)) {
         db.users.unshift(newDoc as any); // Add to the main users array
         if ((db as any)[collectionName]) {
@@ -169,6 +178,8 @@ const updateDoc = (collectionPath: string, docId: string, data: any) => {
 
     if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'users') {
         dataSet = db.users;
+    } else if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'policyFlags') {
+        dataSet = db.policyFlags;
     } else {
         dataSet = (db as any)[collectionName] || db.users;
     }
@@ -201,6 +212,8 @@ const deleteDoc = (collectionPath: string, docId: string) => {
 
     if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'users') {
         dataSet = db.users;
+    } else if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'policyFlags') {
+        dataSet = db.policyFlags;
     } else {
         dataSet = (db as any)[collectionName] || db.users;
     }

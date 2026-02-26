@@ -1,5 +1,5 @@
 
-import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, BlogPost, PressRelease, MediaMention, BrandAsset } from './types';
+import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
 const getImg = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl || '';
@@ -83,6 +83,13 @@ export const mockBillingRecords: BillingRecord[] = [];
 
 export const mockFeatureFlags: FeatureFlag[] = [];
 
+export const mockPolicyFlags: PolicyFlag[] = [
+    { id: 'POL-001', ctdId: 'ctd-stark-01', name: 'Preferred Operator Protocol', description: 'Mandates selection of operators with sustainability ratings of 4+ stars for domestic sectors.', isEnforced: true },
+    { id: 'POL-002', ctdId: 'ctd-stark-01', name: 'Heavy Jet Approval Threshold', description: 'Requires additional Executive Board justification for international heavy-jet charters.', isEnforced: true },
+    { id: 'POL-003', ctdId: 'ctd-stark-01', name: 'Empty Leg Utilization (Advisory)', description: 'System should highlight available empty leg seats before creating a new full-charter RFQ.', isEnforced: false },
+    { id: 'POL-004', ctdId: 'ctd-stark-01', name: 'Accommodation Cost Cap', description: 'Limits destination hotel coordination to verified partners with pre-negotiated corporate rates.', isEnforced: true },
+];
+
 export const mockBlogPosts: BlogPost[] = [
   { id: 'post-1', title: 'Yield Optimization: Navigating Empty Leg Pricing in 2024', excerpt: 'A technical analysis of dynamic pricing models.', category: 'Empty Leg Insights', imageUrl: getImg('blog-1'), author: 'AeroDesk Intel', date: '2024-07-30', isFeatured: true },
 ];
@@ -115,6 +122,7 @@ export function getMockDataForRole(role: string) {
         seatAllocationRequests: mockEmptyLegSeatAllocationRequests,
         billingRecords: mockBillingRecords,
         featureFlags: mockFeatureFlags,
+        policyFlags: mockPolicyFlags,
         blogPosts: mockBlogPosts,
         pressReleases: mockPressReleases,
         mediaMentions: mockMediaMentions,

@@ -224,6 +224,17 @@ export type FeatureFlag = {
     isEnabled: boolean;
 };
 
+export type PolicyFlag = {
+    id: string;
+    ctdId: string;
+    name: string;
+    description: string;
+    isEnforced: boolean;
+    policyDetails?: string;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
 export type BlogPost = {
   id: string;
   title: string;
