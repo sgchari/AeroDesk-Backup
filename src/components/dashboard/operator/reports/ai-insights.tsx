@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, TrendingUp, AlertCircle, ArrowUpRight, ArrowDownRight, Info } from "lucide-react";
+import { Sparkles, TrendingUp, AlertCircle, ArrowUpRight, ArrowDownRight, Info, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -9,23 +9,23 @@ const insights = [
     {
         type: 'OPPORTUNITY',
         title: 'Empty Leg Optimization',
-        description: 'Seat conversion for VIDP-VABB sectors is 15% lower than fleet average. Suggest adjusting dynamic pricing floor.',
+        description: 'Seat conversion for VIDP-VABB sectors is 15% lower than fleet average. Suggest adjusting dynamic pricing floor to increase recovery yield.',
         impact: 'High',
         trend: 'up',
         color: 'text-sky-400'
     },
     {
-        type: 'ANOMALY',
-        title: 'Increased Idle Time: VT-PC',
-        description: 'Aircraft VT-PC has exceeded standard idle threshold for 3 consecutive days. Check crew availability or maintenance logs.',
-        impact: 'Medium',
+        type: 'REVENUE',
+        title: 'Yield Decline Warning',
+        description: 'Revenue per flight hour for asset VT-PC has declined by 12% this month. Higher concentration of short-haul sectors is impacting margins.',
+        impact: 'Critical',
         trend: 'down',
-        color: 'text-amber-500'
+        color: 'text-rose-500'
     },
     {
         type: 'MARKET',
-        title: 'Demand Spike: North Zone',
-        description: 'Unusual clustering of Heavy Jet requests for weekend sectors from Delhi. Capacity pressure alert.',
+        title: 'High-Yield Pattern: Delhi',
+        description: 'Unusual clustering of Heavy Jet requests for weekend sectors from Delhi. Real-time capacity pressure suggests 10% quotation premium feasibility.',
         impact: 'High',
         trend: 'up',
         color: 'text-green-500'
@@ -44,8 +44,8 @@ export function AIInsights() {
                         <Sparkles className="h-5 w-5 text-accent animate-pulse" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-accent">AI Intelligence Layer</h3>
-                        <p className="text-[10px] text-muted-foreground font-bold">CROSS-REPORT PATTERN IDENTIFICATION & ANOMALY DETECTION</p>
+                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-accent">Revenue Intelligence Layer</h3>
+                        <p className="text-[10px] text-muted-foreground font-bold">CROSS-REPORT YIELD IDENTIFICATION & ANOMALY DETECTION</p>
                     </div>
                     <Badge variant="outline" className="ml-auto bg-black/20 text-accent border-accent/20 font-code text-[10px]">
                         ACTIVE MONITORING
