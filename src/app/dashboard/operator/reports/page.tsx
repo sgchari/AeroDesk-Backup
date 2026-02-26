@@ -179,7 +179,7 @@ export default function OperatorReportsPage() {
                                             <Target className="h-3 w-3 text-accent" />
                                             <span className="text-[10px] font-bold text-accent uppercase">Yield Target</span>
                                         </div>
-                                        <p className="text-[10px] text-muted-foreground">Maintain > ₹ 1.5 L / FH for heavy-jet category fleet sustainment.</p>
+                                        <p className="text-[10px] text-muted-foreground">Maintain &gt; ₹ 1.5 L / FH for heavy-jet category fleet sustainment.</p>
                                     </div>
                                 </CardContent>
                             </Card>
