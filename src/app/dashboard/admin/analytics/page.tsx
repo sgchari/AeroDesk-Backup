@@ -34,7 +34,8 @@ import {
     BarChart2, 
     Globe,
     AlertTriangle,
-    CheckCircle2
+    CheckCircle2,
+    Clock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
