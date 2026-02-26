@@ -1,5 +1,5 @@
 
-import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset } from './types';
+import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset, CrewMember } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
 const getImg = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl || '';
@@ -73,6 +73,12 @@ export const mockQuotations: Quotation[] = [
 export const mockAircrafts: Aircraft[] = [
     { id: 'AC-VTFLY', operatorId: 'operator-user-01', name: 'Phenom 300E', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'Mumbai (BOM)', status: 'Available' },
     { id: 'AC-VTPC', operatorId: 'operator-user-03', name: 'Pilatus PC-12', type: 'Turboprop', registration: 'VT-PC', paxCapacity: 8, homeBase: 'Delhi (DEL)', status: 'Available' },
+];
+
+export const mockCrew: CrewMember[] = [
+    { id: 'CREW-001', operatorId: 'operator-user-01', firstName: 'Karan', lastName: 'Johar', email: 'k.johar@flyco.com', role: 'Captain', status: 'Available', licenseNumber: 'ATPL-90210', assignedAircraftId: 'AC-VTFLY', assignedAircraftRegistration: 'VT-FLY', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+    { id: 'CREW-002', operatorId: 'operator-user-01', firstName: 'Siddharth', lastName: 'Malhotra', email: 's.mal@flyco.com', role: 'First Officer', status: 'On Duty', licenseNumber: 'CPL-8821', assignedAircraftId: 'AC-VTFLY', assignedAircraftRegistration: 'VT-FLY', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+    { id: 'CREW-003', operatorId: 'operator-user-03', firstName: 'Meghna', lastName: 'Gulzar', email: 'm.gul@tajair.com', role: 'Captain', status: 'Available', licenseNumber: 'ATPL-7762', assignedAircraftId: 'AC-VTPC', assignedAircraftRegistration: 'VT-PC', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
@@ -149,6 +155,7 @@ export function getMockDataForRole(role: string) {
         blogPosts: mockBlogPosts,
         pressReleases: mockPressReleases,
         mediaMentions: mockMediaMentions,
-        brandAssets: mockBrandAssets
+        brandAssets: mockBrandAssets,
+        crew: mockCrew
     };
 }

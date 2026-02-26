@@ -15,6 +15,7 @@ import {
   mockBillingRecords,
   mockFeatureFlags,
   mockPolicyFlags,
+  mockCrew,
 } from './data';
 import { User, UserRole } from './types';
 
@@ -41,6 +42,7 @@ let db = {
   billingRecords: deepCopy(mockBillingRecords),
   featureFlags: deepCopy(mockFeatureFlags),
   policyFlags: deepCopy(mockPolicyFlags),
+  crew: deepCopy(mockCrew),
 };
 
 // Simple event emitter
@@ -70,6 +72,10 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             if (pathSegments.length > 2 && pathSegments[2] === 'aircrafts') {
                 const operatorId = pathSegments[1];
                 return db.aircrafts.filter(ac => ac.operatorId === operatorId);
+            }
+            if (pathSegments.length > 2 && pathSegments[2] === 'crew') {
+                const operatorId = pathSegments[1];
+                return db.crew.filter(c => c.operatorId === operatorId);
             }
             return db.operators;
         case 'charterRFQs':
@@ -120,6 +126,11 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
         case 'billingRecords': return db.billingRecords;
         case 'featureFlags': return db.featureFlags;
         case 'policyFlags': return db.policyFlags;
+        case 'crew': 
+            if (currentUser && currentUser.role === 'Operator') {
+                return db.crew.filter(c => c.operatorId === currentUser.id);
+            }
+            return db.crew;
         default:
             console.warn(`Mock Store: No handler for getCollection path: ${path}`);
             return [];

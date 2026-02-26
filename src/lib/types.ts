@@ -117,6 +117,25 @@ export type Aircraft = {
   interiorImageUrl?: string;
 };
 
+export type CrewRole = 'Captain' | 'First Officer' | 'Cabin Crew' | 'Maintenance' | 'Operations';
+export type CrewStatus = 'Available' | 'On Duty' | 'Training' | 'Medical Leave' | 'Inactive';
+
+export type CrewMember = {
+  id: string;
+  operatorId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: CrewRole;
+  status: CrewStatus;
+  licenseNumber?: string;
+  assignedAircraftId?: string; // Reference to Aircraft ID
+  assignedAircraftRegistration?: string;
+  avatar?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type EmptyLeg = {
   id: string;
   operatorId: string;
