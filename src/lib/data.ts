@@ -86,7 +86,32 @@ export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-901', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Delhi (DEL)', arrival: 'Mumbai (BOM)', departureTime: '2024-08-05T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published' },
 ];
 
-export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [];
+export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [
+    { 
+        id: 'SL-REQ-001', 
+        emptyLegId: 'EL-901', 
+        distributorId: 'distributor-user-01', 
+        requesterExternalAuthId: 'distributor-user-01', 
+        numberOfSeats: 2, 
+        status: 'Requested', 
+        requestDateTime: '2024-07-28T10:00:00Z', 
+        clientReference: 'Kapoor Family', 
+        passengerName: 'Kapoor Party (2 PAX)',
+        passengerNotes: 'Requesting window seats if possible.' 
+    },
+    { 
+        id: 'SL-CONF-002', 
+        emptyLegId: 'EL-901', 
+        distributorId: 'distributor-user-01', 
+        requesterExternalAuthId: 'distributor-user-01', 
+        numberOfSeats: 1, 
+        status: 'Approved', 
+        requestDateTime: '2024-07-27T15:30:00Z', 
+        clientReference: 'Corporate Solo', 
+        passengerName: 'Amit Shah',
+        passengerNotes: 'Executive movement.' 
+    }
+];
 
 export const mockProperties: Property[] = [
     { id: 'PROP-01', hotelPartnerId: 'hotel-user-01', name: 'The Grand Mumbai', address: '123 Marine Drive, Mumbai', city: 'Mumbai', status: 'Active', propertyType: 'Luxury Hotel', imageUrl: 'https://picsum.photos/seed/hotel1/600/400' },
