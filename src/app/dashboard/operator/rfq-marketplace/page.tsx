@@ -16,33 +16,24 @@ import { useState } from "react";
 import { SubmitQuotationDialog } from "@/components/dashboard/operator/submit-quotation-dialog";
 import { SystemAdvisory } from "@/components/dashboard/operator/system-advisory";
 
-const getStatusVariant = (status: RfqStatus) => {
-    switch (status) {
-        case 'New':
-        case 'Bidding Open': return 'default';
-        case 'Reviewing': return 'secondary';
-        case 'Quoted': return 'success';
-        case 'Closed': return 'outline';
-        default: return 'secondary';
-    }
-}
-
 export default function RfqMarketplacePage() {
   const firestore = useFirestore();
   const [selectedRfq, setSelectedRfq] = useState<CharterRFQ | null>(null);
   const [search, setSearch] = useState("");
 
   const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || firestore._isMock) return null;
     return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
   }, [firestore]);
   
   const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
   const filteredRfqs = rfqs?.filter(r => 
-    r.departure.toLowerCase().includes(search.toLowerCase()) || 
-    r.arrival.toLowerCase().includes(search.toLowerCase()) ||
-    r.id.toLowerCase().includes(search.toLowerCase())
+    (r.status === 'Bidding Open' || r.status === 'New') && (
+        r.departure.toLowerCase().includes(search.toLowerCase()) || 
+        r.arrival.toLowerCase().includes(search.toLowerCase()) ||
+        r.id.toLowerCase().includes(search.toLowerCase())
+    )
   );
 
   return (

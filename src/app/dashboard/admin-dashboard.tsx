@@ -17,19 +17,40 @@ import { collection, query, where, orderBy, limit } from "firebase/firestore";
 export function AdminDashboard() {
   const firestore = useFirestore();
 
-  const pendingLegsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval')) : null, [firestore]);
+  const pendingLegsQuery = useMemoFirebase(() => {
+    if (!firestore || firestore._isMock) return null;
+    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval'));
+  }, [firestore]);
   const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery, 'emptyLegs');
   
-  const pendingOperatorsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'operators'), where('status', '==', 'Pending Approval')) : null, [firestore]);
+  const pendingOperatorsQuery = useMemoFirebase(() => {
+    if (!firestore || firestore._isMock) return null;
+    return query(collection(firestore, 'operators'), where('status', '==', 'Pending Approval'));
+  }, [firestore]);
   const { data: pendingOperators, isLoading: pendingOperatorsLoading } = useCollection<Operator>(pendingOperatorsQuery, 'operators');
   
-  const { data: allUsers, isLoading: usersLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]), 'users');
-  const { data: allEmptyLegs, isLoading: emptyLegsLoading } = useCollection(useMemoFirebase(() => firestore ? collection(firestore, 'emptyLegs') : null, [firestore]), 'emptyLegs');
+  const allUsersQuery = useMemoFirebase(() => {
+    if (!firestore || firestore._isMock) return null;
+    return collection(firestore, 'users');
+  }, [firestore]);
+  const { data: allUsers, isLoading: usersLoading } = useCollection(allUsersQuery, 'users');
 
-  const auditLogsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5)) : null, [firestore]);
+  const allEmptyLegsQuery = useMemoFirebase(() => {
+    if (!firestore || firestore._isMock) return null;
+    return collection(firestore, 'emptyLegs');
+  }, [firestore]);
+  const { data: allEmptyLegs, isLoading: emptyLegsLoading } = useCollection(allEmptyLegsQuery, 'emptyLegs');
+
+  const auditLogsQuery = useMemoFirebase(() => {
+    if (!firestore || firestore._isMock) return null;
+    return query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5));
+  }, [firestore]);
   const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery, 'auditTrails');
 
-  const activeRfqsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open')) : null, [firestore]);
+  const activeRfqsQuery = useMemoFirebase(() => {
+    if (!firestore || firestore._isMock) return null;
+    return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
+  }, [firestore]);
   const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery, 'charterRFQs');
   
   const isLoading = pendingLegsLoading || pendingOperatorsLoading || usersLoading || emptyLegsLoading || auditLogsLoading || activeRfqsLoading;

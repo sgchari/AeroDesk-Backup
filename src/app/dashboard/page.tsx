@@ -94,7 +94,6 @@ export default function DashboardPage() {
     }
 
     if (!user && !error) {
-      // Check local storage one last time to avoid race conditions during transitions
       const demoUserId = typeof window !== 'undefined' ? localStorage.getItem('demoUserId') : null;
       if (!demoUserId) {
         router.replace('/login');

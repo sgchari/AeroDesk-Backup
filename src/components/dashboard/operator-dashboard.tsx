@@ -3,8 +3,8 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { CharterRFQ, Aircraft, Quotation, EmptyLegSeatAllocationRequest, EmptyLeg } from "@/lib/types";
-import { FileText, GanttChartSquare, Plane, AlertTriangle, Users, Bell, ArrowRight } from "lucide-react";
+import type { CharterRFQ, Aircraft, EmptyLegSeatAllocationRequest, EmptyLeg } from "@/lib/types";
+import { FileText, Plane, AlertTriangle, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
@@ -12,7 +12,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/hooks/use-user";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where, orderBy, limit } from "firebase/firestore";
+import { collection, query, where, limit } from "firebase/firestore";
 import { Badge } from "@/components/ui/badge";
 
 export function OperatorDashboard() {
@@ -20,22 +20,22 @@ export function OperatorDashboard() {
   const firestore = useFirestore();
 
   const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || firestore._isMock) return null;
     return query(collection(firestore, 'charterRFQs'), limit(5));
   }, [firestore]);
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
   const aircraftsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || !user || firestore._isMock) return null;
     return collection(firestore, 'operators', user.id, 'aircrafts');
   }, [firestore, user]);
   const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, user ? `operators/${user.id}/aircrafts` : undefined);
 
   const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || !user || firestore._isMock) return null;
     return query(collection(firestore, 'emptyLegs'), where('operatorId', '==', user.id));
   }, [firestore, user]);
-  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, user ? `emptyLegs` : undefined);
+  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
   const { data: allSeatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(null, 'emptyLegs/all/seatAllocationRequests');
 
@@ -77,12 +77,12 @@ export function OperatorDashboard() {
                     <TableRow>
                         <TableHead>Route</TableHead>
                         <TableHead>Asset Class</TableHead>
-                        <TableHead>PAX</TableHead>
+                        <TableHead className="text-center">PAX</TableHead>
                         <TableHead>Status</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {rfqs?.map((rfq: CharterRFQ) => (
+                    {rfqs?.filter(r => r.status === 'Bidding Open' || r.status === 'New').slice(0, 5).map((rfq: CharterRFQ) => (
                         <TableRow key={rfq.id}>
                             <TableCell className="font-medium">{rfq.departure} to {rfq.arrival}</TableCell>
                             <TableCell className="text-xs">{rfq.aircraftType}</TableCell>
@@ -104,7 +104,7 @@ export function OperatorDashboard() {
             <CardContent className="space-y-4">
                 {isLoading ? <Skeleton className="h-48 w-full" /> : (
                     <div className="space-y-3">
-                        {aircrafts?.map(ac => (
+                        {aircrafts?.slice(0, 4).map(ac => (
                             <div key={ac.id} className="flex items-center justify-between p-2 rounded bg-muted/10 border border-white/5">
                                 <div className="space-y-0.5">
                                     <p className="text-sm font-bold">{ac.registration}</p>
@@ -115,6 +115,9 @@ export function OperatorDashboard() {
                                 </Badge>
                             </div>
                         ))}
+                        {(!aircrafts || aircrafts.length === 0) && (
+                            <p className="text-xs text-muted-foreground text-center py-4 italic">No assets registered.</p>
+                        )}
                     </div>
                 )}
             </CardContent>
