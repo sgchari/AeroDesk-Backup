@@ -31,8 +31,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FilePlus, ArrowRight, ArrowLeft, CheckCircle2, Plane, Calendar, Users, Hotel } from "lucide-react";
-import { useState, useMemo } from "react";
+import { FilePlus, ArrowRight, ArrowLeft, CheckCircle2, Plane, Calendar, Users, Hotel, Clock } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useUser } from "@/hooks/use-user";
@@ -42,6 +42,93 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+
+const primeDestinations = [
+    "Agra (AGR)", "Ahmedabad (AMD)", "Amritsar (ATQ)", "Aurangabad (IXU)", "Bagdogra (IXB)",
+    "Bengaluru (BLR)", "Bhopal (BHO)", "Bhubaneswar (BBI)", "Chandigarh (IXC)", "Chennai (MAA)",
+    "Cochin (COK)", "Coimbatore (CJB)", "Dehradun (DED)", "Delhi (DEL)", "Goa (GOI)",
+    "Guwahati (GAU)", "Hyderabad (HYD)", "Imphal (IMF)", "Indore (IDR)", "Jaipur (JAI)",
+    "Jammu (IXJ)", "Jodhpur (JDH)", "Khajuraho (HJR)", "Kolkata (CCU)", "Leh (IXL)",
+    "Lucknow (LKO)", "Madurai (IXM)", "Mangalore (IXE)", "Mumbai (BOM)", "Nagpur (NAG)",
+    "Patna (PAT)", "Port Blair (IXZ)", "Pune (PNQ)", "Raipur (RPR)", "Ranchi (IXR)",
+    "Srinagar (SXR)", "Thiruvananthapuram (TRV)", "Tiruchirappalli (TRZ)", "Udaipur (UDR)", "Varanasi (VNS)",
+    "Visakhapatnam (VTZ)", "Dubai (DXB)", "London (LHR)", "New York (JFK)", "Singapore (SIN)",
+    "Bangkok (BKK)", "Male (MLE)"
+];
+
+const AutocompleteInput = ({ value, onChange, placeholder, className }: { value: string; onChange: (value: string) => void; placeholder: string; className?: string }) => {
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        onChange(inputValue);
+
+        if (inputValue.length >= 1) {
+            const filtered = primeDestinations.filter(dest =>
+                dest.toLowerCase().includes(inputValue.toLowerCase())
+            );
+            setSuggestions(filtered);
+            setShowSuggestions(filtered.length > 0);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleSelectSuggestion = (suggestion: string) => {
+        onChange(suggestion);
+        setSuggestions([]);
+        setShowSuggestions(false);
+    };
+
+    return (
+        <div className="relative w-full" ref={containerRef}>
+            <Input
+                type="text"
+                placeholder={placeholder}
+                value={value}
+                onChange={handleInputChange}
+                onFocus={() => {
+                    if (value.length >= 1) {
+                        const filtered = primeDestinations.filter(dest =>
+                            dest.toLowerCase().includes(value.toLowerCase())
+                        );
+                        setSuggestions(filtered);
+                        setShowSuggestions(filtered.length > 0);
+                    }
+                }}
+                className={className}
+                autoComplete="off"
+            />
+            {showSuggestions && (
+                <div className="absolute z-[100] w-full bg-popover border border-border rounded-md mt-1 shadow-lg max-h-60 overflow-y-auto">
+                    {suggestions.map((suggestion, index) => (
+                        <div
+                            key={index}
+                            className="p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm"
+                            onClick={() => handleSelectSuggestion(suggestion)}
+                        >
+                            {suggestion}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const rfqSchema = z.object({
   tripType: z.enum(["Onward", "Return", "Multi-City"], { required_error: "Trip type is required." }),
@@ -50,7 +137,9 @@ const rfqSchema = z.object({
   departureDate: z.string().refine((val) => val && !isNaN(Date.parse(val)), {
     message: "Invalid date",
   }),
+  departureTime: z.string().min(1, "Departure time is required."),
   returnDate: z.string().optional(),
+  returnTime: z.string().optional(),
   pax: z.coerce.number().int().positive("Number of passengers must be positive."),
   aircraftType: z.string().min(1, "Aircraft type is required."),
   catering: z.string().optional(),
@@ -80,7 +169,9 @@ export function CreateRfqDialog() {
       departure: "",
       arrival: "",
       departureDate: new Date().toISOString().split("T")[0],
+      departureTime: "10:00",
       returnDate: "",
+      returnTime: "16:00",
       pax: 1,
       aircraftType: "Any Light Jet",
       catering: "",
@@ -96,7 +187,7 @@ export function CreateRfqDialog() {
 
   const handleNext = async () => {
     let fieldsToValidate: any[] = [];
-    if (step === 'ROUTE') fieldsToValidate = ['departure', 'arrival', 'departureDate', 'tripType'];
+    if (step === 'ROUTE') fieldsToValidate = ['departure', 'arrival', 'departureDate', 'departureTime', 'tripType'];
     if (step === 'PREFERENCES') fieldsToValidate = ['pax', 'aircraftType'];
     
     const isValid = await form.trigger(fieldsToValidate as any);
@@ -129,12 +220,14 @@ export function CreateRfqDialog() {
         departure: data.departure,
         arrival: data.arrival,
         departureDate: data.departureDate,
+        departureTime: data.departureTime,
         pax: data.pax,
         aircraftType: data.aircraftType,
         status: isCtdUser ? 'Pending Approval' : 'Bidding Open',
         createdAt: new Date().toISOString(),
         bidsCount: 0,
         ...(data.returnDate && { returnDate: data.returnDate }),
+        ...(data.returnTime && { returnTime: data.returnTime }),
         ...(data.catering && { catering: data.catering }),
         ...(data.specialRequirements && { specialRequirements: data.specialRequirements }),
         ...(data.hotelRequired && { hotelRequired: data.hotelRequired, hotelPreferences: data.hotelPreferences }),
@@ -221,7 +314,11 @@ export function CreateRfqDialog() {
                       <FormItem>
                         <FormLabel>Departure From</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g., Mumbai (VABB)" {...field} />
+                          <AutocompleteInput 
+                            placeholder="e.g., Mumbai (VABB)" 
+                            value={field.value} 
+                            onChange={field.onChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -234,7 +331,11 @@ export function CreateRfqDialog() {
                       <FormItem>
                         <FormLabel>Arrival At</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g., Delhi (VIDP)" {...field} />
+                          <AutocompleteInput 
+                            placeholder="e.g., Delhi (VIDP)" 
+                            value={field.value} 
+                            onChange={field.onChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -242,33 +343,63 @@ export function CreateRfqDialog() {
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                        control={form.control}
-                        name="departureDate"
-                        render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Departure Date</FormLabel>
-                            <FormControl>
-                            <Input type="date" {...field} min={new Date().toISOString().split("T")[0]} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                    {formData.tripType === "Return" && (
+                    <div className="grid grid-cols-2 gap-2">
                         <FormField
                             control={form.control}
-                            name="returnDate"
+                            name="departureDate"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Return Date</FormLabel>
+                                <FormLabel>Departure Date</FormLabel>
                                 <FormControl>
-                                <Input type="date" {...field} min={formData.departureDate} />
+                                <Input type="date" {...field} min={new Date().toISOString().split("T")[0]} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="departureTime"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Time</FormLabel>
+                                <FormControl>
+                                <Input type="time" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                    </div>
+                    {formData.tripType === "Return" && (
+                        <div className="grid grid-cols-2 gap-2">
+                            <FormField
+                                control={form.control}
+                                name="returnDate"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Return Date</FormLabel>
+                                    <FormControl>
+                                    <Input type="date" {...field} min={formData.departureDate} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="returnTime"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Time</FormLabel>
+                                    <FormControl>
+                                    <Input type="time" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                        </div>
                     )}
                 </div>
               </div>
@@ -401,8 +532,26 @@ export function CreateRfqDialog() {
                         </div>
                         <div className="space-y-1 text-right">
                             <Label className="text-muted-foreground text-[10px] uppercase">Departure</Label>
-                            <p className="text-sm font-medium">{formData.departureDate}</p>
+                            <p className="text-sm font-medium flex items-center justify-end gap-1.5">
+                                <Calendar className="h-3 w-3" /> {formData.departureDate}
+                                <Clock className="h-3 w-3 ml-1" /> {formData.departureTime}
+                            </p>
                         </div>
+                        {formData.tripType === "Return" && (
+                            <>
+                                <div className="space-y-1">
+                                    <Label className="text-muted-foreground text-[10px] uppercase">Return Leg</Label>
+                                    <p className="text-sm font-medium">{formData.arrival} → {formData.departure}</p>
+                                </div>
+                                <div className="space-y-1 text-right">
+                                    <Label className="text-muted-foreground text-[10px] uppercase">Return Schedule</Label>
+                                    <p className="text-sm font-medium flex items-center justify-end gap-1.5">
+                                        <Calendar className="h-3 w-3" /> {formData.returnDate}
+                                        <Clock className="h-3 w-3 ml-1" /> {formData.returnTime}
+                                    </p>
+                                </div>
+                            </>
+                        )}
                         <div className="space-y-1">
                             <Label className="text-muted-foreground text-[10px] uppercase">Passengers</Label>
                             <p className="text-sm font-medium flex items-center gap-1"><Users className="h-3 w-3" /> {formData.pax} Guest(s)</p>
