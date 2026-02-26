@@ -31,7 +31,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FilePlus, ArrowRight, ArrowLeft, CheckCircle2, Plane, Calendar, Users, Hotel, Clock } from "lucide-react";
+import { FilePlus, ArrowRight, ArrowLeft, CheckCircle2, Plane, Calendar, Users, Hotel, Clock, ShieldCheck, Briefcase } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -152,7 +152,7 @@ const rfqSchema = z.object({
 
 type RfqFormValues = z.infer<typeof rfqSchema>;
 
-type Step = 'ROUTE' | 'PREFERENCES' | 'STAY' | 'SUMMARY';
+type Step = 'ROUTE' | 'PREFERENCES' | 'GOVERNANCE' | 'STAY' | 'SUMMARY';
 
 export function CreateRfqDialog() {
   const [open, setOpen] = useState(false);
@@ -160,7 +160,7 @@ export function CreateRfqDialog() {
   const { toast } = useToast();
   const { user } = useUser();
   const firestore = useFirestore();
-  const isCtdUser = user?.role === 'CTD Admin';
+  const isCorporate = user?.role === 'CTD Admin' || user?.role === 'Corporate Admin' || user?.role === 'Requester';
 
   const form = useForm<RfqFormValues>({
     resolver: zodResolver(rfqSchema),
@@ -189,18 +189,27 @@ export function CreateRfqDialog() {
     let fieldsToValidate: any[] = [];
     if (step === 'ROUTE') fieldsToValidate = ['departure', 'arrival', 'departureDate', 'departureTime', 'tripType'];
     if (step === 'PREFERENCES') fieldsToValidate = ['pax', 'aircraftType'];
+    if (step === 'GOVERNANCE') fieldsToValidate = ['businessPurpose', 'costCenter'];
     
     const isValid = await form.trigger(fieldsToValidate as any);
     if (!isValid) return;
 
     if (step === 'ROUTE') setStep('PREFERENCES');
-    else if (step === 'PREFERENCES') setStep('STAY');
+    else if (step === 'PREFERENCES') {
+        if (isCorporate) setStep('GOVERNANCE');
+        else setStep('STAY');
+    }
+    else if (step === 'GOVERNANCE') setStep('STAY');
     else if (step === 'STAY') setStep('SUMMARY');
   };
 
   const handleBack = () => {
     if (step === 'PREFERENCES') setStep('ROUTE');
-    else if (step === 'STAY') setStep('PREFERENCES');
+    else if (step === 'GOVERNANCE') setStep('PREFERENCES');
+    else if (step === 'STAY') {
+        if (isCorporate) setStep('GOVERNANCE');
+        else setStep('PREFERENCES');
+    }
     else if (step === 'SUMMARY') setStep('STAY');
   };
 
@@ -211,6 +220,9 @@ export function CreateRfqDialog() {
     }
 
     const rfqCollectionRef = collection(firestore, 'charterRFQs');
+
+    // Corporate logic: Requests move to 'Pending Approval' (Internal)
+    const status = isCorporate ? 'Pending Approval' : 'Bidding Open';
 
     addDocumentNonBlocking(rfqCollectionRef, {
         customerId: user.id,
@@ -223,7 +235,7 @@ export function CreateRfqDialog() {
         departureTime: data.departureTime,
         pax: data.pax,
         aircraftType: data.aircraftType,
-        status: isCtdUser ? 'Pending Approval' : 'Bidding Open',
+        status: status,
         createdAt: new Date().toISOString(),
         bidsCount: 0,
         ...(data.returnDate && { returnDate: data.returnDate }),
@@ -231,12 +243,14 @@ export function CreateRfqDialog() {
         ...(data.catering && { catering: data.catering }),
         ...(data.specialRequirements && { specialRequirements: data.specialRequirements }),
         ...(data.hotelRequired && { hotelRequired: data.hotelRequired, hotelPreferences: data.hotelPreferences }),
-        ...(isCtdUser && { businessPurpose: data.businessPurpose, costCenter: data.costCenter, company: user.company }),
+        ...(isCorporate && { businessPurpose: data.businessPurpose, costCenter: data.costCenter, company: user.company }),
     });
     
     toast({
-        title: "Flight Request Submitted",
-        description: "Your request is now under coordination with our network operators.",
+        title: isCorporate ? "Internal Approval Requested" : "Flight Request Submitted",
+        description: isCorporate 
+            ? "Your request has been sent to the Travel Desk for governance review." 
+            : "Your request is now under coordination with our network operators.",
     });
     setOpen(false);
     form.reset();
@@ -254,27 +268,29 @@ export function CreateRfqDialog() {
       <DialogTrigger asChild>
         <Button>
           <FilePlus className="mr-2 h-4 w-4" />
-          Request a Flight
+          {isCorporate ? "Create Travel Request" : "Request a Flight"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] overflow-hidden flex flex-col max-h-[90vh]">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <Badge variant="outline" className="text-[10px] uppercase tracking-widest font-bold text-accent border-accent/20">
-                Step {step === 'ROUTE' ? '1' : step === 'PREFERENCES' ? '2' : step === 'STAY' ? '3' : '4'} of 4
+                Step {step === 'ROUTE' ? '1' : step === 'PREFERENCES' ? '2' : step === 'GOVERNANCE' ? '3' : step === 'STAY' ? '4' : '5'} of {isCorporate ? '5' : '4'}
             </Badge>
           </div>
           <DialogTitle>
             {step === 'ROUTE' && "Where are we going?"}
             {step === 'PREFERENCES' && "Passenger & Aircraft Preferences"}
+            {step === 'GOVERNANCE' && "Enterprise Governance"}
             {step === 'STAY' && "Destination Stay Services"}
             {step === 'SUMMARY' && "Review Your Journey"}
           </DialogTitle>
           <DialogDescription>
             {step === 'ROUTE' && "Specify your route and timing details."}
             {step === 'PREFERENCES' && "Tell us about your guests and flight needs."}
+            {step === 'GOVERNANCE' && "Mandatory data for corporate policy compliance."}
             {step === 'STAY' && "Optional hotel coordination at your destination."}
-            {step === 'SUMMARY' && "Final check before we notify our operators."}
+            {step === 'SUMMARY' && "Final check before internal submission."}
           </DialogDescription>
         </DialogHeader>
 
@@ -452,24 +468,49 @@ export function CreateRfqDialog() {
                     <FormItem>
                       <FormLabel>Catering & On-board Requirements</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="e.g., Specific meals, beverages, newspaper, floral arrangements..." {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="specialRequirements"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Operational Notes</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="e.g., Pet travel, medical equipment, ground transport needs..." {...field} />
+                        <Textarea placeholder="e.g., Specific meals, beverages..." {...field} />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </div>
+            )}
+
+            {step === 'GOVERNANCE' && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
+                    <div className="flex items-center gap-3 p-3 bg-muted/20 border border-white/5 rounded-lg mb-4">
+                        <ShieldCheck className="h-5 w-5 text-accent" />
+                        <p className="text-xs text-muted-foreground">
+                            This request is subject to the <span className="font-bold text-foreground">{user?.company}</span> Travel Policy.
+                        </p>
+                    </div>
+                    <FormField
+                        control={form.control}
+                        name="costCenter"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Cost Center / Project Reference</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="e.g., Q3-GLOBAL-SUMMIT" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="businessPurpose"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Justification / Business Purpose</FormLabel>
+                                <FormControl>
+                                    <Textarea placeholder="Detail the strategic requirement for this charter..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
             )}
 
             {step === 'STAY' && (
@@ -485,7 +526,7 @@ export function CreateRfqDialog() {
                                     Destination Accommodation
                                 </FormLabel>
                                 <FormDescription>
-                                    Would you like us to coordinate a hotel stay?
+                                    Coordinate hotel stays at destination?
                                 </FormDescription>
                             </div>
                             <FormControl>
@@ -506,7 +547,7 @@ export function CreateRfqDialog() {
                                 <FormLabel>Accommodation Preferences</FormLabel>
                                 <FormControl>
                                     <Textarea 
-                                        placeholder="e.g., Number of rooms, specific hotel chain, room category (Suite/King), proximity to city center..." 
+                                        placeholder="Specific hotel chains, room counts, or location preferences..." 
                                         {...field} 
                                     />
                                 </FormControl>
@@ -531,46 +572,27 @@ export function CreateRfqDialog() {
                             <p className="text-sm font-medium">{formData.departure} → {formData.arrival}</p>
                         </div>
                         <div className="space-y-1 text-right">
-                            <Label className="text-muted-foreground text-[10px] uppercase">Departure</Label>
+                            <Label className="text-muted-foreground text-[10px] uppercase">Schedule</Label>
                             <p className="text-sm font-medium flex items-center justify-end gap-1.5">
                                 <Calendar className="h-3 w-3" /> {formData.departureDate}
                                 <Clock className="h-3 w-3 ml-1" /> {formData.departureTime}
                             </p>
                         </div>
-                        {formData.tripType === "Return" && (
-                            <>
-                                <div className="space-y-1">
-                                    <Label className="text-muted-foreground text-[10px] uppercase">Return Leg</Label>
-                                    <p className="text-sm font-medium">{formData.arrival} → {formData.departure}</p>
-                                </div>
-                                <div className="space-y-1 text-right">
-                                    <Label className="text-muted-foreground text-[10px] uppercase">Return Schedule</Label>
-                                    <p className="text-sm font-medium flex items-center justify-end gap-1.5">
-                                        <Calendar className="h-3 w-3" /> {formData.returnDate}
-                                        <Clock className="h-3 w-3 ml-1" /> {formData.returnTime}
-                                    </p>
-                                </div>
-                            </>
+                        {isCorporate && (
+                            <div className="col-span-2 space-y-1 pt-2 border-t border-white/5">
+                                <Label className="text-muted-foreground text-[10px] uppercase flex items-center gap-1.5"><Briefcase className="h-3 w-3" /> Governance Context</Label>
+                                <p className="text-xs font-medium">Cost Center: {formData.costCenter || 'N/A'}</p>
+                                <p className="text-xs text-muted-foreground truncate">{formData.businessPurpose}</p>
+                            </div>
                         )}
-                        <div className="space-y-1">
-                            <Label className="text-muted-foreground text-[10px] uppercase">Passengers</Label>
-                            <p className="text-sm font-medium flex items-center gap-1"><Users className="h-3 w-3" /> {formData.pax} Guest(s)</p>
-                        </div>
-                        <div className="space-y-1 text-right">
-                            <Label className="text-muted-foreground text-[10px] uppercase">Aircraft</Label>
-                            <p className="text-sm font-medium flex items-center justify-end gap-1"><Plane className="h-3 w-3" /> {formData.aircraftType}</p>
-                        </div>
-                    </div>
-                    <Separator className="bg-white/5" />
-                    <div className="space-y-1">
-                        <Label className="text-muted-foreground text-[10px] uppercase">Hotel Stay</Label>
-                        <p className="text-sm font-medium">{formData.hotelRequired ? "Requested" : "No Stay Required"}</p>
                     </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-accent/10 border border-accent/20 rounded-lg">
                     <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                     <p className="text-xs text-accent/80 leading-relaxed">
-                        By submitting, your request enters our Coordination Protocol. Operators will review feasibility and submit quotations directly to your dashboard.
+                        {isCorporate 
+                            ? "By submitting, your request enters the Enterprise Approval Workflow. Upon internal sign-off, it will be synchronized with network operators."
+                            : "By submitting, your request enters our Coordination Protocol. Operators will review feasibility and submit quotations."}
                     </p>
                 </div>
               </div>
@@ -592,7 +614,7 @@ export function CreateRfqDialog() {
             
             {step === 'SUMMARY' ? (
               <Button type="button" onClick={form.handleSubmit(onSubmit)} className="bg-accent text-accent-foreground hover:bg-accent/90">
-                Confirm & Submit Request
+                {isCorporate ? "Submit for Approval" : "Confirm & Submit Request"}
               </Button>
             ) : (
               <Button type="button" onClick={handleNext}>

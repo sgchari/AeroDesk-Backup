@@ -52,11 +52,13 @@ const navItems = {
     { href: '/dashboard/travel-agency/reports', label: 'Reports / History', icon: History, color: 'text-fuchsia-500' },
   ],
   'CTD Admin': [
-    { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/ctd/approvals', label: 'All Requests', icon: GanttChartSquare, color: 'text-amber-500' },
+    { href: '/dashboard', label: 'Governance Dashboard', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/ctd/requests', label: 'Demand Queue', icon: FileText, color: 'text-blue-500' },
+    { href: '/dashboard/ctd/approvals', label: 'Approval Workflows', icon: ShieldCheck, color: 'text-amber-500' },
+    { href: '/dashboard/customer/empty-legs', label: 'Available Jet Seats', icon: Armchair, color: 'text-green-500' },
+    { href: '/dashboard/ctd/analytics', label: 'Reports / Analytics', icon: BarChart2, color: 'text-fuchsia-500' },
+    { href: '/dashboard/ctd/team', label: 'Personnel Registry', icon: Users, color: 'text-violet-500' },
     { href: '/dashboard/ctd/policies', label: 'Travel Policies', icon: Settings, color: 'text-gray-500' },
-    { href: '/dashboard/ctd/analytics', label: 'Analytics', icon: BarChart2, color: 'text-fuchsia-500' },
-    { href: '/dashboard/ctd/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
   ],
   'Hotel Partner': [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
