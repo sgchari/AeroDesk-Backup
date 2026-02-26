@@ -98,7 +98,10 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
              return db.corporateTravelDesks;
         case 'accommodationRequests':
             if (!currentUser) return [];
-            return db.accommodationRequests.filter(req => req.hotelPartnerId === currentUser.id);
+            return db.accommodationRequests.filter(req => 
+                req.hotelPartnerId === currentUser.id || 
+                req.requesterId === currentUser.id
+            );
         case 'users': return db.users; // Generic user collection for all roles
         case 'properties':
             if (!currentUser) return [];
@@ -227,5 +230,3 @@ export const mockStore = {
   updateDoc,
   deleteDoc
 };
-
-    

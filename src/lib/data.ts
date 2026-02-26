@@ -81,7 +81,8 @@ export const mockRoomCategories: RoomCategory[] = [
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
-    { id: 'ACC-CONF-301', tripReferenceId: 'RFQ-CONF-002', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'Sanjana Kumar', checkIn: '2024-08-15', checkOut: '2024-08-18', rooms: 1, status: 'Confirmed' },
+    { id: 'ACC-CONF-301', tripReferenceId: 'RFQ-CONF-002', tripType: 'Charter', requesterId: 'customer-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'Sanjana Kumar', checkIn: '2024-08-15', checkOut: '2024-08-18', rooms: 1, status: 'Confirmed' },
+    { id: 'ACC-AGENCY-401', tripReferenceId: 'RFQ-AGENCY-001', tripType: 'Charter', requesterId: 'distributor-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'VIP Client (Amit)', checkIn: '2024-09-15', checkOut: '2024-09-20', rooms: 3, status: 'Pending', specialRequests: 'Late check-in, high floor preferred.' },
 ];
 
 export const mockAuditLogs: AuditLog[] = [

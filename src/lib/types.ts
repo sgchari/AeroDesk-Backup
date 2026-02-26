@@ -168,6 +168,7 @@ export type AccommodationRequest = {
     id: string;
     tripReferenceId: string;
     tripType: 'Charter' | 'EmptyLeg';
+    requesterId: string; // The ID of the person/agency who made the request
     hotelPartnerId?: string;
     propertyId?: string;
     propertyName?: string;

@@ -14,6 +14,7 @@ import { collection, query, where, collectionGroup } from "firebase/firestore";
 import Link from "next/link";
 import { useUser } from "@/hooks/use-user";
 import { Badge } from "@/components/ui/badge";
+import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
 
 export function TravelAgencyDashboard() {
   const firestore = useFirestore();
@@ -48,7 +49,12 @@ export function TravelAgencyDashboard() {
 
   return (
     <>
-      <PageHeader title="Commercial Command View" description={`Immediate business situational awareness for ${user?.company || 'Your Agency'}.`} />
+      <PageHeader 
+        title="Commercial Command View" 
+        description={`Immediate business situational awareness for ${user?.company || 'Your Agency'}.`}
+      >
+        <CreateRfqDialog />
+      </PageHeader>
       
       <StatsGrid>
         <StatsCard title="Inventory Feed" href="/dashboard/travel-agency/available-seats" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.availableSeats.toString()} icon={Plane} description="Approved empty legs" />
