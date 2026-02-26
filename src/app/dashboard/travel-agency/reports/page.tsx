@@ -26,7 +26,11 @@ import {
     Zap, 
     MapPin,
     Clock,
-    BarChart3
+    BarChart3,
+    ArrowUpRight,
+    PieChart as PieIcon,
+    Coins,
+    TrendingDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,24 +47,41 @@ import {
     Area, 
     PieChart, 
     Pie, 
-    Cell 
+    Cell,
+    LineChart,
+    Line
 } from 'recharts';
 import { AgencyAIInsights } from "@/components/dashboard/travel-agency/reports/ai-insights";
 
 const COLORS = ['#0EA5E9', '#EEDC5B', '#F43F5E', '#10B981', '#8B5CF6'];
 
 const sectorTrendData = [
-    { name: 'BOM-DEL', activity: 45, value: 8500000 },
-    { name: 'DEL-LHR', activity: 32, value: 12000000 },
-    { name: 'BLR-GOI', activity: 28, value: 2500000 },
-    { name: 'MAA-SIN', activity: 15, value: 6800000 },
-    { name: 'BOM-DXB', activity: 22, value: 9200000 },
+    { name: 'BOM-DEL', activity: 45, revenue: 8500000, yield: 1.2 },
+    { name: 'DEL-LHR', activity: 32, revenue: 12000000, yield: 1.5 },
+    { name: 'BLR-GOI', activity: 28, revenue: 2500000, yield: 0.8 },
+    { name: 'MAA-SIN', activity: 15, revenue: 6800000, yield: 1.1 },
+    { name: 'BOM-DXB', activity: 22, revenue: 9200000, yield: 1.3 },
+];
+
+const revenueContributionData = [
+    { name: 'Charter Sales', value: 65, color: '#0EA5E9' },
+    { name: 'Seat Allocations', value: 35, color: '#EEDC5B' },
+];
+
+const dailyRevenueData = [
+    { day: 'Mon', revenue: 1200000 },
+    { day: 'Tue', revenue: 900000 },
+    { day: 'Wed', revenue: 1500000 },
+    { day: 'Thu', revenue: 2100000 },
+    { day: 'Fri', revenue: 1800000 },
+    { day: 'Sat', revenue: 2400000 },
+    { day: 'Sun', revenue: 1100000 },
 ];
 
 const conversionData = [
-    { month: 'May', requested: 20, approved: 12 },
-    { month: 'Jun', requested: 25, approved: 18 },
-    { month: 'Jul', requested: 35, approved: 22 },
+    { month: 'May', requested: 20, approved: 12, revenue: 4500000 },
+    { month: 'Jun', requested: 25, approved: 18, revenue: 6200000 },
+    { month: 'Jul', requested: 35, approved: 22, revenue: 8100000 },
 ];
 
 export default function AgencyReportsPage() {
@@ -98,20 +119,21 @@ export default function AgencyReportsPage() {
 
     const stats = {
         grossVolume: "₹ 1.4 Cr",
+        seatYield: "₹ 42.5 L",
+        charterYield: "₹ 97.5 L",
+        avgTransaction: "₹ 5.8 L",
         completedMovements: (charterHistory.filter(c => c.status === 'Confirmed').length + seatHistory.filter(s => s.status === 'Approved').length),
-        conversionRate: charterHistory.length > 0 ? Math.round((charterHistory.filter(c => c.status === 'Confirmed').length / charterHistory.length) * 100) : 0,
-        fulfillmentRatio: seatHistory.length > 0 ? Math.round((seatHistory.filter(s => s.status === 'Approved').length / seatHistory.length) * 100) : 0
     };
 
     return (
         <>
             <PageHeader 
-                title="Agency Intelligence & Performance" 
-                description="Strategic demand analysis, conversion tracking, and institutional audit visibility."
+                title="Revenue & Performance Intelligence" 
+                description="Strategic demand analysis, yield tracking, and commercial coordination audit."
             >
                 <div className="flex gap-2">
                     <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10">
-                        <Download className="h-3.5 w-3.5" /> Export Insights
+                        <Download className="h-3.5 w-3.5" /> Export Financials
                     </Button>
                 </div>
             </PageHeader>
@@ -121,49 +143,177 @@ export default function AgencyReportsPage() {
                     title="Gross Coordination" 
                     value={isLoading ? <Skeleton className="h-6 w-20" /> : stats.grossVolume} 
                     icon={DollarSign} 
-                    description="Simulated mission volume" 
+                    description="Total commercial volume" 
                 />
                 <StatsCard 
-                    title="Movement Success" 
-                    value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.completedMovements.toString()} 
-                    icon={Target} 
-                    description="Confirmed & Synchronized" 
-                />
-                <StatsCard 
-                    title="Lead Conversion" 
-                    value={isLoading ? <Skeleton className="h-6 w-12" /> : `${stats.conversionRate}%`} 
-                    icon={TrendingUp} 
-                    description="RFQ to Confirmation" 
-                />
-                <StatsCard 
-                    title="Seat Fulfillment" 
-                    value={isLoading ? <Skeleton className="h-6 w-12" /> : `${stats.fulfillmentRatio}%`} 
+                    title="Seat Sales Yield" 
+                    value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.seatYield} 
                     icon={Zap} 
-                    description="Lead to Approved Block" 
+                    description="EL Recovery contribution" 
+                />
+                <StatsCard 
+                    title="Charter Yield" 
+                    value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.charterYield} 
+                    icon={Target} 
+                    description="Full mission revenue" 
+                />
+                <StatsCard 
+                    title="Avg. Transaction" 
+                    value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.avgTransaction} 
+                    icon={Coins} 
+                    description="Per confirmed movement" 
                 />
             </StatsGrid>
 
             <div className="mt-6 space-y-6">
                 <AgencyAIInsights />
 
-                <Tabs defaultValue="performance" className="w-full">
+                <Tabs defaultValue="revenue" className="w-full">
                     <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1">
+                        <TabsTrigger value="revenue" className="gap-2">
+                            <DollarSign className="h-3.5 w-3.5" /> Revenue Intelligence
+                        </TabsTrigger>
                         <TabsTrigger value="performance" className="gap-2">
-                            <BarChart3 className="h-3.5 w-3.5" /> Performance Funnels
+                            <BarChart3 className="h-3.5 w-3.5" /> Conversion Metrics
                         </TabsTrigger>
                         <TabsTrigger value="trends" className="gap-2">
-                            <MapPin className="h-3.5 w-3.5" /> Sector Insights
+                            <MapPin className="h-3.5 w-3.5" /> Sector Trends
                         </TabsTrigger>
                         <TabsTrigger value="history" className="gap-2">
                             <History className="h-3.5 w-3.5" /> Activity Archive
                         </TabsTrigger>
                     </TabsList>
 
+                    <TabsContent value="revenue" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                        <div className="grid gap-6 md:grid-cols-3">
+                            <Card className="md:col-span-2 bg-card">
+                                <CardHeader>
+                                    <CardTitle>Commercial Yield Direction</CardTitle>
+                                    <CardDescription>Daily revenue flow across all client coordination.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[350px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <LineChart data={dailyRevenueData}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                            <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
+                                            <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `₹${val/100000}L`} />
+                                            <Tooltip 
+                                                formatter={(val: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(val)}
+                                                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }}
+                                            />
+                                            <Line type="monotone" dataKey="revenue" stroke="#EEDC5B" strokeWidth={3} dot={{ fill: '#EEDC5B', r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-card">
+                                <CardHeader>
+                                    <CardTitle>Contribution Mix</CardTitle>
+                                    <CardDescription>Charter vs. Seat sales share.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[250px] flex flex-col justify-center">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={revenueContributionData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                            >
+                                                {revenueContributionData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                    <div className="space-y-2 mt-4">
+                                        {revenueContributionData.map(item => (
+                                            <div key={item.name} className="flex items-center justify-between text-[10px] uppercase font-bold">
+                                                <div className="flex items-center gap-1.5">
+                                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                                                    {item.name}
+                                                </div>
+                                                <span>{item.value}%</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        <div className="grid gap-6 md:grid-cols-2">
+                            <Card className="bg-card">
+                                <CardHeader>
+                                    <CardTitle>Conversion Efficiency vs. Revenue</CardTitle>
+                                    <CardDescription>Comparing request volume against realized commercial value.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[300px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={conversionData}>
+                                            <defs>
+                                                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+                                                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                                                </linearGradient>
+                                            </defs>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                            <XAxis dataKey="month" stroke="#94a3b8" fontSize={10} />
+                                            <YAxis stroke="#94a3b8" fontSize={10} />
+                                            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
+                                            <Area type="monotone" dataKey="revenue" stroke="#10B981" fillOpacity={1} fill="url(#colorRev)" name="Revenue Flow" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-card flex flex-col justify-center">
+                                <CardHeader>
+                                    <CardTitle>Commercial Efficiency Signals</CardTitle>
+                                    <CardDescription>Institutional profitability indicators.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
+                                            <span>Requests vs. Revenue Ratio</span>
+                                            <span className="text-accent">High (8.2)</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                            <div className="h-full bg-accent w-[82%]" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
+                                            <span>Seat Request Yield</span>
+                                            <span className="text-sky-400">₹ 1.2 L / Lead</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                            <div className="h-full bg-sky-400 w-[65%]" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
+                                            <span>Lost Revenue Impact</span>
+                                            <span className="text-rose-500">Medium (12%)</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                            <div className="h-full bg-rose-500 w-[12%]" />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </TabsContent>
+
                     <TabsContent value="performance" className="space-y-6 animate-in fade-in slide-in-from-top-2">
                         <div className="grid gap-6 md:grid-cols-2">
                             <Card className="bg-card">
                                 <CardHeader>
-                                    <CardTitle>Seat Allocation Success</CardTitle>
+                                    <CardTitle>Lead Fulfillment Ratio</CardTitle>
                                     <CardDescription>Requested vs. Approved blocks over time.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="h-[300px]">
@@ -214,15 +364,6 @@ export default function AgencyReportsPage() {
                                             <div className="h-full bg-sky-400 w-[95%]" />
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
-                                            <span>Fulfillment Reliability</span>
-                                            <span className="text-green-500">92%</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-green-500 w-[92%]" />
-                                        </div>
-                                    </div>
                                 </CardContent>
                             </Card>
                         </div>
@@ -232,8 +373,8 @@ export default function AgencyReportsPage() {
                         <div className="grid gap-6 md:grid-cols-3">
                             <Card className="md:col-span-2 bg-card">
                                 <CardHeader>
-                                    <CardTitle>Top Demand Sectors</CardTitle>
-                                    <CardDescription>Activity concentration across key routes.</CardDescription>
+                                    <CardTitle>High-Revenue Sectors</CardTitle>
+                                    <CardDescription>Commercial value concentration across key routes.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="h-[350px]">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -242,9 +383,10 @@ export default function AgencyReportsPage() {
                                             <XAxis type="number" stroke="#94a3b8" fontSize={10} hide />
                                             <YAxis type="category" dataKey="name" stroke="#94a3b8" fontSize={10} width={80} />
                                             <Tooltip 
+                                                formatter={(val: number) => `₹${val/100000}L`}
                                                 contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }}
                                             />
-                                            <Bar dataKey="activity" name="Movement Count" fill="#0EA5E9" radius={[0, 4, 4, 0]} />
+                                            <Bar dataKey="revenue" name="Sector Revenue" fill="#0EA5E9" radius={[0, 4, 4, 0]} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </CardContent>
@@ -252,37 +394,22 @@ export default function AgencyReportsPage() {
 
                             <Card className="bg-card">
                                 <CardHeader>
-                                    <CardTitle>Demand Mix</CardTitle>
-                                    <CardDescription>Charter vs. Seat preference.</CardDescription>
+                                    <CardTitle>Yield Signals</CardTitle>
+                                    <CardDescription>Demand density correlation.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="h-[250px] flex flex-col justify-center">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart>
-                                            <Pie
-                                                data={[
-                                                    { name: 'Full Charter', value: 65 },
-                                                    { name: 'Seat Allocation', value: 35 }
-                                                ]}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                            >
-                                                <Cell fill="#0EA5E9" />
-                                                <Cell fill="#EEDC5B" />
-                                            </Pie>
-                                            <Tooltip />
-                                        </PieChart>
-                                    </ResponsiveContainer>
-                                    <div className="flex justify-center gap-4 mt-4">
-                                        <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold">
-                                            <div className="w-2 h-2 rounded-full bg-sky-500" /> Charter
-                                        </div>
-                                        <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold">
-                                            <div className="w-2 h-2 rounded-full bg-accent" /> Seats
-                                        </div>
+                                    <div className="space-y-4">
+                                        {sectorTrendData.slice(0, 4).map(sector => (
+                                            <div key={sector.name} className="flex items-center justify-between">
+                                                <div className="space-y-0.5">
+                                                    <p className="text-xs font-bold uppercase">{sector.name}</p>
+                                                    <p className="text-[9px] text-muted-foreground">Yield Factor: {sector.yield}x</p>
+                                                </div>
+                                                <Badge variant="outline" className="text-[10px] text-green-500 border-green-500/20">
+                                                    STABLE
+                                                </Badge>
+                                            </div>
+                                        ))}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -304,8 +431,8 @@ export default function AgencyReportsPage() {
 
                         <Card className="bg-card">
                             <CardHeader>
-                                <CardTitle>Institutional Activity Archive</CardTitle>
-                                <CardDescription>Consolidated record of all client movements and coordination outcomes.</CardDescription>
+                                <CardTitle>Commercial Activity Archive</CardTitle>
+                                <CardDescription>Consolidated record of all client movements and commercial outcomes.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 {isLoading ? <Skeleton className="h-64 w-full" /> : (

@@ -2,34 +2,34 @@
 'use client';
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, TrendingUp, AlertCircle, ArrowUpRight, ArrowDownRight, Zap } from "lucide-react";
+import { Sparkles, TrendingUp, AlertCircle, ArrowUpRight, ArrowDownRight, Zap, Target, Coins } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const insights = [
     {
-        type: 'DEMAND',
-        title: 'Mumbai Sector Spike',
-        description: 'BOM-DEL seat demand has increased by 40% this week. Suggest pre-emptive block requests for Tier-1 clients.',
+        type: 'COMMERCIAL',
+        title: 'BOM-DEL Conversion Drop',
+        description: 'Seat conversion on high-demand Mumbai sectors has declined by 15%. Suggest prioritizing alternate operators for better yield.',
         impact: 'High',
-        trend: 'up',
-        color: 'text-sky-400'
+        trend: 'down',
+        color: 'text-rose-400'
     },
     {
-        type: 'OPPORTUNITY',
-        title: 'Empty Leg Recovery',
-        description: 'Institutional load efficiency for Stark Industries is currently 95%. High opportunity for incremental seat sales.',
-        impact: 'Medium',
+        type: 'REVENUE',
+        title: 'Charter Deal Growth',
+        description: 'Avg. charter deal value for Stark Industries has increased by 22% this quarter. High-value pattern detected.',
+        impact: 'High',
         trend: 'up',
         color: 'text-green-500'
     },
     {
-        type: 'ALERT',
-        title: 'Operator Response Lag',
-        description: 'Avg. quote response time for Mid-size jet RFQs has increased to 4 hours. Coordination friction alert.',
+        type: 'OPPORTUNITY',
+        title: 'Regional Yield Spike',
+        description: 'Unusual revenue concentration observed in South Zone turboprop sectors. Opportunity for regional client expansion.',
         impact: 'Medium',
-        trend: 'down',
-        color: 'text-amber-500'
+        trend: 'up',
+        color: 'text-sky-400'
     }
 ];
 
@@ -45,8 +45,8 @@ export function AgencyAIInsights() {
                         <Sparkles className="h-5 w-5 text-accent animate-pulse" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-accent">Agency AI Intelligence</h3>
-                        <p className="text-[10px] text-muted-foreground font-bold">CLIENT BEHAVIOR & CONVERSION ANOMALY DETECTION</p>
+                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-accent">Commercial Intelligence Layer</h3>
+                        <p className="text-[10px] text-muted-foreground font-bold">REVENUE ANOMALIES & YIELD GROWTH OPPORTUNITIES</p>
                     </div>
                     <Badge variant="outline" className="ml-auto bg-black/20 text-accent border-accent/20 font-code text-[10px]">
                         MARKET SYNC ACTIVE
@@ -78,7 +78,7 @@ export function AgencyAIInsights() {
                                 <span className="text-[9px] font-bold text-muted-foreground/60 uppercase">Impact: {insight.impact}</span>
                                 <div className="flex gap-1">
                                     <div className="w-1 h-1 rounded-full bg-accent animate-ping" />
-                                    <span className="text-[8px] font-code text-accent uppercase tracking-tighter">Live Lead</span>
+                                    <span className="text-[8px] font-code text-accent uppercase tracking-tighter">Live Signal</span>
                                 </div>
                             </div>
                         </div>
