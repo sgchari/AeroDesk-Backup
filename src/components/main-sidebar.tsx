@@ -47,6 +47,7 @@ const navItems: Record<string, any[]> = {
     { href: '/dashboard/operator/seat-requests', label: 'Seat Requests', icon: Users, color: 'text-violet-400' },
     { href: '/dashboard/operator/fleet', label: 'Fleet & Availability', icon: Plane, color: 'text-slate-400' },
     { href: '/dashboard/operator/crew', label: 'Crew & Logistics', icon: Users, color: 'text-blue-400' },
+    { href: '/dashboard/operator/reports', label: 'Analytics & Insights', icon: BarChart2, color: 'text-fuchsia-400' },
   ],
   'Travel Agency': [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-400' },
