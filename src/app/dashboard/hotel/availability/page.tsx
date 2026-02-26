@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -20,6 +19,7 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon, Info, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { SystemAdvisory } from "@/components/dashboard/operator/system-advisory";
+import { Separator } from "@/components/ui/separator";
 
 export default function HotelAvailabilityPage() {
     const { user, isLoading: isUserLoading } = useUser();
@@ -138,7 +138,7 @@ export default function HotelAvailabilityPage() {
                                         <SystemAdvisory 
                                             level="INFO"
                                             title="Live Signal"
-                                            message="This inventory is currently visible to charter re questers and authorized distributors."
+                                            message="This inventory is currently visible to charter requesters and authorized distributors."
                                         />
                                     </div>
                                 </div>
