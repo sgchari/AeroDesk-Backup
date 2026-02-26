@@ -186,6 +186,60 @@ export const mockBlogPosts: BlogPost[] = [
     imageUrl: 'https://images.unsplash.com/photo-1727640024516-ae12e5b9e90d?q=80&w=1080',
     author: 'Network Intel',
     date: '2024-07-22'
+  },
+  {
+    id: 'post-5',
+    title: 'The Future of Tier-2 Connectivity: Regional Airports Expansion',
+    excerpt: 'How the UDAN scheme and private infrastructure investments are transforming regional travel accessibility.',
+    category: 'Industry',
+    imageUrl: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1080',
+    author: 'Infrastructure Desk',
+    date: '2024-07-20'
+  },
+  {
+    id: 'post-6',
+    title: 'Sustainability in Charter: Biofuels and Modern Engine Efficiency',
+    excerpt: 'Assessing the adoption of Sustainable Aviation Fuel (SAF) among NSOP operators in the Indian subcontinent.',
+    category: 'Market Trends',
+    imageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1080',
+    author: 'Eco Intel',
+    date: '2024-07-18'
+  },
+  {
+    id: 'post-7',
+    title: 'High-Net-Worth Mobility: Seasonal Shifts in Private Aviation Demand',
+    excerpt: 'Analyzing travel patterns during the peak summer and winter seasons across major metropolitan hubs.',
+    category: 'Market Trends',
+    imageUrl: 'https://images.unsplash.com/photo-1520437358207-323b43b50729?q=80&w=1080',
+    author: 'Data Analytics',
+    date: '2024-07-15'
+  },
+  {
+    id: 'post-8',
+    title: 'Cybersecurity in Flight Ops: Protecting High-Value Passenger Data',
+    excerpt: 'Institutional protocols for maintaining data integrity and privacy in digitized charter coordination workflows.',
+    category: 'Insights',
+    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1080',
+    author: 'Security Ops',
+    date: '2024-07-12'
+  },
+  {
+    id: 'post-9',
+    title: 'The Rise of Hybrid-Electric Vertical Take-Off (eVTOL) in India',
+    excerpt: 'Evaluating the feasibility of urban air mobility solutions for Tier-1 Indian traffic congestion.',
+    category: 'Industry',
+    imageUrl: 'https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=1080',
+    author: 'Innovation Desk',
+    date: '2024-07-10'
+  },
+  {
+    id: 'post-10',
+    title: 'Medical Evacuation (MEDEVAC): Infrastructure & Response Protocols',
+    excerpt: 'A review of the specialized logistics required for life-critical charter operations in remote regions.',
+    category: 'Insights',
+    imageUrl: 'https://images.unsplash.com/photo-1516504013220-0fc147b5c60c?q=80&w=1080',
+    author: 'Medical Logistics',
+    date: '2024-07-05'
   }
 ];
 
