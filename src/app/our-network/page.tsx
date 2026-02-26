@@ -140,83 +140,83 @@ export default function OurNetworkPage() {
                 <LandingHeader activePage="Our Network" />
                 
                 <main className="flex-1 relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
-                    <div className="container relative z-10 max-w-6xl w-full h-[70vh] min-h-[500px]">
+                    <div className="container relative z-10 max-w-7xl w-full h-[75vh] min-h-[600px] flex flex-col lg:flex-row gap-8 items-center lg:items-stretch">
                         
                         {/* Legend / Stats Panel */}
-                        <div className="absolute top-0 left-0 z-40 w-full sm:w-72 bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl p-5 shadow-2xl space-y-4">
-                            <div className="space-y-1 border-b border-white/10 pb-3">
-                                <h2 className="text-white font-bold text-lg tracking-tight flex items-center gap-2">
-                                    <Zap className="w-4 h-4 text-accent" /> Network Intel
+                        <div className="relative z-40 w-full sm:w-80 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl space-y-6 shrink-0 lg:self-start">
+                            <div className="space-y-1 border-b border-white/10 pb-4">
+                                <h2 className="text-white font-bold text-xl tracking-tight flex items-center gap-2">
+                                    <Zap className="w-5 h-5 text-accent" /> Our Network
                                 </h2>
                                 <p className="text-xs text-slate-300">Approved NSOP Infrastructure India</p>
                             </div>
                             
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between text-xs">
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between text-sm">
                                     <span className="text-slate-300 flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-green-400" /> Active Operators
+                                        <div className="w-2.5 h-2.5 rounded-full bg-green-400" /> Active Operators
                                     </span>
-                                    <span className="text-white font-mono">{operators?.filter(o => o.status === 'Approved').length || 0}</span>
+                                    <span className="text-white font-mono font-bold">{operators?.filter(o => o.status === 'Approved').length || 0}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-xs">
+                                <div className="flex items-center justify-between text-sm">
                                     <span className="text-slate-300 flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-amber-400" /> Pending Review
+                                        <div className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Pending Review
                                     </span>
-                                    <span className="text-white font-mono">{operators?.filter(o => o.status === 'Pending Approval').length || 0}</span>
+                                    <span className="text-white font-mono font-bold">{operators?.filter(o => o.status === 'Pending Approval').length || 0}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-xs">
+                                <div className="flex items-center justify-between text-sm">
                                     <span className="text-slate-300 flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-red-500" /> Suspended
+                                        <div className="w-2.5 h-2.5 rounded-full bg-red-500" /> Suspended
                                     </span>
-                                    <span className="text-white font-mono">{operators?.filter(o => ['Suspended', 'Rejected'].includes(o.status)).length || 0}</span>
+                                    <span className="text-white font-mono font-bold">{operators?.filter(o => ['Suspended', 'Rejected'].includes(o.status)).length || 0}</span>
                                 </div>
                             </div>
 
                             <div className="pt-2">
-                                <div className="p-3 bg-white/5 rounded-lg border border-white/5">
-                                    <p className="text-[10px] leading-relaxed text-slate-400 italic">
-                                        "AeroDesk enforces institutional governance across all operational sectors. Status updates are synchronized in real-time."
+                                <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                                    <p className="text-xs leading-relaxed text-slate-300 italic">
+                                        "AeroDesk delivers real-time operational visibility across the platform."
                                     </p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Zonal Map SVG Container */}
-                        <div className="relative w-full h-full flex items-center justify-center bg-black/10 backdrop-blur-[2px] rounded-3xl border border-white/5 shadow-inner">
+                        <div className="relative flex-1 w-full h-full flex items-center justify-center bg-black/10 backdrop-blur-[2px] rounded-3xl border border-white/5 shadow-inner overflow-hidden">
                             <svg viewBox="0 0 1000 800" className="w-full h-full drop-shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-                                {/* North Zone */}
+                                {/* North Zone - Royal Blue */}
                                 <path 
                                     d="M250 50 L550 50 L650 350 L350 350 Z" 
-                                    fill="rgba(99, 102, 241, 0.25)" 
+                                    fill="rgba(59, 130, 246, 0.3)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
                                 
-                                {/* West Zone */}
+                                {/* West Zone - Deep Purple */}
                                 <path 
                                     d="M50 350 L350 350 L400 650 L50 750 Z" 
-                                    fill="rgba(37, 99, 235, 0.25)" 
+                                    fill="rgba(139, 92, 246, 0.25)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
 
-                                {/* East Zone */}
+                                {/* East Zone - Rose/Pink */}
                                 <path 
                                     d="M650 350 L950 350 L900 550 L650 550 Z" 
-                                    fill="rgba(6, 182, 212, 0.25)" 
+                                    fill="rgba(244, 63, 94, 0.25)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
 
-                                {/* Central Zone */}
+                                {/* Central Zone - Amber */}
                                 <path 
                                     d="M350 350 L650 350 L650 550 L400 550 Z" 
-                                    fill="rgba(59, 130, 246, 0.15)" 
+                                    fill="rgba(245, 158, 11, 0.2)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
 
-                                {/* South Zone */}
+                                {/* South Zone - Emerald */}
                                 <path 
                                     d="M400 550 L650 550 L600 780 L450 780 Z" 
                                     fill="rgba(16, 185, 129, 0.25)" 
@@ -224,30 +224,30 @@ export default function OurNetworkPage() {
                                     strokeWidth="2" 
                                 />
 
-                                {/* North East Zone */}
+                                {/* North East Zone - Cyan */}
                                 <path 
                                     d="M750 250 L980 250 L980 450 L850 450 Z" 
-                                    fill="rgba(34, 211, 238, 0.3)" 
+                                    fill="rgba(6, 182, 212, 0.25)" 
                                     stroke="rgba(255,255,255,0.6)" 
                                     strokeWidth="2" 
                                 />
                             </svg>
 
-                            {/* Floating HTML Labels */}
+                            {/* Floating HTML Labels: Revised to Bold and clean names */}
                             <div className="absolute top-[15%] left-[50%] -translate-x-1/2 pointer-events-none">
-                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector North</span>
+                                <span className="text-xs font-black text-white/80 tracking-[0.4em] uppercase drop-shadow-md">NORTH</span>
                             </div>
                             <div className="absolute top-[65%] left-[25%] pointer-events-none">
-                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector West</span>
+                                <span className="text-xs font-black text-white/80 tracking-[0.4em] uppercase drop-shadow-md">WEST</span>
                             </div>
                             <div className="absolute top-[65%] left-[75%] pointer-events-none">
-                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector East</span>
+                                <span className="text-xs font-black text-white/80 tracking-[0.4em] uppercase drop-shadow-md">EAST</span>
                             </div>
                             <div className="absolute top-[45%] left-[50%] -translate-x-1/2 pointer-events-none">
-                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Central Command</span>
+                                <span className="text-xs font-black text-white/80 tracking-[0.4em] uppercase drop-shadow-md">CENTRAL</span>
                             </div>
                             <div className="absolute top-[85%] left-[50%] -translate-x-1/2 pointer-events-none">
-                                <span className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">Sector South</span>
+                                <span className="text-xs font-black text-white/80 tracking-[0.4em] uppercase drop-shadow-md">SOUTH</span>
                             </div>
 
                             {/* Operator Markers */}
