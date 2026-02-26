@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -12,24 +13,67 @@ import type { CharterRFQ, EmptyLegSeatAllocationRequest } from "@/lib/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
-import { Download, Search, Filter, History, TrendingUp, DollarSign, Plane } from "lucide-react";
+import { 
+    Download, 
+    Search, 
+    Filter, 
+    History, 
+    TrendingUp, 
+    DollarSign, 
+    Plane, 
+    Users, 
+    Target, 
+    Zap, 
+    MapPin,
+    Clock,
+    BarChart3
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { 
+    BarChart, 
+    Bar, 
+    XAxis, 
+    YAxis, 
+    CartesianGrid, 
+    Tooltip, 
+    ResponsiveContainer, 
+    AreaChart, 
+    Area, 
+    PieChart, 
+    Pie, 
+    Cell 
+} from 'recharts';
+import { AgencyAIInsights } from "@/components/dashboard/travel-agency/reports/ai-insights";
+
+const COLORS = ['#0EA5E9', '#EEDC5B', '#F43F5E', '#10B981', '#8B5CF6'];
+
+const sectorTrendData = [
+    { name: 'BOM-DEL', activity: 45, value: 8500000 },
+    { name: 'DEL-LHR', activity: 32, value: 12000000 },
+    { name: 'BLR-GOI', activity: 28, value: 2500000 },
+    { name: 'MAA-SIN', activity: 15, value: 6800000 },
+    { name: 'BOM-DXB', activity: 22, value: 9200000 },
+];
+
+const conversionData = [
+    { month: 'May', requested: 20, approved: 12 },
+    { month: 'Jun', requested: 25, approved: 18 },
+    { month: 'Jul', requested: 35, approved: 22 },
+];
 
 export default function AgencyReportsPage() {
     const { user, isLoading: isUserLoading } = useUser();
     const firestore = useFirestore();
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Fetch Charter History
     const charterQuery = useMemoFirebase(() => {
         if (!firestore || !user) return null;
         return query(collection(firestore, 'charterRFQs'), where('requesterExternalAuthId', '==', user.id));
     }, [firestore, user]);
     const { data: charters, isLoading: charterLoading } = useCollection<CharterRFQ>(charterQuery, 'charterRFQs');
 
-    // Fetch Seat Request History
     const seatQuery = useMemoFirebase(() => {
         if (!firestore || !user) return null;
         return query(collectionGroup(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
@@ -38,11 +82,9 @@ export default function AgencyReportsPage() {
 
     const isLoading = isUserLoading || charterLoading || seatLoading;
 
-    // Filter logic for "History" (Closed/Confirmed/Cancelled)
     const charterHistory = charters?.filter(c => ['Confirmed', 'Cancelled', 'Expired', 'Closed'].includes(c.status)) || [];
     const seatHistory = seatRequests?.filter(s => ['Approved', 'Rejected', 'Cancelled'].includes(s.status)) || [];
 
-    // Filter by search term
     const filteredCharters = charterHistory.filter(c => 
         c.departure.toLowerCase().includes(searchTerm.toLowerCase()) || 
         c.arrival.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -54,160 +96,259 @@ export default function AgencyReportsPage() {
         (s.clientReference?.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    // Calculate mock stats
-    const totalCharters = charterHistory.length;
-    const confirmedCharters = charterHistory.filter(c => c.status === 'Confirmed').length;
-    const conversionRate = totalCharters > 0 ? Math.round((confirmedCharters / totalCharters) * 100) : 0;
+    const stats = {
+        grossVolume: "₹ 1.4 Cr",
+        completedMovements: (charterHistory.filter(c => c.status === 'Confirmed').length + seatHistory.filter(s => s.status === 'Approved').length),
+        conversionRate: charterHistory.length > 0 ? Math.round((charterHistory.filter(c => c.status === 'Confirmed').length / charterHistory.length) * 100) : 0,
+        fulfillmentRatio: seatHistory.length > 0 ? Math.round((seatHistory.filter(s => s.status === 'Approved').length / seatHistory.length) * 100) : 0
+    };
 
     return (
         <>
             <PageHeader 
-                title="Reports & History" 
-                description="Audit institutional performance, track client trends, and export historical coordination data."
+                title="Agency Intelligence & Performance" 
+                description="Strategic demand analysis, conversion tracking, and institutional audit visibility."
             >
-                <Button variant="outline" className="gap-2">
-                    <Download className="h-4 w-4" />
-                    Export Audit CSV
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10">
+                        <Download className="h-3.5 w-3.5" /> Export Insights
+                    </Button>
+                </div>
             </PageHeader>
 
             <StatsGrid>
                 <StatsCard 
-                    title="Gross Coordination Value" 
-                    value={isLoading ? <Skeleton className="h-6 w-20" /> : "₹ 1.2 Cr"} 
+                    title="Gross Coordination" 
+                    value={isLoading ? <Skeleton className="h-6 w-20" /> : stats.grossVolume} 
                     icon={DollarSign} 
-                    description="Simulated total volume" 
+                    description="Simulated mission volume" 
                 />
                 <StatsCard 
-                    title="Completed Movements" 
-                    value={isLoading ? <Skeleton className="h-6 w-12" /> : (charterHistory.filter(c => c.status === 'Confirmed').length + seatHistory.filter(s => s.status === 'Approved').length).toString()} 
-                    icon={Plane} 
-                    description="Successfully synchronized" 
+                    title="Movement Success" 
+                    value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.completedMovements.toString()} 
+                    icon={Target} 
+                    description="Confirmed & Synchronized" 
                 />
                 <StatsCard 
-                    title="Inquiry Conversion" 
-                    value={isLoading ? <Skeleton className="h-6 w-12" /> : `${conversionRate}%`} 
+                    title="Lead Conversion" 
+                    value={isLoading ? <Skeleton className="h-6 w-12" /> : `${stats.conversionRate}%`} 
                     icon={TrendingUp} 
                     description="RFQ to Confirmation" 
                 />
                 <StatsCard 
-                    title="Audit Records" 
-                    value={isLoading ? <Skeleton className="h-6 w-12" /> : (charterHistory.length + seatHistory.length).toString()} 
-                    icon={History} 
-                    description="Total historical logs" 
+                    title="Seat Fulfillment" 
+                    value={isLoading ? <Skeleton className="h-6 w-12" /> : `${stats.fulfillmentRatio}%`} 
+                    icon={Zap} 
+                    description="Lead to Approved Block" 
                 />
             </StatsGrid>
 
-            <div className="flex flex-col md:flex-row gap-4 my-6">
-                <div className="relative flex-grow">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                        placeholder="Filter by sector, client ref, or ID..." 
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 bg-muted/20 border-white/10"
-                    />
-                </div>
-                <Button variant="outline" className="gap-2 border-white/10">
-                    <Filter className="h-4 w-4" />
-                    Date Filter
-                </Button>
+            <div className="mt-6 space-y-6">
+                <AgencyAIInsights />
+
+                <Tabs defaultValue="performance" className="w-full">
+                    <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1">
+                        <TabsTrigger value="performance" className="gap-2">
+                            <BarChart3 className="h-3.5 w-3.5" /> Performance Funnels
+                        </TabsTrigger>
+                        <TabsTrigger value="trends" className="gap-2">
+                            <MapPin className="h-3.5 w-3.5" /> Sector Insights
+                        </TabsTrigger>
+                        <TabsTrigger value="history" className="gap-2">
+                            <History className="h-3.5 w-3.5" /> Activity Archive
+                        </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="performance" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                        <div className="grid gap-6 md:grid-cols-2">
+                            <Card className="bg-card">
+                                <CardHeader>
+                                    <CardTitle>Seat Allocation Success</CardTitle>
+                                    <CardDescription>Requested vs. Approved blocks over time.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[300px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={conversionData}>
+                                            <defs>
+                                                <linearGradient id="colorReq" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3}/>
+                                                    <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                                                </linearGradient>
+                                                <linearGradient id="colorApp" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+                                                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                                                </linearGradient>
+                                            </defs>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                            <XAxis dataKey="month" stroke="#94a3b8" fontSize={10} />
+                                            <YAxis stroke="#94a3b8" fontSize={10} />
+                                            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
+                                            <Area type="monotone" dataKey="requested" stroke="#0EA5E9" fillOpacity={1} fill="url(#colorReq)" name="Requested" />
+                                            <Area type="monotone" dataKey="approved" stroke="#10B981" fillOpacity={1} fill="url(#colorApp)" name="Approved" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-card">
+                                <CardHeader>
+                                    <CardTitle>Coordination Efficiency</CardTitle>
+                                    <CardDescription>Response time vs. Conversion Ratio.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
+                                            <span>Charter Response Avg</span>
+                                            <span className="text-accent">2.4 Hours</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                            <div className="h-full bg-accent w-[85%]" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
+                                            <span>Seat Block Approval Time</span>
+                                            <span className="text-sky-400">1.1 Hours</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                            <div className="h-full bg-sky-400 w-[95%]" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
+                                            <span>Fulfillment Reliability</span>
+                                            <span className="text-green-500">92%</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                            <div className="h-full bg-green-500 w-[92%]" />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="trends" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                        <div className="grid gap-6 md:grid-cols-3">
+                            <Card className="md:col-span-2 bg-card">
+                                <CardHeader>
+                                    <CardTitle>Top Demand Sectors</CardTitle>
+                                    <CardDescription>Activity concentration across key routes.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[350px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={sectorTrendData} layout="vertical">
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
+                                            <XAxis type="number" stroke="#94a3b8" fontSize={10} hide />
+                                            <YAxis type="category" dataKey="name" stroke="#94a3b8" fontSize={10} width={80} />
+                                            <Tooltip 
+                                                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }}
+                                            />
+                                            <Bar dataKey="activity" name="Movement Count" fill="#0EA5E9" radius={[0, 4, 4, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-card">
+                                <CardHeader>
+                                    <CardTitle>Demand Mix</CardTitle>
+                                    <CardDescription>Charter vs. Seat preference.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[250px] flex flex-col justify-center">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={[
+                                                    { name: 'Full Charter', value: 65 },
+                                                    { name: 'Seat Allocation', value: 35 }
+                                                ]}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                            >
+                                                <Cell fill="#0EA5E9" />
+                                                <Cell fill="#EEDC5B" />
+                                            </Pie>
+                                            <Tooltip />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                    <div className="flex justify-center gap-4 mt-4">
+                                        <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold">
+                                            <div className="w-2 h-2 rounded-full bg-sky-500" /> Charter
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold">
+                                            <div className="w-2 h-2 rounded-full bg-accent" /> Seats
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="history" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                        <div className="flex flex-col md:flex-row gap-4 mb-2">
+                            <div className="relative flex-grow">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input 
+                                    placeholder="Filter by sector, client ref, or ID..." 
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="pl-10 bg-muted/20 border-white/10"
+                                />
+                            </div>
+                        </div>
+
+                        <Card className="bg-card">
+                            <CardHeader>
+                                <CardTitle>Institutional Activity Archive</CardTitle>
+                                <CardDescription>Consolidated record of all client movements and coordination outcomes.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {isLoading ? <Skeleton className="h-64 w-full" /> : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Execution ID</TableHead>
+                                                <TableHead>Type</TableHead>
+                                                <TableHead>Sector</TableHead>
+                                                <TableHead>Client Ref</TableHead>
+                                                <TableHead>Outcome</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {[...filteredCharters, ...filteredSeats].sort((a, b) => b.id.localeCompare(a.id)).map((item) => (
+                                                <TableRow key={item.id}>
+                                                    <TableCell className="font-code text-xs font-bold">{item.id}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant="outline" className="text-[8px] uppercase tracking-tighter">
+                                                            {('departure' in item) ? 'CHARTER' : 'SEAT BLOCK'}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-xs">
+                                                        {('departure' in item) ? `${item.departure} → ${item.arrival}` : (item as any).emptyLegId}
+                                                    </TableCell>
+                                                    <TableCell className="text-xs font-medium">
+                                                        {('customerName' in item) ? item.customerName : (item as any).clientReference || 'N/A'}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={item.status === 'Confirmed' || item.status === 'Approved' ? 'success' : 'secondary'} className="text-[9px] font-bold uppercase">
+                                                            {item.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
             </div>
-
-            <Tabs defaultValue="charters" className="w-full">
-                <TabsList className="bg-muted/20 border border-white/5 mb-4">
-                    <TabsTrigger value="charters">Charter History</TabsTrigger>
-                    <TabsTrigger value="seats">Seat Allocation History</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="charters">
-                    <Card className="bg-card">
-                        <CardHeader>
-                            <CardTitle>Historical Charter RFQs</CardTitle>
-                            <CardDescription>Detailed audit of institutional flight requests initiated by your agency.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {isLoading ? <Skeleton className="h-64 w-full" /> : (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>RFQ ID</TableHead>
-                                            <TableHead>Sector</TableHead>
-                                            <TableHead>Execution Date</TableHead>
-                                            <TableHead className="text-center">PAX</TableHead>
-                                            <TableHead>Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {filteredCharters.map((c) => (
-                                            <TableRow key={c.id}>
-                                                <TableCell className="font-code text-xs font-bold">{c.id}</TableCell>
-                                                <TableCell className="text-sm">{c.departure} → {c.arrival}</TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">{new Date(c.departureDate).toLocaleDateString()}</TableCell>
-                                                <TableCell className="text-center font-medium">{c.pax}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant={c.status === 'Confirmed' ? 'success' : 'outline'} className="text-[10px] uppercase font-bold">
-                                                        {c.status}
-                                                    </Badge>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            )}
-                            {(!isLoading && filteredCharters.length === 0) && (
-                                <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/5">
-                                    <p className="text-muted-foreground">No historical charter records found for the current filter.</p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                <TabsContent value="seats">
-                    <Card className="bg-card">
-                        <CardHeader>
-                            <CardTitle>Historical Seat Leads</CardTitle>
-                            <CardDescription>Archive of commercial seat allocation requests and outcomes.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {isLoading ? <Skeleton className="h-64 w-full" /> : (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Lead ID</TableHead>
-                                            <TableHead>Flight Ref</TableHead>
-                                            <TableHead>Client Reference</TableHead>
-                                            <TableHead className="text-center">Seats</TableHead>
-                                            <TableHead>Outcome</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {filteredSeats.map((s) => (
-                                            <TableRow key={s.id}>
-                                                <TableCell className="font-code text-xs">{s.id}</TableCell>
-                                                <TableCell className="font-code text-[10px] uppercase text-accent">{s.emptyLegId}</TableCell>
-                                                <TableCell className="text-sm font-medium">{s.clientReference || 'N/A'}</TableCell>
-                                                <TableCell className="text-center font-bold">{s.numberOfSeats}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant={s.status === 'Approved' ? 'success' : s.status === 'Rejected' ? 'destructive' : 'secondary'} className="text-[10px] uppercase font-bold">
-                                                        {s.status}
-                                                    </Badge>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            )}
-                            {(!isLoading && filteredSeats.length === 0) && (
-                                <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/5">
-                                    <p className="text-muted-foreground">No historical seat allocation records found.</p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
         </>
     );
 }
