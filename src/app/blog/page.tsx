@@ -105,47 +105,10 @@ export default function BlogPage() {
               ))}
             </nav>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
               
-              {/* Latest Articles Grid */}
-              <div className="lg:col-span-8">
-                <h3 className="text-xl font-semibold text-white mb-8 flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-accent" />
-                  Latest Intelligence
-                </h3>
-                <div className="grid md:grid-cols-2 gap-8">
-                  {latestPosts.map((post) => (
-                    <Card key={post.id} className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all flex flex-col">
-                      <div className="relative h-48 w-full">
-                        <Image
-                          src={post.imageUrl}
-                          alt={post.title}
-                          fill
-                          className="object-cover opacity-70 group-hover:opacity-90 transition-opacity"
-                        />
-                      </div>
-                      <CardContent className="p-6 flex flex-col flex-1">
-                        <span className="text-[10px] uppercase tracking-widest text-accent font-bold mb-3">
-                          {post.category}
-                        </span>
-                        <h4 className="text-lg font-bold text-white mb-3 group-hover:text-accent transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
-                        <p className="text-sm text-white/60 mb-6 line-clamp-2">
-                          {post.excerpt}
-                        </p>
-                        <Button variant="link" className="p-0 text-white hover:text-accent w-fit mt-auto group/btn">
-                          Read Insight
-                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-
-              {/* Minimalist Sidebar */}
-              <aside className="lg:col-span-4 space-y-12">
+              {/* Minimalist Sidebar - Shifted to Left */}
+              <aside className="lg:col-span-4 space-y-12 order-2 lg:order-1">
                 
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -217,6 +180,44 @@ export default function BlogPage() {
                 </div>
 
               </aside>
+
+              {/* Latest Articles Grid - Shifted to Right */}
+              <div className="lg:col-span-8 order-1 lg:order-2">
+                <h3 className="text-xl font-semibold text-white mb-8 flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-accent" />
+                  Latest Intelligence
+                </h3>
+                <div className="grid md:grid-cols-2 gap-8">
+                  {latestPosts.map((post) => (
+                    <Card key={post.id} className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all flex flex-col">
+                      <div className="relative h-48 w-full">
+                        <Image
+                          src={post.imageUrl}
+                          alt={post.title}
+                          fill
+                          className="object-cover opacity-70 group-hover:opacity-90 transition-opacity"
+                        />
+                      </div>
+                      <CardContent className="p-6 flex flex-1 flex-col">
+                        <span className="text-[10px] uppercase tracking-widest text-accent font-bold mb-3">
+                          {post.category}
+                        </span>
+                        <h4 className="text-lg font-bold text-white mb-3 group-hover:text-accent transition-colors line-clamp-2 leading-snug">
+                          {post.title}
+                        </h4>
+                        <p className="text-sm text-white/60 mb-6 line-clamp-2">
+                          {post.excerpt}
+                        </p>
+                        <Button variant="link" className="p-0 text-white hover:text-accent w-fit mt-auto group/btn h-auto">
+                          Read Insight
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
         </main>
