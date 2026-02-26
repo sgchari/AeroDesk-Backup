@@ -21,92 +21,80 @@
     {
       "id": "blog-1",
       "description": "Private jet on a runway at sunset",
-      "imageUrl": "https://images.unsplash.com/photo-1635668422724-fffb2201f951?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cHJpdmF0ZSUyMGpldHxlbnwwfHx8fDE3NzIwMTk3MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1566212775038-532d06eda485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwcml2YXRlJTIwamV0fGVufDB8fHx8MTc3MjAxOTcxOHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "private jet"
     },
     {
       "id": "blog-2",
       "description": "Pilot checking flight documents",
-      "imageUrl": "https://images.unsplash.com/photo-1758292581042-21a187fbbdd4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmbGlnaHQlMjBvcGVyYXRpb25zfGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1758837573876-63871cc70fd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmbGlnaHQlMjBvcGVyYXRpb25zfGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "flight operations"
     },
     {
       "id": "blog-3",
       "description": "Luxury jet interior seating",
-      "imageUrl": "https://images.unsplash.com/photo-1764916195723-423db270f477?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8amV0JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzcyMDgyNzM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1616142387171-fadb42551e7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzIwODI3MzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "jet interior"
     },
     {
       "id": "blog-4",
       "description": "Executive mid-size jet in flight",
-      "imageUrl": "https://images.unsplash.com/photo-1678419214383-2391a9118c24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxleGVjdXRpdmUlMjBqZXR8ZW58MHx8fHwxNzcyMDgyNzM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1768346564233-d71f37bd19b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxleGVjdXRpdmUlMjBqZXR8ZW58MHx8fHwxNzcyMDgyNzM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "executive jet"
     },
     {
       "id": "blog-5",
       "description": "Regional airport hangar",
-      "imageUrl": "https://images.unsplash.com/photo-1651463833423-5f1a6e7159a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhaXJwb3J0JTIwaGFuZ2FyfGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1716161051573-5aad6047161a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhaXJwb3J0JTIwaGFuZ2FyfGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "airport hangar"
     },
     {
       "id": "blog-6",
       "description": "Aircraft engine close up",
-      "imageUrl": "https://images.unsplash.com/photo-1696238628662-e820babaf1e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhaXJjcmFmdCUyMGVuZ2luZXxlbnwwfHx8fDE3NzIwODI3MzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhaXJjcmFmdCUyMGVuZ2luZXxlbnwwfHx8fDE3NzIwODI3MzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "aircraft engine"
     },
     {
       "id": "blog-7",
       "description": "Metropolitan city skyline from above",
-      "imageUrl": "https://images.unsplash.com/photo-1536031696538-924fe11c7037?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2l0eSUyMGFlcmlhbHxlbnwwfHx8fDE3NzE5ODY0MjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1573108724029-4c46571d6490?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYWVyaWFsfGVufDB8fHx8MTc3MTk4NjQyM3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "city aerial"
     },
     {
       "id": "blog-8",
       "description": "Cybersecurity digital grid",
-      "imageUrl": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjeWJlcnNlY3VyaXR5fGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjeWJlcnNlY3VyaXR5fGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cybersecurity"
     },
     {
       "id": "blog-9",
       "description": "Modern vertical take-off craft concept",
-      "imageUrl": "https://images.unsplash.com/photo-1692128237627-e756e994b048?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YXZpYXRpb24lMjB0ZWNofGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1692128236852-af552fda49f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhdmlhdGlvbiUyMHRlY2h8ZW58MHx8fHwxNzcyMDgyNzM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "aviation tech"
     },
     {
       "id": "blog-10",
       "description": "Medical transport aircraft",
-      "imageUrl": "https://picsum.photos/seed/blog10/1200/800",
+      "imageUrl": "https://picsum.photos/seed/blog10/1080/800",
       "imageHint": "medevac jet"
     },
     {
-      "id": "aircraft-1",
-      "description": "A modern turboprop aircraft on the runway.",
-      "imageUrl": "https://images.unsplash.com/photo-1727640024516-ae12e5b9e90d?q=80&w=1080",
-      "imageHint": "turboprop aircraft"
+      "id": "media-asset-1",
+      "description": "AeroDesk brand logo set",
+      "imageUrl": "https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhdmlhdGlvbiUyMGxvZ298ZW58MHx8fHwxNzcyMDgzMDIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "aviation logo"
     },
     {
-      "id": "aircraft-2",
-      "description": "The interior cabin of a light business jet.",
-      "imageUrl": "https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1080",
-      "imageHint": "jet interior"
+      "id": "media-asset-2",
+      "description": "Premium aircraft fleet photography",
+      "imageUrl": "https://images.unsplash.com/photo-1616193572425-fd11332ec645?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcml2YXRlJTIwamV0fGVufDB8fHx8MTc3MjAxOTcxOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "private jet"
     },
     {
-      "id": "hotel-1",
-      "description": "The exterior of a modern luxury hotel.",
-      "imageUrl": "https://images.unsplash.com/photo-1630587148265-761cbd139043?q=80&w=1080",
-      "imageHint": "luxury hotel"
-    },
-    {
-      "id": "avatar-1",
-      "description": "Avatar for a male user.",
-      "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400",
-      "imageHint": "person portrait"
-    },
-    {
-      "id": "avatar-2",
-      "description": "Avatar for a female user.",
-      "imageUrl": "https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257?q=80&w=400",
-      "imageHint": "woman portrait"
+      "id": "media-asset-3",
+      "description": "AeroDesk digital platform interface",
+      "imageUrl": "https://images.unsplash.com/photo-1761813409462-9329c23c7541?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmbGlnaHQlMjBkYXNoYm9hcmR8ZW58MHx8fHwxNzcyMDgzMDIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "flight dashboard"
     }
   ]
 }

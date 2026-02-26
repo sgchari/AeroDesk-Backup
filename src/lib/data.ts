@@ -290,21 +290,21 @@ export const mockBrandAssets: BrandAsset[] = [
     id: 'ba-1',
     title: 'AeroDesk Logo Pack',
     type: 'Logo',
-    imageUrl: 'https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=400',
+    imageUrl: getImg('media-asset-1'),
     fileSize: '4.2 MB'
   },
   {
     id: 'ba-2',
     title: 'Executive Fleet Visuals',
     type: 'Imagery',
-    imageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=400',
+    imageUrl: getImg('media-asset-2'),
     fileSize: '12.8 MB'
   },
   {
     id: 'ba-3',
     title: 'Platform UI Showcase',
     type: 'Cockpit',
-    imageUrl: 'https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=400',
+    imageUrl: getImg('media-asset-3'),
     fileSize: '8.1 MB'
   }
 ];
