@@ -39,11 +39,11 @@ export const mockOperators: Operator[] = mockUsers
   }));
 
 export const mockRfqs: CharterRFQ[] = [
-    { id: 'RFQ-COORD-001', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-10', pax: 4, aircraftType: 'Any Light Jet', status: 'Submitted', createdAt: '2024-07-28T12:00:00Z', bidsCount: 0 },
-    { id: 'RFQ-CONF-002', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Bengaluru (BLR)', arrival: 'Goa (GOI)', departureDate: '2024-08-15', returnDate: '2024-08-18', pax: 2, aircraftType: 'Any Turboprop', status: 'Confirmed', createdAt: '2024-07-27T15:00:00Z', bidsCount: 1, hotelRequired: true },
-    { id: 'RFQ-ACTION-003', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Chennai (MAA)', arrival: 'Hyderabad (HYD)', departureDate: '2024-08-12', pax: 6, aircraftType: 'Any Mid-size Jet', status: 'Reviewing', createdAt: '2024-07-28T14:00:00Z', bidsCount: 3, hotelRequired: true },
-    { id: 'RFQ-BID-004', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Multi-City', departure: 'Delhi (DEL)', arrival: 'Jaipur (JAI)', departureDate: '2024-09-01', pax: 3, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-29T09:00:00Z', bidsCount: 2 },
-    { id: 'RFQ-AGENCY-001', customerId: 'client-agency-01', requesterExternalAuthId: 'distributor-user-01', customerName: 'Corporate VIP Client', tripType: 'Return', departure: 'Mumbai (BOM)', arrival: 'London (LHR)', departureDate: '2024-09-15', returnDate: '2024-09-20', pax: 8, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2024-07-30T10:00:00Z', bidsCount: 2 },
+    { id: 'RFQ-COORD-001', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-10', departureTime: '10:00', pax: 4, aircraftType: 'Any Light Jet', status: 'Submitted', createdAt: '2024-07-28T12:00:00Z', bidsCount: 0 },
+    { id: 'RFQ-CONF-002', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Bengaluru (BLR)', arrival: 'Goa (GOI)', departureDate: '2024-08-15', departureTime: '11:30', returnDate: '2024-08-18', returnTime: '16:00', pax: 2, aircraftType: 'Any Turboprop', status: 'Confirmed', createdAt: '2024-07-27T15:00:00Z', bidsCount: 1, hotelRequired: true },
+    { id: 'RFQ-ACTION-003', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Chennai (MAA)', arrival: 'Hyderabad (HYD)', departureDate: '2024-08-12', departureTime: '09:00', pax: 6, aircraftType: 'Any Mid-size Jet', status: 'Reviewing', createdAt: '2024-07-28T14:00:00Z', bidsCount: 3, hotelRequired: true },
+    { id: 'RFQ-BID-004', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Multi-City', departure: 'Delhi (DEL)', arrival: 'Jaipur (JAI)', departureDate: '2024-09-01', departureTime: '14:00', pax: 3, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-29T09:00:00Z', bidsCount: 2 },
+    { id: 'RFQ-AGENCY-001', customerId: 'client-agency-01', requesterExternalAuthId: 'distributor-user-01', customerName: 'Corporate VIP Client', tripType: 'Return', departure: 'Mumbai (BOM)', arrival: 'London (LHR)', departureDate: '2024-09-15', departureTime: '22:00', returnDate: '2024-09-20', returnTime: '10:00', pax: 8, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2024-07-30T10:00:00Z', bidsCount: 2 },
 ];
 
 export const mockAircrafts: Aircraft[] = [
@@ -77,12 +77,14 @@ export const mockProperties: Property[] = [
 ];
 
 export const mockRoomCategories: RoomCategory[] = [
-    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with city views.', imageUrl: 'https://picsum.photos/seed/room1/600/400' },
+    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with city views.', imageUrl: 'https://picsum.photos/seed/room1/600/400', nightlyRate: 18500 },
+    { id: 'RC-STE-MUM', propertyId: 'PROP-01', name: 'Executive Suite', maxOccupancy: 3, beddingType: 'King + Sofa', baseCapacity: 2, description: 'Premium suite with separated living area.', imageUrl: 'https://picsum.photos/seed/room2/600/400', nightlyRate: 32000 },
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
     { id: 'ACC-CONF-301', tripReferenceId: 'RFQ-CONF-002', tripType: 'Charter', requesterId: 'customer-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'Sanjana Kumar', checkIn: '2024-08-15', checkOut: '2024-08-18', rooms: 1, status: 'Confirmed' },
     { id: 'ACC-AGENCY-401', tripReferenceId: 'RFQ-AGENCY-001', tripType: 'Charter', requesterId: 'distributor-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'VIP Client (Amit)', checkIn: '2024-09-15', checkOut: '2024-09-20', rooms: 3, status: 'Pending', specialRequests: 'Late check-in, high floor preferred.' },
+    { id: 'ACC-NEW-501', tripReferenceId: 'RFQ-BID-004', tripType: 'Charter', requesterId: 'customer-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'Sanjana Kumar', checkIn: '2024-09-01', checkOut: '2024-09-03', rooms: 1, status: 'Pending' },
 ];
 
 export const mockAuditLogs: AuditLog[] = [

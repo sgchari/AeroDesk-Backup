@@ -107,6 +107,9 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             if (!currentUser) return [];
             return db.properties.filter(p => p.hotelPartnerId === currentUser.id);
         case 'roomCategories':
+            if (pathSegments.length > 1) { // query simulation
+                return db.roomCategories;
+            }
             return db.roomCategories;
         case 'billingRecords': return db.billingRecords;
         case 'featureFlags': return db.featureFlags;

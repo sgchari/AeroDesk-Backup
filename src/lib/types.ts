@@ -74,7 +74,9 @@ export type CharterRFQ = {
   departure: string;
   arrival: string;
   departureDate: string;
+  departureTime?: string;
   returnDate?: string;
+  returnTime?: string;
   pax: number;
   aircraftType: string;
   status: RfqStatus;
@@ -162,6 +164,7 @@ export type RoomCategory = {
     beddingType?: string;
     baseCapacity?: number;
     imageUrl?: string;
+    nightlyRate?: number;
 };
 
 export type AccommodationRequest = {

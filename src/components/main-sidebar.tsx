@@ -17,6 +17,7 @@ import {
   History,
   BedDouble,
   Bell,
+  CalendarCheck,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -59,11 +60,11 @@ const navItems = {
   ],
   'Hotel Partner': [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/hotel/requests', label: 'Accommodation Requests', icon: Briefcase, color: 'text-rose-500' },
+    { href: '/dashboard/hotel/requests', label: 'Stay Requests', icon: Briefcase, color: 'text-rose-500' },
+    { href: '/dashboard/hotel/availability', label: 'Availability & Rates', icon: CalendarCheck, color: 'text-amber-500' },
     { href: '/dashboard/hotel/properties', label: 'Properties', icon: Building, color: 'text-orange-500' },
-    { href: '/dashboard/hotel/room-categories', label: 'Room Categories', icon: BedDouble, color: 'text-teal-500' },
-    { href: '/dashboard/hotel/team', label: 'Manage Team', icon: Users, color: 'text-violet-500' },
-    { href: '/dashboard/hotel/reports', label: 'Reports', icon: BarChart2, color: 'text-fuchsia-500' },
+    { href: '/dashboard/hotel/room-categories', label: 'Room categories', icon: BedDouble, color: 'text-teal-500' },
+    { href: '/dashboard/hotel/reports', label: 'Reports / History', icon: History, color: 'text-fuchsia-500' },
   ],
   Admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-sky-500' },
