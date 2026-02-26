@@ -39,24 +39,25 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/use-user";
 import { AIInsights } from "@/components/dashboard/operator/reports/ai-insights";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-const fleetUtilizationData = [
+// Base Mock Data (representing 30 days)
+const BASE_FLEET_DATA = [
     { name: 'VT-FLY', hours: 45, idle: 12, revenue: 1850000 },
     { name: 'VT-PC', hours: 32, idle: 25, revenue: 1200000 },
     { name: 'VT-STK', hours: 58, idle: 5, revenue: 2450000 },
     { name: 'VT-JSG', hours: 40, idle: 15, revenue: 1650000 },
 ];
 
-const charterActivityData = [
+const BASE_CHARTER_DATA = [
     { month: 'May', received: 45, quoted: 38, accepted: 12, revenue: 4200000 },
     { month: 'Jun', received: 52, quoted: 44, accepted: 15, revenue: 5800000 },
     { month: 'Jul', received: 68, quoted: 55, accepted: 22, revenue: 8100000 },
 ];
 
-const revenueTrendData = [
+const REVENUE_TREND_DATA = [
     { day: 'Mon', revenue: 1200000 },
     { day: 'Tue', revenue: 900000 },
     { day: 'Wed', revenue: 1500000 },
@@ -66,7 +67,7 @@ const revenueTrendData = [
     { day: 'Sun', revenue: 1100000 },
 ];
 
-const sectorYieldData = [
+const SECTOR_YIELD_DATA = [
     { sector: 'BOM-DEL', count: 18, yield: 1.2, revenue: 4500000 },
     { sector: 'DEL-LHR', count: 5, yield: 1.8, revenue: 12000000 },
     { sector: 'BLR-GOI', count: 12, yield: 0.9, revenue: 2400000 },
@@ -79,6 +80,48 @@ export default function OperatorReportsPage() {
     const { user } = useUser();
     const { toast } = useToast();
     const [period, setPeriod] = useState("30d");
+
+    // Dynamic scale factors based on period
+    const scaleFactor = useMemo(() => {
+        switch (period) {
+            case '7d': return 0.25;
+            case '30d': return 1;
+            case '90d': return 2.8;
+            case 'ytd': return 6.5;
+            default: return 1;
+        }
+    }, [period]);
+
+    // Derived Scaled Data
+    const fleetData = useMemo(() => BASE_FLEET_DATA.map(d => ({
+        ...d,
+        hours: Math.round(d.hours * scaleFactor),
+        revenue: Math.round(d.revenue * scaleFactor)
+    })), [scaleFactor]);
+
+    const sectorData = useMemo(() => SECTOR_YIELD_DATA.map(d => ({
+        ...d,
+        count: Math.round(d.count * scaleFactor),
+        revenue: Math.round(d.revenue * scaleFactor)
+    })), [scaleFactor]);
+
+    const revenueTrend = useMemo(() => REVENUE_TREND_DATA.map(d => ({
+        ...d,
+        revenue: Math.round(d.revenue * (scaleFactor < 1 ? scaleFactor * 4 : 1)) // Keep daily lines meaningful
+    })), [scaleFactor]);
+
+    const stats = useMemo(() => {
+        const totalRev = fleetData.reduce((acc, curr) => acc + curr.revenue, 0);
+        const elRev = Math.round(820000 * scaleFactor);
+        const avgValue = 1250000; // Remains stable per mission
+
+        return {
+            totalRevenue: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(totalRev).replace('INR', '₹'),
+            charterShare: "94%",
+            emptyLegYield: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(elRev).replace('INR', '₹'),
+            avgMission: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(avgValue).replace('INR', '₹')
+        };
+    }, [fleetData, scaleFactor]);
 
     const handlePeriodChange = (value: string) => {
         setPeriod(value);
@@ -114,10 +157,10 @@ export default function OperatorReportsPage() {
             </PageHeader>
 
             <StatsGrid>
-                <StatsCard title="Total Gross Revenue" value="₹ 1.4 Cr" icon={DollarSign} description="Actual + Confirmed Bids" />
-                <StatsCard title="Charter Contribution" value="94%" icon={Target} description="Full mission share" />
-                <StatsCard title="Empty Leg Yield" value="₹ 8.2 L" icon={Zap} description="Incremental recovery revenue" />
-                <StatsCard title="Avg. Mission Value" value="₹ 12.5 L" icon={TrendingUp} description="Per confirmed charter" />
+                <StatsCard title="Total Gross Revenue" value={stats.totalRevenue} icon={DollarSign} description="Actual + Confirmed Bids" />
+                <StatsCard title="Charter Contribution" value={stats.charterShare} icon={Target} description="Full mission share" />
+                <StatsCard title="Empty Leg Yield" value={stats.emptyLegYield} icon={Zap} description="Incremental recovery revenue" />
+                <StatsCard title="Avg. Mission Value" value={stats.avgMission} icon={TrendingUp} description="Per confirmed charter" />
             </StatsGrid>
 
             <div className="mt-6 space-y-6">
@@ -148,7 +191,7 @@ export default function OperatorReportsPage() {
                                 </CardHeader>
                                 <CardContent className="h-[350px]">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={revenueTrendData}>
+                                        <LineChart data={revenueTrend}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                                             <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
                                             <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `₹${val/100000}L`} />
@@ -217,7 +260,7 @@ export default function OperatorReportsPage() {
                                 </CardHeader>
                                 <CardContent className="h-[300px]">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={fleetUtilizationData}>
+                                        <BarChart data={fleetData}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                                             <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} />
                                             <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `₹${val/100000}L`} />
@@ -240,7 +283,7 @@ export default function OperatorReportsPage() {
                                     <ResponsiveContainer width="100%" height="100%">
                                         <RePieChart>
                                             <Pie
-                                                data={fleetUtilizationData}
+                                                data={fleetData}
                                                 cx="50%"
                                                 cy="50%"
                                                 innerRadius={60}
@@ -248,7 +291,7 @@ export default function OperatorReportsPage() {
                                                 paddingAngle={5}
                                                 dataKey="hours"
                                             >
-                                                {fleetUtilizationData.map((entry, index) => (
+                                                {fleetData.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                                 ))}
                                             </Pie>
@@ -256,7 +299,7 @@ export default function OperatorReportsPage() {
                                         </RePieChart>
                                     </ResponsiveContainer>
                                     <div className="flex justify-center gap-4 mt-2">
-                                        {fleetUtilizationData.map((entry, index) => (
+                                        {fleetData.map((entry, index) => (
                                             <div key={entry.name} className="flex items-center gap-1.5">
                                                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
                                                 <span className="text-[10px] text-muted-foreground">{entry.name}</span>
@@ -276,7 +319,7 @@ export default function OperatorReportsPage() {
                             </CardHeader>
                             <CardContent className="h-[400px]">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={sectorYieldData} layout="vertical">
+                                    <BarChart data={sectorData} layout="vertical">
                                         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
                                         <XAxis type="number" hide />
                                         <YAxis dataKey="sector" type="category" stroke="#94a3b8" fontSize={10} width={80} />
@@ -299,7 +342,7 @@ export default function OperatorReportsPage() {
                             </CardHeader>
                             <CardContent className="h-[400px]">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={charterActivityData}>
+                                    <AreaChart data={BASE_CHARTER_DATA}>
                                         <defs>
                                             <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
