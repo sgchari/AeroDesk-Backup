@@ -113,6 +113,8 @@ export type Aircraft = {
   paxCapacity: number;
   homeBase: string;
   status: 'Available' | 'Under Maintenance' | 'AOG' | 'Restricted';
+  exteriorImageUrl?: string;
+  interiorImageUrl?: string;
 };
 
 export type EmptyLeg = {
