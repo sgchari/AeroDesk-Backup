@@ -1,10 +1,9 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Aircraft } from "@/lib/types";
-import { MoreHorizontal, PlusCircle, Activity, Settings2, ShieldCheck, Users } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Activity, Settings2, ShieldCheck, Users, Plane } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/hooks/use-user";
