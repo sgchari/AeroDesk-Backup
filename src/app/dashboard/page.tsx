@@ -107,12 +107,14 @@ export default function DashboardPage() {
     if (!user) return null;
     switch (user.role) {
       case 'Customer':
+      case 'Requester':
         return <CustomerGateway />;
       case 'Operator':
         return <OperatorDashboard />;
       case 'Admin':
         return <AdminDashboard />;
       case 'CTD Admin':
+      case 'Corporate Admin':
         return <CTDDashboard />;
       case 'Travel Agency':
         return <TravelAgencyDashboard />;

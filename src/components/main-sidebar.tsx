@@ -27,8 +27,14 @@ import type { UserRole } from '@/lib/types';
 import { Logo } from './logo';
 import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSkeleton } from '@/components/ui/sidebar';
 
-const navItems = {
+const navItems: Record<string, any[]> = {
   Customer: [
+    { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/charter-rfq', label: 'My Trips', icon: FileText, color: 'text-blue-500' },
+    { href: '/dashboard/customer/empty-legs', label: 'Available Jet Seats', icon: Armchair, color: 'text-green-500' },
+    { href: '#', label: 'Support', icon: LifeBuoy, color: 'text-gray-500' },
+  ],
+  Requester: [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
     { href: '/dashboard/charter-rfq', label: 'My Trips', icon: FileText, color: 'text-blue-500' },
     { href: '/dashboard/customer/empty-legs', label: 'Available Jet Seats', icon: Armchair, color: 'text-green-500' },
@@ -52,6 +58,15 @@ const navItems = {
     { href: '/dashboard/travel-agency/reports', label: 'Reports / History', icon: History, color: 'text-fuchsia-500' },
   ],
   'CTD Admin': [
+    { href: '/dashboard', label: 'Governance Dashboard', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/ctd/requests', label: 'Demand Queue', icon: FileText, color: 'text-blue-500' },
+    { href: '/dashboard/ctd/approvals', label: 'Approval Workflows', icon: ShieldCheck, color: 'text-amber-500' },
+    { href: '/dashboard/customer/empty-legs', label: 'Available Jet Seats', icon: Armchair, color: 'text-green-500' },
+    { href: '/dashboard/ctd/analytics', label: 'Reports / Analytics', icon: BarChart2, color: 'text-fuchsia-500' },
+    { href: '/dashboard/ctd/team', label: 'Personnel Registry', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/ctd/policies', label: 'Travel Policies', icon: Settings, color: 'text-gray-500' },
+  ],
+  'Corporate Admin': [
     { href: '/dashboard', label: 'Governance Dashboard', icon: Home, color: 'text-sky-500' },
     { href: '/dashboard/ctd/requests', label: 'Demand Queue', icon: FileText, color: 'text-blue-500' },
     { href: '/dashboard/ctd/approvals', label: 'Approval Workflows', icon: ShieldCheck, color: 'text-amber-500' },
@@ -99,7 +114,7 @@ function SidebarSkeleton() {
 export function MainSidebar({ className }: { className?: string }) {
   const pathname = usePathname();
   const { user, isLoading } = useUser();
-  const currentNavItems = user ? navItems[user.role as UserRole] || [] : [];
+  const currentNavItems = user ? navItems[user.role as string] || [] : [];
 
   return (
     <>
