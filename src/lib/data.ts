@@ -73,7 +73,66 @@ export const mockRoomCategories: RoomCategory[] = [
     { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with city views.', imageUrl: 'https://picsum.photos/seed/room1/600/400', nightlyRate: 18500 },
 ];
 
-export const mockAccommodationRequests: AccommodationRequest[] = [];
+export const mockAccommodationRequests: AccommodationRequest[] = [
+    {
+        id: 'ACC-REQ-001',
+        tripReferenceId: 'RFQ-COORD-001',
+        tripType: 'Charter',
+        requesterId: 'customer-user-01',
+        hotelPartnerId: 'hotel-user-01',
+        propertyId: 'PROP-01',
+        propertyName: 'The Grand Mumbai',
+        guestName: 'Sanjana Kumar',
+        checkIn: '2024-08-10',
+        checkOut: '2024-08-12',
+        rooms: 1,
+        status: 'Pending',
+        specialRequests: 'High floor requested.'
+    },
+    {
+        id: 'ACC-REQ-002',
+        tripReferenceId: 'RFQ-CONF-002',
+        tripType: 'Charter',
+        requesterId: 'customer-user-01',
+        hotelPartnerId: 'hotel-user-01',
+        propertyId: 'PROP-01',
+        propertyName: 'The Grand Mumbai',
+        guestName: 'Sanjana Kumar',
+        checkIn: '2024-08-15',
+        checkOut: '2024-08-18',
+        rooms: 1,
+        status: 'Confirmed'
+    },
+    {
+        id: 'ACC-REQ-003',
+        tripReferenceId: 'EL-901',
+        tripType: 'EmptyLeg',
+        requesterId: 'distributor-user-01',
+        hotelPartnerId: 'hotel-user-01',
+        propertyId: 'PROP-01',
+        propertyName: 'The Grand Mumbai',
+        guestName: 'VIP Agency Guest',
+        checkIn: '2024-08-05',
+        checkOut: '2024-08-06',
+        rooms: 2,
+        status: 'Awaiting Clarification',
+        specialRequests: 'Late check-in expected.'
+    },
+    {
+        id: 'ACC-REQ-004',
+        tripReferenceId: 'RFQ-HIST-999',
+        tripType: 'Charter',
+        requesterId: 'distributor-user-01',
+        hotelPartnerId: 'hotel-user-01',
+        propertyId: 'PROP-01',
+        propertyName: 'The Grand Mumbai',
+        guestName: 'Corporate Executive',
+        checkIn: '2024-07-10',
+        checkOut: '2024-07-12',
+        rooms: 1,
+        status: 'Completed'
+    }
+];
 
 export const mockAuditLogs: AuditLog[] = [
     { id: 'LOG-001', timestamp: '2024-07-28T12:00:00Z', user: 'Sanjana Kumar', role: 'Customer', action: 'CREATE RFQ', details: 'Created new personal RFQ', targetId: 'RFQ-COORD-001' },
