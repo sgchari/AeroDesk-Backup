@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -33,7 +33,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
-import { useCollection, useFirestore, addDocumentNonBlocking } from '@/firebase';
+import { useCollection, useFirestore, addDocumentNonBlocking, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import type { CharterRFQ, Aircraft } from '@/lib/types';
 import { SystemAdvisory } from './system-advisory';
@@ -58,10 +58,12 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
   const { user } = useUser();
   const firestore = useFirestore();
 
-  const { data: fleet } = useCollection<Aircraft>(
-    useMemo(() => firestore && user ? query(collection(firestore, 'operators', user.id, 'aircrafts')) : null, [firestore, user]),
-    user ? `operators/${user.id}/aircrafts` : undefined
-  );
+  const fleetQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'operators', user.id, 'aircrafts');
+  }, [firestore, user]);
+
+  const { data: fleet } = useCollection<Aircraft>(fleetQuery, user ? `operators/${user.id}/aircrafts` : undefined);
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
@@ -109,7 +111,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
         <DialogHeader>
           <DialogTitle>Submit Charter Quotation</DialogTitle>
           <DialogDescription>
-            Publishing a bid for {rfq.departure} to {rfq.arrival}.
+            Publishing an institutional bid for {rfq.departure} to {rfq.arrival}.
           </DialogDescription>
         </DialogHeader>
 
@@ -117,7 +119,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
             <SystemAdvisory 
                 level="WARNING"
                 title="Operational Conflict"
-                message={`The selected aircraft (${selectedAircraft.registration}) is currently marked as ${selectedAircraft.status}. Confirm availability before dispatch.`}
+                message={`The selected aircraft (${selectedAircraft.registration}) is currently marked as ${selectedAircraft.status}. Ensure maintenance clearance before mission start.`}
             />
         )}
 
@@ -128,7 +130,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
               name="aircraftId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Select Fleet Asset</FormLabel>
+                  <FormLabel>Assign Fleet Asset</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -152,7 +154,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                     name="quotedPrice"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Total Price (INR)</FormLabel>
+                        <FormLabel>Total Mission Price (INR)</FormLabel>
                         <FormControl>
                             <Input type="number" placeholder="0.00" {...field} />
                         </FormControl>
@@ -181,7 +183,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                 <FormItem>
                   <FormLabel>Operational Notes / Inclusions</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Fuel, crew stays, landing fees included..." {...field} />
+                    <Textarea placeholder="Fuel, crew stays, landing fees included. Ground handling subject to additional cost." {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -189,8 +191,8 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
 
             <DialogFooter className="pt-4">
                 <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button type="submit" disabled={form.formState.isSubmitting} className="bg-accent text-accent-foreground hover:bg-accent/90">
-                    Publish Quotation
+                <Button type="submit" disabled={form.formState.isSubmitting} className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold">
+                    Publish Institutional Bid
                 </Button>
             </DialogFooter>
           </form>
