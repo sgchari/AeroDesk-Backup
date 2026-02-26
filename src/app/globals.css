@@ -4,25 +4,26 @@
 
 @layer base {
   :root {
-    --background: 224 21% 14%; /* Dark desaturated blue */
-    --foreground: 210 20% 98%; /* Light grey/white */
+    /* Deep Aviation Navy Palette */
+    --background: 222 47% 6%; /* #0B1220 */
+    --foreground: 210 40% 98%;
 
-    --card: 224 21% 18%; /* Slightly lighter dark blue */
-    --card-foreground: 210 20% 98%;
+    --card: 222 47% 11% / 0.4; /* Translucent Slate Navy */
+    --card-foreground: 210 40% 98%;
 
-    --popover: 224 21% 14%;
-    --popover-foreground: 210 20% 98%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 54 83% 67%; /* Yellow Accent */
-    --primary-foreground: 222.2 47.4% 11.2%; /* Dark text for yellow */
+    --primary: 199 89% 48%; /* Ice Blue Accent */
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 224 21% 25%; /* Lighter blue for secondary elements */
-    --secondary-foreground: 210 20% 98%;
+    --secondary: 222 47% 15%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 224 21% 25%;
-    --muted-foreground: 215 20% 65%; /* Dimmer text */
+    --muted: 222 47% 15%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 54 83% 67%; /* Yellow Accent */
+    --accent: 54 83% 67%; /* Gold for governance */
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 72% 51%;
@@ -34,41 +35,11 @@
     --warning: 38 92% 50%;
     --warning-foreground: 24 9.8% 10%;
 
-    --border: 224 21% 25%; /* Lighter than card */
-    --input: 224 21% 25%;
-    --ring: 54 83% 67%; /* Yellow Accent for focus rings */
+    --border: 217 33% 17% / 0.5;
+    --input: 217 33% 17%;
+    --ring: 199 89% 48%;
     
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 224 21% 14%;
-    --foreground: 210 20% 98%;
-
-    --card: 224 21% 18%;
-    --card-foreground: 210 20% 98%;
-
-    --popover: 224 21% 14%;
-    --popover-foreground: 210 20% 98%;
-
-    --primary: 54 83% 67%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 224 21% 25%;
-    --secondary-foreground: 210 20% 98%;
-
-    --muted: 224 21% 25%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 54 83% 67%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 62.8% 50.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 224 21% 25%;
-    --input: 224 21% 25%;
-    --ring: 54 83% 67%;
+    --radius: 0.75rem;
   }
 }
 
@@ -77,24 +48,31 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground text-sm;
+    @apply bg-background text-foreground text-sm antialiased selection:bg-primary/30;
   }
 }
 
 @layer utilities {
-  @keyframes pulse-green {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
+  .bg-aviation-radial {
+    background: radial-gradient(circle at 50% 0%, #1C3D5A 0%, #0F172A 45%, #0B1220 100%);
   }
-  @keyframes pulse-amber {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+  
+  .glass-card {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-2xl transition-all duration-300;
   }
-  @keyframes pulse-red {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+
+  .glass-card-hover {
+    @apply hover:bg-white/[0.05] hover:border-white/20 hover:-translate-y-1 hover:shadow-primary/10;
   }
-  .pulse-green { animation: pulse-green 2s infinite; }
-  .pulse-amber { animation: pulse-amber 2s infinite; }
-  .pulse-red { animation: pulse-red 2s infinite; }
+
+  .active-glow {
+    background: linear-gradient(90deg, rgba(14, 165, 233, 0.15) 0%, rgba(14, 165, 233, 0) 100%);
+    box-shadow: inset 2px 0 0 0 hsl(var(--primary));
+  }
+
+  @keyframes pulse-primary {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .pulse-primary { animation: pulse-primary 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 }
