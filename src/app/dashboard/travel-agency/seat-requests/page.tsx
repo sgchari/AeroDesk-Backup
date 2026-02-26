@@ -10,15 +10,17 @@ import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { useUser } from "@/hooks/use-user";
 import { EmptyLegSeatAllocationRequest } from "@/lib/types";
 import { collectionGroup, query, where } from "firebase/firestore";
-import React from 'react';
+import { Clock, CheckCircle, XCircle, MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-const getStatusVariant = (status: EmptyLegSeatAllocationRequest['status']) => {
+const getStatusConfig = (status: EmptyLegSeatAllocationRequest['status']) => {
     switch (status) {
-        case 'Requested': return 'warning';
-        case 'Approved': return 'success';
-        case 'Rejected': return 'destructive';
-        case 'Cancelled': return 'secondary';
-        default: return 'outline';
+        case 'Requested': return { label: 'Under Coordination', variant: 'warning' as const, icon: Clock };
+        case 'Approved': return { label: 'Confirmed Allocation', variant: 'success' as const, icon: CheckCircle };
+        case 'Rejected': return { label: 'Declined by Operator', variant: 'destructive' as const, icon: XCircle };
+        case 'Cancelled': return { label: 'Withdrawn', variant: 'secondary' as const, icon: XCircle };
+        default: return { label: status, variant: 'outline' as const, icon: Clock };
     }
 }
 
@@ -26,11 +28,8 @@ export default function SeatRequestsPage() {
     const firestore = useFirestore();
     const { user, isLoading: isUserLoading } = useUser();
     
-    // In a real app, this would be a collectionGroup query.
-    // The mock store simulates this with a special path.
     const requestsQuery = useMemoFirebase(() => {
         if (!firestore || !user) return null;
-        // This is a simplified query for the demo.
         return query(collectionGroup(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
     }, [firestore, user]);
 
@@ -41,17 +40,15 @@ export default function SeatRequestsPage() {
     
     const isLoading = isUserLoading || requestsLoading;
 
-    // The mock store returns all requests, so we filter them here for the demo.
-    const userSeatRequests = seatRequests?.filter(req => req.requesterExternalAuthId === user?.id);
-
     return (
         <>
-            <PageHeader title="My Seat Requests" description="Track the status of all seat allocation requests you have made." />
+            <PageHeader title="Seat Block History" description="Manage and track the lifecycle of your seat allocation leads for empty leg flights." />
+            
             <Card className="bg-card">
                 <CardHeader>
-                    <CardTitle>Request History</CardTitle>
+                    <CardTitle>Commercial Lead Queue</CardTitle>
                     <CardDescription>
-                        A list of all your submitted seat allocation requests.
+                        Time-critical requests submitted to operators for seat blocking.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -59,31 +56,56 @@ export default function SeatRequestsPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Request ID</TableHead>
-                                    <TableHead>Flight ID</TableHead>
-                                    <TableHead>Seats</TableHead>
-                                    <TableHead>Client Ref</TableHead>
-                                    <TableHead>Date</TableHead>
+                                    <TableHead>Lead ID</TableHead>
+                                    <TableHead>Sector / Flight</TableHead>
+                                    <TableHead className="text-center">Capacity</TableHead>
+                                    <TableHead>Client Reference</TableHead>
                                     <TableHead>Status</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {userSeatRequests?.map((req) => (
-                                    <TableRow key={req.id}>
-                                        <TableCell className="font-medium font-code">{req.id}</TableCell>
-                                        <TableCell className="font-code">{req.emptyLegId}</TableCell>
-                                        <TableCell className="font-bold text-center">{req.numberOfSeats}</TableCell>
-                                        <TableCell>{(req as any).clientReference || 'N/A'}</TableCell>
-                                        <TableCell>{new Date(req.requestDateTime).toLocaleDateString()}</TableCell>
-                                        <TableCell><Badge variant={getStatusVariant(req.status)}>{req.status}</Badge></TableCell>
-                                    </TableRow>
-                                ))}
+                                {seatRequests?.map((req) => {
+                                    const status = getStatusConfig(req.status);
+                                    return (
+                                        <TableRow key={req.id}>
+                                            <TableCell className="font-medium font-code">{req.id}</TableCell>
+                                            <TableCell className="font-code text-xs">{req.emptyLegId}</TableCell>
+                                            <TableCell className="font-bold text-center">{req.numberOfSeats} Seat(s)</TableCell>
+                                            <TableCell>
+                                                <div className="font-medium">{req.clientReference || 'Institutional Client'}</div>
+                                                <div className="text-[10px] text-muted-foreground uppercase">{new Date(req.requestDateTime).toLocaleDateString()}</div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant={status.variant} className="gap-1.5 h-6 text-[10px] font-bold uppercase tracking-wider">
+                                                    <status.icon className="h-3 w-3" />
+                                                    {status.label}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8">
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuLabel>Lead Controls</DropdownMenuLabel>
+                                                        <DropdownMenuItem>View Context</DropdownMenuItem>
+                                                        <DropdownMenuItem>Contact Operator</DropdownMenuItem>
+                                                        {req.status === 'Requested' && <DropdownMenuItem className="text-destructive">Withdraw Request</DropdownMenuItem>}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })}
                             </TableBody>
                         </Table>
                     )}
-                     {(!isLoading && (!userSeatRequests || userSeatRequests.length === 0)) && (
-                        <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                            <p className="text-muted-foreground">You haven't made any seat requests yet.</p>
+                     {(!isLoading && (!seatRequests || seatRequests.length === 0)) && (
+                        <div className="text-center py-20 border-2 border-dashed rounded-lg">
+                            <p className="text-muted-foreground">You haven't initiated any commercial seat leads yet.</p>
                         </div>
                     )}
                 </CardContent>

@@ -43,8 +43,7 @@ export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-CONF-002', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Bengaluru (BLR)', arrival: 'Goa (GOI)', departureDate: '2024-08-15', returnDate: '2024-08-18', pax: 2, aircraftType: 'Any Turboprop', status: 'Confirmed', createdAt: '2024-07-27T15:00:00Z', bidsCount: 1, hotelRequired: true },
     { id: 'RFQ-ACTION-003', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Chennai (MAA)', arrival: 'Hyderabad (HYD)', departureDate: '2024-08-12', pax: 6, aircraftType: 'Any Mid-size Jet', status: 'Reviewing', createdAt: '2024-07-28T14:00:00Z', bidsCount: 3, hotelRequired: true },
     { id: 'RFQ-BID-004', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Multi-City', departure: 'Delhi (DEL)', arrival: 'Jaipur (JAI)', departureDate: '2024-09-01', pax: 3, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-29T09:00:00Z', bidsCount: 2 },
-    { id: 'RFQ-INTL-005', customerId: 'customer-user-02', requesterExternalAuthId: 'customer-user-02', customerName: 'Arjun Mehta', tripType: 'Return', departure: 'Mumbai (BOM)', arrival: 'Dubai (DXB)', departureDate: '2024-08-20', returnDate: '2024-08-25', pax: 8, aircraftType: 'Any Heavy Jet', status: 'Bidding Open', createdAt: '2024-07-30T10:00:00Z', bidsCount: 0 },
-    { id: 'RFQ-LONG-006', customerId: 'customer-user-02', requesterExternalAuthId: 'customer-user-02', customerName: 'Arjun Mehta', tripType: 'Onward', departure: 'Delhi (DEL)', arrival: 'London (LHR)', departureDate: '2024-09-10', pax: 12, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2024-07-30T11:00:00Z', bidsCount: 1 },
+    { id: 'RFQ-AGENCY-001', customerId: 'client-agency-01', requesterExternalAuthId: 'distributor-user-01', customerName: 'Corporate VIP Client', tripType: 'Return', departure: 'Mumbai (BOM)', arrival: 'London (LHR)', departureDate: '2024-09-15', returnDate: '2024-09-20', pax: 8, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2024-07-30T10:00:00Z', bidsCount: 2 },
 ];
 
 export const mockAircrafts: Aircraft[] = [
@@ -58,41 +57,35 @@ export const mockAircrafts: Aircraft[] = [
 export const mockQuotations: Quotation[] = [
     { id: 'QTE-114', rfqId: 'RFQ-CONF-002', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', price: 450000, status: 'Selected', submittedAt: '2024-07-27T16:00:00Z', validUntil: '2024-07-28T16:00:00Z' },
     { id: 'QTE-115', rfqId: 'RFQ-BID-004', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', price: 380000, status: 'Submitted', submittedAt: '2024-07-29T10:00:00Z', validUntil: '2024-07-30T10:00:00Z' },
-    { id: 'QTE-116', rfqId: 'RFQ-ACTION-003', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTMID', aircraftName: 'Falcon 2000', price: 520000, status: 'Submitted', submittedAt: '2024-07-28T15:00:00Z', validUntil: '2024-07-29T15:00:00Z' },
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-901', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Delhi (DEL)', arrival: 'Mumbai (BOM)', departureTime: '2024-08-05T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published' },
     { id: 'EL-904', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTPC', aircraftName: 'Pilatus PC-12', departure: 'Udaipur (UDR)', arrival: 'Jaipur (JAI)', departureTime: '2024-08-11T12:00:00Z', availableSeats: 7, seatsAllocated: 0, status: 'Published' },
     { id: 'EL-905', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTHEV', aircraftName: 'Global 6000', departure: 'Dubai (DXB)', arrival: 'Mumbai (BOM)', departureTime: '2024-08-15T18:00:00Z', availableSeats: 12, seatsAllocated: 0, status: 'Draft' },
-    { id: 'EL-906', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTMID', aircraftName: 'Falcon 2000', departure: 'Mumbai (BOM)', arrival: 'Singapore (SIN)', departureTime: '2024-08-20T09:00:00Z', availableSeats: 10, seatsAllocated: 0, status: 'Pending Approval' },
+    { id: 'EL-906', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTMID', aircraftName: 'Falcon 2000', departure: 'Mumbai (BOM)', arrival: 'Singapore (SIN)', departureTime: '2024-08-20T09:00:00Z', availableSeats: 10, seatsAllocated: 0, status: 'Approved' },
 ];
 
 export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [
-    { id: 'SAR-COORD-501', emptyLegId: 'EL-901', distributorId: 'distributor-user-01', requesterExternalAuthId: 'customer-user-01', passengerName: 'Sanjana Kumar', numberOfSeats: 2, status: 'Requested', requestDateTime: '2024-07-30T10:00:00Z' },
-    { id: 'SAR-CONF-502', emptyLegId: 'EL-904', distributorId: 'distributor-user-01', requesterExternalAuthId: 'customer-user-01', passengerName: 'Sanjana Kumar', numberOfSeats: 1, status: 'Approved', requestDateTime: '2024-07-31T11:00:00Z' },
-    { id: 'SAR-NEW-503', emptyLegId: 'EL-901', distributorId: 'distributor-user-01', requesterExternalAuthId: 'customer-user-02', passengerName: 'Arjun Mehta', numberOfSeats: 1, status: 'Requested', requestDateTime: '2024-07-31T14:00:00Z' }
+    { id: 'SAR-COORD-501', emptyLegId: 'EL-901', distributorId: 'distributor-user-01', requesterExternalAuthId: 'distributor-user-01', passengerName: 'Institutional Client', numberOfSeats: 2, status: 'Requested', requestDateTime: '2024-07-30T10:00:00Z', clientReference: 'Global Exports LLC' },
+    { id: 'SAR-CONF-502', emptyLegId: 'EL-904', distributorId: 'distributor-user-01', requesterExternalAuthId: 'distributor-user-01', passengerName: 'VIP Traveler', numberOfSeats: 1, status: 'Approved', requestDateTime: '2024-07-31T11:00:00Z', clientReference: 'Personal Account' },
+    { id: 'SAR-NEW-503', emptyLegId: 'EL-906', distributorId: 'distributor-user-01', requesterExternalAuthId: 'distributor-user-01', passengerName: 'Tech Team', numberOfSeats: 4, status: 'Requested', requestDateTime: '2024-08-01T09:00:00Z', clientReference: 'Z-Tech Corp' }
 ];
 
 export const mockProperties: Property[] = [
     { id: 'PROP-01', hotelPartnerId: 'hotel-user-01', name: 'The Grand Mumbai', address: '123 Marine Drive, Mumbai', city: 'Mumbai', status: 'Active', propertyType: 'Luxury Hotel', imageUrl: 'https://picsum.photos/seed/hotel1/600/400' },
-    { id: 'PROP-02', hotelPartnerId: 'hotel-user-01', name: 'The Palace Delhi', address: '456 Connaught Place, Delhi', city: 'Delhi', status: 'Active', propertyType: 'Heritage Hotel', imageUrl: 'https://picsum.photos/seed/hotel2/600/400' },
 ];
 
 export const mockRoomCategories: RoomCategory[] = [
-    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with a king-sized bed and stunning city views.', imageUrl: 'https://picsum.photos/seed/room1/600/400' },
+    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with city views.', imageUrl: 'https://picsum.photos/seed/room1/600/400' },
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
-    { id: 'ACC-CONF-301', tripReferenceId: 'RFQ-CONF-002', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-03', propertyName: 'Goa Beach Resort', guestName: 'Sanjana Kumar', checkIn: '2024-08-15', checkOut: '2024-08-18', rooms: 1, status: 'Confirmed' },
-    { id: 'ACC-COORD-302', tripReferenceId: 'RFQ-ACTION-003', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-02', propertyName: 'The Palace Delhi', guestName: 'Sanjana Kumar', checkIn: '2024-08-12', checkOut: '2024-08-14', rooms: 2, status: 'Pending' },
+    { id: 'ACC-CONF-301', tripReferenceId: 'RFQ-CONF-002', tripType: 'Charter', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'Sanjana Kumar', checkIn: '2024-08-15', checkOut: '2024-08-18', rooms: 1, status: 'Confirmed' },
 ];
 
 export const mockAuditLogs: AuditLog[] = [
     { id: 'LOG-001', timestamp: '2024-07-28T12:00:00Z', user: 'Sanjana Kumar', role: 'Customer', action: 'CREATE RFQ', details: 'Created new personal RFQ', targetId: 'RFQ-COORD-001' },
-    { id: 'LOG-002', timestamp: '2024-07-29T10:00:00Z', user: 'FlyCo Ops', role: 'Operator', action: 'SUBMIT QUOTATION', details: 'Submitted bid for RFQ-BID-004', targetId: 'QTE-115' },
-    { id: 'LOG-003', timestamp: '2024-07-30T09:00:00Z', user: 'FlyCo Ops', role: 'Operator', action: 'FLEET UPDATE', details: 'Updated status of AC-VTHEV to Under Maintenance', targetId: 'AC-VTHEV' },
-    { id: 'LOG-004', timestamp: '2024-07-30T11:00:00Z', user: 'AirOne Charters', role: 'Operator', action: 'EMPTY LEG CREATED', details: 'New empty leg listed Mumbai to Singapore', targetId: 'EL-906' },
 ];
 
 export const mockBillingRecords: BillingRecord[] = [
@@ -101,20 +94,18 @@ export const mockBillingRecords: BillingRecord[] = [
 
 export const mockFeatureFlags: FeatureFlag[] = [
     { id: 'FF-01', name: 'EmptyLegAutoApproval', description: 'Automatically approve empty leg submissions.', isEnabled: false },
-    { id: 'FF-02', name: 'AiComplianceCheck', description: 'Enable AI-powered compliance checks.', isEnabled: true },
 ];
 
 export const mockBlogPosts: BlogPost[] = [
-  { id: 'post-1', title: 'Yield Optimization: Navigating Empty Leg Pricing in 2024', excerpt: 'A technical analysis of dynamic pricing models used to maximize asset utilization.', category: 'Empty Leg Insights', imageUrl: getImg('blog-1'), author: 'AeroDesk Intel', date: '2024-07-30', isFeatured: true },
-  { id: 'post-2', title: 'NSOP Compliance: New Directives for Indian Charter Operations', excerpt: 'Detailed breakdown of recent regulatory changes affecting non-scheduled operator permits.', category: 'Industry', imageUrl: getImg('blog-2'), author: 'Governance Desk', date: '2024-07-28' },
+  { id: 'post-1', title: 'Yield Optimization: Navigating Empty Leg Pricing in 2024', excerpt: 'A technical analysis of dynamic pricing models.', category: 'Empty Leg Insights', imageUrl: getImg('blog-1'), author: 'AeroDesk Intel', date: '2024-07-30', isFeatured: true },
 ];
 
 export const mockPressReleases: PressRelease[] = [
-  { id: 'pr-1', title: 'Strategic Expansion: AeroDesk Integrates Mumbai International Heliport Network', description: 'Enhancing Tier-1 connectivity through unified helicopter charter coordination workflows.', date: '2024-07-30', category: 'Partnership' },
+  { id: 'pr-1', title: 'Strategic Expansion: AeroDesk Integrates Mumbai International Heliport', description: 'Enhancing Tier-1 connectivity.', date: '2024-07-30', category: 'Partnership' },
 ];
 
 export const mockMediaMentions: MediaMention[] = [
-  { id: 'mm-1', publication: 'The Economic Times', title: 'Digitalizing Indian Skies: The AeroDesk Approach', snippet: '"AeroDesk is filling a critical gap in India’s aviation governance framework..."', date: '2024-07-28' },
+  { id: 'mm-1', publication: 'The Economic Times', title: 'Digitalizing Indian Skies', snippet: '"AeroDesk is filling a critical gap..."', date: '2024-07-28' },
 ];
 
 export const mockBrandAssets: BrandAsset[] = [
