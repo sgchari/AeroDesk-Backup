@@ -10,12 +10,15 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/use-user";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
-import React, { useState } from "react";
+import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking } from "@/firebase";
+import { collection, query, where, doc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const getStatusInfo = (status: RfqStatus): { text: string; icon: React.ElementType; className: string } => {
     switch (status) {
@@ -42,8 +45,43 @@ const getStatusInfo = (status: RfqStatus): { text: string; icon: React.ElementTy
 }
 
 const TripDetailsDialog = ({ rfq, open, onOpenChange }: { rfq: CharterRFQ | null, open: boolean, onOpenChange: (open: boolean) => void }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [catering, setCatering] = useState("");
+    const [specialRequests, setSpecialRequests] = useState("");
+    const firestore = useFirestore();
+    const { toast } = useToast();
+
+    useEffect(() => {
+        if (rfq) {
+            setCatering(rfq.catering || "");
+            setSpecialRequests(rfq.specialRequirements || "");
+        }
+        if (!open) {
+            setIsEditing(false);
+        }
+    }, [rfq, open]);
+
     if (!rfq) return null;
     const statusInfo = getStatusInfo(rfq.status);
+    
+    // Modifications allowed for pre-confirmation statuses
+    const isModifiable = !['Confirmed', 'Cancelled', 'Expired', 'Closed'].includes(rfq.status);
+
+    const handleSave = () => {
+        if (!firestore) return;
+        const rfqRef = doc(firestore, 'charterRFQs', rfq.id);
+        
+        updateDocumentNonBlocking(rfqRef, {
+            catering,
+            specialRequirements: specialRequests
+        });
+
+        setIsEditing(false);
+        toast({
+            title: "Journey Modified",
+            description: "Your special requests have been updated and synchronized with operators.",
+        });
+    };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -56,59 +94,106 @@ const TripDetailsDialog = ({ rfq, open, onOpenChange }: { rfq: CharterRFQ | null
                         </Badge>
                         <span className="text-[10px] font-code text-muted-foreground uppercase">{rfq.id}</span>
                     </div>
-                    <DialogTitle className="text-xl">{rfq.departure} to {rfq.arrival}</DialogTitle>
-                    <DialogDescription>Full journey specifications and coordination status.</DialogDescription>
+                    <DialogTitle className="text-xl">
+                        {isEditing ? "Modify Journey Profile" : `${rfq.departure} to ${rfq.arrival}`}
+                    </DialogTitle>
+                    <DialogDescription>
+                        {isEditing 
+                            ? "Update your preferences below. Changes will be visible to bidding operators." 
+                            : "Full journey specifications and coordination status."}
+                    </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-6 py-4">
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Schedule</p>
-                            <p className="text-sm font-medium flex items-center gap-2">
-                                <Clock className="h-3.5 w-3.5 text-accent" />
-                                {new Date(rfq.departureDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                            </p>
+
+                {isEditing ? (
+                    <div className="space-y-4 py-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Catering & On-board Requirements</Label>
+                            <Textarea 
+                                value={catering} 
+                                onChange={(e) => setCatering(e.target.value)}
+                                placeholder="Specify meals, beverages, newspaper preferences..."
+                                className="min-h-[100px] bg-muted/20"
+                            />
                         </div>
-                        <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Guests</p>
-                            <p className="text-sm font-medium flex items-center gap-2">
-                                <Users className="h-3.5 w-3.5 text-accent" />
-                                {rfq.pax} Passengers
-                            </p>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Aircraft Category</p>
-                            <p className="text-sm font-medium flex items-center gap-2">
-                                <Plane className="h-3.5 w-3.5 text-accent" />
-                                {rfq.aircraftType}
-                            </p>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Stay Services</p>
-                            <p className="text-sm font-medium flex items-center gap-2">
-                                <Hotel className="h-3.5 w-3.5 text-accent" />
-                                {rfq.hotelRequired ? "Stay Requested" : "No Stay"}
-                            </p>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Operational Notes / Special Requests</Label>
+                            <Textarea 
+                                value={specialRequests} 
+                                onChange={(e) => setSpecialRequests(e.target.value)}
+                                placeholder="Ground transport needs, medical assistance, pet travel..."
+                                className="min-h-[100px] bg-muted/20"
+                            />
                         </div>
                     </div>
-                    <Separator />
-                    <div className="space-y-3">
-                        <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Catering & Special Requests</p>
-                            <p className="text-xs text-muted-foreground bg-muted/30 p-2 rounded-md italic">
-                                {rfq.catering || "No special catering requirements specified."}
-                            </p>
+                ) : (
+                    <div className="space-y-6 py-4">
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Schedule</p>
+                                <p className="text-sm font-medium flex items-center gap-2">
+                                    <Clock className="h-3.5 w-3.5 text-accent" />
+                                    {new Date(rfq.departureDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                </p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Guests</p>
+                                <p className="text-sm font-medium flex items-center gap-2">
+                                    <Users className="h-3.5 w-3.5 text-accent" />
+                                    {rfq.pax} Passengers
+                                </p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Aircraft Category</p>
+                                <p className="text-sm font-medium flex items-center gap-2">
+                                    <Plane className="h-3.5 w-3.5 text-accent" />
+                                    {rfq.aircraftType}
+                                </p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Stay Services</p>
+                                <p className="text-sm font-medium flex items-center gap-2">
+                                    <Hotel className="h-3.5 w-3.5 text-accent" />
+                                    {rfq.hotelRequired ? "Stay Requested" : "No Stay"}
+                                </p>
+                            </div>
                         </div>
-                        <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Operational Notes</p>
-                            <p className="text-xs text-muted-foreground bg-muted/30 p-2 rounded-md italic">
-                                {rfq.specialRequirements || "Standard operational profile."}
-                            </p>
+                        <Separator />
+                        <div className="space-y-3">
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Catering & Special Requests</p>
+                                <p className="text-xs text-muted-foreground bg-muted/30 p-2 rounded-md italic">
+                                    {rfq.catering || "No special catering requirements specified."}
+                                </p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Operational Notes</p>
+                                <p className="text-xs text-muted-foreground bg-muted/30 p-2 rounded-md italic">
+                                    {rfq.specialRequirements || "Standard operational profile."}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
+
                 <div className="flex justify-between items-center pt-4 border-t gap-2">
-                    <Button variant="outline" className="flex-1 text-xs">Contact Concierge</Button>
-                    <Button className="flex-1 text-xs bg-accent text-accent-foreground hover:bg-accent/90">Modify Journey</Button>
+                    {isEditing ? (
+                        <>
+                            <Button variant="ghost" onClick={() => setIsEditing(false)} className="flex-1 text-xs">Cancel</Button>
+                            <Button onClick={handleSave} className="flex-1 text-xs bg-accent text-accent-foreground hover:bg-accent/90">Save Changes</Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button variant="outline" className="flex-1 text-xs">Contact Concierge</Button>
+                            {isModifiable && (
+                                <Button 
+                                    onClick={() => setIsEditing(true)} 
+                                    className="flex-1 text-xs bg-accent text-accent-foreground hover:bg-accent/90"
+                                >
+                                    Modify Journey
+                                </Button>
+                            )}
+                        </>
+                    )}
                 </div>
             </DialogContent>
         </Dialog>
