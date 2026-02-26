@@ -1,17 +1,17 @@
 
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { EmptyLeg } from "@/lib/types";
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Globe, Ban } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/hooks/use-user";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CreateEmptyLegDialog } from "@/components/dashboard/operator/create-empty-leg-dialog";
 
 const getStatusVariant = (status: EmptyLeg['status']) => {
     switch (status) {
@@ -19,7 +19,6 @@ const getStatusVariant = (status: EmptyLeg['status']) => {
         case 'Pending Approval': return 'warning';
         case 'Published': return 'default';
         case 'Closed': return 'outline';
-        case 'Expired': return 'outline';
         case 'Cancelled': return 'destructive';
         default: return 'secondary';
     }
@@ -39,17 +38,15 @@ export default function EmptyLegsPage() {
 
   return (
     <>
-      <PageHeader title="Empty Leg Management" description="Create, publish, and manage your empty leg monetization and positioning flights.">
-        <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Create Empty Leg
-        </Button>
+      <PageHeader title="Revenue Optimization" description="Monetize positioning flights by listing allocatable seats on the marketplace.">
+        <CreateEmptyLegDialog />
       </PageHeader>
+      
       <Card className="bg-card">
         <CardHeader>
-          <CardTitle>Your Empty Legs</CardTitle>
+          <CardTitle>Empty Leg Inventory</CardTitle>
           <CardDescription>
-            Flights subject to admin approval before being listed on the marketplace.
+            Flights subject to platform governance before synchronization with distributors.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -57,42 +54,40 @@ export default function EmptyLegsPage() {
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>Aircraft</TableHead>
-                    <TableHead>Sector</TableHead>
-                    <TableHead>Date / Time</TableHead>
-                    <TableHead>Seat Capacity</TableHead>
-                    <TableHead>Seats Allocated</TableHead>
+                    <TableHead>Asset</TableHead>
+                    <TableHead>Route</TableHead>
+                    <TableHead>Departure</TableHead>
+                    <TableHead className="text-center">Available</TableHead>
+                    <TableHead className="text-center">Booked</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>
-                    <span className="sr-only">Actions</span>
-                    </TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
                 {emptyLegs?.map((leg: EmptyLeg) => (
                     <TableRow key={leg.id}>
-                        <TableCell className="font-medium">{leg.aircraftName || leg.aircraftId}</TableCell>
+                        <TableCell className="font-medium font-code">{leg.aircraftName || leg.aircraftId}</TableCell>
                         <TableCell>{leg.departure} to {leg.arrival}</TableCell>
-                        <TableCell>{new Date(leg.departureTime).toLocaleString()}</TableCell>
-                        <TableCell className="text-center">{leg.availableSeats}</TableCell>
+                        <TableCell className="text-xs">{new Date(leg.departureTime).toLocaleString()}</TableCell>
+                        <TableCell className="text-center font-bold">{leg.availableSeats}</TableCell>
                         <TableCell className="text-center">{leg.seatsAllocated || 0}</TableCell>
                         <TableCell>
-                            <Badge variant={getStatusVariant(leg.status)}>{leg.status}</Badge>
+                            <Badge variant={getStatusVariant(leg.status)} className="text-[10px] h-5 font-bold uppercase tracking-wider">
+                                {leg.status}
+                            </Badge>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="text-right">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                <Button aria-haspopup="true" size="icon" variant="ghost">
+                                <Button size="icon" variant="ghost">
                                     <MoreHorizontal className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
                                 </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>Edit Details</DropdownMenuItem>
-                                {leg.status === 'Draft' && <DropdownMenuItem>Publish</DropdownMenuItem>}
-                                {leg.status === 'Published' && <DropdownMenuItem>Close</DropdownMenuItem>}
-                                <DropdownMenuItem className="text-destructive">Withdraw</DropdownMenuItem>
+                                <DropdownMenuLabel>Inventory Controls</DropdownMenuLabel>
+                                <DropdownMenuItem className="gap-2">Edit Details</DropdownMenuItem>
+                                {leg.status === 'Draft' && <DropdownMenuItem className="gap-2 text-green-500 font-medium">Publish to Marketplace</DropdownMenuItem>}
+                                <DropdownMenuItem className="text-destructive gap-2"><Ban className="h-3.5 w-3.5" /> Cancel Leg</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>

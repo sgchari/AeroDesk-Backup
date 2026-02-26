@@ -22,10 +22,10 @@ export type User = {
   createdAt: string;
   updatedAt: string;
   ctdId?: string;
-  externalAuthId?: string; // For consistency
-  nsopLicenseNumber?: string; // For operator users
-  mouAcceptedAt?: string; // For operator users
-  companyName?: string; // For company-based roles
+  externalAuthId?: string;
+  nsopLicenseNumber?: string;
+  mouAcceptedAt?: string;
+  companyName?: string;
   city?: string;
   zone?: 'North' | 'South' | 'East' | 'West' | 'Central';
 };
@@ -96,14 +96,11 @@ export type Quotation = {
   aircraftId: string;
   aircraftName: string;
   price: number;
-  status: 'Submitted' | 'Withdrawn' | 'Selected' | 'Rejected';
+  status: 'Submitted' | 'Withdrawn' | 'Selected' | 'Rejected' | 'Expired';
   submittedAt: string;
   validUntil: string;
+  operatorRemarks?: string;
 };
-
-// Deprecating Bid in favor of Quotation
-export type Bid = Quotation;
-
 
 export type Aircraft = {
   id: string;
@@ -119,15 +116,17 @@ export type Aircraft = {
 export type EmptyLeg = {
   id: string;
   operatorId: string;
-  operatorName?: string; // For display
+  operatorName?: string;
   aircraftId: string;
-  aircraftName?: string; // For display
+  aircraftName?: string;
   departure: string;
   arrival: string;
   departureTime: string;
   availableSeats: number;
-  seatsAllocated?: number; // For display
+  seatsAllocated?: number;
   status: 'Pending Approval' | 'Approved' | 'Expired' | 'Cancelled' | 'Draft' | 'Published' | 'Closed';
+  seatPricingStrategy?: 'Fixed' | 'Dynamic' | 'Negotiable';
+  estimatedPricePerSeat?: number;
 };
 
 export type EmptyLegSeatAllocationRequest = {
@@ -140,6 +139,7 @@ export type EmptyLegSeatAllocationRequest = {
     requestDateTime: string;
     clientReference?: string;
     passengerNotes?: string;
+    passengerName?: string; // For operator view
 }
 
 export type Property = {
@@ -178,13 +178,6 @@ export type AccommodationRequest = {
     rooms: number;
     status: 'Pending' | 'Confirmed' | 'Declined' | 'Awaiting Clarification';
     specialRequests?: string;
-};
-
-export type HotelPartner = {
-  id: string;
-  name: string;
-  location: string;
-  status: 'Active' | 'Inactive';
 };
 
 export type AuditLog = {
@@ -232,7 +225,7 @@ export type BlogPost = {
   title: string;
   excerpt: string;
   content?: string;
-  category: 'Insights' | 'Industry' | 'Operator' | 'Market Trends' | 'Empty Leg Insights' | 'Corporate Travel';
+  category: string;
   imageUrl: string;
   author: string;
   date: string;
@@ -244,7 +237,7 @@ export type PressRelease = {
   title: string;
   description: string;
   date: string;
-  category: 'Announcement' | 'Platform Update' | 'Partnership';
+  category: string;
 };
 
 export type MediaMention = {
@@ -259,7 +252,7 @@ export type MediaMention = {
 export type BrandAsset = {
   id: string;
   title: string;
-  type: 'Logo' | 'Imagery' | 'Guidelines' | 'Cockpit';
+  type: string;
   imageUrl: string;
   fileSize: string;
 };

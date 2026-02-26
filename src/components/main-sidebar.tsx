@@ -16,7 +16,7 @@ import {
   Armchair,
   History,
   BedDouble,
-  Package,
+  Bell,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -34,11 +34,12 @@ const navItems = {
     { href: '#', label: 'Support', icon: LifeBuoy, color: 'text-gray-500' },
   ],
   Operator: [
-    { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },
-    { href: '/dashboard/operator/rfq-marketplace', label: 'Charter Requests', icon: GanttChartSquare, color: 'text-amber-500' },
-    { href: '/dashboard/operator/empty-legs', label: 'Empty Legs', icon: Plane, color: 'text-green-500' },
+    { href: '/dashboard', label: 'Command Center', icon: Home, color: 'text-sky-500' },
+    { href: '/dashboard/operator/rfq-marketplace', label: 'Charter Marketplace', icon: GanttChartSquare, color: 'text-amber-500' },
+    { href: '/dashboard/operator/empty-legs', label: 'Empty Leg Management', icon: Plane, color: 'text-green-500' },
+    { href: '/dashboard/operator/seat-requests', label: 'Seat Requests', icon: Users, color: 'text-violet-500' },
     { href: '/dashboard/operator/fleet', label: 'Fleet & Availability', icon: Plane, color: 'text-gray-500' },
-    { href: '/dashboard/operator/crew', label: 'Crew & Logistics', icon: Users, color: 'text-violet-500' },
+    { href: '/dashboard/operator/crew', label: 'Crew & Logistics', icon: Users, color: 'text-blue-500' },
   ],
   'Travel Agency': [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-500' },

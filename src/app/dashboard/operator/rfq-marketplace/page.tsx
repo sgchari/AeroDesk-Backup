@@ -4,19 +4,20 @@ import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { CharterRFQ, RfqStatus } from "@/lib/types";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Search, Gavel, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { collection, query } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { SubmitQuotationDialog } from "@/components/dashboard/operator/submit-quotation-dialog";
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
-        case 'New': return 'default';
+        case 'New':
         case 'Bidding Open': return 'default';
         case 'Reviewing': return 'secondary';
         case 'Quoted': return 'success';
@@ -27,6 +28,8 @@ const getStatusVariant = (status: RfqStatus) => {
 
 export default function RfqMarketplacePage() {
   const firestore = useFirestore();
+  const [selectedRfq, setSelectedRfq] = useState<CharterRFQ | null>(null);
+
   const rfqsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'charterRFQs'));
@@ -35,16 +38,17 @@ export default function RfqMarketplacePage() {
 
   return (
     <>
-      <PageHeader title="Charter Requests Management" description="Replace email chaos. Review all active charter requests and submit your quotations.">
-         <Button>Submit General Quotation</Button>
+      <PageHeader title="Charter Marketplace" description="Review all active charter requests and submit institutional quotations.">
+         <Button variant="outline" className="gap-2"><FileText className="h-4 w-4" /> Export Queue</Button>
       </PageHeader>
+      
       <Card className="bg-card">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <CardTitle>All Charter Requests</CardTitle>
+              <CardTitle>Open Demand Queue</CardTitle>
               <CardDescription>
-                Charter requests currently open for bidding or in review.
+                Live charter requests open for operator bidding.
               </CardDescription>
             </div>
             <div className="relative">
@@ -52,7 +56,7 @@ export default function RfqMarketplacePage() {
                 <Input
                     type="search"
                     placeholder="Search by route or ID..."
-                    className="pl-8 sm:w-[300px]"
+                    className="pl-8 sm:w-[300px] bg-muted/20 border-white/5"
                 />
             </div>
           </div>
@@ -64,14 +68,11 @@ export default function RfqMarketplacePage() {
                 <TableRow>
                     <TableHead>Request ID</TableHead>
                     <TableHead>Route / Sector</TableHead>
-                    <TableHead>Aircraft Category</TableHead>
-                    <TableHead>Pax</TableHead>
-                    <TableHead>Trip Type</TableHead>
-                    <TableHead>Requested Schedule</TableHead>
+                    <TableHead>Aircraft Pref</TableHead>
+                    <TableHead className="text-center">Pax</TableHead>
+                    <TableHead>Requested Date</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>
-                    <span className="sr-only">Actions</span>
-                    </TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -81,24 +82,24 @@ export default function RfqMarketplacePage() {
                         <TableCell>{rfq.departure} to {rfq.arrival}</TableCell>
                         <TableCell>{rfq.aircraftType}</TableCell>
                         <TableCell className="text-center">{rfq.pax}</TableCell>
-                        <TableCell>{rfq.tripType}</TableCell>
-                        <TableCell>{rfq.departureDate}</TableCell>
+                        <TableCell>{new Date(rfq.departureDate).toLocaleDateString()}</TableCell>
                         <TableCell>
-                            <Badge variant={getStatusVariant(rfq.status)}>{rfq.status}</Badge>
+                            <Badge variant={getStatusVariant(rfq.status)} className="text-[10px] h-5 px-1.5 uppercase font-bold tracking-wider">
+                                {rfq.status}
+                            </Badge>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="text-right">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                <Button aria-haspopup="true" size="icon" variant="ghost">
+                                <Button size="icon" variant="ghost">
                                     <MoreHorizontal className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
                                 </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                <DropdownMenuItem>Submit Quotation</DropdownMenuItem>
-                                <DropdownMenuItem>Flag Constraints</DropdownMenuItem>
+                                <DropdownMenuLabel>Coordination Actions</DropdownMenuLabel>
+                                <DropdownMenuItem onClick={() => setSelectedRfq(rfq)} className="gap-2">
+                                    <Gavel className="h-3.5 w-3.5" /> Submit Quotation
+                                </DropdownMenuItem>
                                 <DropdownMenuItem className="text-destructive">Decline Request</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -110,6 +111,12 @@ export default function RfqMarketplacePage() {
             )}
         </CardContent>
       </Card>
+
+      <SubmitQuotationDialog 
+        rfq={selectedRfq}
+        open={!!selectedRfq}
+        onOpenChange={(open) => !open && setSelectedRfq(null)}
+      />
     </>
   );
 }
