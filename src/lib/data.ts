@@ -59,7 +59,7 @@ export const mockRfqs: CharterRFQ[] = [
         departureDate: '2024-08-10', 
         pax: 4, 
         aircraftType: 'Any Light Jet', 
-        status: 'Submitted', // Maps to "Under Coordination"
+        status: 'Submitted', 
         createdAt: '2024-07-28T12:00:00Z', 
         bidsCount: 0, 
         hotelRequired: false,
@@ -77,7 +77,7 @@ export const mockRfqs: CharterRFQ[] = [
         returnDate: '2024-08-18', 
         pax: 2, 
         aircraftType: 'Any Turboprop', 
-        status: 'Confirmed', // Maps to "Confirmed"
+        status: 'Confirmed', 
         createdAt: '2024-07-27T15:00:00Z', 
         bidsCount: 1, 
         hotelRequired: true 
@@ -93,7 +93,7 @@ export const mockRfqs: CharterRFQ[] = [
         departureDate: '2024-08-12', 
         pax: 6, 
         aircraftType: 'Any Mid-size Jet', 
-        status: 'Reviewing', // Maps to "Action Required"
+        status: 'Reviewing', 
         createdAt: '2024-07-28T14:00:00Z', 
         bidsCount: 3,
         hotelRequired: true,
@@ -110,29 +110,68 @@ export const mockRfqs: CharterRFQ[] = [
         departureDate: '2024-09-01', 
         pax: 3, 
         aircraftType: 'Any Light Jet', 
-        status: 'Bidding Open', // Maps to "Under Coordination"
+        status: 'Bidding Open', 
         createdAt: '2024-07-29T09:00:00Z', 
         bidsCount: 2 
+    },
+    { 
+        id: 'RFQ-INTL-005', 
+        customerId: 'customer-user-02', 
+        requesterExternalAuthId: 'customer-user-02', 
+        customerName: 'Arjun Mehta', 
+        tripType: 'Return', 
+        departure: 'Mumbai (BOM)', 
+        arrival: 'Dubai (DXB)', 
+        departureDate: '2024-08-20', 
+        returnDate: '2024-08-25',
+        pax: 8, 
+        aircraftType: 'Any Heavy Jet', 
+        status: 'Bidding Open', 
+        createdAt: '2024-07-30T10:00:00Z', 
+        bidsCount: 0 
+    },
+    { 
+        id: 'RFQ-LONG-006', 
+        customerId: 'customer-user-02', 
+        requesterExternalAuthId: 'customer-user-02', 
+        customerName: 'Arjun Mehta', 
+        tripType: 'Onward', 
+        departure: 'Delhi (DEL)', 
+        arrival: 'London (LHR)', 
+        departureDate: '2024-09-10', 
+        pax: 12, 
+        aircraftType: 'Heavy Jet', 
+        status: 'Bidding Open', 
+        createdAt: '2024-07-30T11:00:00Z', 
+        bidsCount: 1 
     },
 ];
 
 export const mockAircrafts: Aircraft[] = [
     { id: 'AC-VTFLY', operatorId: 'operator-user-01', name: 'Phenom 300E', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'Mumbai (BOM)', status: 'Available' },
-    { id: 'AC-VTPC', operatorId: 'operator-user-03', name: 'Pilatus PC-12', type: 'Turboprop', registration: 'VT-PC', paxCapacity: 8, homeBase: 'Mumbai (BOM)', status: 'Available' },
+    { id: 'AC-VTPC', operatorId: 'operator-user-03', name: 'Pilatus PC-12', type: 'Turboprop', registration: 'VT-PC', paxCapacity: 8, homeBase: 'Delhi (DEL)', status: 'Available' },
+    { id: 'AC-VTHEV', operatorId: 'operator-user-01', name: 'Global 6000', type: 'Heavy Jet', registration: 'VT-HEV', paxCapacity: 14, homeBase: 'Mumbai (BOM)', status: 'Under Maintenance' },
+    { id: 'AC-VTMID', operatorId: 'operator-user-03', name: 'Falcon 2000', type: 'Mid-size Jet', registration: 'VT-MID', paxCapacity: 10, homeBase: 'Delhi (DEL)', status: 'Available' },
+    { id: 'AC-VTAOG', operatorId: 'operator-user-01', name: 'Citation XLS+', type: 'Mid-size Jet', registration: 'VT-AOG', paxCapacity: 9, homeBase: 'Mumbai (BOM)', status: 'AOG' },
 ];
 
 export const mockQuotations: Quotation[] = [
-    { id: 'QTE-114', rfqId: 'RFQ-CONF-002', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', price: 400000, status: 'Selected', submittedAt: '2024-07-27T16:00:00Z', validUntil: '2024-07-28T16:00:00Z' },
+    { id: 'QTE-114', rfqId: 'RFQ-CONF-002', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', price: 450000, status: 'Selected', submittedAt: '2024-07-27T16:00:00Z', validUntil: '2024-07-28T16:00:00Z' },
+    { id: 'QTE-115', rfqId: 'RFQ-BID-004', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', price: 380000, status: 'Submitted', submittedAt: '2024-07-29T10:00:00Z', validUntil: '2024-07-30T10:00:00Z' },
+    { id: 'QTE-116', rfqId: 'RFQ-ACTION-003', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTMID', aircraftName: 'Falcon 2000', price: 520000, status: 'Submitted', submittedAt: '2024-07-28T15:00:00Z', validUntil: '2024-07-29T15:00:00Z' },
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-901', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Delhi (DEL)', arrival: 'Mumbai (BOM)', departureTime: '2024-08-05T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published' },
     { id: 'EL-904', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTPC', aircraftName: 'Pilatus PC-12', departure: 'Udaipur (UDR)', arrival: 'Jaipur (JAI)', departureTime: '2024-08-11T12:00:00Z', availableSeats: 7, seatsAllocated: 0, status: 'Published' },
+    { id: 'EL-905', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTHEV', aircraftName: 'Global 6000', departure: 'Dubai (DXB)', arrival: 'Mumbai (BOM)', departureTime: '2024-08-15T18:00:00Z', availableSeats: 12, seatsAllocated: 0, status: 'Draft' },
+    { id: 'EL-906', operatorId: 'operator-user-03', operatorName: 'AirOne Charters', aircraftId: 'AC-VTMID', aircraftName: 'Falcon 2000', departure: 'Mumbai (BOM)', arrival: 'Singapore (SIN)', departureTime: '2024-08-20T09:00:00Z', availableSeats: 10, seatsAllocated: 0, status: 'Pending Approval' },
 ];
 
 export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [
     { id: 'SAR-COORD-501', emptyLegId: 'EL-901', distributorId: 'distributor-user-01', requesterExternalAuthId: 'customer-user-01', numberOfSeats: 2, status: 'Requested', requestDateTime: '2024-07-30T10:00:00Z' },
-    { id: 'SAR-CONF-502', emptyLegId: 'EL-904', distributorId: 'distributor-user-01', requesterExternalAuthId: 'customer-user-01', numberOfSeats: 1, status: 'Approved', requestDateTime: '2024-07-31T11:00:00Z' }
+    { id: 'SAR-CONF-502', emptyLegId: 'EL-904', distributorId: 'distributor-user-01', requesterExternalAuthId: 'customer-user-01', numberOfSeats: 1, status: 'Approved', requestDateTime: '2024-07-31T11:00:00Z' },
+    { id: 'SAR-NEW-503', emptyLegId: 'EL-901', distributorId: 'distributor-user-01', requesterExternalAuthId: 'customer-user-02', numberOfSeats: 1, status: 'Requested', requestDateTime: '2024-07-31T14:00:00Z' }
 ];
 
 export const mockProperties: Property[] = [
@@ -151,7 +190,9 @@ export const mockAccommodationRequests: AccommodationRequest[] = [
 
 export const mockAuditLogs: AuditLog[] = [
     { id: 'LOG-001', timestamp: '2024-07-28T12:00:00Z', user: 'Sanjana Kumar', role: 'Customer', action: 'CREATE RFQ', details: 'Created new personal RFQ', targetId: 'RFQ-COORD-001' },
-    { id: 'LOG-002', timestamp: '2024-07-29T10:00:00Z', user: 'Sanjana Kumar', role: 'Customer', action: 'REQUEST SEATS', details: 'Requested 2 seats on EL-901', targetId: 'SAR-COORD-501' },
+    { id: 'LOG-002', timestamp: '2024-07-29T10:00:00Z', user: 'FlyCo Ops', role: 'Operator', action: 'SUBMIT QUOTATION', details: 'Submitted bid for RFQ-BID-004', targetId: 'QTE-115' },
+    { id: 'LOG-003', timestamp: '2024-07-30T09:00:00Z', user: 'FlyCo Ops', role: 'Operator', action: 'FLEET UPDATE', details: 'Updated status of AC-VTHEV to Under Maintenance', targetId: 'AC-VTHEV' },
+    { id: 'LOG-004', timestamp: '2024-07-30T11:00:00Z', user: 'AirOne Charters', role: 'Operator', action: 'EMPTY LEG CREATED', details: 'New empty leg listed Mumbai to Singapore', targetId: 'EL-906' },
 ];
 
 export const mockBillingRecords: BillingRecord[] = [
