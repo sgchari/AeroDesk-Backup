@@ -2,7 +2,7 @@
 'use client';
 import Link from "next/link";
 import { Logo } from "./logo";
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, MessageSquare } from "lucide-react";
 
 export function LandingFooter() {
     return (
@@ -37,6 +37,12 @@ export function LandingFooter() {
                     className="flex items-center gap-2 text-sm hover:text-white transition-colors"
                   >
                     <Mail className="h-4 w-4 text-accent" /> info@aerodesk.com
+                  </a>
+                  <a
+                    href="mailto:feedback@aerodesk.com"
+                    className="flex items-center gap-2 text-sm hover:text-white transition-colors"
+                  >
+                    <MessageSquare className="h-4 w-4 text-accent" /> Feedback & Suggestions
                   </a>
                 </div>
               </div>

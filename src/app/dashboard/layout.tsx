@@ -1,7 +1,9 @@
+
 import { Header } from '@/components/header';
 import { MainSidebar } from '@/components/main-sidebar';
 import { Sidebar, SidebarInset, SidebarProvider, SidebarRail } from '@/components/ui/sidebar';
 import React from 'react';
+import Link from 'next/link';
 
 export default function DashboardLayout({
   children,
@@ -21,7 +23,17 @@ export default function DashboardLayout({
         <SidebarInset className="bg-transparent">
           <Header />
           <main className="flex flex-1 flex-col gap-6 p-6 lg:p-8">
-            {children}
+            <div className="flex-1">
+              {children}
+            </div>
+            
+            <footer className="mt-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                <p>&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. NSOP COORDINATION ONLY.</p>
+                <div className="flex gap-6">
+                    <Link href="mailto:feedback@aerodesk.com" className="hover:text-accent transition-colors">Feedback & Suggestions</Link>
+                    <Link href="#" className="hover:text-accent transition-colors">System Status</Link>
+                </div>
+            </footer>
           </main>
         </SidebarInset>
       </SidebarProvider>
