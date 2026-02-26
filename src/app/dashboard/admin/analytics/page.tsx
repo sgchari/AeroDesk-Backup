@@ -19,7 +19,9 @@ import {
     Pie, 
     Cell,
     AreaChart,
-    Area
+    Area,
+    ComposedChart,
+    Legend
 } from 'recharts';
 import { 
     Activity, 
@@ -35,7 +37,8 @@ import {
     Globe,
     AlertTriangle,
     CheckCircle2,
-    Clock
+    Clock,
+    Scale
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -70,7 +73,13 @@ const REGIONAL_PERFORMANCE = [
     { zone: 'Central', activity: 28, latency: 1.8, health: 84 },
 ];
 
-const COLORS = ['#0EA5E9', '#EEDC5B', '#10B981', '#F43F5E', '#8B5CF6'];
+const MARKET_ELASTICITY_DATA = [
+    { zone: 'North', supply: 45, demand: 82, pressure: 1.8 },
+    { zone: 'West', supply: 62, demand: 58, pressure: 0.9 },
+    { zone: 'South', supply: 38, demand: 42, pressure: 1.1 },
+    { zone: 'East', supply: 12, demand: 28, pressure: 2.3 },
+    { zone: 'Central', supply: 25, demand: 18, pressure: 0.7 },
+];
 
 export default function PortalAdminAnalyticsPage() {
     const { toast } = useToast();
@@ -346,12 +355,33 @@ export default function PortalAdminAnalyticsPage() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-card flex flex-col items-center justify-center p-8 text-center border-dashed border-2">
-                                <BarChart2 className="h-12 w-12 text-muted-foreground/20 mb-4" />
-                                <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Marketplace Elasticity Map</h4>
-                                <p className="text-xs text-muted-foreground/60 max-w-xs mt-2 italic">
-                                    Spatial demand vs. supply analysis visualizing real-time sector pressure is currently initializing.
-                                </p>
+                            <Card className="bg-card">
+                                <CardHeader>
+                                    <CardTitle>Marketplace Elasticity Map</CardTitle>
+                                    <CardDescription>Regional Supply vs Demand Intensity and Pressure Signals.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[300px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <ComposedChart data={MARKET_ELASTICITY_DATA}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                            <XAxis dataKey="zone" stroke="#94a3b8" fontSize={10} />
+                                            <YAxis yAxisId="left" stroke="#94a3b8" fontSize={10} />
+                                            <YAxis yAxisId="right" orientation="right" stroke="#EEDC5B" fontSize={10} domain={[0, 3]} />
+                                            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
+                                            <Legend />
+                                            <Bar yAxisId="left" dataKey="supply" name="Active Supply (Assets)" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
+                                            <Bar yAxisId="left" dataKey="demand" name="Market Demand (RFQs)" fill="#10B981" radius={[4, 4, 0, 0]} />
+                                            <Line yAxisId="right" type="monotone" dataKey="pressure" name="Sector Pressure Index" stroke="#EEDC5B" strokeWidth={2} dot={{ fill: '#EEDC5B' }} />
+                                        </ComposedChart>
+                                    </ResponsiveContainer>
+                                    <div className="mt-4 flex items-center justify-between p-2 rounded bg-accent/5 border border-accent/10">
+                                        <div className="flex items-center gap-2">
+                                            <Scale className="h-3.5 w-3.5 text-accent" />
+                                            <span className="text-[10px] font-bold text-accent uppercase">Pressure Alert</span>
+                                        </div>
+                                        <span className="text-[10px] text-muted-foreground italic">High Pressure detected in East Zone sectors.</span>
+                                    </div>
+                                </CardContent>
                             </Card>
                         </div>
                     </TabsContent>
