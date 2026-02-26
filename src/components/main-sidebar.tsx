@@ -85,6 +85,7 @@ const navItems: Record<string, any[]> = {
   ],
   Admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-sky-400' },
+    { href: '/dashboard/admin/analytics', label: 'Platform Intelligence', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/admin/approvals', label: 'Approvals & Compliance', icon: ShieldCheck, color: 'text-emerald-400' },
     { href: '/dashboard/admin/users', label: 'User & Entity Governance', icon: Users, color: 'text-violet-400' },
     { href: '/dashboard/admin/operators', label: 'Operator Governance', icon: Plane, color: 'text-slate-400' },
