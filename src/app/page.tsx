@@ -82,10 +82,21 @@ const features = [
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     viewBox="0 0 24 24"
-    fill="currentColor"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     {...props}
   >
-    <path d="M22 11h-1.1c-.24-1.12-1.22-2-2.4-2h-4.33l-2.17-4H15c.55 0 1-.45 1-1s-.45-1-1-1H9c-.55 0-1 .45-1 1s.45 1 1 1h1.17l2.17 4H6.09c-.79 0-1.46.5-1.75 1.25L3.19 13.12c-.12.25-.19.52-.19.8V16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5zM19 16H5v-2h14v2zm-1.5-4H14v-1h3.5v1zM6.5 12H10v-1H6.5v1zM4 20h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1z" />
+    <path d="M2 5h20" />
+    <path d="M12 5v3" />
+    <path d="M10 8l2-3 2 3" />
+    <path d="M12 8c-4 0-5 2-5 5v3c0 3 1 5 5 5s5-2 5-5v-3c0-3-1-5-5-5z" />
+    <path d="M12 8v10" />
+    <path d="M7 14c2 1 8 1 10 0" />
+    <path d="M9 18l-1.5 4" />
+    <path d="M15 18l1.5 4" />
   </svg>
 );
 
