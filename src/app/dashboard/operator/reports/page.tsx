@@ -39,6 +39,9 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/use-user";
 import { AIInsights } from "@/components/dashboard/operator/reports/ai-insights";
+import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 const fleetUtilizationData = [
     { name: 'VT-FLY', hours: 45, idle: 12, revenue: 1850000 },
@@ -74,6 +77,16 @@ const COLORS = ['#0EA5E9', '#EEDC5B', '#F43F5E', '#10B981'];
 
 export default function OperatorReportsPage() {
     const { user } = useUser();
+    const { toast } = useToast();
+    const [period, setPeriod] = useState("30d");
+
+    const handlePeriodChange = (value: string) => {
+        setPeriod(value);
+        toast({
+            title: "Analytical Scope Updated",
+            description: `Now viewing institutional metrics for the last ${value === '7d' ? '7 days' : value === '30d' ? '30 days' : value === '90d' ? 'quarter' : 'year'}.`,
+        });
+    };
 
     return (
         <>
@@ -82,10 +95,19 @@ export default function OperatorReportsPage() {
                 description="Institutional visibility into fleet profitability, mission yield, and AI-assisted performance signals."
             >
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10">
-                        <Filter className="h-3.5 w-3.5" /> Period Scope
-                    </Button>
-                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10">
+                    <Select value={period} onValueChange={handlePeriodChange}>
+                        <SelectTrigger className="h-9 w-[160px] bg-muted/20 border-white/10 text-xs gap-2">
+                            <Filter className="h-3.5 w-3.5 text-accent" />
+                            <SelectValue placeholder="Period Scope" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="7d">Last 7 Days</SelectItem>
+                            <SelectItem value="30d">Last 30 Days</SelectItem>
+                            <SelectItem value="90d">Last Quarter</SelectItem>
+                            <SelectItem value="ytd">Year to Date</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[10px] tracking-widest">
                         <Download className="h-3.5 w-3.5" /> Export Financials
                     </Button>
                 </div>
