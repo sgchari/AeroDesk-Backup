@@ -64,8 +64,9 @@ const OperatorMarker = ({ operator, index }: { operator: Operator; index: number
     const isFeatured = operator.featured;
 
     // Apply a deterministic jitter/offset based on index to prevent overlap in the same city
-    const offsetTop = (index % 3 - 1) * 1.5; // -1.5, 0, 1.5
-    const offsetLeft = (Math.floor(index / 2) % 3 - 1) * 1.5;
+    // Increased multiplier from 1.5 to 4.5 to resolve overlap visibility issues
+    const offsetTop = (index % 3 - 1) * 4.5; 
+    const offsetLeft = (Math.floor(index / 2) % 3 - 1) * 4.5;
 
     return (
         <TooltipProvider>
@@ -78,14 +79,14 @@ const OperatorMarker = ({ operator, index }: { operator: Operator; index: number
                         transform: 'translate(-50%, -50%)' 
                     }}
                 >
-                    <div className={cn("relative flex items-center justify-center", isFeatured ? 'w-8 h-8' : 'w-6 h-6')}>
+                    <div className={cn("relative flex items-center justify-center", isFeatured ? 'w-12 h-12' : 'w-10 h-10')}>
                         <div className={cn(
                             "absolute rounded-full w-full h-full opacity-0",
                              statusConfig.pulse
                         )} />
                         <div className={cn(
-                            "rounded-full transition-transform hover:scale-150 duration-300 shadow-[0_0_15px_rgba(74,222,128,0.4)]", 
-                            isFeatured ? 'w-4 h-4' : 'w-3 h-3',
+                            "rounded-full transition-transform hover:scale-125 duration-300 shadow-[0_0_20px_rgba(74,222,128,0.6)]", 
+                            isFeatured ? 'w-6 h-6' : 'w-5 h-5',
                             statusConfig.base
                         )} />
                     </div>
@@ -150,7 +151,7 @@ export default function OurNetworkPage() {
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-slate-300 flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-green-400 animate-blink" /> Active Approved Operators
+                                        <div className="w-4 h-4 rounded-full bg-green-400 animate-blink" /> Active Approved Operators
                                     </span>
                                     <span className="text-white font-mono font-bold">{activeOperators.length}</span>
                                 </div>
