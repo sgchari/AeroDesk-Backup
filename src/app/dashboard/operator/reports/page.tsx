@@ -42,6 +42,7 @@ import { AIInsights } from "@/components/dashboard/operator/reports/ai-insights"
 import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 // Base Mock Data (representing 30 days)
 const BASE_FLEET_DATA = [
@@ -132,7 +133,7 @@ export default function OperatorReportsPage() {
     };
 
     return (
-        <>
+        <div className="space-y-6">
             <PageHeader 
                 title="Revenue Analytics" 
                 description="Institutional visibility into fleet profitability, mission yield, and AI-assisted performance signals."
@@ -163,7 +164,7 @@ export default function OperatorReportsPage() {
                 <StatsCard title="Avg. Mission Value" value={stats.avgMission} icon={TrendingUp} description="Per confirmed charter" />
             </StatsGrid>
 
-            <div className="mt-6 space-y-6">
+            <div className="space-y-6">
                 <AIInsights />
 
                 <Tabs defaultValue="revenue" className="w-full">
@@ -332,7 +333,7 @@ export default function OperatorReportsPage() {
                         <Card className="bg-card">
                             <CardHeader>
                                 <CardTitle>Marketplace Funnel</CardTitle>
-                                <CardDescription> realization of monthly commercial volume.</CardDescription>
+                                <CardDescription>Realization of monthly commercial volume.</CardDescription>
                             </CardHeader>
                             <CardContent className="h-[300px] sm:h-[400px]">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -355,6 +356,6 @@ export default function OperatorReportsPage() {
                     </TabsContent>
                 </Tabs>
             </div>
-        </>
+        </div>
     );
 }

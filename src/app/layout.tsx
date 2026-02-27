@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google';
 import { UserProvider } from '@/hooks/use-user';
 import { FirebaseClientProvider } from '@/firebase';
 
+// AeroDesk Version: 1.0.4 - Institutional Refresh
 export const metadata: Metadata = {
   title: 'AeroDesk',
   description:

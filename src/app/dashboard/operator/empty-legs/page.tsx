@@ -98,6 +98,12 @@ export default function EmptyLegsPage() {
                 </Table>
                 )}
             </div>
+            {(!isLoading && (!emptyLegs || emptyLegs.length === 0)) && (
+                <div className="text-center py-20 border-2 border-dashed rounded-lg bg-muted/5 mx-6">
+                    <Globe className="mx-auto h-10 w-10 text-muted-foreground/20 mb-4" />
+                    <p className="text-muted-foreground">No empty leg inventory listed.</p>
+                </div>
+            )}
         </CardContent>
       </Card>
     </>
