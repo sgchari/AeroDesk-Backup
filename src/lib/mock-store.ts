@@ -12,9 +12,7 @@ import {
   mockRoomCategories,
   mockEmptyLegSeatAllocationRequests,
   mockOperators,
-  mockBillingRecords,
   mockFeatureFlags,
-  mockPolicyFlags,
   mockCrew,
   mockManifests,
   mockInvoices,
@@ -25,9 +23,14 @@ import {
   mockPlatformInvoices,
   mockSubscriptionPlans
 } from './data';
-import { User, UserRole } from './types';
+import { User } from './types';
 
-// Simple deep copy
+/**
+ * @fileOverview Simulation Data Engine
+ * Manages the state of the mock database for real-time dashboard simulation.
+ */
+
+// Simple deep copy utility
 const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 let db = {
@@ -47,9 +50,7 @@ let db = {
   customers: deepCopy(mockUsers.filter(u => u.role === 'Customer')),
   distributors: deepCopy(mockUsers.filter(u => u.role === 'Travel Agency')),
   hotelPartners: deepCopy(mockUsers.filter(u => u.role === 'Hotel Partner')),
-  billingRecords: deepCopy(mockBillingRecords),
   featureFlags: deepCopy(mockFeatureFlags),
-  policyFlags: deepCopy(mockPolicyFlags),
   crew: deepCopy(mockCrew),
   passengerManifests: deepCopy(mockManifests),
   invoices: deepCopy(mockInvoices),
@@ -60,12 +61,9 @@ let db = {
   entityBillingLedger: deepCopy(mockBillingLedger),
   platformInvoices: deepCopy(mockPlatformInvoices),
   subscriptionPlans: deepCopy(mockSubscriptionPlans),
-  entitySubscriptions: [],
-  platformPayments: [],
-  billingAuditLogs: []
 };
 
-// Simple event emitter
+// Simple event emitter for real-time reactivity in the demo
 type Listener = () => void;
 const listeners: Set<Listener> = new Set();
 
@@ -82,6 +80,7 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
     const pathSegments = path.split('/');
     const collectionName = pathSegments[0];
 
+    // Specialized filtering for the seat request collection group simulation
     if (path === 'emptyLegs/all/seatAllocationRequests') {
         return db.seatAllocationRequests;
     }
@@ -93,7 +92,7 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
                 (currentUser.role === 'Customer' && rfq.customerId === currentUser.id) ||
                 (currentUser.role === 'Requester' && rfq.requesterExternalAuthId === currentUser.id) || 
                 (currentUser.role === 'Operator' && rfq.operatorId === currentUser.id) || 
-                (currentUser.role === 'Operator' && !rfq.operatorId && (['Bidding Open', 'New', 'rfqSubmitted'].includes(rfq.status))) || 
+                (currentUser.role === 'Operator' && !rfq.operatorId && (['Bidding Open', 'New'].includes(rfq.status))) || 
                 currentUser.role === 'Admin' || 
                 (currentUser.role === 'CTD Admin' && rfq.company === currentUser.company) ||
                 (currentUser.role === 'Travel Agency' && rfq.requesterExternalAuthId === currentUser.id)
@@ -114,12 +113,15 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
         case 'invoices': return db.invoices;
         case 'payments': return db.payments;
         case 'activityLogs': return db.activityLogs;
-        case 'commissions': return db.commissions;
         case 'operators': return db.operators;
         case 'emptyLegs': return db.emptyLegs;
         case 'users': return db.users;
         case 'properties': return db.properties;
         case 'roomCategories': return db.roomCategories;
+        case 'platformChargeRules': return db.platformChargeRules;
+        case 'entityBillingLedger': return db.entityBillingLedger;
+        case 'platformInvoices': return db.platformInvoices;
+        case 'subscriptionPlans': return db.subscriptionPlans;
         default:
             return (db as any)[collectionName] || [];
     }
