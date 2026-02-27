@@ -15,36 +15,34 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 const OpportunityCard = ({ leg, onAction }: { leg: EmptyLeg, onAction: () => void }) => (
-    <Card className="bg-card flex flex-col group hover:border-accent/40 transition-all duration-300 min-h-[300px]">
+    <Card className="bg-card flex flex-col group hover:border-accent/40 transition-all duration-300 min-h-[320px]">
         <CardHeader className="pb-3 pt-6 px-6">
             <div className="flex justify-between items-center mb-3">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent truncate max-w-[60%]">
                     {leg.operatorName || 'Private Operator'}
                 </span>
-                <span className="text-[10px] font-bold text-muted-foreground">
+                <span className="text-[10px] font-bold text-muted-foreground truncate max-w-[35%]">
                     {leg.aircraftName || 'Jet Opportunity'}
                 </span>
             </div>
-            <CardTitle className="text-lg flex items-center flex-wrap gap-x-2 leading-snug font-headline font-bold">
-                <span className="text-white">{leg.departure}</span>
-                <span className="text-muted-foreground/40 font-light">-</span>
-                <span className="text-white">{leg.arrival}</span>
+            <CardTitle className="text-lg font-headline font-bold text-white whitespace-nowrap truncate overflow-hidden flex items-center gap-2">
+                {leg.departure} <span className="text-muted-foreground/40 font-light">-</span> {leg.arrival}
             </CardTitle>
         </CardHeader>
-        <CardContent className="flex-grow space-y-5 px-6 text-sm">
-            <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-1.5">
-                    <p className="text-[9px] uppercase font-black text-muted-foreground tracking-widest">Departure Window</p>
-                    <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-accent/60" />
+        <CardContent className="flex-grow space-y-5 px-6">
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                    <p className="text-[9px] uppercase font-black text-muted-foreground tracking-widest">Departure</p>
+                    <div className="flex items-center text-sm text-foreground">
+                        <Calendar className="h-3.5 w-3.5 mr-2 text-accent/60" />
                         <span className="font-medium">{new Date(leg.departureTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
                     </div>
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                     <p className="text-[9px] uppercase font-black text-muted-foreground tracking-widest">Availability</p>
-                    <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-accent/60" />
-                        <span className="font-black text-green-500">{leg.availableSeats} Seats</span>
+                    <div className="flex items-center text-sm text-green-500 font-black">
+                        <Users className="h-3.5 w-3.5 mr-2 text-accent/60" />
+                        <span>{leg.availableSeats} Seats</span>
                     </div>
                 </div>
             </div>
@@ -61,7 +59,7 @@ const OpportunityCard = ({ leg, onAction }: { leg: EmptyLeg, onAction: () => voi
             <Button variant="ghost" size="icon" className="h-10 w-10 text-muted-foreground hover:text-accent hover:bg-accent/10">
                 <Share2 className="h-4 w-4" />
             </Button>
-            <Button onClick={onAction} className="flex-1 h-10 text-xs bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-widest">
+            <Button onClick={onAction} className="flex-1 h-10 text-[10px] bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-widest">
                 Request Seat Block
             </Button>
         </CardFooter>
