@@ -15,37 +15,41 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 const OpportunityCard = ({ leg, onAction }: { leg: EmptyLeg, onAction: () => void }) => (
-    <Card className="bg-card flex flex-col group hover:border-accent/40 transition-all">
-        <CardHeader className="pb-3">
-            <div className="flex justify-between items-start mb-1">
-                <Badge variant="outline" className="text-[8px] uppercase tracking-widest font-bold border-white/10 text-muted-foreground">
+    <Card className="bg-card flex flex-col group hover:border-accent/40 transition-all duration-300">
+        <CardHeader className="pb-3 pt-5 px-5">
+            <div className="flex justify-between items-center mb-2">
+                <span className="text-[9px] font-black uppercase tracking-[0.15em] text-accent">
+                    {leg.operatorName || 'Private Operator'}
+                </span>
+                <span className="text-[9px] font-bold text-muted-foreground">
                     {leg.aircraftName || 'Jet Opportunity'}
-                </Badge>
-                <span className="font-code text-[10px] text-muted-foreground/60">{leg.id}</span>
+                </span>
             </div>
-            <CardTitle className="text-lg group-hover:text-accent transition-colors flex items-center gap-2">
-                {leg.departure} <span className="text-muted-foreground/30">-</span> {leg.arrival}
+            <CardTitle className="text-base flex items-center flex-wrap gap-x-2 leading-tight font-headline font-bold">
+                <span className="text-white">{leg.departure}</span>
+                <span className="text-muted-foreground/40 font-light">-</span>
+                <span className="text-white">{leg.arrival}</span>
             </CardTitle>
         </CardHeader>
-        <CardContent className="flex-grow space-y-4 text-xs">
+        <CardContent className="flex-grow space-y-4 px-5 text-xs">
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                     <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-tighter">Departure Window</p>
                     <div className="flex items-center gap-2">
-                        <Calendar className="h-3 w-3 text-accent/60" />
+                        <Calendar className="h-3.5 w-3.5 text-accent/60" />
                         <span>{new Date(leg.departureTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
                     </div>
                 </div>
                 <div className="space-y-1">
                     <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-tighter">Availability</p>
                     <div className="flex items-center gap-2">
-                        <Users className="h-3 w-3 text-accent/60" />
+                        <Users className="h-3.5 w-3.5 text-accent/60" />
                         <span className="font-bold text-green-500">{leg.availableSeats} Seats</span>
                     </div>
                 </div>
             </div>
             
-            <div className="p-2 bg-muted/20 rounded border border-white/5 italic text-muted-foreground">
+            <div className="p-2.5 bg-muted/20 rounded border border-white/5 italic text-[10px] text-muted-foreground leading-relaxed">
                 <p className="flex items-start gap-2">
                     <Info className="h-3 w-3 mt-0.5 shrink-0" />
                     Subject to positioning window and operator confirmation.
@@ -53,11 +57,11 @@ const OpportunityCard = ({ leg, onAction }: { leg: EmptyLeg, onAction: () => voi
             </div>
         </CardContent>
         <Separator className="bg-white/5" />
-        <CardFooter className="py-3 flex gap-2">
+        <CardFooter className="py-3 px-5 flex gap-2">
             <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-accent">
                 <Share2 className="h-4 w-4" />
             </Button>
-            <Button onClick={onAction} className="flex-1 h-8 text-xs bg-accent text-accent-foreground hover:bg-accent/90 font-bold">
+            <Button onClick={onAction} className="flex-1 h-9 text-xs bg-accent text-accent-foreground hover:bg-accent/90 font-bold">
                 Request Seat Block
             </Button>
         </CardFooter>
@@ -82,7 +86,7 @@ export default function AvailableSeatsPage() {
   );
 
   return (
-    <>
+    <div className="max-w-7xl mx-auto">
       <PageHeader title="Approved Jet Seats" description="Browse allocatable inventory from verified network operators. No instant bookings; all requests are subject to coordination." />
       
       <div className="flex flex-col md:flex-row gap-4 mb-8">
@@ -135,6 +139,6 @@ export default function AvailableSeatsPage() {
         open={!!legToRequest}
         onOpenChange={(open) => !open && setLegToRequest(null)}
       />
-    </>
+    </div>
   );
 }
