@@ -214,23 +214,29 @@ export default function Home() {
                       Direct Payment Flow
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="flex-grow space-y-4">
-                    <div>
-                      <h4 className="font-semibold text-white">
-                        Air Charter Payment
-                      </h4>
-                      <p className="text-white/80">
-                        Customer / Corporate / Agent → Pays Operator Directly
-                        (offline / bank transfer).
-                      </p>
+                  <CardContent className="flex-grow space-y-6">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="mt-1 h-5 w-5 shrink-0 text-green-500" />
+                      <div>
+                        <h4 className="font-semibold text-white">
+                          Air Charter Payment
+                        </h4>
+                        <p className="text-xs text-white/80">
+                          Customer / Corporate / Agent → Pays Operator Directly
+                          (offline / bank transfer).
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-white">
-                        Hotel Accommodation Payment
-                      </h4>
-                      <p className="text-white/80">
-                        Customer / Corporate / Agent → Pays Hotel Directly.
-                      </p>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="mt-1 h-5 w-5 shrink-0 text-green-500" />
+                      <div>
+                        <h4 className="font-semibold text-white">
+                          Hotel Accommodation Payment
+                        </h4>
+                        <p className="text-xs text-white/80">
+                          Customer / Corporate / Agent → Pays Hotel Directly.
+                        </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -249,19 +255,19 @@ export default function Home() {
                       </h4>
                       <ul className="space-y-2 text-sm text-white/80">
                         <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
+                          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           AeroDesk never touches funds.
                         </li>
                         <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
+                          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           Zero refund liability.
                         </li>
                         <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
+                          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           No financial regulatory risk.
                         </li>
                         <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
+                          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           No OTA classification trigger.
                         </li>
                       </ul>
