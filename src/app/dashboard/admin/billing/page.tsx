@@ -17,10 +17,11 @@ import {
     ShieldCheck, 
     Activity,
     CreditCard,
-    Briefcase
+    Briefcase,
+    Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking } from "@/firebase";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PlatformInvoice, EntityBillingLedger, PlatformChargeRule } from "@/lib/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -33,10 +34,12 @@ import {
     CartesianGrid, 
     Tooltip, 
     ResponsiveContainer, 
-    AreaChart, 
-    Area,
     Legend
 } from 'recharts';
+import { cn } from "@/lib/utils";
+import { CreateChargeRuleDialog } from "@/components/dashboard/admin/billing/create-charge-rule-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { doc } from "firebase/firestore";
 
 const MOCK_REV_DATA = [
     { name: 'Jun', rev: 12.5, comm: 8.2 },
@@ -46,6 +49,7 @@ const MOCK_REV_DATA = [
 
 export default function AdminBillingEnginePage() {
     const firestore = useFirestore();
+    const { toast } = useToast();
 
     const { data: invoices, isLoading: invoicesLoading } = useCollection<PlatformInvoice>(
         useMemoFirebase(() => null, []), 'platformInvoices'
@@ -60,6 +64,17 @@ export default function AdminBillingEnginePage() {
     );
 
     const isLoading = invoicesLoading || ledgerLoading || rulesLoading;
+
+    const handleToggleRule = (ruleId: string, currentState: boolean) => {
+        if (!firestore) return;
+        const ruleRef = doc(firestore, 'platformChargeRules', ruleId);
+        updateDocumentNonBlocking(ruleRef, { isActive: !currentState });
+        
+        toast({
+            title: currentState ? "Rule Deactivated" : "Rule Activated",
+            description: "Platform governance parameters have been updated.",
+        });
+    };
 
     const stats = {
         totalMTD: "₹ 18.2 L",
@@ -192,7 +207,11 @@ export default function AdminBillingEnginePage() {
                                                 <TableCell className="text-xs font-bold whitespace-nowrap">₹ {inv.totalAmount.toLocaleString()}</TableCell>
                                                 <TableCell className="text-[10px] text-muted-foreground">{new Date(inv.dueDate).toLocaleDateString()}</TableCell>
                                                 <TableCell className="text-center">
-                                                    <Badge variant={inv.status === 'paid' ? 'success' : inv.status === 'overdue' ? 'destructive' : 'warning'} className="text-[9px] font-black uppercase h-5">
+                                                    <Badge className={cn(
+                                                        "text-[9px] font-black uppercase h-5",
+                                                        inv.status === 'paid' ? 'bg-green-500/20 text-green-500' : 
+                                                        inv.status === 'overdue' ? 'bg-rose-500/20 text-rose-500' : 'bg-amber-500/20 text-amber-500'
+                                                    )}>
                                                         {inv.status}
                                                     </Badge>
                                                 </TableCell>
@@ -268,17 +287,25 @@ export default function AdminBillingEnginePage() {
                                         <div className="space-y-1">
                                             <p className="text-xs font-bold text-foreground">{rule.entityType} • {rule.serviceType}</p>
                                             <p className="text-[10px] text-muted-foreground">
-                                                {rule.chargeType === 'percentage' ? `${(rule.percentageRate * 100).toFixed(1)}% Volume Fee` : `₹ ${rule.fixedAmount} Flat Fee`}
+                                                {rule.chargeType === 'percentage' ? `${(rule.percentageRate * 100).toFixed(1)}% Volume Fee` : 
+                                                 rule.chargeType === 'fixed' ? `₹ ${rule.fixedAmount} Flat Fee` :
+                                                 `₹ ${rule.fixedAmount} + ${(rule.percentageRate * 100).toFixed(1)}%`}
                                             </p>
                                         </div>
-                                        <Badge variant={rule.isActive ? 'default' : 'secondary'} className="text-[8px] font-black h-5">
-                                            {rule.isActive ? 'ACTIVE' : 'EXPIRED'}
-                                        </Badge>
+                                        <Button 
+                                            variant={rule.isActive ? 'default' : 'outline'} 
+                                            size="sm" 
+                                            className={cn(
+                                                "text-[8px] font-black h-6",
+                                                !rule.isActive && "border-white/10 text-muted-foreground"
+                                            )}
+                                            onClick={() => handleToggleRule(rule.id, rule.isActive)}
+                                        >
+                                            {rule.isActive ? 'ACTIVE' : 'INACTIVE'}
+                                        </Button>
                                     </div>
                                 ))}
-                                <Button className="w-full h-10 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase text-[10px] tracking-[0.2em] mt-2">
-                                    Define New Charge Rule
-                                </Button>
+                                <CreateChargeRuleDialog />
                             </CardContent>
                         </Card>
 
