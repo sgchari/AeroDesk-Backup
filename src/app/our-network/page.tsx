@@ -48,19 +48,6 @@ const getStatusConfig = (status: Operator['status']) => {
                 pulse: 'pulse-green',
                 label: 'success',
             };
-        case 'Pending Approval':
-            return {
-                base: 'bg-amber-400',
-                pulse: 'pulse-amber',
-                label: 'warning',
-            };
-        case 'Suspended':
-        case 'Rejected':
-            return {
-                base: 'bg-red-500',
-                pulse: 'pulse-red',
-                label: 'destructive',
-            };
         default:
             return {
                 base: 'bg-slate-400',
@@ -70,19 +57,27 @@ const getStatusConfig = (status: Operator['status']) => {
     }
 };
 
-const OperatorMarker = ({ operator }: { operator: Operator }) => {
-    const position = operator.city ? operatorPositions[operator.city] : null;
-    if (!position) return null;
+const OperatorMarker = ({ operator, index }: { operator: Operator; index: number }) => {
+    const basePosition = operator.city ? operatorPositions[operator.city] : null;
+    if (!basePosition) return null;
 
     const statusConfig = getStatusConfig(operator.status);
     const isFeatured = operator.featured;
+
+    // Apply a deterministic jitter/offset based on index to prevent overlap in the same city
+    const offsetTop = (index % 3 - 1) * 1.5; // -1.5, 0, 1.5
+    const offsetLeft = (Math.floor(index / 2) % 3 - 1) * 1.5;
 
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger
-                    className="absolute z-30"
-                    style={{ top: position.top, left: position.left, transform: 'translate(-50%, -50%)' }}
+                    className="absolute z-30 transition-all duration-500"
+                    style={{ 
+                        top: `calc(${basePosition.top} + ${offsetTop}%)`, 
+                        left: `calc(${basePosition.left} + ${offsetLeft}%)`, 
+                        transform: 'translate(-50%, -50%)' 
+                    }}
                 >
                     <div className={cn("relative flex items-center justify-center", isFeatured ? 'w-5 h-5' : 'w-3 h-3')}>
                         <div className={cn(
@@ -124,6 +119,9 @@ export default function OurNetworkPage() {
     
     const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery, 'operators');
 
+    // Only show Approved operators on the map for the public view
+    const activeOperators = operators?.filter(o => o.status === 'Approved') || [];
+
     return (
         <div className="w-full">
             {/* Background Layer: Consistent Homepage Atmosphere */}
@@ -154,28 +152,17 @@ export default function OurNetworkPage() {
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-slate-300 flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-green-400" /> Active Operators
+                                        <div className="w-2.5 h-2.5 rounded-full bg-green-400" /> Active Approved Operators
                                     </span>
-                                    <span className="text-white font-mono font-bold">{operators?.filter(o => o.status === 'Approved').length || 0}</span>
+                                    <span className="text-white font-mono font-bold">{activeOperators.length}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-300 flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-amber-400" /> Pending Review
-                                    </span>
-                                    <span className="text-white font-mono font-bold">{operators?.filter(o => o.status === 'Pending Approval').length || 0}</span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-300 flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-red-500" /> Suspended
-                                    </span>
-                                    <span className="text-white font-mono font-bold">{operators?.filter(o => ['Suspended', 'Rejected'].includes(o.status)).length || 0}</span>
-                                </div>
+                                {/* Pending and Suspended categories removed for public impression */}
                             </div>
 
                             <div className="pt-2">
                                 <div className="p-4 bg-white/5 rounded-xl border border-white/5">
                                     <p className="text-xs leading-relaxed text-slate-300 italic">
-                                        "AeroDesk delivers real-time operational visibility across the platform."
+                                        "AeroDesk delivers real-time operational visibility across verified NSOP holders."
                                     </p>
                                 </div>
                             </div>
@@ -233,7 +220,7 @@ export default function OurNetworkPage() {
                                 />
                             </svg>
 
-                            {/* Floating HTML Labels: Revised to Bold and clean names */}
+                            {/* Floating HTML Labels */}
                             <div className="absolute top-[15%] left-[50%] -translate-x-1/2 pointer-events-none">
                                 <span className="text-xs font-black text-white/80 tracking-[0.4em] uppercase drop-shadow-md">NORTH</span>
                             </div>
@@ -257,7 +244,9 @@ export default function OurNetworkPage() {
                                 </div>
                             ) : (
                                 <div className="absolute inset-0 pointer-events-auto">
-                                    {operators?.map(op => <OperatorMarker key={op.id} operator={op} />)}
+                                    {activeOperators.map((op, idx) => (
+                                        <OperatorMarker key={op.id} operator={op} index={idx} />
+                                    ))}
                                 </div>
                             )}
                         </div>
