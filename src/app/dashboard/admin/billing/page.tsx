@@ -98,12 +98,18 @@ export default function AdminBillingEnginePage() {
         });
     };
 
-    const stats = {
-        totalMTD: "₹ 18.2 L",
-        outstanding: "₹ 4.5 L",
-        overdueCount: "3",
-        activeRules: rules?.filter(r => r.isActive).length.toString() || "0"
-    };
+    const stats = useMemo(() => {
+        const paidTotal = invoices?.filter(i => i.status === 'paid').reduce((acc, i) => acc + i.totalAmount, 0) || 0;
+        const outstandingTotal = invoices?.filter(i => i.status === 'issued').reduce((acc, i) => acc + i.totalAmount, 0) || 0;
+        const overdue = invoices?.filter(i => i.status === 'overdue').length || 0;
+        
+        return {
+            totalMTD: paidTotal > 100000 ? `₹ ${(paidTotal / 100000).toFixed(1)} L` : `₹ ${paidTotal.toLocaleString()}`,
+            outstanding: outstandingTotal > 100000 ? `₹ ${(outstandingTotal / 100000).toFixed(1)} L` : `₹ ${outstandingTotal.toLocaleString()}`,
+            overdueCount: overdue.toString(),
+            activeRules: rules?.filter(r => r.isActive).length.toString() || "0"
+        };
+    }, [invoices, rules]);
 
     const showDetails = (tab: string, filter: string | null = null) => {
         setActiveTab(tab);
@@ -135,28 +141,28 @@ export default function AdminBillingEnginePage() {
             <StatsGrid>
                 <StatsCard 
                     title="Total Revenue (MTD)" 
-                    value={stats.totalMTD} 
+                    value={isLoading ? <Skeleton className="h-6 w-16" /> : stats.totalMTD} 
                     icon={DollarSign} 
                     description="Settled platform fees" 
                     onClick={() => showDetails("analytics")}
                 />
                 <StatsCard 
                     title="Outstanding Balances" 
-                    value={stats.outstanding} 
+                    value={isLoading ? <Skeleton className="h-6 w-16" /> : stats.outstanding} 
                     icon={AlertCircle} 
                     description="Unpaid platform invoices" 
                     onClick={() => showDetails("invoices", "issued")}
                 />
                 <StatsCard 
                     title="Overdue Accounts" 
-                    value={stats.overdueCount} 
+                    value={isLoading ? <Skeleton className="h-6 w-8" /> : stats.overdueCount} 
                     icon={XCircle} 
                     description="Action required" 
                     onClick={() => showDetails("invoices", "overdue")}
                 />
                 <StatsCard 
                     title="Active Charge Rules" 
-                    value={stats.activeRules} 
+                    value={isLoading ? <Skeleton className="h-6 w-8" /> : stats.activeRules} 
                     icon={Settings} 
                     description="Governance constraints" 
                     onClick={() => showDetails("settings")}

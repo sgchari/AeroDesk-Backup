@@ -6,7 +6,7 @@ import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dial
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import type { CharterRFQ, RfqStatus } from "@/lib/types";
+import type { CharterRFQ, RfqStatus, PolicyFlag, User as AppUser } from "@/lib/types";
 import { 
     ShieldCheck, 
     TrendingUp, 
@@ -39,6 +39,7 @@ import {
     ComposedChart,
     Line
 } from 'recharts';
+import { useMemo } from "react";
 
 const MOCK_CHART_DATA = [
     { name: 'Mon', spend: 4.2, requests: 12 },
@@ -70,16 +71,34 @@ export function CTDDashboard() {
   
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
 
+  const policiesQuery = useMemoFirebase(() => {
+    if (!firestore || !user?.ctdId) return null;
+    return collection(firestore, `corporateTravelDesks/${user.ctdId}/policyFlags`);
+  }, [firestore, user]);
+  const { data: policies } = useCollection<PolicyFlag>(policiesQuery, `corporateTravelDesks/${user?.ctdId}/policyFlags`);
+
+  const teamQuery = useMemoFirebase(() => {
+    if (!firestore || !user?.company) return null;
+    return collection(firestore, 'users');
+  }, [firestore, user]);
+  const { data: allUsers } = useCollection<AppUser>(teamQuery, 'users');
+
   const isLoading = isUserLoading || rfqsLoading;
 
-  const stats = {
-    pendingInternal: rfqs?.filter(r => r.status === 'Pending Approval').length ?? 0,
-    activeBids: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
-    confirmedTrips: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
-    totalSpend: "₹ 42.5 L", 
-    activeTravelers: 3, 
-    policyFlags: 1 
-  }
+  const stats = useMemo(() => {
+    const totalSpendVal = rfqs?.reduce((acc, r) => acc + (r.totalAmount || 0), 0) || 0;
+    const personnelCount = allUsers?.filter(u => u.company === user?.company).length || 0;
+    const activePolicies = policies?.filter(p => p.isEnforced).length || 0;
+
+    return {
+        pendingInternal: rfqs?.filter(r => r.status === 'Pending Approval').length ?? 0,
+        activeBids: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
+        confirmedTrips: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
+        totalSpend: totalSpendVal > 100000 ? `₹ ${(totalSpendVal / 100000).toFixed(1)} L` : `₹ ${totalSpendVal.toLocaleString()}`, 
+        activeTravelers: personnelCount.toString(), 
+        policyFlags: activePolicies.toString()
+    };
+  }, [rfqs, allUsers, policies, user]);
 
   return (
     <div className="space-y-6">
@@ -88,10 +107,10 @@ export function CTDDashboard() {
       </PageHeader>
       
       <StatsGrid>
-        <StatsCard title="Total Travel Spend" value={stats.totalSpend} icon={TrendingUp} description="Actual + Committed" />
-        <StatsCard title="Awaiting Sign-off" href="/dashboard/ctd/approvals" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingInternal.toString()} icon={ShieldCheck} description="Internal workflow queue" />
-        <StatsCard title="Authorized Travelers" href="/dashboard/ctd/team" value={stats.activeTravelers.toString()} icon={Users} description="Personnel eligibility count" />
-        <StatsCard title="Policy Deviations" href="/dashboard/ctd/policies" value={stats.policyFlags.toString()} icon={AlertCircle} description="Workflow exceptions flagged" />
+        <StatsCard title="Total Travel Spend" value={isLoading ? <Skeleton className="h-6 w-16" /> : stats.totalSpend} icon={TrendingUp} description="Actual + Committed" />
+        <StatsCard title="Awaiting Sign-off" href="/dashboard/ctd/approvals" value={isLoading ? <Skeleton className="h-6 w-8" /> : stats.pendingInternal.toString()} icon={ShieldCheck} description="Internal workflow queue" />
+        <StatsCard title="Authorized Travelers" href="/dashboard/ctd/team" value={isLoading ? <Skeleton className="h-6 w-8" /> : stats.activeTravelers} icon={Users} description="Personnel eligibility count" />
+        <StatsCard title="Policy Deviations" href="/dashboard/ctd/policies" value={isLoading ? <Skeleton className="h-6 w-8" /> : stats.policyFlags} icon={AlertCircle} description="Workflow exceptions flagged" />
       </StatsGrid>
 
       <CTDAIGovernance />

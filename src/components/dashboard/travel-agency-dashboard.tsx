@@ -3,8 +3,8 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { EmptyLeg, EmptyLegSeatAllocationRequest, CharterRFQ } from "@/lib/types";
-import { Plane, Users, Calendar, GanttChartSquare, FileText, ArrowRight } from "lucide-react";
+import type { EmptyLeg, EmptyLegSeatAllocationRequest, CharterRFQ, CommissionLedgerEntry } from "@/lib/types";
+import { Plane, Users, Calendar, GanttChartSquare, FileText, ArrowRight, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useUser } from "@/hooks/use-user";
 import { Badge } from "@/components/ui/badge";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
+import { useMemo } from "react";
 
 export function TravelAgencyDashboard() {
   const firestore = useFirestore();
@@ -34,18 +35,29 @@ export function TravelAgencyDashboard() {
   
   const charterRequestsQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
-    return query(collection(firestore, 'charterRFQs'), where('requesterExternalAuthId', '==', user.id));
+    return query(collection(firestore, 'charterRequests'), where('requesterExternalAuthId', '==', user.id));
   }, [firestore, user]);
-  const { data: charterRequests, isLoading: charterRequestsLoading } = useCollection<CharterRFQ>(charterRequestsQuery, 'charterRFQs');
+  const { data: charterRequests, isLoading: charterRequestsLoading } = useCollection<CharterRFQ>(charterRequestsQuery, 'charterRequests');
+
+  const ledgerQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'commissionLedger'), where('entityId', '==', user.id));
+  }, [firestore, user]);
+  const { data: ledger } = useCollection<CommissionLedgerEntry>(ledgerQuery, 'commissionLedger');
 
   const isLoading = isUserLoading || emptyLegsLoading || seatRequestsLoading || charterRequestsLoading;
 
-  const stats = {
-    availableSeats: emptyLegs?.length ?? 0,
-    pendingSeatRequests: seatRequests?.filter(r => r.status === 'Requested').length ?? 0,
-    openCharterRequests: charterRequests?.filter(r => r.status === 'Bidding Open').length ?? 0,
-    activeClientMovements: seatRequests?.filter(r => r.status === 'Approved').length ?? 0,
-  }
+  const stats = useMemo(() => {
+    const accrued = ledger?.filter(l => l.status === 'pending').reduce((acc, l) => acc + l.agencyCommissionAmount, 0) || 0;
+    
+    return {
+        availableSeats: emptyLegs?.length ?? 0,
+        pendingSeatRequests: seatRequests?.filter(r => r.status === 'Requested').length ?? 0,
+        openCharterRequests: charterRequests?.filter(r => ['Bidding Open', 'rfqSubmitted'].includes(r.status)).length ?? 0,
+        activeClientMovements: (charterRequests?.filter(r => ['Confirmed', 'boarding', 'departed', 'arrived'].includes(r.status)).length ?? 0) + (seatRequests?.filter(r => r.status === 'Approved').length ?? 0),
+        accruedEarnings: accrued > 100000 ? `₹ ${(accrued / 100000).toFixed(1)} L` : `₹ ${accrued.toLocaleString()}`
+    };
+  }, [emptyLegs, seatRequests, charterRequests, ledger]);
 
   return (
     <>
@@ -59,8 +71,8 @@ export function TravelAgencyDashboard() {
       <StatsGrid>
         <StatsCard title="Inventory Feed" href="/dashboard/travel-agency/available-seats" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.availableSeats.toString()} icon={Plane} description="Approved empty legs" />
         <StatsCard title="Active Seat Leads" href="/dashboard/travel-agency/seat-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingSeatRequests.toString()} icon={Users} description="Awaiting operator confirmation" />
-        <StatsCard title="Client Charter RFQs" href="/dashboard/travel-agency/charter-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.openCharterRequests.toString()} icon={FileText} description="Currently in bidding" />
-        <StatsCard title="Confirmed Itineraries" href="/dashboard/travel-agency/seat-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeClientMovements.toString()} icon={GanttChartSquare} description="Upcoming confirmed trips" />
+        <StatsCard title="Accrued Earnings" href="/dashboard/travel-agency/revenue-share" value={isLoading ? <Skeleton className="h-6 w-20" /> : stats.accruedEarnings} icon={Coins} description="Pending settlement" />
+        <StatsCard title="Confirmed Itineraries" href="/dashboard/travel-agency/charter-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeClientMovements.toString()} icon={GanttChartSquare} description="Upcoming movements" />
       </StatsGrid>
 
       <div className="grid gap-6 lg:grid-cols-2 mt-6">
