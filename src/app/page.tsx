@@ -238,7 +238,7 @@ export default function Home() {
                 <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md md:col-span-2 lg:col-span-1">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
-                      <Shield className="h-6 w-6 text-accent" />
+                      <ShieldCheck className="h-6 w-6 text-accent" />
                       Our Role & Revenue Model
                     </CardTitle>
                   </CardHeader>
