@@ -8,7 +8,7 @@ import type { EmptyLeg } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Calendar, Plane } from "lucide-react";
+import { Users, Calendar, Plane, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 
@@ -29,7 +29,9 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
                         <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
                             {leg.operatorName || 'Private Operator'}
                         </span>
-                        <CardTitle className="text-base line-clamp-1">{leg.departure} to {leg.arrival}</CardTitle>
+                        <CardTitle className="text-base flex items-center gap-2">
+                            {leg.departure} <span className="text-muted-foreground/50">-</span> {leg.arrival}
+                        </CardTitle>
                     </div>
                     <Badge variant="outline" className="font-code text-[10px] shrink-0">
                         {leg.aircraftName || 'Jet'}

@@ -3,7 +3,7 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import type { EmptyLeg } from "@/lib/types";
-import { Plane, Users, Calendar, Search, Filter, Info, Share2 } from "lucide-react";
+import { Plane, Users, Calendar, Search, Filter, Info, Share2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
@@ -23,8 +23,8 @@ const OpportunityCard = ({ leg, onAction }: { leg: EmptyLeg, onAction: () => voi
                 </Badge>
                 <span className="font-code text-[10px] text-muted-foreground/60">{leg.id}</span>
             </div>
-            <CardTitle className="text-lg group-hover:text-accent transition-colors">
-                {leg.departure} to {leg.arrival}
+            <CardTitle className="text-lg group-hover:text-accent transition-colors flex items-center gap-2">
+                {leg.departure} <span className="text-muted-foreground/30">-</span> {leg.arrival}
             </CardTitle>
         </CardHeader>
         <CardContent className="flex-grow space-y-4 text-xs">

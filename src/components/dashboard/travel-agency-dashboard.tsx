@@ -99,7 +99,7 @@ export function TravelAgencyDashboard() {
                     <TableBody>
                     {emptyLegs?.slice(0, 5).map((leg: EmptyLeg) => (
                         <TableRow key={leg.id}>
-                            <TableCell className="font-medium">{leg.departure} to {leg.arrival}</TableCell>
+                            <TableCell className="font-medium">{leg.departure} - {leg.arrival}</TableCell>
                             <TableCell className="text-xs">{leg.aircraftName || 'Jet'}</TableCell>
                             <TableCell className="font-bold text-center">{leg.availableSeats}</TableCell>
                         </TableRow>
