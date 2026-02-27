@@ -34,7 +34,7 @@ const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 let db = {
   users: deepCopy(mockUsers),
   operators: deepCopy(mockOperators),
-  charterRequests: deepCopy(mockRfqs),
+  charterRFQs: deepCopy(mockRfqs), // Standard naming across governance views
   aircrafts: deepCopy(mockAircrafts),
   quotations: deepCopy(mockQuotations),
   emptyLegs: deepCopy(mockEmptyLegs),
@@ -88,9 +88,10 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
     }
 
     switch(collectionName) {
+        case 'charterRFQs':
         case 'charterRequests':
             if (!currentUser) return [];
-            return db.charterRequests.filter(rfq => 
+            return db.charterRFQs.filter(rfq => 
                 (currentUser.role === 'Customer' && rfq.customerId === currentUser.id) ||
                 (currentUser.role === 'Requester' && rfq.requesterExternalAuthId === currentUser.id) || 
                 (currentUser.role === 'Operator' && rfq.operatorId === currentUser.id) || 

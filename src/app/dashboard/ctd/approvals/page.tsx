@@ -10,7 +10,7 @@ import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking
 import { collection, query, where, doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { CharterRFQ } from "@/lib/types";
-import { Check, X, ShieldCheck, Briefcase, FileText } from "lucide-react";
+import { Check, X, ShieldCheck, Briefcase, FileText, Plane, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { SystemAdvisory } from "@/components/dashboard/operator/system-advisory";
@@ -29,7 +29,10 @@ export default function CTDApprovalsPage() {
         );
     }, [firestore, user]);
 
-    const { data: pendingRfqs, isLoading: requestsLoading } = useCollection<CharterRFQ>(pendingQuery, 'charterRFQs');
+    const { data: allCompanyRfqs, isLoading: requestsLoading } = useCollection<CharterRFQ>(pendingQuery, 'charterRFQs');
+
+    // Robust client-side filter for pending status in demo/simulation mode
+    const pendingRfqs = allCompanyRfqs?.filter(r => r.status === 'Pending Approval') || [];
 
     const handleAction = (rfqId: string, action: 'Approve' | 'Reject') => {
         if (!firestore) return;
@@ -54,51 +57,61 @@ export default function CTDApprovalsPage() {
             <PageHeader title="Internal Governance Queue" description="Review and approve employee charter requests before marketplace synchronization." />
             
             <div className="grid gap-6">
-                <Card className="bg-card">
+                <Card className="bg-card border-l-4 border-l-accent shadow-2xl">
                     <CardHeader>
-                        <CardTitle>Pending CTD Sign-offs</CardTitle>
-                        <CardDescription>Requests requiring organizational approval for budget and policy compliance.</CardDescription>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <CardTitle>Pending CTD Sign-offs</CardTitle>
+                                <CardDescription>Requests requiring organizational approval for budget and policy compliance.</CardDescription>
+                            </div>
+                            <Badge variant="outline" className="bg-accent/10 border-accent/20 text-accent font-black text-[9px] uppercase tracking-widest">Action Required</Badge>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         {isLoading ? <Skeleton className="h-64 w-full" /> : (
                             <Table>
                                 <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Requester / Employee</TableHead>
-                                        <TableHead>Route & Schedule</TableHead>
-                                        <TableHead>Cost Center</TableHead>
-                                        <TableHead>Budget Impact</TableHead>
-                                        <TableHead className="text-right">Governance Actions</TableHead>
+                                    <TableRow className="border-white/5">
+                                        <TableHead className="text-[10px] uppercase font-black text-muted-foreground">Requester / Employee</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black text-muted-foreground">Route & Schedule</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black text-muted-foreground">Cost Center</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black text-muted-foreground">Budget Impact</TableHead>
+                                        <TableHead className="text-right text-[10px] uppercase font-black text-muted-foreground">Governance Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {pendingRfqs?.map((rfq) => (
-                                        <TableRow key={rfq.id}>
-                                            <TableCell>
-                                                <div className="font-medium">{rfq.customerName}</div>
-                                                <div className="text-[10px] text-muted-foreground uppercase font-code">{rfq.id}</div>
+                                    {pendingRfqs.map((rfq) => (
+                                        <TableRow key={rfq.id} className="border-white/5 hover:bg-white/[0.02] group">
+                                            <TableCell className="py-4">
+                                                <div className="font-bold text-sm text-foreground">{rfq.customerName}</div>
+                                                <div className="text-[9px] text-muted-foreground uppercase font-code tracking-tighter">{rfq.id}</div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="text-sm">{rfq.departure} to {rfq.arrival}</div>
-                                                <div className="text-[10px] text-muted-foreground">{new Date(rfq.departureDate).toLocaleDateString()}</div>
+                                                <div className="flex items-center gap-2 text-xs font-medium">
+                                                    <Plane className="h-3.5 w-3.5 text-accent/60" />
+                                                    {rfq.departure} → {rfq.arrival}
+                                                </div>
+                                                <div className="text-[9px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                                                    <Clock className="h-2.5 w-2.5" /> {new Date(rfq.departureDate).toLocaleDateString()}
+                                                </div>
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className="font-code text-[10px] uppercase">
+                                                <Badge variant="outline" className="font-code text-[10px] uppercase border-white/10 group-hover:border-accent/30 transition-colors">
                                                     {rfq.costCenter || 'UNASSIGNED'}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex flex-col">
-                                                    <span className="text-xs font-bold text-accent">~ ₹ 8.5 L</span>
-                                                    <span className="text-[9px] text-muted-foreground">Market Estimate</span>
+                                                    <span className="text-xs font-black text-accent tracking-tight">~ ₹ 8.5 L</span>
+                                                    <span className="text-[8px] text-muted-foreground uppercase font-bold">Estimated</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-green-500 hover:bg-green-500/10" onClick={() => handleAction(rfq.id, 'Approve')}>
+                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-green-500 hover:text-green-500 hover:bg-green-500/10" onClick={() => handleAction(rfq.id, 'Approve')}>
                                                         <Check className="h-4 w-4" />
                                                     </Button>
-                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500 hover:bg-red-500/10" onClick={() => handleAction(rfq.id, 'Reject')}>
+                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500 hover:text-red-500 hover:bg-red-500/10" onClick={() => handleAction(rfq.id, 'Reject')}>
                                                         <X className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -108,20 +121,21 @@ export default function CTDApprovalsPage() {
                                 </TableBody>
                             </Table>
                         )}
-                        {(!isLoading && (!pendingRfqs || pendingRfqs.length === 0)) && (
-                            <div className="text-center py-20 border-2 border-dashed rounded-lg bg-muted/5">
-                                <ShieldCheck className="mx-auto h-10 w-10 text-muted-foreground/40 mb-4" />
-                                <p className="text-muted-foreground">Queue clear. No requests currently require internal governance review.</p>
+                        {(!isLoading && pendingRfqs.length === 0) && (
+                            <div className="text-center py-24 border-2 border-dashed rounded-lg bg-muted/5 border-white/5 opacity-60">
+                                <ShieldCheck className="mx-auto h-12 w-12 text-muted-foreground/20 mb-4" />
+                                <p className="text-xs text-muted-foreground uppercase font-black tracking-[0.2em]">Queue Clear</p>
+                                <p className="text-[10px] text-muted-foreground/60 mt-1">No requests require internal governance review.</p>
                             </div>
                         )}
                     </CardContent>
                 </Card>
 
-                {pendingRfqs && pendingRfqs.length > 0 && (
+                {pendingRfqs.length > 0 && (
                     <SystemAdvisory 
                         level="INFO"
-                        title="Corporate Policy: Q3 Travel Threshold"
-                        message="International heavy-jet charters require supplementary justification if cost centers exceed the quarterly coordination limit."
+                        title="Institutional Threshold Alert"
+                        message="Corporate policy requires specialized justification for heavy-jet missions on international corridors exceeding ₹ 10 L in coordination value."
                     />
                 )}
             </div>

@@ -90,9 +90,12 @@ export const mockRfqs: CharterRFQ[] = [
     // Bidding Phase
     { id: 'RFQ-DEMO-001', customerId: 'cust-01', requesterExternalAuthId: 'cust-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2025-03-15', pax: 4, aircraftType: 'Light Jet', status: 'Bidding Open', createdAt: '2025-02-20T12:00:00Z', bidsCount: 2, bookingChannel: 'direct' },
     
-    // Corporate Phase
-    { id: 'RFQ-CORP-001', customerId: 'ctd-01', requesterExternalAuthId: 'ctd-01', company: 'Stark Industries', customerName: 'Priya Sharma', tripType: 'Onward', departure: 'Delhi (DEL)', arrival: 'London (LHR)', departureDate: '2025-03-20', pax: 6, aircraftType: 'Heavy Jet', status: 'Pending Approval', createdAt: '2025-02-25T10:00:00Z', bidsCount: 0, bookingChannel: 'corporate', costCenter: 'EXEC-PROJ-A' },
+    // Corporate Phase - Stark Industries
+    { id: 'RFQ-CORP-001', customerId: 'ctd-01', requesterExternalAuthId: 'ctd-01', company: 'Stark Industries', customerName: 'Priya Sharma', tripType: 'Onward', departure: 'Delhi (DEL)', arrival: 'London (LHR)', departureDate: '2025-03-20', pax: 6, aircraftType: 'Heavy Jet', status: 'Pending Approval', createdAt: '2025-02-25T10:00:00Z', bidsCount: 0, bookingChannel: 'corporate', costCenter: 'EXEC-PROJ-A', businessPurpose: 'Strategic Global Tech Summit - Board Coordination' },
     
+    // Corporate Phase - Reliance Exec
+    { id: 'RFQ-CORP-002', customerId: 'ctd-02', requesterExternalAuthId: 'ctd-02', company: 'Reliance Exec', customerName: 'Rahul Mehta', tripType: 'Return', departure: 'Mumbai (BOM)', arrival: 'Bangalore (BLR)', departureDate: '2025-03-25', pax: 3, aircraftType: 'Mid-size Jet', status: 'Pending Approval', createdAt: '2025-02-26T14:00:00Z', bidsCount: 0, bookingChannel: 'corporate', costCenter: 'RE-LOGISTICS', businessPurpose: 'Facility Inspection & Regional Site Governance' },
+
     // Agency Execution Phase
     { id: 'RFQ-EXEC-003', customerId: 'ag-01', requesterExternalAuthId: 'ag-01', agencyId: 'ag-01', operatorId: 'op-01', customerName: 'Sky Distributors (Client: Smith)', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Dubai (DXB)', departureDate: '2025-02-28', pax: 2, aircraftType: 'Heavy Jet', status: 'boarding', createdAt: '2025-02-15T10:00:00Z', bidsCount: 3, totalAmount: 4200000, bookingChannel: 'agency' },
     
@@ -170,7 +173,7 @@ export const mockCrew: CrewMember[] = [
     { id: 'CREW-02', operatorId: 'op-01', firstName: 'Sanya', lastName: 'Malhotra', email: 'sanya@flyco.demo.aerodesk.com', role: 'Cabin Crew', status: 'On Duty', assignedAircraftRegistration: 'VT-FLY', createdAt: '2025-01-10T00:00:00Z', updatedAt: '2025-01-10T00:00:00Z' }
 ];
 
-// Fallback exports for types not fully simulated yet
+// Fallback exports
 export const mockFeatureFlags: FeatureFlag[] = [
     { id: 'FF-01', name: 'AI_REVENUE_INSIGHTS', description: 'Enable AI-driven revenue forecasting on dashboards', isEnabled: true },
     { id: 'FF-02', name: 'INSTANT_SETTLEMENT', description: 'Allow real-time bank gateway settlement', isEnabled: false }
