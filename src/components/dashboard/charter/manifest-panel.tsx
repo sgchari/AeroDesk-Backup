@@ -11,6 +11,7 @@ import { useFirestore, addDocumentNonBlocking, updateDocumentNonBlocking } from 
 import { useToast } from '@/hooks/use-toast';
 import type { CharterRFQ, PassengerManifest, Passenger } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 export function ManifestPanel({ charter, manifest, userRole }: { charter: CharterRFQ, manifest?: PassengerManifest, userRole?: string }) {
     const firestore = useFirestore();

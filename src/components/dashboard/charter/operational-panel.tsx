@@ -4,11 +4,12 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plane, MapPin, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
+import { Plane, MapPin, CheckCircle2, ChevronRight, AlertCircle, Clock } from 'lucide-react';
 import { useFirestore, updateDocumentNonBlocking, addDocumentNonBlocking } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import type { CharterRFQ } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 const opSteps = [
     { id: 'operationalPreparation', label: 'Prep Ops' },
