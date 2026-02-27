@@ -7,7 +7,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import type { CharterRFQ, RfqStatus } from "@/lib/types";
-import { ShieldCheck, Clock, FileText, CheckCircle, TrendingUp, Users, ArrowRight, Plane, AlertCircle } from "lucide-react";
+import { 
+    ShieldCheck, 
+    TrendingUp, 
+    Users, 
+    ArrowRight, 
+    Plane, 
+    AlertCircle, 
+    BarChart3,
+    Activity
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
@@ -16,6 +25,30 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
 import Link from "next/link";
+import { CTDAIGovernance } from "@/components/dashboard/ctd/analytics/ctd-ai-governance";
+import { 
+    BarChart, 
+    Bar, 
+    XAxis, 
+    YAxis, 
+    CartesianGrid, 
+    Tooltip, 
+    ResponsiveContainer, 
+    AreaChart, 
+    Area,
+    ComposedChart,
+    Line
+} from 'recharts';
+
+const MOCK_CHART_DATA = [
+    { name: 'Mon', spend: 4.2, requests: 12 },
+    { name: 'Tue', spend: 3.8, requests: 15 },
+    { name: 'Wed', spend: 8.5, requests: 18 },
+    { name: 'Thu', spend: 12.2, requests: 22 },
+    { name: 'Fri', spend: 9.1, requests: 20 },
+    { name: 'Sat', spend: 2.4, requests: 8 },
+    { name: 'Sun', spend: 1.8, requests: 5 },
+];
 
 const getStatusVariant = (status: RfqStatus) => {
     switch (status) {
@@ -43,54 +76,137 @@ export function CTDDashboard() {
     pendingInternal: rfqs?.filter(r => r.status === 'Pending Approval').length ?? 0,
     activeBids: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
     confirmedTrips: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
-    totalSpend: "₹ 42.5 L", // Simulated
-    activeTravelers: 3, // Simulated
-    policyFlags: 1 // Simulated
+    totalSpend: "₹ 42.5 L", 
+    activeTravelers: 3, 
+    policyFlags: 1 
   }
 
   return (
-    <>
-      <PageHeader title="Enterprise Governance View" description={`Immediate business situational awareness for ${user?.company}.`}>
+    <div className="space-y-6">
+      <PageHeader title="Governance Command View" description={`Institutional travel oversight for ${user?.company}.`}>
         <CreateRfqDialog />
       </PageHeader>
       
       <StatsGrid>
-        <StatsCard title="Spend Management" value={stats.totalSpend} icon={TrendingUp} description="Gross corporate volume" />
-        <StatsCard title="Pending Review" href="/dashboard/ctd/approvals" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingInternal.toString()} icon={ShieldCheck} description="Awaiting CTD sign-off" />
-        <StatsCard title="Active Travelers" href="/dashboard/ctd/team" value={stats.activeTravelers.toString()} icon={Users} description="Personnel currently in transit" />
-        <StatsCard title="Policy Alerts" href="/dashboard/ctd/policies" value={stats.policyFlags.toString()} icon={AlertCircle} description="Workflow exceptions identified" />
+        <StatsCard title="Total Travel Spend" value={stats.totalSpend} icon={TrendingUp} description="Actual + Committed" />
+        <StatsCard title="Awaiting Sign-off" href="/dashboard/ctd/approvals" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingInternal.toString()} icon={ShieldCheck} description="Internal workflow queue" />
+        <StatsCard title="Authorized Travelers" href="/dashboard/ctd/team" value={stats.activeTravelers.toString()} icon={Users} description="Personnel eligibility count" />
+        <StatsCard title="Policy Deviations" href="/dashboard/ctd/policies" value={stats.policyFlags.toString()} icon={AlertCircle} description="Workflow exceptions flagged" />
       </StatsGrid>
 
-      <div className="grid gap-6 lg:grid-cols-3 mt-6">
-        <Card className="lg:col-span-2 bg-card">
+      <CTDAIGovernance />
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        <Card className="lg:col-span-2 bg-card overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div>
+                    <CardTitle className="flex items-center gap-2">
+                        <Activity className="h-4 w-4 text-primary" />
+                        Spend & Demand Intensity
+                    </CardTitle>
+                    <CardDescription>Visualizing spend (₹ Lakhs) against travel inquiry volume.</CardDescription>
+                </div>
+                <Badge variant="outline" className="font-code text-[10px] text-primary border-primary/20">LIVE MARKET SIGNAL</Badge>
+            </CardHeader>
+            <CardContent className="h-[300px] pt-4">
+                <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart data={MOCK_CHART_DATA}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                        <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} axisLine={false} tickLine={false} />
+                        <YAxis stroke="#94a3b8" fontSize={10} axisLine={false} tickLine={false} tickFormatter={(val) => `₹${val}L`} />
+                        <Tooltip 
+                            contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px' }}
+                            itemStyle={{ fontSize: '10px', fontWeight: 'bold' }}
+                        />
+                        <Bar dataKey="spend" name="Corporate Spend" fill="#0EA5E9" radius={[4, 4, 0, 0]} barSize={30} />
+                        <Line type="monotone" dataKey="requests" name="Travel Demand" stroke="#EEDC5B" strokeWidth={2} dot={{ fill: '#EEDC5B' }} />
+                    </ComposedChart>
+                </ResponsiveContainer>
+            </CardContent>
+        </Card>
+
+        <Card className="bg-card">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <Plane className="h-4 w-4 text-accent" />
+                    Mission Readiness
+                </CardTitle>
+                <CardDescription>Movement status for active missions.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 space-y-3 group hover:bg-accent/10 transition-colors">
+                    <div className="flex items-center justify-between">
+                        <p className="text-[10px] font-black text-accent uppercase tracking-widest">MISSION: RFQ-CORP-002</p>
+                        <Badge variant="default" className="h-4 text-[8px] bg-green-500 font-black">EN ROUTE</Badge>
+                    </div>
+                    <div className="space-y-1">
+                        <div className="flex items-center justify-between text-xs font-medium">
+                            <span>DEL → LHR</span>
+                            <span className="text-muted-foreground">5 Pax • Mid-size Jet</span>
+                        </div>
+                        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-accent w-[65%] shadow-[0_0_8px_hsl(var(--accent))]" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="p-4 rounded-xl bg-muted/10 border border-white/5 space-y-3 opacity-60">
+                    <div className="flex items-center justify-between">
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">MISSION: RFQ-CONF-002</p>
+                        <Badge variant="outline" className="h-4 text-[8px] font-black">SCHEDULED</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                        <span>BLR → GOI</span>
+                        <span className="text-[10px]">Aug 15, 11:30</span>
+                    </div>
+                </div>
+
+                <Button asChild variant="outline" className="w-full h-9 text-[10px] font-bold uppercase tracking-widest border-white/5 hover:bg-white/5 mt-2">
+                    <Link href="/dashboard/ctd/requests">Review Full Queue</Link>
+                </Button>
+            </CardContent>
+        </Card>
+      </div>
+
+      <Card className="bg-card">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                    <CardTitle>Enterprise Demand Stream</CardTitle>
-                    <CardDescription>Recent charter and travel requests across the organization.</CardDescription>
+                    <CardTitle className="flex items-center gap-2">
+                        <BarChart3 className="h-4 w-4 text-primary" />
+                        Enterprise Demand Log
+                    </CardTitle>
+                    <CardDescription>Recent travel inquiries and internal status.</CardDescription>
                 </div>
-                <Button asChild variant="ghost" size="sm" className="text-accent gap-2">
-                    <Link href="/dashboard/ctd/requests">View Full Queue <ArrowRight className="h-3 w-3" /></Link>
+                <Button asChild variant="ghost" size="sm" className="text-accent gap-2 text-[10px] font-black uppercase tracking-widest">
+                    <Link href="/dashboard/ctd/requests">View Full Audit <ArrowRight className="h-3 w-3" /></Link>
                 </Button>
             </CardHeader>
             <CardContent>
                 {isLoading ? <Skeleton className="h-48 w-full" /> : (
                     <Table>
                         <TableHeader>
-                            <TableRow>
-                                <TableHead>Requester</TableHead>
-                                <TableHead>Route</TableHead>
-                                <TableHead>Cost Center</TableHead>
-                                <TableHead>Status</TableHead>
+                            <TableRow className="border-white/5 hover:bg-transparent">
+                                <TableHead className="text-[10px] uppercase font-black text-muted-foreground">Requester</TableHead>
+                                <TableHead className="text-[10px] uppercase font-black text-muted-foreground">Sector</TableHead>
+                                <TableHead className="text-[10px] uppercase font-black text-muted-foreground">Cost Center</TableHead>
+                                <TableHead className="text-[10px] uppercase font-black text-muted-foreground">Status</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {rfqs?.slice(0, 5).map((rfq) => (
-                                <TableRow key={rfq.id}>
-                                    <TableCell className="font-medium text-xs">{rfq.customerName}</TableCell>
-                                    <TableCell className="text-xs">{rfq.departure} to {rfq.arrival}</TableCell>
-                                    <TableCell className="font-code text-[10px] uppercase text-muted-foreground">{rfq.costCenter || '-'}</TableCell>
+                                <TableRow key={rfq.id} className="border-white/5 hover:bg-white/[0.02] group">
+                                    <TableCell className="py-4">
+                                        <div className="font-bold text-xs group-hover:text-primary transition-colors">{rfq.customerName}</div>
+                                        <div className="text-[9px] text-muted-foreground font-code uppercase">{rfq.id}</div>
+                                    </TableCell>
+                                    <TableCell className="text-xs">{rfq.departure} → {rfq.arrival}</TableCell>
                                     <TableCell>
-                                        <Badge variant={getStatusVariant(rfq.status)} className="text-[9px] px-1.5 h-5 font-bold uppercase tracking-wider">
+                                        <Badge variant="outline" className="font-code text-[9px] uppercase text-muted-foreground border-white/10 group-hover:border-accent/30">
+                                            {rfq.costCenter || 'EXECUTIVE'}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant={getStatusVariant(rfq.status)} className="text-[9px] px-2 h-5 font-black uppercase tracking-tighter">
                                             {rfq.status}
                                         </Badge>
                                     </TableCell>
@@ -101,37 +217,6 @@ export function CTDDashboard() {
                 )}
             </CardContent>
         </Card>
-
-        <Card className="bg-card">
-            <CardHeader>
-                <CardTitle>Operational Signal</CardTitle>
-                <CardDescription>Movement status for active missions.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="p-3 rounded-lg bg-muted/10 border border-white/5 space-y-2">
-                    <div className="flex items-center justify-between">
-                        <p className="text-xs font-bold text-accent uppercase tracking-tighter">Mission: RFQ-CORP-002</p>
-                        <Badge variant="default" className="h-4 text-[8px] bg-green-500">EN ROUTE</Badge>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                        <Plane className="h-3 w-3 text-muted-foreground" />
-                        <span>DEL → LHR • 5 Pax</span>
-                    </div>
-                </div>
-                
-                <div className="p-3 rounded-lg bg-muted/10 border border-white/5 space-y-2 opacity-60">
-                    <div className="flex items-center justify-between">
-                        <p className="text-xs font-bold text-accent uppercase tracking-tighter">Mission: RFQ-CONF-002</p>
-                        <Badge variant="outline" className="h-4 text-[8px]">SCHEDULED</Badge>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                        <Plane className="h-3 w-3 text-muted-foreground" />
-                        <span>BLR → GOI • 2 Pax</span>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-      </div>
-    </>
+    </div>
   );
 }
