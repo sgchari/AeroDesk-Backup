@@ -1,3 +1,4 @@
+
 'use client';
 import {
   Home,
@@ -17,6 +18,8 @@ import {
   BedDouble,
   Bell,
   CalendarCheck,
+  Coins,
+  Zap
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -55,6 +58,7 @@ const navItems: Record<string, any[]> = {
     { href: '/dashboard/travel-agency/seat-requests', label: 'Seat Requests', icon: Users, color: 'text-violet-400' },
     { href: '/dashboard/travel-agency/charter-requests', label: 'Charter Requests', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/travel-agency/accommodation-requests', label: 'Accommodation', icon: Building, color: 'text-orange-400' },
+    { href: '/dashboard/travel-agency/revenue-share', label: 'Earnings & Revenue', icon: Coins, color: 'text-accent' },
     { href: '/dashboard/travel-agency/reports', label: 'Reports / History', icon: History, color: 'text-fuchsia-400' },
   ],
   'CTD Admin': [
@@ -86,6 +90,7 @@ const navItems: Record<string, any[]> = {
   Admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-sky-400' },
     { href: '/dashboard/admin/analytics', label: 'Platform Intelligence', icon: BarChart2, color: 'text-fuchsia-400' },
+    { href: '/dashboard/admin/revenue-share', label: 'Revenue Share Engine', icon: Zap, color: 'text-accent' },
     { href: '/dashboard/admin/approvals', label: 'Approvals & Compliance', icon: ShieldCheck, color: 'text-emerald-400' },
     { href: '/dashboard/admin/users', label: 'User & Entity Governance', icon: Users, color: 'text-violet-400' },
     { href: '/dashboard/admin/operators', label: 'Operator Governance', icon: Plane, color: 'text-slate-400' },

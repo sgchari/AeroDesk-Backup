@@ -416,7 +416,7 @@ export type PlatformChargeRule = {
   entityType: UserRole;
   serviceType: BillingServiceType;
   chargeType: ChargeType;
-  percentageRate: number; // e.g. 0.05 for 5%
+  percentageRate: number; 
   fixedAmount: number;
   effectiveFrom: string;
   effectiveTo?: string;
@@ -425,75 +425,68 @@ export type PlatformChargeRule = {
   createdAt: string;
 };
 
-export type EntityBillingLedger = {
+// --- REVENUE SHARE ENGINE TYPES ---
+
+export type CommissionRule = {
   id: string;
+  serviceType: BillingServiceType;
+  commissionRatePercent: number; // e.g., 5 for 5%
+  effectiveFrom: string;
+  effectiveTo?: string;
+  isActive: boolean;
+  createdBy: string;
+  createdAt: string;
+};
+
+export type RevenueShareConfig = {
+  id: string;
+  scopeType: 'global' | 'entity' | 'serviceType';
+  entityId?: string | null;
+  serviceType?: BillingServiceType | null;
+  agencySharePercent: number;
+  aerodeskSharePercent: number;
+  effectiveFrom: string;
+  effectiveTo?: string;
+  isActive: boolean;
+  createdBy: string;
+  createdAt: string;
+};
+
+export type CommissionLedgerEntry = {
+  id: string;
+  transactionId: string;
   entityId: string;
   entityType: UserRole;
-  entityName?: string;
-  relatedTransactionId: string;
   serviceType: BillingServiceType;
   grossAmount: number;
-  platformChargeAmount: number;
-  commissionRate: number;
-  ledgerStatus: LedgerStatus;
-  invoiceId?: string;
+  commissionRatePercent: number;
+  totalCommission: number;
+  agencySharePercent: number;
+  aerodeskSharePercent: number;
+  agencyCommissionAmount: number;
+  aerodeskCommissionAmount: number;
+  status: 'pending' | 'settled' | 'adjusted';
+  ruleVersionReference: string;
   createdAt: string;
 };
 
-export type PlatformInvoice = {
+export type SettlementRecord = {
   id: string;
   entityId: string;
-  entityName: string;
-  entityType: UserRole;
-  billingPeriodStart: string;
-  billingPeriodEnd: string;
-  totalAmount: number;
-  invoicePdfUrl?: string;
-  dueDate: string;
-  status: PlatformInvoiceStatus;
+  entityName?: string;
+  settlementPeriodStart: string;
+  settlementPeriodEnd: string;
+  totalAgencyCommission: number;
+  status: 'pending' | 'processed' | 'paid';
+  processedAt?: string;
+  paymentReference?: string;
   createdAt: string;
 };
 
-export type PlatformPayment = {
+export type RevenueAuditLog = {
   id: string;
-  invoiceId: string;
-  entityId: string;
-  utrReference: string;
-  paymentProofUrl?: string;
-  amountPaid: number;
-  status: PlatformPaymentStatus;
-  verifiedBy?: string;
-  verifiedAt?: string;
-  createdAt: string;
-};
-
-export type SubscriptionPlan = {
-  id: string;
-  planName: string;
-  monthlyFee: number;
-  commissionOverrideRate: number;
-  seatLimit: number;
-  transactionLimit: number;
-  isActive: boolean;
-  createdAt: string;
-};
-
-export type EntitySubscription = {
-  id: string;
-  entityId: string;
-  entityType: UserRole;
-  planId: string;
-  startDate: string;
-  endDate: string;
-  status: 'active' | 'suspended' | 'expired';
-};
-
-export type BillingAuditLog = {
-  id: string;
-  entityId: string;
   actionType: string;
   performedBy: string;
-  role: string;
   previousValue?: any;
   newValue?: any;
   timestamp: string;

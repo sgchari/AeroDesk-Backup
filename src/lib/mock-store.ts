@@ -21,16 +21,15 @@ import {
   mockPlatformChargeRules,
   mockBillingLedger,
   mockPlatformInvoices,
-  mockSubscriptionPlans
+  mockSubscriptionPlans,
+  mockCommissionRules,
+  mockRevenueShareConfigs,
+  mockCommissionLedger,
+  mockSettlementRecords,
+  mockPolicyFlags
 } from './data';
 import { User } from './types';
 
-/**
- * @fileOverview Simulation Data Engine
- * Manages the state of the mock database for real-time dashboard simulation.
- */
-
-// Simple deep copy utility
 const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 let db = {
@@ -51,6 +50,7 @@ let db = {
   distributors: deepCopy(mockUsers.filter(u => u.role === 'Travel Agency')),
   hotelPartners: deepCopy(mockUsers.filter(u => u.role === 'Hotel Partner')),
   featureFlags: deepCopy(mockFeatureFlags),
+  policyFlags: deepCopy(mockPolicyFlags),
   crew: deepCopy(mockCrew),
   passengerManifests: deepCopy(mockManifests),
   invoices: deepCopy(mockInvoices),
@@ -61,9 +61,13 @@ let db = {
   entityBillingLedger: deepCopy(mockBillingLedger),
   platformInvoices: deepCopy(mockPlatformInvoices),
   subscriptionPlans: deepCopy(mockSubscriptionPlans),
+  commissionRules: deepCopy(mockCommissionRules),
+  revenueShareConfigs: deepCopy(mockRevenueShareConfigs),
+  commissionLedger: deepCopy(mockCommissionLedger),
+  settlementRecords: deepCopy(mockSettlementRecords),
+  revenueAuditLogs: [],
 };
 
-// Simple event emitter for real-time reactivity in the demo
 type Listener = () => void;
 const listeners: Set<Listener> = new Set();
 
@@ -80,7 +84,6 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
     const pathSegments = path.split('/');
     const collectionName = pathSegments[0];
 
-    // Specialized filtering for the seat request collection group simulation
     if (path === 'emptyLegs/all/seatAllocationRequests') {
         return db.seatAllocationRequests;
     }
@@ -109,19 +112,14 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
                 req.hotelPartnerId === currentUser.id || 
                 req.requesterId === currentUser.id
             );
-        case 'passengerManifests': return db.passengerManifests;
-        case 'invoices': return db.invoices;
-        case 'payments': return db.payments;
-        case 'activityLogs': return db.activityLogs;
-        case 'operators': return db.operators;
-        case 'emptyLegs': return db.emptyLegs;
-        case 'users': return db.users;
-        case 'properties': return db.properties;
-        case 'roomCategories': return db.roomCategories;
-        case 'platformChargeRules': return db.platformChargeRules;
-        case 'entityBillingLedger': return db.entityBillingLedger;
-        case 'platformInvoices': return db.platformInvoices;
-        case 'subscriptionPlans': return db.subscriptionPlans;
+        case 'commissionLedger':
+            if (!currentUser) return [];
+            if (currentUser.role === 'Admin') return db.commissionLedger;
+            return db.commissionLedger.filter(l => l.entityId === currentUser.id);
+        case 'settlementRecords':
+            if (!currentUser) return [];
+            if (currentUser.role === 'Admin') return db.settlementRecords;
+            return db.settlementRecords.filter(s => s.entityId === currentUser.id);
         default:
             return (db as any)[collectionName] || [];
     }
