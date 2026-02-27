@@ -22,38 +22,38 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
     };
 
     return (
-        <Card className="bg-card flex flex-col hover:border-accent/50 transition-all duration-300">
-            <CardHeader className="pb-3 pt-5 px-5">
-                <div className="flex justify-between items-center mb-2">
-                    <span className="text-[9px] font-black uppercase tracking-[0.15em] text-accent">
+        <Card className="bg-card flex flex-col hover:border-accent/50 transition-all duration-300 min-h-[280px]">
+            <CardHeader className="pb-3 pt-6 px-6">
+                <div className="flex justify-between items-center mb-3">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">
                         {leg.operatorName || 'Private Operator'}
                     </span>
-                    <span className="text-[9px] font-bold text-muted-foreground">
+                    <span className="text-[10px] font-bold text-muted-foreground">
                         {leg.aircraftName || 'Private Jet'}
                     </span>
                 </div>
-                <CardTitle className="text-base flex items-center flex-wrap gap-x-2 leading-tight font-headline font-bold">
+                <CardTitle className="text-lg flex items-center flex-wrap gap-x-2 leading-snug font-headline font-bold">
                     <span className="text-white">{leg.departure}</span>
                     <span className="text-muted-foreground/40 font-light">-</span>
                     <span className="text-white">{leg.arrival}</span>
                 </CardTitle>
             </CardHeader>
-            <CardContent className="flex-grow space-y-3 px-5">
-                 <div className="flex items-center text-xs text-muted-foreground">
-                    <Calendar className="mr-2 h-3.5 w-3.5 text-accent/60" />
+            <CardContent className="flex-grow space-y-4 px-6">
+                 <div className="flex items-center text-sm text-muted-foreground">
+                    <Calendar className="mr-2.5 h-4 w-4 text-accent/60" />
                     <span>{new Date(leg.departureTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                 </div>
-                <div className="flex items-center text-xs text-muted-foreground">
-                    <Users className="mr-2 h-3.5 w-3.5 text-accent/60" />
+                <div className="flex items-center text-sm text-muted-foreground">
+                    <Users className="mr-2.5 h-4 w-4 text-accent/60" />
                     <span>{leg.availableSeats} Seats Available</span>
                 </div>
-                <div className="flex items-center text-xs text-muted-foreground">
-                    <Plane className="mr-2 h-3.5 w-3.5 text-accent/60" />
-                    <span className="font-code text-[10px] uppercase tracking-tighter">{leg.id}</span>
+                <div className="flex items-center text-sm text-muted-foreground">
+                    <Plane className="mr-2.5 h-4 w-4 text-accent/60" />
+                    <span className="font-code text-xs uppercase tracking-tighter">{leg.id}</span>
                 </div>
             </CardContent>
-            <CardFooter className="pb-5 pt-0 px-5">
-                <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90 font-bold h-9 text-xs" onClick={() => handleRequestSeats(leg.id)}>
+            <CardFooter className="pb-6 pt-2 px-6">
+                <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase text-[10px] tracking-widest h-10" onClick={() => handleRequestSeats(leg.id)}>
                     Request Seat Access
                 </Button>
             </CardFooter>
@@ -79,22 +79,21 @@ export default function AvailableJetSeatsPage() {
                 description="Explore exclusive empty leg opportunities. Seat allocations are managed via authorized distributors or direct request."
             />
             {isLoading ? (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    <Skeleton className="h-64 w-full" />
-                    <Skeleton className="h-64 w-full" />
-                    <Skeleton className="h-64 w-full" />
-                    <Skeleton className="h-64 w-full" />
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <Skeleton className="h-72 w-full" />
+                    <Skeleton className="h-72 w-full" />
+                    <Skeleton className="h-72 w-full" />
                 </div>
             ) : (
                 <>
                     {availableLegs && availableLegs.length > 0 ? (
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {availableLegs.map(leg => (
                                 <EmptyLegCard key={leg.id} leg={leg} />
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-20 border-2 border-dashed rounded-lg bg-card/20">
+                        <div className="text-center py-20 border-2 border-dashed rounded-lg bg-card/20 border-white/5">
                              <p className="text-muted-foreground">There are currently no active empty leg opportunities synchronized.</p>
                         </div>
                     )}
