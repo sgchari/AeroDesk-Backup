@@ -239,28 +239,31 @@ export default function CTDAnalyticsPage() {
                                     <CardTitle>Travel Mode Mix</CardTitle>
                                     <CardDescription>Organizational preference between full charter and seat allocations.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[300px] flex flex-col justify-center">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <RePieChart>
-                                            <Pie
-                                                data={BASE_MODE_MIX}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                            >
-                                                {BASE_MODE_MIX.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                        </RePieChart>
-                                    </ResponsiveContainer>
-                                    <div className="flex justify-center gap-6 mt-4">
+                                <CardContent className="flex flex-col items-center justify-center space-y-6 py-6">
+                                    <div className="h-[200px] w-full">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <RePieChart>
+                                                <Pie
+                                                    data={BASE_MODE_MIX}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={60}
+                                                    outerRadius={80}
+                                                    paddingAngle={5}
+                                                    dataKey="value"
+                                                    stroke="none"
+                                                >
+                                                    {BASE_MODE_MIX.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip />
+                                            </RePieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="flex justify-center gap-6 w-full">
                                         {BASE_MODE_MIX.map(item => (
-                                            <div key={item.name} className="flex items-center gap-2 text-xs font-bold uppercase">
+                                            <div key={item.name} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
                                                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                                                 <span className="text-muted-foreground">{item.name}</span>
                                             </div>

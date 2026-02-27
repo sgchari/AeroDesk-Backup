@@ -214,33 +214,36 @@ export default function HotelReportsPage() {
                                     <CardTitle>Contribution by Category</CardTitle>
                                     <CardDescription>Revenue share per room type.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[300px] flex flex-col justify-center">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <RePieChart>
-                                            <Pie
-                                                data={BASE_REVENUE_DATA}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                            >
-                                                {BASE_REVENUE_DATA.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                        </RePieChart>
-                                    </ResponsiveContainer>
-                                    <div className="space-y-2 mt-4">
+                                <CardContent className="flex flex-col items-center justify-center space-y-6 py-6">
+                                    <div className="h-[180px] w-full">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <RePieChart>
+                                                <Pie
+                                                    data={BASE_REVENUE_DATA}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={60}
+                                                    outerRadius={80}
+                                                    paddingAngle={5}
+                                                    dataKey="value"
+                                                    stroke="none"
+                                                >
+                                                    {BASE_REVENUE_DATA.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip />
+                                            </RePieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="w-full space-y-2.5">
                                         {BASE_REVENUE_DATA.map((item) => (
-                                            <div key={item.name} className="flex items-center justify-between text-[10px] font-bold uppercase">
-                                                <div className="flex items-center gap-1.5">
-                                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                                                    {item.name}
+                                            <div key={item.name} className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                                                    <span className="text-muted-foreground">{item.name}</span>
                                                 </div>
-                                                <span>{item.value}%</span>
+                                                <span className="text-white">{item.value}%</span>
                                             </div>
                                         ))}
                                     </div>
@@ -335,30 +338,33 @@ export default function HotelReportsPage() {
                                     <CardTitle>Stakeholder Mix</CardTitle>
                                     <CardDescription>Source of bookings via the platform.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[300px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <RePieChart>
-                                            <Pie
-                                                data={STAKEHOLDER_DATA}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                            >
-                                                {STAKEHOLDER_DATA.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                        </RePieChart>
-                                    </ResponsiveContainer>
-                                    <div className="flex justify-center gap-4 mt-2">
+                                <CardContent className="flex flex-col items-center justify-center space-y-6 py-6">
+                                    <div className="h-[200px] w-full">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <RePieChart>
+                                                <Pie
+                                                    data={STAKEHOLDER_DATA}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={60}
+                                                    outerRadius={80}
+                                                    paddingAngle={5}
+                                                    dataKey="value"
+                                                    stroke="none"
+                                                >
+                                                    {STAKEHOLDER_DATA.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip />
+                                            </RePieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="flex justify-center gap-6 w-full">
                                         {STAKEHOLDER_DATA.map((item) => (
-                                            <div key={item.name} className="flex items-center gap-1.5">
-                                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                                                <span className="text-[10px] text-muted-foreground uppercase font-bold">{item.name}</span>
+                                            <div key={item.name} className="flex items-center gap-2">
+                                                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                                                <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{item.name}</span>
                                             </div>
                                         ))}
                                     </div>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -212,33 +211,36 @@ export default function AgencyReportsPage() {
                                     <CardTitle>Contribution Mix</CardTitle>
                                     <CardDescription>Charter vs. Seat sales share.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[250px] flex flex-col justify-center">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart>
-                                            <Pie
-                                                data={revenueContributionData}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                            >
-                                                {revenueContributionData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                        </PieChart>
-                                    </ResponsiveContainer>
-                                    <div className="space-y-2 mt-4">
+                                <CardContent className="flex flex-col items-center justify-center space-y-6 py-6">
+                                    <div className="h-[180px] w-full">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <PieChart>
+                                                <Pie
+                                                    data={revenueContributionData}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={60}
+                                                    outerRadius={80}
+                                                    paddingAngle={5}
+                                                    dataKey="value"
+                                                    stroke="none"
+                                                >
+                                                    {revenueContributionData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="w-full space-y-2.5">
                                         {revenueContributionData.map(item => (
-                                            <div key={item.name} className="flex items-center justify-between text-[10px] uppercase font-bold">
-                                                <div className="flex items-center gap-1.5">
-                                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                                                    {item.name}
+                                            <div key={item.name} className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                                                    <span className="text-muted-foreground">{item.name}</span>
                                                 </div>
-                                                <span>{item.value}%</span>
+                                                <span className="text-white">{item.value}%</span>
                                             </div>
                                         ))}
                                     </div>

@@ -60,9 +60,9 @@ const BASE_ACTIVITY_DATA = [
 ];
 
 const BASE_REVENUE_DATA = [
-    { name: 'Charter', value: 65, color: '#0EA5E9' },
-    { name: 'Seat', value: 25, color: '#EEDC5B' },
-    { name: 'Stay', value: 10, color: '#10B981' },
+    { name: 'Operators', value: 42, color: '#0EA5E9' },
+    { name: 'Agencies', value: 38, color: '#EEDC5B' },
+    { name: 'Hotels', value: 20, color: '#10B981' },
 ];
 
 const REGIONAL_PERFORMANCE = [
@@ -203,37 +203,40 @@ export default function PortalAdminAnalyticsPage() {
                                     <CardTitle>Stakeholder Mix</CardTitle>
                                     <CardDescription>Active platform participants by role.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[250px] flex flex-col justify-center">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <RePieChart>
-                                            <Pie
-                                                data={BASE_REVENUE_DATA}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                            >
-                                                {BASE_REVENUE_DATA.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                        </RePieChart>
-                                    </ResponsiveContainer>
-                                    <div className="space-y-2 mt-4">
-                                        <div className="flex items-center justify-between text-[10px] font-bold uppercase">
-                                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-sky-500" /> Operators</div>
-                                            <span>42%</span>
+                                <CardContent className="flex flex-col items-center justify-center space-y-6 py-6">
+                                    <div className="h-[180px] w-full">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <RePieChart>
+                                                <Pie
+                                                    data={BASE_REVENUE_DATA}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={60}
+                                                    outerRadius={80}
+                                                    paddingAngle={5}
+                                                    dataKey="value"
+                                                    stroke="none"
+                                                >
+                                                    {BASE_REVENUE_DATA.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip />
+                                            </RePieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="w-full space-y-2.5">
+                                        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                                            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-sky-500" /> Operators</div>
+                                            <span className="text-white">42%</span>
                                         </div>
-                                        <div className="flex items-center justify-between text-[10px] font-bold uppercase">
-                                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-amber-400" /> Agencies</div>
-                                            <span>38%</span>
+                                        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                                            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-amber-400" /> Agencies</div>
+                                            <span className="text-white">38%</span>
                                         </div>
-                                        <div className="flex items-center justify-between text-[10px] font-bold uppercase">
-                                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-green-500" /> Hotels</div>
-                                            <span>20%</span>
+                                        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                                            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-green-500" /> Hotels</div>
+                                            <span className="text-white">20%</span>
                                         </div>
                                     </div>
                                 </CardContent>
