@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
@@ -45,7 +44,7 @@ const getStatusConfig = (status: Operator['status']) => {
         case 'Approved':
             return {
                 base: 'bg-green-400',
-                pulse: 'pulse-green',
+                pulse: 'animate-blink bg-green-400/40',
                 label: 'success',
             };
         default:
@@ -79,15 +78,14 @@ const OperatorMarker = ({ operator, index }: { operator: Operator; index: number
                         transform: 'translate(-50%, -50%)' 
                     }}
                 >
-                    <div className={cn("relative flex items-center justify-center", isFeatured ? 'w-5 h-5' : 'w-3 h-3')}>
+                    <div className={cn("relative flex items-center justify-center", isFeatured ? 'w-8 h-8' : 'w-6 h-6')}>
                         <div className={cn(
-                            "absolute rounded-full",
-                             isFeatured ? 'w-6 h-6 border border-white/30' : 'w-4 h-4',
+                            "absolute rounded-full w-full h-full opacity-0",
                              statusConfig.pulse
                         )} />
                         <div className={cn(
-                            "rounded-full transition-transform hover:scale-150 duration-300 shadow-[0_0_10px_rgba(255,255,255,0.2)]", 
-                            isFeatured ? 'w-2.5 h-2.5' : 'w-1.5 h-1.5',
+                            "rounded-full transition-transform hover:scale-150 duration-300 shadow-[0_0_15px_rgba(74,222,128,0.4)]", 
+                            isFeatured ? 'w-4 h-4' : 'w-3 h-3',
                             statusConfig.base
                         )} />
                     </div>
@@ -146,23 +144,22 @@ export default function OurNetworkPage() {
                                 <h2 className="text-white font-bold text-xl tracking-tight flex items-center gap-2">
                                     <Zap className="w-5 h-5 text-accent" /> Our Network
                                 </h2>
-                                <p className="text-xs text-slate-300">Approved NSOP Infrastructure India</p>
+                                <p className="text-xs text-slate-300">DGCA-Licensed Charter Operators</p>
                             </div>
                             
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-slate-300 flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-green-400" /> Active Approved Operators
+                                        <div className="w-3 h-3 rounded-full bg-green-400 animate-blink" /> Active Approved Operators
                                     </span>
                                     <span className="text-white font-mono font-bold">{activeOperators.length}</span>
                                 </div>
-                                {/* Pending and Suspended categories removed for public impression */}
                             </div>
 
                             <div className="pt-2">
                                 <div className="p-4 bg-white/5 rounded-xl border border-white/5">
                                     <p className="text-xs leading-relaxed text-slate-300 italic">
-                                        "AeroDesk delivers real-time operational visibility across verified NSOP holders."
+                                        "End-to-End Insight Across Your Charter Journey"
                                     </p>
                                 </div>
                             </div>
