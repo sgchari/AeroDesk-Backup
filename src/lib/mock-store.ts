@@ -120,6 +120,12 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             if (!currentUser) return [];
             if (currentUser.role === 'Admin') return db.settlementRecords;
             return db.settlementRecords.filter(s => s.entityId === currentUser.id);
+        case 'aircrafts':
+            if (!currentUser) return [];
+            if (currentUser.role === 'Operator') {
+                return db.aircrafts.filter(ac => ac.operatorId === currentUser.id);
+            }
+            return db.aircrafts;
         default:
             return (db as any)[collectionName] || [];
     }

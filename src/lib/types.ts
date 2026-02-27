@@ -9,6 +9,8 @@ export type UserRole =
   | 'Requester'
   | 'Corporate Admin';
 
+export type BookingChannel = 'agency' | 'direct' | 'corporate';
+
 export type User = {
   id: string;
   email: string;
@@ -136,6 +138,8 @@ export type CharterRFQ = {
   totalAmount?: number;
   commissionRate?: number;
   commissionAmount?: number;
+  bookingChannel?: BookingChannel;
+  agencyId?: string | null;
 };
 
 export type Passenger = {
@@ -277,7 +281,7 @@ export type EmptyLeg = {
 export type EmptyLegSeatAllocationRequest = {
     id: string;
     emptyLegId: string;
-    agencyId: string;
+    agencyId?: string | null;
     operatorId: string;
     requesterExternalAuthId: string;
     numberOfSeats: number;
@@ -290,6 +294,7 @@ export type EmptyLegSeatAllocationRequest = {
     totalAmount?: number;
     commissionRate?: number;
     commissionAmount?: number;
+    bookingChannel: BookingChannel;
 }
 
 export type Property = {
@@ -317,7 +322,7 @@ export type RoomCategory = {
 
 export type AccommodationRequest = {
     id: string;
-    agencyId: string;
+    agencyId?: string | null;
     hotelPartnerId: string;
     propertyId: string;
     propertyName?: string;
@@ -335,6 +340,17 @@ export type AccommodationRequest = {
     requesterId: string;
     createdAt: string;
     updatedAt: string;
+    bookingChannel: BookingChannel;
+};
+
+export type AuditLog = {
+    id: string;
+    timestamp: string;
+    user: string;
+    role: string;
+    action: string;
+    details: string;
+    targetId: string;
 };
 
 export type BillingRecord = {
@@ -425,6 +441,45 @@ export type PlatformChargeRule = {
   createdAt: string;
 };
 
+export type EntityBillingLedger = {
+    id: string;
+    entityId: string;
+    entityType: UserRole;
+    relatedTransactionId: string;
+    serviceType: BillingServiceType;
+    grossAmount: number;
+    platformChargeAmount: number;
+    commissionRate: number;
+    ledgerStatus: LedgerStatus;
+    invoiceId?: string;
+    createdAt: string;
+};
+
+export type PlatformInvoice = {
+    id: string;
+    entityId: string;
+    entityName: string;
+    entityType: UserRole;
+    billingPeriodStart: string;
+    billingPeriodEnd: string;
+    totalAmount: number;
+    invoicePdfUrl?: string;
+    dueDate: string;
+    status: PlatformInvoiceStatus;
+    createdAt: string;
+};
+
+export type SubscriptionPlan = {
+    id: string;
+    planName: string;
+    monthlyFee: number;
+    commissionOverrideRate: number;
+    seatLimit: number;
+    transactionLimit: number;
+    createdAt: string;
+    isActive: boolean;
+};
+
 // --- REVENUE SHARE ENGINE TYPES ---
 
 export type CommissionRule = {
@@ -456,6 +511,8 @@ export type CommissionLedgerEntry = {
   id: string;
   transactionId: string;
   entityId: string;
+  agencyId?: string | null;
+  bookingChannel: BookingChannel;
   entityType: UserRole;
   serviceType: BillingServiceType;
   grossAmount: number;

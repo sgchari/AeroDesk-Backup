@@ -17,12 +17,12 @@ import {
     Coins, 
     History, 
     ShieldCheck, 
-    ArrowUpRight, 
-    ArrowDownRight, 
     DollarSign, 
     PieChart, 
     Users,
-    Settings
+    Settings,
+    Globe,
+    Briefcase
 } from "lucide-react";
 import { 
     PieChart as RePieChart, 
@@ -40,8 +40,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CreateRevenueRuleDialog } from "@/components/dashboard/admin/revenue/create-revenue-rule-dialog";
 import { CreateShareConfigDialog } from "@/components/dashboard/admin/revenue/create-share-config-dialog";
-
-const COLORS = ['#0EA5E9', '#EEDC5B', '#10B981'];
+import { cn } from "@/lib/utils";
 
 export default function RevenueShareEnginePage() {
     const firestore = useFirestore();
@@ -70,18 +69,18 @@ export default function RevenueShareEnginePage() {
 
     // Analytics Calculation
     const totalAeroDeskRev = ledger?.reduce((acc, curr) => acc + curr.aerodeskCommissionAmount, 0) || 0;
-    const pendingSettlements = ledger?.filter(l => l.status === 'pending').reduce((acc, curr) => acc + curr.agencyCommissionAmount, 0) || 0;
+    const pendingSettlements = ledger?.filter(l => l.status === 'pending' && l.bookingChannel === 'agency').reduce((acc, curr) => acc + curr.agencyCommissionAmount, 0) || 0;
 
-    const shareData = [
-        { name: 'Agency Share', value: 65, color: '#0EA5E9' },
-        { name: 'AeroDesk Share', value: 35, color: '#EEDC5B' },
+    const channelData = [
+        { name: 'Agency Channel', value: ledger?.filter(l => l.bookingChannel === 'agency').length || 0, color: '#0EA5E9' },
+        { name: 'Direct Channel', value: ledger?.filter(l => l.bookingChannel === 'direct' || l.bookingChannel === 'corporate').length || 0, color: '#EEDC5B' },
     ];
 
     return (
         <div className="space-y-6">
             <PageHeader 
                 title="Revenue Share Engine" 
-                description="Manage platform commission rules, dynamic splits, and agency settlements."
+                description="Manage conditional platform splits, agency incentives, and Direct-Channel margin protection."
             >
                 <div className="flex gap-2">
                     <CreateRevenueRuleDialog />
@@ -90,10 +89,10 @@ export default function RevenueShareEnginePage() {
             </PageHeader>
 
             <StatsGrid>
-                <StatsCard title="AeroDesk Net Revenue" value={`₹ ${(totalAeroDeskRev / 100000).toFixed(2)} L`} icon={DollarSign} description="Settled platform fees" />
+                <StatsCard title="AeroDesk Net Commission" value={`₹ ${(totalAeroDeskRev / 100000).toFixed(2)} L`} icon={DollarSign} description="Platform revenue share" />
                 <StatsCard title="Agency Payouts Due" value={`₹ ${(pendingSettlements / 100000).toFixed(2)} L`} icon={Coins} description="Pending agency earnings" />
-                <StatsCard title="Active Share Configs" value={configs?.filter(c => c.isActive).length.toString() || "0"} icon={Zap} description="Across all scopes" />
-                <StatsCard title="Settled Transactions" value={settlements?.filter(s => s.status === 'paid').length.toString() || "0"} icon={ShieldCheck} description="Total agency settlements" />
+                <StatsCard title="Direct Bookings" value={channelData[1].value.toString()} icon={Globe} description="100% AeroDesk Share" />
+                <StatsCard title="Active Share Rules" value={configs?.filter(c => c.isActive).length.toString() || "0"} icon={Zap} description="Agency channel logic" />
             </StatsGrid>
 
             <Tabs defaultValue="ledger" className="w-full">
@@ -105,10 +104,10 @@ export default function RevenueShareEnginePage() {
                         <Settings className="h-3.5 w-3.5" /> Governance Rules
                     </TabsTrigger>
                     <TabsTrigger value="settlements" className="gap-2 flex-1 min-w-[120px]">
-                        <Users className="h-3.5 w-3.5" /> Agency Settlements
+                        <Users className="h-3.5 w-3.5" /> Agency Payouts
                     </TabsTrigger>
                     <TabsTrigger value="analytics" className="gap-2 flex-1 min-w-[120px]">
-                        <PieChart className="h-3.5 w-3.5" /> Yield Analysis
+                        <PieChart className="h-3.5 w-3.5" /> Channel Analysis
                     </TabsTrigger>
                 </TabsList>
 
@@ -116,7 +115,7 @@ export default function RevenueShareEnginePage() {
                     <Card className="bg-card">
                         <CardHeader>
                             <CardTitle>Institutional Commission Log</CardTitle>
-                            <CardDescription>Granular transaction-level record of platform revenue splits.</CardDescription>
+                            <CardDescription>Immutable transaction records reflecting channel-based conditional splits.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             {isLoading ? <Skeleton className="h-64 w-full" /> : (
@@ -125,8 +124,8 @@ export default function RevenueShareEnginePage() {
                                         <TableHeader>
                                             <TableRow className="border-white/5">
                                                 <TableHead className="text-[10px] uppercase font-black">Transaction ID</TableHead>
-                                                <TableHead className="text-[10px] uppercase font-black">Service</TableHead>
-                                                <TableHead className="text-[10px] uppercase font-black text-right">Total Comm.</TableHead>
+                                                <TableHead className="text-[10px] uppercase font-black">Channel</TableHead>
+                                                <TableHead className="text-[10px] uppercase font-black text-right">Gross Total</TableHead>
                                                 <TableHead className="text-[10px] uppercase font-black text-right">Agency Share</TableHead>
                                                 <TableHead className="text-[10px] uppercase font-black text-right">AeroDesk Net</TableHead>
                                                 <TableHead className="text-[10px] uppercase font-black">Status</TableHead>
@@ -136,9 +135,18 @@ export default function RevenueShareEnginePage() {
                                             {ledger?.map((entry) => (
                                                 <TableRow key={entry.id} className="border-white/5 hover:bg-white/[0.02]">
                                                     <TableCell className="font-code text-xs py-4">{entry.transactionId}</TableCell>
-                                                    <TableCell className="capitalize text-xs">{entry.serviceType}</TableCell>
-                                                    <TableCell className="text-right text-xs">₹ {entry.totalCommission.toLocaleString()}</TableCell>
-                                                    <TableCell className="text-right text-xs font-bold text-sky-400">₹ {entry.agencyCommissionAmount.toLocaleString()}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant="outline" className={cn(
+                                                            "text-[8px] uppercase tracking-widest h-4",
+                                                            entry.bookingChannel === 'agency' ? "border-blue-500/30 text-blue-400" : "border-yellow-500/30 text-yellow-400"
+                                                        )}>
+                                                            {entry.bookingChannel}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right text-xs">₹ {entry.grossAmount.toLocaleString()}</TableCell>
+                                                    <TableCell className="text-right text-xs font-bold text-sky-400">
+                                                        {entry.agencyCommissionAmount > 0 ? `₹ ${entry.agencyCommissionAmount.toLocaleString()}` : '-'}
+                                                    </TableCell>
                                                     <TableCell className="text-right text-xs font-bold text-accent">₹ {entry.aerodeskCommissionAmount.toLocaleString()}</TableCell>
                                                     <TableCell>
                                                         <Badge variant={entry.status === 'settled' ? 'success' : 'outline'} className="text-[9px] uppercase font-black h-5">
@@ -158,8 +166,8 @@ export default function RevenueShareEnginePage() {
                 <TabsContent value="rules" className="grid gap-6 md:grid-cols-2">
                     <Card className="bg-card">
                         <CardHeader>
-                            <CardTitle>Commission Rates (Total)</CardTitle>
-                            <CardDescription>Total platform fee per service type.</CardDescription>
+                            <CardTitle>Commission Rules (Total)</CardTitle>
+                            <CardDescription>Total platform fee percentage per service type.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {rules?.map(rule => (
@@ -176,8 +184,8 @@ export default function RevenueShareEnginePage() {
 
                     <Card className="bg-card">
                         <CardHeader>
-                            <CardTitle>Revenue Share Distribution</CardTitle>
-                            <CardDescription>Configured split between Agency and AeroDesk.</CardDescription>
+                            <CardTitle>Agency Revenue Share (Conditional)</CardTitle>
+                            <CardDescription>Configured split applied ONLY to Agency-Channel bookings.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {configs?.map(config => (
@@ -188,14 +196,14 @@ export default function RevenueShareEnginePage() {
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="flex-1 space-y-1">
-                                            <p className="text-[9px] uppercase font-black text-sky-400">Agency</p>
+                                            <p className="text-[9px] uppercase font-black text-sky-400">Agency Share</p>
                                             <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                                 <div className="h-full bg-sky-400" style={{ width: `${config.agencySharePercent}%` }} />
                                             </div>
                                             <p className="text-xs font-bold">{config.agencySharePercent}%</p>
                                         </div>
                                         <div className="flex-1 space-y-1">
-                                            <p className="text-[9px] uppercase font-black text-accent">AeroDesk</p>
+                                            <p className="text-[9px] uppercase font-black text-accent">AeroDesk Share</p>
                                             <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                                 <div className="h-full bg-accent" style={{ width: `${config.aerodeskSharePercent}%` }} />
                                             </div>
@@ -204,6 +212,11 @@ export default function RevenueShareEnginePage() {
                                     </div>
                                 </div>
                             ))}
+                            <div className="p-3 bg-accent/5 border border-accent/20 rounded-md">
+                                <p className="text-[10px] text-muted-foreground leading-relaxed italic">
+                                    * Direct-Channel and Corporate bookings automatically default to 100% AeroDesk share.
+                                </p>
+                            </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -212,7 +225,7 @@ export default function RevenueShareEnginePage() {
                     <Card className="bg-card">
                         <CardHeader>
                             <CardTitle>Agency Payout Registry</CardTitle>
-                            <CardDescription>Tracking commission settlements issued to travel agencies.</CardDescription>
+                            <CardDescription>Consolidated settlements for Agency-Channel commissions.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Table>
@@ -220,7 +233,7 @@ export default function RevenueShareEnginePage() {
                                     <TableRow className="border-white/5">
                                         <TableHead className="text-[10px] uppercase font-black">Agency</TableHead>
                                         <TableHead className="text-[10px] uppercase font-black">Period</TableHead>
-                                        <TableHead className="text-[10px] uppercase font-black text-right">Payout Amount</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black text-right">Payout Total</TableHead>
                                         <TableHead className="text-[10px] uppercase font-black">Status</TableHead>
                                         <TableHead className="text-right pr-6"><span className="sr-only">Actions</span></TableHead>
                                     </TableRow>
@@ -245,7 +258,7 @@ export default function RevenueShareEnginePage() {
                                             </TableCell>
                                             <TableCell className="text-right pr-6">
                                                 {set.status === 'processed' && (
-                                                    <Button variant="ghost" size="sm" className="h-8 text-[9px] font-black uppercase hover:text-accent">
+                                                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-black uppercase hover:text-accent">
                                                         Record Payment
                                                     </Button>
                                                 )}
@@ -262,14 +275,14 @@ export default function RevenueShareEnginePage() {
                     <div className="grid gap-6 md:grid-cols-2">
                         <Card className="bg-card">
                             <CardHeader>
-                                <CardTitle>Revenue Share Map</CardTitle>
-                                <CardDescription>Platform vs. Partner yield distribution.</CardDescription>
+                                <CardTitle>Channel Mix Profile</CardTitle>
+                                <CardDescription>Transaction volume by booking channel.</CardDescription>
                             </CardHeader>
                             <CardContent className="h-[300px] flex flex-col items-center">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <RePieChart>
                                         <Pie
-                                            data={shareData}
+                                            data={channelData}
                                             cx="50%"
                                             cy="50%"
                                             innerRadius={60}
@@ -278,7 +291,7 @@ export default function RevenueShareEnginePage() {
                                             dataKey="value"
                                             stroke="none"
                                         >
-                                            {shareData.map((entry, index) => (
+                                            {channelData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={entry.color} />
                                             ))}
                                         </Pie>
@@ -286,7 +299,7 @@ export default function RevenueShareEnginePage() {
                                     </RePieChart>
                                 </ResponsiveContainer>
                                 <div className="flex gap-6 mt-2">
-                                    {shareData.map(item => (
+                                    {channelData.map(item => (
                                         <div key={item.name} className="flex items-center gap-2">
                                             <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                                             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.name}</span>
@@ -298,7 +311,7 @@ export default function RevenueShareEnginePage() {
 
                         <Card className="bg-card">
                             <CardHeader>
-                                <CardTitle>Sector Yield Concentration</CardTitle>
+                                <CardTitle>Sector Yield Contribution</CardTitle>
                                 <CardDescription>Platform revenue by service line.</CardDescription>
                             </CardHeader>
                             <CardContent className="h-[300px]">
