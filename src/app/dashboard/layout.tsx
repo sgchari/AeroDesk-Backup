@@ -20,15 +20,15 @@ export default function DashboardLayout({
           <MainSidebar />
         </Sidebar>
         <SidebarRail />
-        <SidebarInset className="bg-transparent">
+        <SidebarInset className="bg-transparent overflow-x-hidden">
           <Header />
-          <main className="flex flex-1 flex-col gap-6 p-6 lg:p-8">
-            <div className="flex-1">
+          <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-8 lg:p-8 min-w-0">
+            <div className="flex-1 w-full">
               {children}
             </div>
             
             <footer className="mt-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-                <p>&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. NSOP COORDINATION ONLY.</p>
+                <p className="text-center md:text-left">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. NSOP COORDINATION ONLY.</p>
                 <div className="flex gap-6">
                     <Link href="mailto:feedback@aerodesk.com" className="hover:text-accent transition-colors">Feedback & Suggestions</Link>
                     <Link href="#" className="hover:text-accent transition-colors">System Status</Link>

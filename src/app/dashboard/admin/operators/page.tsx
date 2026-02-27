@@ -26,6 +26,7 @@ const getStatusVariant = (status: Operator['status']) => {
 
 export default function OperatorManagementPage() {
     const firestore = useFirestore();
+    const { toast } = useToast();
     
     const { data: operators, isLoading } = useCollection<Operator>(
         useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]), 
@@ -33,9 +34,12 @@ export default function OperatorManagementPage() {
     );
 
     const handleUpdateStatus = (operatorId: string, status: Operator['status']) => {
-        // This creates a mock reference for the non-blocking update function.
         const mockOperatorDocRef = { path: `operators/${operatorId}` } as any;
         updateDocumentNonBlocking(mockOperatorDocRef, { status });
+        toast({
+            title: "Operator Updated",
+            description: `Status changed to ${status}.`
+        });
     };
 
     return (
@@ -48,76 +52,75 @@ export default function OperatorManagementPage() {
                         A list of all NSOP operators on the platform.
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    {isLoading ? <Skeleton className="h-64 w-full" /> : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Company Name</TableHead>
-                                    <TableHead>Contact Person</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>NSOP License</TableHead>
-                                    <TableHead>Registered On</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>
-                                        <span className="sr-only">Actions</span>
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {operators?.map((op: Operator) => (
-                                    <TableRow key={op.id}>
-                                        <TableCell className="font-medium">{op.companyName}</TableCell>
-                                        <TableCell>{op.contactPersonName}</TableCell>
-                                        <TableCell>{op.contactEmail}</TableCell>
-                                        <TableCell className="font-code">{op.nsopLicenseNumber}</TableCell>
-                                        <TableCell>{new Date(op.createdAt).toLocaleDateString()}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={getStatusVariant(op.status)}>{op.status}</Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                        <span className="sr-only">Toggle menu</span>
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    {op.status === 'Pending Approval' && (
-                                                        <>
-                                                            <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Approved')}>
-                                                                Approve
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Rejected')}>
-                                                                Reject
-                                                            </DropdownMenuItem>
-                                                        </>
-                                                    )}
-                                                    {op.status === 'Approved' && (
-                                                        <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Suspended')}>
-                                                            Suspend
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                     {op.status === 'Suspended' && (
-                                                        <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Approved')}>
-                                                            Re-approve
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                     {(op.status === 'Rejected') && (
-                                                        <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Approved')}>
-                                                            Re-approve
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                    <DropdownMenuItem disabled>View Compliance Docs</DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
+                <CardContent className="px-0 sm:px-6">
+                    {isLoading ? <div className="p-6"><Skeleton className="h-64 w-full" /></div> : (
+                        <div className="w-full overflow-x-auto">
+                            <Table className="min-w-[900px]">
+                                <TableHeader>
+                                    <TableRow className="border-white/5">
+                                        <TableHead className="text-[10px] uppercase font-black">Company Name</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black">Contact Person</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black">Email</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black">NSOP License</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black">Registered On</TableHead>
+                                        <TableHead className="text-[10px] uppercase font-black">Status</TableHead>
+                                        <TableHead className="text-right">
+                                            <span className="sr-only">Actions</span>
+                                        </TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {operators?.map((op: Operator) => (
+                                        <TableRow key={op.id} className="border-white/5 hover:bg-white/[0.02]">
+                                            <TableCell className="font-bold py-4">{op.companyName}</TableCell>
+                                            <TableCell className="text-xs">{op.contactPersonName}</TableCell>
+                                            <TableCell className="text-xs text-muted-foreground">{op.contactEmail}</TableCell>
+                                            <TableCell className="font-code text-xs text-accent">{op.nsopLicenseNumber}</TableCell>
+                                            <TableCell className="text-xs">{new Date(op.createdAt).toLocaleDateString()}</TableCell>
+                                            <TableCell>
+                                                <Badge variant={getStatusVariant(op.status)} className="text-[9px] uppercase h-5">
+                                                    {op.status}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button aria-haspopup="true" size="icon" variant="ghost" className="h-8 w-8">
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <span className="sr-only">Toggle menu</span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                        {op.status === 'Pending Approval' && (
+                                                            <>
+                                                                <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Approved')}>
+                                                                    Approve
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Rejected')}>
+                                                                    Reject
+                                                                </DropdownMenuItem>
+                                                            </>
+                                                        )}
+                                                        {op.status === 'Approved' && (
+                                                            <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Suspended')}>
+                                                                Suspend
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        {(op.status === 'Suspended' || op.status === 'Rejected') && (
+                                                            <DropdownMenuItem onClick={() => handleUpdateStatus(op.id, 'Approved')}>
+                                                                Re-approve
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        <DropdownMenuItem disabled>View Compliance Docs</DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     )}
                 </CardContent>
             </Card>
