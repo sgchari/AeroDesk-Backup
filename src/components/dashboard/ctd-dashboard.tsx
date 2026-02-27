@@ -135,9 +135,9 @@ export function CTDDashboard() {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 space-y-3 group hover:bg-accent/10 transition-colors">
-                    <div className="flex items-center justify-between">
-                        <p className="text-[10px] font-black text-accent uppercase tracking-widest">MISSION: RFQ-CORP-002</p>
-                        <Badge variant="default" className="h-4 text-[8px] bg-green-500 font-black">EN ROUTE</Badge>
+                    <div className="flex items-center justify-between gap-2">
+                        <p className="text-[10px] font-black text-accent uppercase tracking-widest truncate">MISSION: RFQ-CORP-002</p>
+                        <Badge variant="default" className="h-5 text-[8px] bg-green-500 font-black shrink-0 whitespace-nowrap px-2">EN ROUTE</Badge>
                     </div>
                     <div className="space-y-1">
                         <div className="flex items-center justify-between text-xs font-medium">
@@ -151,9 +151,9 @@ export function CTDDashboard() {
                 </div>
                 
                 <div className="p-4 rounded-xl bg-muted/10 border border-white/5 space-y-3 opacity-60">
-                    <div className="flex items-center justify-between">
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">MISSION: RFQ-CONF-002</p>
-                        <Badge variant="outline" className="h-4 text-[8px] font-black">SCHEDULED</Badge>
+                    <div className="flex items-center justify-between gap-2">
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest truncate">MISSION: RFQ-CONF-002</p>
+                        <Badge variant="outline" className="h-5 text-[8px] font-black shrink-0 whitespace-nowrap px-2">SCHEDULED</Badge>
                     </div>
                     <div className="flex items-center justify-between text-xs">
                         <span>BLR → GOI</span>
