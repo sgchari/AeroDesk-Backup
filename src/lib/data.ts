@@ -1,5 +1,35 @@
 
-import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset, CrewMember, PassengerManifest, Invoice, Payment, ActivityLog, Commission } from './types';
+import type { 
+  User, 
+  CharterRFQ, 
+  EmptyLeg, 
+  Aircraft, 
+  Quotation, 
+  AuditLog, 
+  AccommodationRequest, 
+  CorporateTravelDesk, 
+  Property, 
+  RoomCategory, 
+  EmptyLegSeatAllocationRequest, 
+  Operator, 
+  BillingRecord, 
+  FeatureFlag, 
+  PolicyFlag, 
+  BlogPost, 
+  PressRelease, 
+  MediaMention, 
+  BrandAsset, 
+  CrewMember, 
+  PassengerManifest, 
+  Invoice, 
+  Payment, 
+  ActivityLog, 
+  Commission,
+  PlatformChargeRule,
+  EntityBillingLedger,
+  PlatformInvoice,
+  SubscriptionPlan
+} from './types';
 
 // Mock Registry for NSOP lookup during onboarding
 export const VERIFIED_NSOP_REGISTRY = [
@@ -78,6 +108,29 @@ export const mockRoomCategories: RoomCategory[] = [
     { id: 'RM-01', propertyId: 'PROP-01', name: 'Deluxe King Ocean View', maxOccupancy: 2, beddingType: 'King', nightlyRate: 25000, imageUrl: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800' }
 ];
 
+// --- PLATFORM BILLING ENGINE MOCKS ---
+
+export const mockPlatformChargeRules: PlatformChargeRule[] = [
+  { id: 'RULE-01', entityType: 'Operator', serviceType: 'charter', chargeType: 'percentage', percentageRate: 0.05, fixedAmount: 0, effectiveFrom: '2024-01-01', isActive: true, createdBy: 'admin-user-01', createdAt: '2024-01-01T00:00:00Z' },
+  { id: 'RULE-02', entityType: 'Travel Agency', serviceType: 'seat', chargeType: 'percentage', percentageRate: 0.02, fixedAmount: 0, effectiveFrom: '2024-01-01', isActive: true, createdBy: 'admin-user-01', createdAt: '2024-01-01T00:00:00Z' },
+  { id: 'RULE-03', entityType: 'Hotel Partner', serviceType: 'accommodation', chargeType: 'fixed', percentageRate: 0, fixedAmount: 500, effectiveFrom: '2024-01-01', isActive: true, createdBy: 'admin-user-01', createdAt: '2024-01-01T00:00:00Z' },
+];
+
+export const mockBillingLedger: EntityBillingLedger[] = [
+  { id: 'LDG-001', entityId: 'operator-user-01', entityType: 'Operator', entityName: 'FlyCo Charter', relatedTransactionId: 'RFQ-EXEC-003', serviceType: 'charter', grossAmount: 4200000, platformChargeAmount: 210000, commissionRate: 0.05, ledgerStatus: 'paid', createdAt: '2024-08-03T10:30:00Z' },
+  { id: 'LDG-002', entityId: 'distributor-user-01', entityType: 'Travel Agency', entityName: 'Sky Distributors', relatedTransactionId: 'SL-REQ-001', serviceType: 'seat', grossAmount: 90000, platformChargeAmount: 1800, commissionRate: 0.02, ledgerStatus: 'pending', createdAt: '2024-08-04T12:00:00Z' },
+];
+
+export const mockPlatformInvoices: PlatformInvoice[] = [
+  { id: 'PL-INV-001', entityId: 'operator-user-01', entityName: 'FlyCo Charter', entityType: 'Operator', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 210000, dueDate: '2024-09-10', status: 'paid', createdAt: '2024-09-01T09:00:00Z' },
+  { id: 'PL-INV-002', entityId: 'distributor-user-01', entityName: 'Sky Distributors', entityType: 'Travel Agency', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 1800, dueDate: '2024-09-10', status: 'issued', createdAt: '2024-09-01T09:30:00Z' },
+];
+
+export const mockSubscriptionPlans: SubscriptionPlan[] = [
+  { id: 'PLAN-BAS', planName: 'Basic Hangar', monthlyFee: 5000, commissionOverrideRate: 0.05, seatLimit: 5, transactionLimit: 10, isActive: true, createdAt: '2024-01-01T00:00:00Z' },
+  { id: 'PLAN-PRO', planName: 'Pro Fleet', monthlyFee: 15000, commissionOverrideRate: 0.03, seatLimit: 50, transactionLimit: 100, isActive: true, createdAt: '2024-01-01T00:00:00Z' },
+];
+
 export const mockAuditLogs: AuditLog[] = [];
 export const mockBillingRecords: BillingRecord[] = [];
 export const mockFeatureFlags: FeatureFlag[] = [
@@ -118,6 +171,10 @@ export function getMockDataForRole(role: string) {
         manifests: mockManifests,
         invoices: mockInvoices,
         payments: mockPayments,
-        activityLogs: mockActivityLogs
+        activityLogs: mockActivityLogs,
+        platformChargeRules: mockPlatformChargeRules,
+        entityBillingLedger: mockBillingLedger,
+        platformInvoices: mockPlatformInvoices,
+        subscriptionPlans: mockSubscriptionPlans
     };
 }

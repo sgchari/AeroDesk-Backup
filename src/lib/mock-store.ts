@@ -19,7 +19,11 @@ import {
   mockManifests,
   mockInvoices,
   mockPayments,
-  mockActivityLogs
+  mockActivityLogs,
+  mockPlatformChargeRules,
+  mockBillingLedger,
+  mockPlatformInvoices,
+  mockSubscriptionPlans
 } from './data';
 import { User, UserRole } from './types';
 
@@ -52,6 +56,13 @@ let db = {
   payments: deepCopy(mockPayments),
   activityLogs: deepCopy(mockActivityLogs),
   commissions: [],
+  platformChargeRules: deepCopy(mockPlatformChargeRules),
+  entityBillingLedger: deepCopy(mockBillingLedger),
+  platformInvoices: deepCopy(mockPlatformInvoices),
+  subscriptionPlans: deepCopy(mockSubscriptionPlans),
+  entitySubscriptions: [],
+  platformPayments: [],
+  billingAuditLogs: []
 };
 
 // Simple event emitter
@@ -119,11 +130,7 @@ const getDoc = (path: string): any | null => {
     const collectionName = pathSegments[0];
     const docId = pathSegments[1];
     
-    // Normalize collection name for deep paths
-    let actualCollection = collectionName;
-    if (collectionName === 'charterRequests') actualCollection = 'charterRequests';
-    
-    const dataSet = (db as any)[actualCollection];
+    const dataSet = (db as any)[collectionName];
     if (!dataSet) return null;
     
     return dataSet.find((d: any) => d.id === docId) || null;

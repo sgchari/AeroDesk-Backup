@@ -68,7 +68,6 @@ export type RfqStatus =
   | 'tripClosed'
   | 'cancelled'
   | 'refunded'
-  // Legacy support
   | 'Draft'
   | 'New'
   | 'Submitted'
@@ -402,4 +401,100 @@ export type BrandAsset = {
   type: string;
   imageUrl: string;
   fileSize: string;
+};
+
+// --- PLATFORM BILLING ENGINE TYPES ---
+
+export type ChargeType = 'percentage' | 'fixed' | 'hybrid';
+export type BillingServiceType = 'charter' | 'seat' | 'accommodation' | 'subscription';
+export type PlatformInvoiceStatus = 'issued' | 'overdue' | 'paid' | 'cancelled';
+export type PlatformPaymentStatus = 'submitted' | 'verified' | 'rejected';
+export type LedgerStatus = 'pending' | 'invoiced' | 'paid' | 'adjusted';
+
+export type PlatformChargeRule = {
+  id: string;
+  entityType: UserRole;
+  serviceType: BillingServiceType;
+  chargeType: ChargeType;
+  percentageRate: number; // e.g. 0.05 for 5%
+  fixedAmount: number;
+  effectiveFrom: string;
+  effectiveTo?: string;
+  isActive: boolean;
+  createdBy: string;
+  createdAt: string;
+};
+
+export type EntityBillingLedger = {
+  id: string;
+  entityId: string;
+  entityType: UserRole;
+  entityName?: string;
+  relatedTransactionId: string;
+  serviceType: BillingServiceType;
+  grossAmount: number;
+  platformChargeAmount: number;
+  commissionRate: number;
+  ledgerStatus: LedgerStatus;
+  invoiceId?: string;
+  createdAt: string;
+};
+
+export type PlatformInvoice = {
+  id: string;
+  entityId: string;
+  entityName: string;
+  entityType: UserRole;
+  billingPeriodStart: string;
+  billingPeriodEnd: string;
+  totalAmount: number;
+  invoicePdfUrl?: string;
+  dueDate: string;
+  status: PlatformInvoiceStatus;
+  createdAt: string;
+};
+
+export type PlatformPayment = {
+  id: string;
+  invoiceId: string;
+  entityId: string;
+  utrReference: string;
+  paymentProofUrl?: string;
+  amountPaid: number;
+  status: PlatformPaymentStatus;
+  verifiedBy?: string;
+  verifiedAt?: string;
+  createdAt: string;
+};
+
+export type SubscriptionPlan = {
+  id: string;
+  planName: string;
+  monthlyFee: number;
+  commissionOverrideRate: number;
+  seatLimit: number;
+  transactionLimit: number;
+  isActive: boolean;
+  createdAt: string;
+};
+
+export type EntitySubscription = {
+  id: string;
+  entityId: string;
+  entityType: UserRole;
+  planId: string;
+  startDate: string;
+  endDate: string;
+  status: 'active' | 'suspended' | 'expired';
+};
+
+export type BillingAuditLog = {
+  id: string;
+  entityId: string;
+  actionType: string;
+  performedBy: string;
+  role: string;
+  previousValue?: any;
+  newValue?: any;
+  timestamp: string;
 };
