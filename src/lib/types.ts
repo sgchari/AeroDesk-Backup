@@ -57,11 +57,24 @@ export type RfqStatus =
   | 'Bidding Open'
   | 'Bidding Closed'
   | 'Operator Selected'
-  | 'Quoted'
-  | 'Closed'
-  | 'Confirmed'
+  | 'quoteAccepted'
+  | 'awaitingManifest'
+  | 'manifestSubmitted'
+  | 'manifestApproved'
+  | 'invoiceIssued'
+  | 'paymentSubmitted'
+  | 'paymentConfirmed'
+  | 'charterConfirmed'
+  | 'operationalPreparation'
+  | 'preFlightReady'
+  | 'boarding'
+  | 'departed'
+  | 'arrived'
+  | 'flightCompleted'
+  | 'tripClosed'
   | 'Cancelled'
-  | 'Expired';
+  | 'Expired'
+  | 'Closed';
 
 export type TripType = 'Onward' | 'Return' | 'Multi-City';
 
@@ -69,6 +82,9 @@ export type CharterRFQ = {
   id: string;
   customerId: string;
   requesterExternalAuthId: string;
+  operatorId?: string;
+  aircraftId?: string;
+  quoteId?: string;
   customerName: string;
   tripType: TripType;
   departure: string;
@@ -81,6 +97,7 @@ export type CharterRFQ = {
   aircraftType: string;
   status: RfqStatus;
   createdAt: string;
+  updatedAt: string;
   bidsCount: number;
   catering?: string;
   specialRequirements?: string;
@@ -88,6 +105,68 @@ export type CharterRFQ = {
   costCenter?: string;
   company?: string;
   hotelRequired?: boolean;
+  isRoundTrip?: boolean;
+};
+
+export type Passenger = {
+  fullName: string;
+  dob: string;
+  gender: string;
+  nationality: string;
+  idType: string;
+  idNumber: string;
+  idDocumentUrl?: string;
+};
+
+export type PassengerManifest = {
+  id: string;
+  charterId: string;
+  submittedBy: string;
+  passengers: Passenger[];
+  specialNotes?: string;
+  status: 'draft' | 'submitted' | 'approved' | 'revisionRequested';
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Invoice = {
+  id: string;
+  charterId: string;
+  operatorId: string;
+  invoiceNumber: string;
+  baseAmount: number;
+  taxes: number;
+  additionalCharges: number;
+  totalAmount: number;
+  paymentDeadline: string;
+  bankDetails: string;
+  invoicePdfUrl?: string;
+  status: 'issued' | 'paid' | 'expired';
+  createdAt: string;
+};
+
+export type Payment = {
+  id: string;
+  charterId: string;
+  invoiceId: string;
+  submittedBy: string;
+  utrReference: string;
+  proofUrl?: string;
+  status: 'submitted' | 'verified' | 'rejected';
+  createdAt: string;
+  verifiedAt?: string;
+};
+
+export type ActivityLog = {
+  id: string;
+  charterId: string;
+  actionType: string;
+  performedBy: string;
+  role: string;
+  previousStatus: string;
+  newStatus: string;
+  timestamp: string;
+  metadata?: any;
 };
 
 export type Quotation = {
@@ -203,28 +282,6 @@ export type AccommodationRequest = {
     rooms: number;
     status: 'Pending' | 'Confirmed' | 'Declined' | 'Awaiting Clarification';
     specialRequests?: string;
-};
-
-export type AuditLog = {
-  id: string;
-  timestamp: string;
-  user: string;
-  role: UserRole;
-  action: string;
-  details: string;
-  targetId: string;
-};
-
-export type CorporateTravelDesk = {
-    id: string;
-    companyName: string;
-    adminExternalAuthId: string;
-    contactEmail?: string;
-    contactPhone?: string;
-    address?: string;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
 };
 
 export type BillingRecord = {

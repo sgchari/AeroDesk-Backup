@@ -25,7 +25,7 @@ const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 let db = {
   users: deepCopy(mockUsers),
   operators: deepCopy(mockOperators),
-  charterRFQs: deepCopy(mockRfqs),
+  charterRequests: deepCopy(mockRfqs), // Mapping mockRfqs to charterRequests
   aircrafts: deepCopy(mockAircrafts),
   quotations: deepCopy(mockQuotations),
   emptyLegs: deepCopy(mockEmptyLegs),
@@ -43,6 +43,10 @@ let db = {
   featureFlags: deepCopy(mockFeatureFlags),
   policyFlags: deepCopy(mockPolicyFlags),
   crew: deepCopy(mockCrew),
+  passengerManifests: [] as any[],
+  invoices: [] as any[],
+  payments: [] as any[],
+  activityLogs: [] as any[],
 };
 
 // Simple event emitter
@@ -68,6 +72,25 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
     }
 
     switch(collectionName) {
+        case 'charterRequests':
+            if (!currentUser) return [];
+            return db.charterRequests.filter(rfq => 
+                (currentUser.role === 'Customer' && rfq.customerId === currentUser.id) ||
+                (currentUser.role === 'Requester' && rfq.requesterExternalAuthId === currentUser.id) || 
+                (currentUser.role === 'Operator' && rfq.operatorId === currentUser.id) || 
+                (currentUser.role === 'Operator' && !rfq.operatorId && (rfq.status === 'Bidding Open' || rfq.status === 'New')) || 
+                currentUser.role === 'Admin' || 
+                (currentUser.role === 'CTD Admin' && rfq.company === currentUser.company) ||
+                (currentUser.role === 'Travel Agency' && rfq.requesterExternalAuthId === currentUser.id)
+            );
+        case 'passengerManifests':
+            return db.passengerManifests;
+        case 'invoices':
+            return db.invoices;
+        case 'payments':
+            return db.payments;
+        case 'activityLogs':
+            return db.activityLogs;
         case 'operators':
             if (pathSegments.length > 2 && pathSegments[2] === 'aircrafts') {
                 const operatorId = pathSegments[1];
@@ -78,16 +101,6 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
                 return db.crew.filter(c => c.operatorId === operatorId);
             }
             return db.operators;
-        case 'charterRFQs':
-            if (!currentUser) return [];
-            return db.charterRFQs.filter(rfq => 
-                (currentUser.role === 'Customer' && rfq.customerId === currentUser.id) ||
-                (currentUser.role === 'Requester' && rfq.requesterExternalAuthId === currentUser.id) || 
-                currentUser.role === 'Operator' || 
-                currentUser.role === 'Admin' || 
-                (currentUser.role === 'CTD Admin' && rfq.company === currentUser.company) ||
-                (currentUser.role === 'Travel Agency' && rfq.requesterExternalAuthId === currentUser.id)
-            );
         case 'emptyLegs':
              return db.emptyLegs.filter(leg => 
                 (currentUser && currentUser.role === 'Operator' && leg.operatorId === currentUser.id) || 
@@ -119,9 +132,6 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             if (!currentUser) return [];
             return db.properties.filter(p => p.hotelPartnerId === currentUser.id);
         case 'roomCategories':
-            if (pathSegments.length > 1) { // query simulation
-                return db.roomCategories;
-            }
             return db.roomCategories;
         case 'billingRecords': return db.billingRecords;
         case 'featureFlags': return db.featureFlags;
@@ -160,20 +170,7 @@ const addDoc = (path: string, data: any) => {
     const collectionName = pathSegments[0];
     let newDoc = { ...data, id: `demo-${collectionName.slice(0, 4)}-${Date.now()}` };
 
-    if (collectionName === 'emptyLegs' && pathSegments.length > 2 && pathSegments[2] === 'seatAllocationRequests') {
-        db.seatAllocationRequests.unshift(newDoc as any);
-    } else if (collectionName === 'charterRFQs') {
-        db.charterRFQs.unshift(newDoc as any);
-    } else if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'policyFlags') {
-        db.policyFlags.unshift(newDoc as any);
-    } else if (['users', 'platformAdmins', 'customers', 'operators', 'distributors', 'hotelPartners'].includes(collectionName)) {
-        db.users.unshift(newDoc as any); // Add to the main users array
-        if ((db as any)[collectionName]) {
-            (db as any)[collectionName].unshift(newDoc as any); // Also add to specific array if exists
-        }
-    } else if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'users') {
-         db.users.unshift(newDoc as any);
-    } else if ((db as any)[collectionName]) {
+    if ((db as any)[collectionName]) {
         (db as any)[collectionName].unshift(newDoc as any);
     } else {
          console.warn(`Mock Store: No handler for addDoc path: ${path}`);
@@ -183,70 +180,25 @@ const addDoc = (path: string, data: any) => {
 };
 
 const updateDoc = (collectionPath: string, docId: string, data: any) => {
-    const pathSegments = collectionPath.split('/');
-    const collectionName = pathSegments[0];
-    let dataSet: any[] | undefined;
-
-    if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'users') {
-        dataSet = db.users;
-    } else if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'policyFlags') {
-        dataSet = db.policyFlags;
-    } else {
-        dataSet = (db as any)[collectionName] || db.users;
-    }
+    const dataSet = (db as any)[collectionPath];
 
     if (!dataSet) {
         console.warn(`Mock Store: No collection found for update path: ${collectionPath}`);
         return;
     }
     
-    const docIndex = dataSet.findIndex(d => d.id === docId);
+    const docIndex = dataSet.findIndex((d: any) => d.id === docId);
     if (docIndex > -1) {
         dataSet[docIndex] = { ...dataSet[docIndex], ...data, updatedAt: new Date().toISOString() };
-        // Also update the master user list if it's a user role
-        if (['operators', 'customers', 'platformAdmins', 'distributors', 'hotelPartners'].includes(collectionName)) {
-            const masterUserIndex = db.users.findIndex(u => u.id === docId);
-            if (masterUserIndex > -1) {
-                db.users[masterUserIndex] = { ...db.users[masterUserIndex], ...data, updatedAt: new Date().toISOString() };
-            }
-        }
         notify();
-    } else {
-         console.warn(`Mock Store: Document not found for update: ${collectionPath}/${docId}`);
     }
 };
 
 const deleteDoc = (collectionPath: string, docId: string) => {
-    const pathSegments = collectionPath.split('/');
-    const collectionName = pathSegments[0];
-    let dataSet: any[] | undefined;
-
-    if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'users') {
-        dataSet = db.users;
-    } else if (collectionName === 'corporateTravelDesks' && pathSegments.length > 2 && pathSegments[2] === 'policyFlags') {
-        dataSet = db.policyFlags;
-    } else {
-        dataSet = (db as any)[collectionName] || db.users;
-    }
-    
-    if (!dataSet) {
-        console.warn(`Mock Store: No collection found for delete path: ${collectionPath}`);
-        return;
-    }
-
-    const initialLength = dataSet.length;
-    (db as any)[collectionName] = dataSet.filter(d => d.id !== docId);
-
-    // Also delete from the master user list
-     if (['operators', 'customers', 'platformAdmins', 'distributors', 'hotelPartners'].includes(collectionName)) {
-        db.users = db.users.filter(u => u.id !== docId);
-     }
-    
-    if (dataSet.length < initialLength) {
-        notify();
-    } else {
-        console.warn(`Mock Store: Document not found for delete: ${collectionPath}/${docId}`);
-    }
+    const dataSet = (db as any)[collectionPath];
+    if (!dataSet) return;
+    (db as any)[collectionPath] = dataSet.filter((d: any) => d.id !== docId);
+    notify();
 };
 
 export const mockStore = {
