@@ -1,8 +1,13 @@
 
 import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset, CrewMember, PassengerManifest, Invoice, Payment, ActivityLog, Commission } from './types';
-import { PlaceHolderImages } from './placeholder-images';
 
-const getImg = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl || '';
+// Mock Registry for NSOP lookup during onboarding
+export const VERIFIED_NSOP_REGISTRY = [
+    { companyName: 'FlyCo Charter', nsopLicenseNumber: 'NSOP/FLYCO/2021', city: 'Mumbai' },
+    { companyName: 'Taj Air', nsopLicenseNumber: 'NSOP/TAJ/02', city: 'Mumbai' },
+    { companyName: 'Club One Air', nsopLicenseNumber: 'NSOP/COA/05', city: 'Delhi' },
+    { companyName: 'Titan Aviation', nsopLicenseNumber: 'NSOP/TITAN/11', city: 'Bangalore' },
+];
 
 export const mockUsers: User[] = [
     { id: 'admin-user-01', email: 'admin@aerodesk.com', firstName: 'Admin', lastName: 'User', role: 'Admin', status: 'Active', createdAt: "2024-07-28T10:00:00Z", updatedAt: "2024-07-28T10:00:00Z" },
