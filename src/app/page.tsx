@@ -249,19 +249,19 @@ export default function Home() {
                       </h4>
                       <ul className="space-y-2 text-sm text-white/80">
                         <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
+                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           AeroDesk never touches funds.
                         </li>
                         <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
+                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           Zero refund liability.
                         </li>
                         <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
+                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           No financial regulatory risk.
                         </li>
                         <li className="flex items-start gap-2">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
+                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           No OTA classification trigger.
                         </li>
                       </ul>
@@ -272,15 +272,15 @@ export default function Home() {
                       </h4>
                       <ul className="space-y-2 text-sm text-white/80">
                         <li className="flex items-start gap-2">
-                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
+                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           Subscription fees.
                         </li>
                         <li className="flex items-start gap-2">
-                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
+                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           Participation fees.
                         </li>
                         <li className="flex items-start gap-2">
-                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-primary/80" />{' '}
+                          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
                           Coordination / facilitation fees.
                         </li>
                       </ul>
