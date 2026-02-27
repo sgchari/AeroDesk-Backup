@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -77,87 +76,89 @@ export default function CrewManagementPage() {
                             A comprehensive log of all crew members and their operational readiness.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        {isLoading ? <Skeleton className="h-64 w-full" /> : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Member</TableHead>
-                                        <TableHead>Role & Designation</TableHead>
-                                        <TableHead>Asset Assignment</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {crew?.map((member) => (
-                                        <TableRow key={member.id} className="group">
-                                            <TableCell>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2 bg-muted/20 rounded-full">
-                                                        <User className="h-4 w-4 text-accent" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-bold text-sm">{member.firstName} {member.lastName}</div>
-                                                        <div className="text-[10px] text-muted-foreground uppercase font-code tracking-tighter">ID: {member.id}</div>
-                                                    </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-1.5">
-                                                        {getRoleIcon(member.role)}
-                                                        <span className={cn(
-                                                            "text-[10px] font-black uppercase tracking-widest",
-                                                            member.role === 'Captain' ? 'text-accent' : 'text-foreground'
-                                                        )}>
-                                                            {member.role}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-[10px] text-muted-foreground font-code">Cert: {member.licenseNumber || 'PENDING'}</p>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <Plane className="h-3.5 w-3.5 text-accent/60" />
-                                                    <span className="text-xs font-medium font-code">{member.assignedAircraftRegistration || 'FLOAT'}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={getStatusVariant(member.status)} className="h-5 text-[10px] font-bold uppercase tracking-wider">
-                                                    {member.status}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button size="icon" variant="ghost" className="h-8 w-8">
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuLabel>Logistics Controls</DropdownMenuLabel>
-                                                        <DropdownMenuItem className="gap-2" onClick={() => handleUpdateStatus(member.id, 'Available')}>
-                                                            <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> Mark Available
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem className="gap-2" onClick={() => handleUpdateStatus(member.id, 'On Duty')}>
-                                                            <Clock className="h-3.5 w-3.5 text-blue-500" /> Dispatch to Duty
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem className="gap-2">
-                                                            <ShieldCheck className="h-3.5 w-3.5 text-accent" /> Compliance Audit
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem className="gap-2 text-destructive">
-                                                            <AlertCircle className="h-3.5 w-3.5" /> Revoke Designation
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </TableCell>
+                    <CardContent className="px-0 sm:px-6">
+                        <div className="w-full overflow-x-auto">
+                            {isLoading ? <div className="p-6"><Skeleton className="h-64 w-full" /></div> : (
+                                <Table className="min-w-[800px] sm:min-w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Member</TableHead>
+                                            <TableHead>Role & Designation</TableHead>
+                                            <TableHead>Asset Assignment</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead className="text-right">Actions</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        )}
+                                    </TableHeader>
+                                    <TableBody>
+                                        {crew?.map((member) => (
+                                            <TableRow key={member.id} className="group">
+                                                <TableCell>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 bg-muted/20 rounded-full shrink-0">
+                                                            <User className="h-4 w-4 text-accent" />
+                                                        </div>
+                                                        <div>
+                                                            <div className="font-bold text-sm whitespace-nowrap">{member.firstName} {member.lastName}</div>
+                                                            <div className="text-[10px] text-muted-foreground uppercase font-code tracking-tighter">ID: {member.id}</div>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="space-y-1">
+                                                        <div className="flex items-center gap-1.5">
+                                                            {getRoleIcon(member.role)}
+                                                            <span className={cn(
+                                                                "text-[10px] font-black uppercase tracking-widest whitespace-nowrap",
+                                                                member.role === 'Captain' ? 'text-accent' : 'text-foreground'
+                                                            )}>
+                                                                {member.role}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-[10px] text-muted-foreground font-code">Cert: {member.licenseNumber || 'PENDING'}</p>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <Plane className="h-3.5 w-3.5 text-accent/60" />
+                                                        <span className="text-xs font-medium font-code">{member.assignedAircraftRegistration || 'FLOAT'}</span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge variant={getStatusVariant(member.status)} className="h-5 text-[10px] font-bold uppercase tracking-wider">
+                                                        {member.status}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button size="icon" variant="ghost" className="h-8 w-8">
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuLabel>Logistics Controls</DropdownMenuLabel>
+                                                            <DropdownMenuItem className="gap-2" onClick={() => handleUpdateStatus(member.id, 'Available')}>
+                                                                <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> Mark Available
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem className="gap-2" onClick={() => handleUpdateStatus(member.id, 'On Duty')}>
+                                                                <Clock className="h-3.5 w-3.5 text-blue-500" /> Dispatch to Duty
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem className="gap-2">
+                                                                <ShieldCheck className="h-3.5 w-3.5 text-accent" /> Compliance Audit
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem className="gap-2 text-destructive">
+                                                                <AlertCircle className="h-3.5 w-3.5" /> Revoke Designation
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            )}
+                        </div>
                         {(!isLoading && (!crew || crew.length === 0)) && (
                             <div className="text-center py-20 border-2 border-dashed rounded-lg bg-muted/5">
                                 <User className="mx-auto h-10 w-10 text-muted-foreground/20 mb-4" />

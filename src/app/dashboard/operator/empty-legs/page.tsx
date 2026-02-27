@@ -49,53 +49,55 @@ export default function EmptyLegsPage() {
             Flights subject to platform governance before synchronization with distributors.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-            {isLoading ? <Skeleton className="h-64 w-full" /> : (
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead>Asset</TableHead>
-                    <TableHead>Route</TableHead>
-                    <TableHead>Departure</TableHead>
-                    <TableHead className="text-center">Available</TableHead>
-                    <TableHead className="text-center">Booked</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {emptyLegs?.map((leg: EmptyLeg) => (
-                    <TableRow key={leg.id}>
-                        <TableCell className="font-medium font-code">{leg.aircraftName || leg.aircraftId}</TableCell>
-                        <TableCell>{leg.departure} to {leg.arrival}</TableCell>
-                        <TableCell className="text-xs">{new Date(leg.departureTime).toLocaleString()}</TableCell>
-                        <TableCell className="text-center font-bold">{leg.availableSeats}</TableCell>
-                        <TableCell className="text-center">{leg.seatsAllocated || 0}</TableCell>
-                        <TableCell>
-                            <Badge variant={getStatusVariant(leg.status)} className="text-[10px] h-5 font-bold uppercase tracking-wider">
-                                {leg.status}
-                            </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Inventory Controls</DropdownMenuLabel>
-                                <DropdownMenuItem className="gap-2">Edit Details</DropdownMenuItem>
-                                {leg.status === 'Draft' && <DropdownMenuItem className="gap-2 text-green-500 font-medium">Publish to Marketplace</DropdownMenuItem>}
-                                <DropdownMenuItem className="text-destructive gap-2"><Ban className="h-3.5 w-3.5" /> Cancel Leg</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
+        <CardContent className="px-0 sm:px-6">
+            <div className="w-full overflow-x-auto">
+                {isLoading ? <div className="p-6"><Skeleton className="h-64 w-full" /></div> : (
+                <Table className="min-w-[800px] sm:min-w-full">
+                    <TableHeader>
+                    <TableRow>
+                        <TableHead>Asset</TableHead>
+                        <TableHead>Route</TableHead>
+                        <TableHead>Departure</TableHead>
+                        <TableHead className="text-center">Available</TableHead>
+                        <TableHead className="text-center">Booked</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                ))}
-                </TableBody>
-            </Table>
-            )}
+                    </TableHeader>
+                    <TableBody>
+                    {emptyLegs?.map((leg: EmptyLeg) => (
+                        <TableRow key={leg.id}>
+                            <TableCell className="font-medium font-code">{leg.aircraftName || leg.aircraftId}</TableCell>
+                            <TableCell>{leg.departure} to {leg.arrival}</TableCell>
+                            <TableCell className="text-xs">{new Date(leg.departureTime).toLocaleString()}</TableCell>
+                            <TableCell className="text-center font-bold">{leg.availableSeats}</TableCell>
+                            <TableCell className="text-center">{leg.seatsAllocated || 0}</TableCell>
+                            <TableCell>
+                                <Badge variant={getStatusVariant(leg.status)} className="text-[10px] h-5 font-bold uppercase tracking-wider">
+                                    {leg.status}
+                                </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                    <Button size="icon" variant="ghost">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                    </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>Inventory Controls</DropdownMenuLabel>
+                                    <DropdownMenuItem className="gap-2">Edit Details</DropdownMenuItem>
+                                    {leg.status === 'Draft' && <DropdownMenuItem className="gap-2 text-green-500 font-medium">Publish to Marketplace</DropdownMenuItem>}
+                                    <DropdownMenuItem className="text-destructive gap-2"><Ban className="h-3.5 w-3.5" /> Cancel Leg</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+                )}
+            </div>
         </CardContent>
       </Card>
     </>

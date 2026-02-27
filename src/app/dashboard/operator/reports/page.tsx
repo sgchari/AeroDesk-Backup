@@ -134,12 +134,12 @@ export default function OperatorReportsPage() {
     return (
         <>
             <PageHeader 
-                title="Intelligence & Revenue Analytics" 
+                title="Revenue Analytics" 
                 description="Institutional visibility into fleet profitability, mission yield, and AI-assisted performance signals."
             >
-                <div className="flex gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <Select value={period} onValueChange={handlePeriodChange}>
-                        <SelectTrigger className="h-9 w-[160px] bg-muted/20 border-white/10 text-xs gap-2">
+                        <SelectTrigger className="h-9 w-[140px] bg-muted/20 border-white/10 text-xs gap-2">
                             <Filter className="h-3.5 w-3.5 text-accent" />
                             <SelectValue placeholder="Period Scope" />
                         </SelectTrigger>
@@ -150,8 +150,8 @@ export default function OperatorReportsPage() {
                             <SelectItem value="ytd">Year to Date</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[10px] tracking-widest">
-                        <Download className="h-3.5 w-3.5" /> Export Financials
+                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[10px] tracking-widest hidden sm:flex">
+                        <Download className="h-3.5 w-3.5" /> Export
                     </Button>
                 </div>
             </PageHeader>
@@ -159,7 +159,7 @@ export default function OperatorReportsPage() {
             <StatsGrid>
                 <StatsCard title="Total Gross Revenue" value={stats.totalRevenue} icon={DollarSign} description="Actual + Confirmed Bids" />
                 <StatsCard title="Charter Contribution" value={stats.charterShare} icon={Target} description="Full mission share" />
-                <StatsCard title="Empty Leg Yield" value={stats.emptyLegYield} icon={Zap} description="Incremental recovery revenue" />
+                <StatsCard title="Empty Leg Yield" value={stats.emptyLegYield} icon={Zap} description="Recovery revenue" />
                 <StatsCard title="Avg. Mission Value" value={stats.avgMission} icon={TrendingUp} description="Per confirmed charter" />
             </StatsGrid>
 
@@ -167,29 +167,29 @@ export default function OperatorReportsPage() {
                 <AIInsights />
 
                 <Tabs defaultValue="revenue" className="w-full">
-                    <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1">
-                        <TabsTrigger value="revenue" className="gap-2">
+                    <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1 h-auto flex flex-wrap">
+                        <TabsTrigger value="revenue" className="gap-2 flex-1 min-w-[120px]">
                             <DollarSign className="h-3.5 w-3.5" /> Revenue & Yield
                         </TabsTrigger>
-                        <TabsTrigger value="fleet" className="gap-2">
-                            <Plane className="h-3.5 w-3.5" /> Asset Profitability
+                        <TabsTrigger value="fleet" className="gap-2 flex-1 min-w-[120px]">
+                            <Plane className="h-3.5 w-3.5" /> Asset Profit
                         </TabsTrigger>
-                        <TabsTrigger value="sectors" className="gap-2">
+                        <TabsTrigger value="sectors" className="gap-2 flex-1 min-w-[120px]">
                             <History className="h-3.5 w-3.5" /> Sector Yield
                         </TabsTrigger>
-                        <TabsTrigger value="funnel" className="gap-2">
-                            <Activity className="h-3.5 w-3.5" /> Marketplace Funnel
+                        <TabsTrigger value="funnel" className="gap-2 flex-1 min-w-[120px]">
+                            <Activity className="h-3.5 w-3.5" /> Marketplace
                         </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="revenue" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 md:grid-cols-3">
-                            <Card className="md:col-span-2 bg-card">
+                        <div className="grid gap-6 lg:grid-cols-3">
+                            <Card className="lg:col-span-2 bg-card">
                                 <CardHeader>
-                                    <CardTitle>Gross Daily Yield Direction</CardTitle>
+                                    <CardTitle>Daily Yield Trend</CardTitle>
                                     <CardDescription>Consolidated revenue flow across all active missions.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[350px]">
+                                <CardContent className="h-[300px] sm:h-[350px]">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <LineChart data={revenueTrend}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
@@ -229,15 +229,6 @@ export default function OperatorReportsPage() {
                                             <div className="h-full bg-sky-400 w-[60%]" />
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
-                                            <span>EL Recovery %</span>
-                                            <span className="text-green-500">42%</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-green-500 w-[42%]" />
-                                        </div>
-                                    </div>
                                     <Separator className="bg-white/5" />
                                     <div className="p-3 rounded-lg bg-accent/5 border border-accent/10">
                                         <div className="flex items-center gap-2 mb-1">
@@ -255,7 +246,7 @@ export default function OperatorReportsPage() {
                         <div className="grid gap-6 md:grid-cols-2">
                             <Card className="bg-card">
                                 <CardHeader>
-                                    <CardTitle>Revenue by Fleet Asset</CardTitle>
+                                    <CardTitle>Asset Revenue Mix</CardTitle>
                                     <CardDescription>Individual contribution to monthly gross volume.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="h-[300px]">
@@ -279,30 +270,33 @@ export default function OperatorReportsPage() {
                                     <CardTitle>Utilization Mix</CardTitle>
                                     <CardDescription>Flight hours distribution across registered registry.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[300px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <RePieChart>
-                                            <Pie
-                                                data={fleetData}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="hours"
-                                            >
-                                                {fleetData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                        </RePieChart>
-                                    </ResponsiveContainer>
-                                    <div className="flex justify-center gap-4 mt-2">
+                                <CardContent className="h-[300px] flex flex-col items-center">
+                                    <div className="flex-1 w-full min-h-0">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <RePieChart>
+                                                <Pie
+                                                    data={fleetData}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={60}
+                                                    outerRadius={80}
+                                                    paddingAngle={5}
+                                                    dataKey="hours"
+                                                    stroke="none"
+                                                >
+                                                    {fleetData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip />
+                                            </RePieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="flex flex-wrap justify-center gap-4 mt-2">
                                         {fleetData.map((entry, index) => (
                                             <div key={entry.name} className="flex items-center gap-1.5">
                                                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                                <span className="text-[10px] text-muted-foreground">{entry.name}</span>
+                                                <span className="text-[10px] text-muted-foreground font-black uppercase">{entry.name}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -314,10 +308,10 @@ export default function OperatorReportsPage() {
                     <TabsContent value="sectors" className="space-y-6 animate-in fade-in slide-in-from-top-2">
                         <Card className="bg-card">
                             <CardHeader>
-                                <CardTitle>High-Yield Sector Analysis</CardTitle>
+                                <CardTitle>Sector Performance</CardTitle>
                                 <CardDescription>Route performance tracked by commercial density and mission frequency.</CardDescription>
                             </CardHeader>
-                            <CardContent className="h-[400px]">
+                            <CardContent className="h-[300px] sm:h-[400px]">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={sectorData} layout="vertical">
                                         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
@@ -337,10 +331,10 @@ export default function OperatorReportsPage() {
                     <TabsContent value="funnel" className="space-y-6 animate-in fade-in slide-in-from-top-2">
                         <Card className="bg-card">
                             <CardHeader>
-                                <CardTitle>Conversion Efficiency vs. Revenue</CardTitle>
-                                <CardDescription>Comparing request volume against realized commercial value.</CardDescription>
+                                <CardTitle>Marketplace Funnel</CardTitle>
+                                <CardDescription> realization of monthly commercial volume.</CardDescription>
                             </CardHeader>
-                            <CardContent className="h-[400px]">
+                            <CardContent className="h-[300px] sm:h-[400px]">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={BASE_CHARTER_DATA}>
                                         <defs>
@@ -353,7 +347,7 @@ export default function OperatorReportsPage() {
                                         <XAxis dataKey="month" stroke="#94a3b8" fontSize={10} />
                                         <YAxis stroke="#94a3b8" fontSize={10} />
                                         <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                        <Area type="monotone" dataKey="revenue" stroke="#10B981" fillOpacity={1} fill="url(#colorRev)" name="Monthly Revenue (Flow)" />
+                                        <Area type="monotone" dataKey="revenue" stroke="#10B981" fillOpacity={1} fill="url(#colorRev)" name="Monthly Revenue" />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </CardContent>

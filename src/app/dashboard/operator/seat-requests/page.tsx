@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,51 +36,58 @@ export default function SeatRequestsPage() {
             High-intent leads awaiting operator confirmation.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-            {isLoading ? <Skeleton className="h-64 w-full" /> : (
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead>Request ID</TableHead>
-                    <TableHead>Flight</TableHead>
-                    <TableHead>Passenger / Client</TableHead>
-                    <TableHead className="text-center">Seats</TableHead>
-                    <TableHead>Received</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {requests?.map((req: EmptyLegSeatAllocationRequest) => (
-                    <TableRow key={req.id}>
-                        <TableCell className="font-medium font-code">{req.id}</TableCell>
-                        <TableCell className="font-code">{req.emptyLegId}</TableCell>
-                        <TableCell>{req.passengerName || 'Institutional Client'}</TableCell>
-                        <TableCell className="text-center font-bold">{req.numberOfSeats}</TableCell>
-                        <TableCell className="text-xs">{new Date(req.requestDateTime).toLocaleString()}</TableCell>
-                        <TableCell>
-                            <Badge variant={req.status === 'Requested' ? 'warning' : req.status === 'Approved' ? 'success' : 'outline'} className="text-[10px] h-5 font-bold uppercase tracking-wider">
-                                {req.status}
-                            </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Request Control</DropdownMenuLabel>
-                                <DropdownMenuItem onClick={() => setSelectedRequest(req)} className="gap-2">Review & Approve</DropdownMenuItem>
-                                <DropdownMenuItem className="text-destructive gap-2">Reject Request</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
+        <CardContent className="px-0 sm:px-6">
+            <div className="w-full overflow-x-auto">
+                {isLoading ? <div className="p-6"><Skeleton className="h-64 w-full" /></div> : (
+                <Table className="min-w-[850px] sm:min-w-full">
+                    <TableHeader>
+                    <TableRow>
+                        <TableHead>Request ID</TableHead>
+                        <TableHead>Flight</TableHead>
+                        <TableHead>Passenger / Client</TableHead>
+                        <TableHead className="text-center">Seats</TableHead>
+                        <TableHead>Received</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                ))}
-                </TableBody>
-            </Table>
+                    </TableHeader>
+                    <TableBody>
+                    {requests?.map((req: EmptyLegSeatAllocationRequest) => (
+                        <TableRow key={req.id}>
+                            <TableCell className="font-medium font-code text-xs">{req.id}</TableCell>
+                            <TableCell className="font-code text-xs">{req.emptyLegId}</TableCell>
+                            <TableCell className="whitespace-nowrap">{req.passengerName || 'Institutional Client'}</TableCell>
+                            <TableCell className="text-center font-bold">{req.numberOfSeats}</TableCell>
+                            <TableCell className="text-[10px] text-muted-foreground whitespace-nowrap">{new Date(req.requestDateTime).toLocaleString()}</TableCell>
+                            <TableCell>
+                                <Badge variant={req.status === 'Requested' ? 'warning' : req.status === 'Approved' ? 'success' : 'outline'} className="text-[10px] h-5 font-bold uppercase tracking-wider whitespace-nowrap">
+                                    {req.status}
+                                </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                    <Button size="icon" variant="ghost" className="h-8 w-8">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                    </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>Request Control</DropdownMenuLabel>
+                                    <DropdownMenuItem onClick={() => setSelectedRequest(req)} className="gap-2">Review & Approve</DropdownMenuItem>
+                                    <DropdownMenuItem className="text-destructive gap-2">Reject Request</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+                )}
+            </div>
+            {(!isLoading && (!requests || requests.length === 0)) && (
+                <div className="text-center py-20 border-2 border-dashed rounded-lg bg-muted/5 mx-6">
+                    <p className="text-muted-foreground">No active seat requests in the coordination queue.</p>
+                </div>
             )}
         </CardContent>
       </Card>
