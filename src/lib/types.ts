@@ -49,14 +49,8 @@ export type Operator = {
 };
 
 export type RfqStatus =
-  | 'Draft'
-  | 'New'
-  | 'Submitted'
-  | 'Reviewing'
-  | 'Pending Approval'
-  | 'Bidding Open'
-  | 'Bidding Closed'
-  | 'Operator Selected'
+  | 'rfqSubmitted'
+  | 'quoteReceived'
   | 'quoteAccepted'
   | 'awaitingManifest'
   | 'manifestSubmitted'
@@ -72,9 +66,44 @@ export type RfqStatus =
   | 'arrived'
   | 'flightCompleted'
   | 'tripClosed'
-  | 'Cancelled'
-  | 'Expired'
-  | 'Closed';
+  | 'cancelled'
+  | 'refunded'
+  // Legacy support
+  | 'Draft'
+  | 'New'
+  | 'Submitted'
+  | 'Bidding Open';
+
+export type SeatRequestStatus =
+  | 'seatRequestSubmitted'
+  | 'seatApproved'
+  | 'seatRejected'
+  | 'seatInvoiceIssued'
+  | 'seatPaymentSubmitted'
+  | 'seatPaymentConfirmed'
+  | 'seatConfirmed'
+  | 'seatCompleted'
+  | 'seatCancelled'
+  | 'seatRefunded';
+
+export type AccommodationStatus =
+  | 'accommodationRequested'
+  | 'accommodationConfirmed'
+  | 'accommodationInvoiceIssued'
+  | 'accommodationPaymentSubmitted'
+  | 'accommodationPaymentConfirmed'
+  | 'stayConfirmed'
+  | 'checkIn'
+  | 'checkOut'
+  | 'stayClosed'
+  | 'accommodationCancelled'
+  | 'accommodationRefunded';
+
+export type CommissionStatus =
+  | 'commissionCalculated'
+  | 'commissionPendingSettlement'
+  | 'commissionSettled'
+  | 'commissionAdjusted';
 
 export type TripType = 'Onward' | 'Return' | 'Multi-City';
 
@@ -105,7 +134,9 @@ export type CharterRFQ = {
   costCenter?: string;
   company?: string;
   hotelRequired?: boolean;
-  isRoundTrip?: boolean;
+  totalAmount?: number;
+  commissionRate?: number;
+  commissionAmount?: number;
 };
 
 export type Passenger = {
@@ -131,15 +162,14 @@ export type PassengerManifest = {
 
 export type Invoice = {
   id: string;
-  charterId: string;
+  relatedEntityId: string;
+  entityType: 'charter' | 'seat' | 'accommodation';
   operatorId: string;
+  issuedBy: string;
   invoiceNumber: string;
-  baseAmount: number;
-  taxes: number;
-  additionalCharges: number;
   totalAmount: number;
-  paymentDeadline: string;
   bankDetails: string;
+  paymentDeadline: string;
   invoicePdfUrl?: string;
   status: 'issued' | 'paid' | 'expired';
   createdAt: string;
@@ -147,7 +177,8 @@ export type Invoice = {
 
 export type Payment = {
   id: string;
-  charterId: string;
+  relatedEntityId: string;
+  entityType: 'charter' | 'seat' | 'accommodation';
   invoiceId: string;
   submittedBy: string;
   utrReference: string;
@@ -157,9 +188,22 @@ export type Payment = {
   verifiedAt?: string;
 };
 
+export type Commission = {
+  id: string;
+  relatedEntityId: string;
+  entityType: 'charter' | 'seat' | 'accommodation';
+  grossAmount: number;
+  commissionRate: number;
+  commissionAmount: number;
+  status: CommissionStatus;
+  settlementDate?: string;
+  createdAt: string;
+};
+
 export type ActivityLog = {
   id: string;
-  charterId: string;
+  entityId: string;
+  entityType: string;
   actionType: string;
   performedBy: string;
   role: string;
@@ -208,7 +252,7 @@ export type CrewMember = {
   role: CrewRole;
   status: CrewStatus;
   licenseNumber?: string;
-  assignedAircraftId?: string; // Reference to Aircraft ID
+  assignedAircraftId?: string; 
   assignedAircraftRegistration?: string;
   avatar?: string;
   createdAt: string;
@@ -234,14 +278,19 @@ export type EmptyLeg = {
 export type EmptyLegSeatAllocationRequest = {
     id: string;
     emptyLegId: string;
-    distributorId: string;
+    agencyId: string;
+    operatorId: string;
     requesterExternalAuthId: string;
     numberOfSeats: number;
-    status: 'Requested' | 'Approved' | 'Rejected' | 'Cancelled';
+    status: SeatRequestStatus;
     requestDateTime: string;
     clientReference?: string;
     passengerNotes?: string;
-    passengerName?: string; // For operator view
+    passengerName?: string;
+    seatPrice?: number;
+    totalAmount?: number;
+    commissionRate?: number;
+    commissionAmount?: number;
 }
 
 export type Property = {
@@ -269,19 +318,24 @@ export type RoomCategory = {
 
 export type AccommodationRequest = {
     id: string;
-    tripReferenceId: string;
-    tripType: 'Charter' | 'EmptyLeg';
-    requesterId: string; // The ID of the person/agency who made the request
-    hotelPartnerId?: string;
-    propertyId?: string;
+    agencyId: string;
+    hotelPartnerId: string;
+    propertyId: string;
     propertyName?: string;
-    guestType?: 'Passenger' | 'Crew';
-    guestName?: string;
+    roomCategory: string;
     checkIn: string;
     checkOut: string;
     rooms: number;
-    status: 'Pending' | 'Confirmed' | 'Declined' | 'Awaiting Clarification';
-    specialRequests?: string;
+    guestName: string;
+    totalAmount?: number;
+    commissionRate?: number;
+    commissionAmount?: number;
+    status: AccommodationStatus;
+    tripReferenceId: string;
+    tripType: 'Charter' | 'EmptyLeg';
+    requesterId: string;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type BillingRecord = {

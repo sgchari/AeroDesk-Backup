@@ -1,34 +1,16 @@
 
-import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset, CrewMember, PassengerManifest, Invoice, Payment, ActivityLog } from './types';
+import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset, CrewMember, PassengerManifest, Invoice, Payment, ActivityLog, Commission } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
 const getImg = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl || '';
-
-// Verified NSOP Registry - Top Indian Operators
-export const VERIFIED_NSOP_REGISTRY = [
-    { companyName: 'TajAir (Tata Group)', nsopLicenseNumber: 'NSOP/TAJ/02', city: 'Mumbai', zone: 'West' },
-    { companyName: 'Club One Air', nsopLicenseNumber: 'NSOP/COA/05', city: 'Delhi', zone: 'North' },
-    { companyName: 'JetSetGo Aviation', nsopLicenseNumber: 'NSOP/JSG/12', city: 'Bengaluru', zone: 'South' },
-    { companyName: 'Global Vectra Helicorp', nsopLicenseNumber: 'NSOP/GVH/08', city: 'Mumbai', zone: 'West' },
-    { companyName: 'Himalayan Heli Services', nsopLicenseNumber: 'NSOP/HHS/04', city: 'Delhi', zone: 'North' },
-    { companyName: 'Deccan Charters', nsopLicenseNumber: 'NSOP/DEC/03', city: 'Bengaluru', zone: 'South' },
-    { companyName: 'Titan Aviation', nsopLicenseNumber: 'NSOP/TIT/07', city: 'Indore', zone: 'Central' },
-    { companyName: 'Raymond Aviation', nsopLicenseNumber: 'NSOP/RAY/09', city: 'Mumbai', zone: 'West' },
-    { companyName: 'Pawan Hans', nsopLicenseNumber: 'NSOP/PHL/10', city: 'Delhi', zone: 'North' },
-    { companyName: 'AirOne Charters', nsopLicenseNumber: 'NSOP/AIRONE/2020', city: 'Delhi', zone: 'North' },
-    { companyName: 'FlyCo Charter', nsopLicenseNumber: 'NSOP/FLYCO/2021', city: 'Mumbai', zone: 'West' },
-];
 
 export const mockUsers: User[] = [
     { id: 'admin-user-01', email: 'admin@aerodesk.com', firstName: 'Admin', lastName: 'User', role: 'Admin', status: 'Active', createdAt: "2024-07-28T10:00:00Z", updatedAt: "2024-07-28T10:00:00Z" },
     { id: 'customer-user-01', email: 'customer@example.com', firstName: 'Sanjana', lastName: 'Kumar', role: 'Customer', status: 'Active', createdAt: "2024-07-27T11:20:00Z", updatedAt: "2024-07-27T11:20:00Z" },
     { id: 'operator-user-01', externalAuthId: 'operator-user-01', email: 'ops@flyco.com', companyName: 'FlyCo Charter', firstName: 'Rajesh', lastName: 'Verma', role: 'Operator', status: 'Approved', createdAt: "2024-07-26T09:00:00Z", updatedAt: "2024-07-26T09:00:00Z", nsopLicenseNumber: "NSOP/FLYCO/2021", mouAcceptedAt: "2024-07-26T09:00:00Z", city: 'Mumbai', zone: 'West' },
-    { id: 'operator-user-02', externalAuthId: 'operator-user-02', email: 'contact@jetset.aero', companyName: 'JetSetGo Aviation', firstName: 'Vikram', lastName: 'Singh', role: 'Operator', status: 'Pending Approval', createdAt: "2024-07-28T16:00:00Z", updatedAt: "2024-07-28T16:00:00Z", nsopLicenseNumber: "NSOP/JSG/12", mouAcceptedAt: "2024-07-28T16:00:00Z", city: 'Bengaluru', zone: 'South' },
-    { id: 'operator-user-03', externalAuthId: 'operator-user-03', email: 'charters@tajair.com', companyName: 'TajAir (Tata Group)', firstName: 'Anita', lastName: 'Desai', role: 'Operator', status: 'Approved', createdAt: "2024-07-25T10:00:00Z", updatedAt: "2024-07-25T10:00:00Z", nsopLicenseNumber: "NSOP/TAJ/02", mouAcceptedAt: "2024-07-25T10:00:00Z", city: 'Mumbai', zone: 'West' },
     { id: 'ctd-admin-user-01', email: 'ctd.admin@corp.com', firstName: 'Priya', lastName: 'Sharma', role: 'CTD Admin', company: 'Stark Industries', status: 'Active', createdAt: "2024-07-25T14:00:00Z", updatedAt: "2024-07-25T14:00:00Z", ctdId: 'ctd-stark-01' },
     { id: 'distributor-user-01', email: 'sales@sky-dist.com', firstName: 'Amit', lastName: 'Patel', role: 'Travel Agency', company: 'Sky Distributors', status: 'Active', createdAt: "2024-07-24T16:00:00Z", updatedAt: "2024-07-24T16:00:00Z", companyName: "Sky Distributors" },
     { id: 'hotel-user-01', email: 'mgr@grandhotel.com', firstName: 'Meera', lastName: 'Chopra', role: 'Hotel Partner', company: 'The Grand Hotel Group', status: 'Active', createdAt: "2024-07-23T18:00:00Z", updatedAt: "2024-07-23T18:00:00Z", companyName: "The Grand Hotel Group" },
-    { id: 'employee-user-01', email: 'h.hogan@stark.com', firstName: 'Happy', lastName: 'Hogan', role: 'Requester', company: 'Stark Industries', status: 'Active', createdAt: "2024-07-25T15:00:00Z", updatedAt: "2024-07-25T15:00:00Z", ctdId: 'ctd-stark-01' },
 ];
 
 export const mockCorporateTravelDesks: CorporateTravelDesk[] = [
@@ -36,230 +18,74 @@ export const mockCorporateTravelDesks: CorporateTravelDesk[] = [
 ];
 
 export const mockOperators: Operator[] = [
-    ...mockUsers.filter(u => u.role === 'Operator').map(u => ({
-        id: u.id,
-        externalAuthId: u.id,
-        companyName: u.companyName!,
-        nsopLicenseNumber: (u as any).nsopLicenseNumber,
-        contactPersonName: `${u.firstName} ${u.lastName}`,
-        contactEmail: u.email,
-        status: u.status as 'Pending Approval' | 'Approved' | 'Suspended' | 'Rejected',
-        mouAcceptedAt: (u as any).mouAcceptedAt,
-        createdAt: u.createdAt,
-        updatedAt: u.updatedAt,
-        city: (u as any).city,
-        zone: (u as any).zone,
-        featured: u.id === 'operator-user-03',
-    })),
-    // Additional Top NSOP Operators for Network View
-    { id: 'op-coair', externalAuthId: 'op-coair', companyName: 'Club One Air', nsopLicenseNumber: 'NSOP/COA/05', contactPersonName: 'Registry Admin', contactEmail: 'ops@cluboneair.com', status: 'Approved', mouAcceptedAt: '2024-01-01', createdAt: '2024-01-01', updatedAt: '2024-01-01', city: 'Delhi', zone: 'North' },
-    { id: 'op-gvheli', externalAuthId: 'op-gvheli', companyName: 'Global Vectra Helicorp', nsopLicenseNumber: 'NSOP/GVH/08', contactPersonName: 'Registry Admin', contactEmail: 'ops@globalvectra.com', status: 'Approved', mouAcceptedAt: '2024-01-01', createdAt: '2024-01-01', updatedAt: '2024-01-01', city: 'Mumbai', zone: 'West' },
-    { id: 'op-titan', externalAuthId: 'op-titan', companyName: 'Titan Aviation', nsopLicenseNumber: 'NSOP/TIT/07', contactPersonName: 'Registry Admin', contactEmail: 'ops@titanaviation.com', status: 'Pending Approval', mouAcceptedAt: '2024-01-01', createdAt: '2024-01-01', updatedAt: '2024-01-01', city: 'Indore', zone: 'Central' },
-    { id: 'op-deccan', externalAuthId: 'op-deccan', companyName: 'Deccan Charters', nsopLicenseNumber: 'NSOP/DEC/03', contactPersonName: 'Registry Admin', contactEmail: 'ops@deccan.com', status: 'Approved', mouAcceptedAt: '2024-01-01', createdAt: '2024-01-01', updatedAt: '2024-01-01', city: 'Bengaluru', zone: 'South' },
+    { id: 'operator-user-01', externalAuthId: 'operator-user-01', companyName: 'FlyCo Charter', nsopLicenseNumber: 'NSOP/FLYCO/2021', contactPersonName: 'Rajesh Verma', contactEmail: 'ops@flyco.com', status: 'Approved', mouAcceptedAt: '2024-07-26T09:00:00Z', createdAt: '2024-07-26T09:00:00Z', updatedAt: '2024-07-26T09:00:00Z', city: 'Mumbai', zone: 'West' }
 ];
 
 export const mockRfqs: CharterRFQ[] = [
-    { id: 'RFQ-COORD-001', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-10', departureTime: '10:00', pax: 4, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-28T12:00:00Z', bidsCount: 0 },
-    { id: 'RFQ-CONF-002', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Bengaluru (BLR)', arrival: 'Goa (GOI)', departureDate: '2024-08-15', departureTime: '11:30', returnDate: '2024-08-18', returnTime: '16:00', pax: 2, aircraftType: 'Any Turboprop', status: 'charterConfirmed', createdAt: '2024-07-27T15:00:00Z', bidsCount: 1, hotelRequired: true, operatorId: 'operator-user-01' },
-    { id: 'RFQ-EXEC-003', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-05', departureTime: '09:00', pax: 4, aircraftType: 'Light Jet', status: 'boarding', createdAt: '2024-08-01T10:00:00Z', bidsCount: 1, operatorId: 'operator-user-01' },
-    { id: 'RFQ-EXEC-004', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Delhi (DEL)', arrival: 'Bengaluru (BLR)', departureDate: '2024-08-01', departureTime: '14:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'flightCompleted', createdAt: '2024-07-25T09:00:00Z', bidsCount: 1, operatorId: 'operator-user-03' },
-    { id: 'RFQ-EXEC-005', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Chennai (MAA)', arrival: 'Mumbai (BOM)', departureDate: '2024-08-20', departureTime: '11:00', pax: 3, aircraftType: 'Light Jet', status: 'invoiceIssued', createdAt: '2024-08-03T16:00:00Z', bidsCount: 1, operatorId: 'operator-user-01' },
-];
-
-export const mockManifests: PassengerManifest[] = [
-    {
-        id: 'MAN-001',
-        charterId: 'RFQ-CONF-002',
-        submittedBy: 'Sanjana Kumar',
-        status: 'approved',
-        createdAt: '2024-07-28T10:00:00Z',
-        updatedAt: '2024-07-28T11:00:00Z',
-        passengers: [
-            { fullName: 'Sanjana Kumar', dob: '1992-05-15', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'Z1234567' },
-            { fullName: 'Raj Kumar', dob: '1990-11-20', gender: 'Male', nationality: 'Indian', idType: 'Aadhar', idNumber: '9988-7766-5544' }
-        ]
-    },
-    {
-        id: 'MAN-002',
-        charterId: 'RFQ-EXEC-003',
-        submittedBy: 'Sanjana Kumar',
-        status: 'approved',
-        createdAt: '2024-08-02T09:00:00Z',
-        updatedAt: '2024-08-02T10:30:00Z',
-        passengers: [
-            { fullName: 'Sanjana Kumar', dob: '1992-05-15', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'Z1234567' }
-        ]
-    },
-    {
-        id: 'MAN-003',
-        charterId: 'RFQ-EXEC-005',
-        submittedBy: 'Sanjana Kumar',
-        status: 'submitted',
-        createdAt: '2024-08-04T10:00:00Z',
-        updatedAt: '2024-08-04T10:00:00Z',
-        passengers: [
-            { fullName: 'Sanjana Kumar', dob: '1992-05-15', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'Z1234567' }
-        ]
-    }
-];
-
-export const mockInvoices: Invoice[] = [
-    {
-        id: 'INV-001',
-        charterId: 'RFQ-CONF-002',
-        operatorId: 'operator-user-01',
-        invoiceNumber: 'INV-2024-001',
-        totalAmount: 450000,
-        status: 'paid',
-        createdAt: '2024-07-29T10:00:00Z',
-        bankDetails: 'AeroBank India • IFSC: AERO0001234 • A/C: 9988776655'
-    },
-    {
-        id: 'INV-002',
-        charterId: 'RFQ-EXEC-003',
-        operatorId: 'operator-user-01',
-        invoiceNumber: 'INV-2024-002',
-        totalAmount: 380000,
-        status: 'paid',
-        createdAt: '2024-08-03T09:00:00Z',
-        bankDetails: 'AeroBank India • IFSC: AERO0001234 • A/C: 9988776655'
-    },
-    {
-        id: 'INV-003',
-        charterId: 'RFQ-EXEC-005',
-        operatorId: 'operator-user-01',
-        invoiceNumber: 'INV-2024-003',
-        totalAmount: 290000,
-        status: 'issued',
-        createdAt: '2024-08-04T11:00:00Z',
-        bankDetails: 'AeroBank India • IFSC: AERO0001234 • A/C: 9988776655'
-    }
-];
-
-export const mockPayments: Payment[] = [
-    {
-        id: 'PAY-001',
-        charterId: 'RFQ-CONF-002',
-        invoiceId: 'INV-001',
-        submittedBy: 'Sanjana Kumar',
-        utrReference: 'UTR9988776655',
-        status: 'verified',
-        createdAt: '2024-07-30T14:00:00Z',
-        verifiedAt: '2024-07-30T16:00:00Z'
-    },
-    {
-        id: 'PAY-002',
-        charterId: 'RFQ-EXEC-003',
-        invoiceId: 'INV-002',
-        submittedBy: 'Sanjana Kumar',
-        utrReference: 'UTR1122334455',
-        status: 'verified',
-        createdAt: '2024-08-03T11:00:00Z',
-        verifiedAt: '2024-08-03T12:00:00Z'
-    }
-];
-
-export const mockActivityLogs: ActivityLog[] = [
-    { id: 'LOG-001', charterId: 'RFQ-EXEC-003', actionType: 'MANIFEST_APPROVED', performedBy: 'Rajesh Verma', role: 'Operator', previousStatus: 'manifestSubmitted', newStatus: 'manifestApproved', timestamp: '2024-08-02T10:30:00Z' },
-    { id: 'LOG-002', charterId: 'RFQ-EXEC-003', actionType: 'INVOICE_ISSUED', performedBy: 'FlyCo Finance', role: 'Operator', previousStatus: 'manifestApproved', newStatus: 'invoiceIssued', timestamp: '2024-08-03T09:00:00Z' },
-    { id: 'LOG-003', charterId: 'RFQ-EXEC-003', actionType: 'PAYMENT_VERIFIED', performedBy: 'FlyCo Finance', role: 'Operator', previousStatus: 'paymentSubmitted', newStatus: 'charterConfirmed', timestamp: '2024-08-03T12:00:00Z' },
-    { id: 'LOG-004', charterId: 'RFQ-EXEC-003', actionType: 'OPERATIONAL_STATUS_CHANGE', performedBy: 'Ops Desk', role: 'Operator', previousStatus: 'charterConfirmed', newStatus: 'boarding', timestamp: '2024-08-05T08:45:00Z' },
-];
-
-export const mockQuotations: Quotation[] = [
-    { id: 'QUOTE-001', rfqId: 'RFQ-COORD-001', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', price: 450000, status: 'Submitted', submittedAt: '2024-07-28T14:00:00Z', validUntil: '2024-08-01', operatorRemarks: 'Inclusive of all taxes and landing fees.' },
-    { id: 'QUOTE-002', rfqId: 'RFQ-CORP-002', operatorId: 'operator-user-03', operatorName: 'TajAir (Tata Group)', aircraftId: 'AC-VTPC', aircraftName: 'Pilatus PC-12', price: 850000, status: 'Submitted', submittedAt: '2024-08-02T16:00:00Z', validUntil: '2024-08-10', operatorRemarks: 'Standard corporate rate applied.' },
-];
-
-export const mockAircrafts: Aircraft[] = [
-    { id: 'AC-VTFLY', operatorId: 'operator-user-01', name: 'Phenom 300E', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'Mumbai (BOM)', status: 'Available' },
-    { id: 'AC-VTPC', operatorId: 'operator-user-03', name: 'Pilatus PC-12', type: 'Turboprop', registration: 'VT-PC', paxCapacity: 8, homeBase: 'Delhi (DEL)', status: 'Available' },
-];
-
-export const mockCrew: CrewMember[] = [
-    { id: 'CREW-001', operatorId: 'operator-user-01', firstName: 'Karan', lastName: 'Johar', email: 'k.johar@flyco.com', role: 'Captain', status: 'Available', licenseNumber: 'ATPL-90210', assignedAircraftId: 'AC-VTFLY', assignedAircraftRegistration: 'VT-FLY', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-    { id: 'CREW-002', operatorId: 'operator-user-01', firstName: 'Siddharth', lastName: 'Malhotra', email: 's.mal@flyco.com', role: 'First Officer', status: 'On Duty', licenseNumber: 'CPL-8821', assignedAircraftId: 'AC-VTFLY', assignedAircraftRegistration: 'VT-FLY', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-    { id: 'CREW-003', operatorId: 'operator-user-03', firstName: 'Anita', lastName: 'Verma', email: 'a.verma@tajair.com', role: 'Cabin Crew', status: 'Available', licenseNumber: 'CC-7762', assignedAircraftId: 'AC-VTPC', assignedAircraftRegistration: 'VT-PC', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-    { id: 'CREW-004', operatorId: 'operator-user-01', firstName: 'Anjali', lastName: 'Singh', email: 'a.singh@flyco.com', role: 'Cabin Crew', status: 'Available', licenseNumber: 'CC-9981', assignedAircraftId: 'AC-VTFLY', assignedAircraftRegistration: 'VT-FLY', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+    { id: 'RFQ-EXEC-001', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-10', pax: 4, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-28T12:00:00Z', bidsCount: 0 },
+    { id: 'RFQ-EXEC-003', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', operatorId: 'operator-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Mumbai (BOM)', arrival: 'Dubai (DXB)', departureDate: '2024-08-12', pax: 2, aircraftType: 'Heavy Jet', status: 'boarding', createdAt: '2024-08-01T10:00:00Z', bidsCount: 3, totalAmount: 4200000 },
+    { id: 'RFQ-EXEC-005', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', operatorId: 'operator-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Delhi (DEL)', arrival: 'London (LHR)', departureDate: '2024-08-20', pax: 8, aircraftType: 'Heavy Jet', status: 'invoiceIssued', createdAt: '2024-08-05T09:00:00Z', bidsCount: 1, totalAmount: 12500000 },
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
-    { id: 'EL-901', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-VTFLY', aircraftName: 'Phenom 300E', departure: 'Delhi (DEL)', arrival: 'Mumbai (BOM)', departureTime: '2024-08-05T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published' },
+    { id: 'EL-901', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-001', aircraftName: 'Cessna Citation', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureTime: '2024-08-15T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published', seatPricingStrategy: 'Dynamic', estimatedPricePerSeat: 45000 },
+    { id: 'EL-902', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-002', aircraftName: 'Bombardier Global', departure: 'Delhi (DEL)', arrival: 'Bangalore (BLR)', departureTime: '2024-08-18T10:00:00Z', availableSeats: 8, seatsAllocated: 0, status: 'Approved', seatPricingStrategy: 'Fixed', estimatedPricePerSeat: 65000 },
 ];
 
 export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [
-    { 
-        id: 'SL-REQ-001', 
-        emptyLegId: 'EL-901', 
-        distributorId: 'distributor-user-01', 
-        requesterExternalAuthId: 'distributor-user-01', 
-        numberOfSeats: 2, 
-        status: 'Requested', 
-        requestDateTime: '2024-07-28T10:00:00Z', 
-        clientReference: 'Kapoor Family', 
-        passengerName: 'Kapoor Party (2 PAX)',
-        passengerNotes: 'Requesting window seats if possible.' 
-    },
-    { 
-        id: 'SL-CONF-002', 
-        emptyLegId: 'EL-901', 
-        distributorId: 'distributor-user-01', 
-        requesterExternalAuthId: 'distributor-user-01', 
-        numberOfSeats: 1, 
-        status: 'Approved', 
-        requestDateTime: '2024-07-27T15:30:00Z', 
-        clientReference: 'Corporate Solo', 
-        passengerName: 'Amit Shah',
-        passengerNotes: 'Executive movement.' 
-    }
-];
-
-export const mockProperties: Property[] = [
-    { id: 'PROP-01', hotelPartnerId: 'hotel-user-01', name: 'The Grand Mumbai', address: '123 Marine Drive, Mumbai', city: 'Mumbai', status: 'Active', propertyType: 'Luxury Hotel', imageUrl: 'https://picsum.photos/seed/hotel1/600/400' },
-];
-
-export const mockRoomCategories: RoomCategory[] = [
-    { id: 'RC-DLX-MUM', propertyId: 'PROP-01', name: 'Deluxe King Room', maxOccupancy: 2, beddingType: 'King', baseCapacity: 2, description: 'A spacious room with city views.', imageUrl: 'https://picsum.photos/seed/room1/600/400', nightlyRate: 18500 },
+    { id: 'SL-REQ-001', emptyLegId: 'EL-901', agencyId: 'distributor-user-01', operatorId: 'operator-user-01', requesterExternalAuthId: 'distributor-user-01', numberOfSeats: 2, status: 'Requested', requestDateTime: '2024-07-28T10:00:00Z', clientReference: 'Kapoor Family', passengerName: 'Kapoor Party', seatPrice: 45000, totalAmount: 90000, commissionRate: 0.05, commissionAmount: 4500 }
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
-    { id: 'ACC-AGENCY-401', tripReferenceId: 'RFQ-CORP-001', tripType: 'Charter', requesterId: 'distributor-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'Executive VIP', checkIn: '2024-09-10', checkOut: '2024-09-12', rooms: 2, status: 'Awaiting Clarification', specialRequests: 'Connected suites required for security detail.' },
-    { id: 'ACC-REQ-001', tripReferenceId: 'RFQ-COORD-001', tripType: 'Charter', requesterId: 'customer-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'Sanjana Kumar', checkIn: '2024-08-10', checkOut: '2024-08-12', rooms: 1, status: 'Pending' },
-    { id: 'ACC-REQ-002', tripReferenceId: 'RFQ-CONF-002', tripType: 'Charter', requesterId: 'customer-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', guestName: 'Sanjana Kumar', checkIn: '2024-08-15', checkOut: '2024-08-18', rooms: 1, status: 'Confirmed' },
+    { id: 'ACC-REQ-001', agencyId: 'distributor-user-01', hotelPartnerId: 'hotel-user-01', propertyId: 'PROP-01', propertyName: 'The Grand Mumbai', roomCategory: 'Deluxe King', checkIn: '2024-09-01', checkOut: '2024-09-05', rooms: 2, guestName: 'Executive Guest', status: 'accommodationRequested', tripReferenceId: 'RFQ-AGENCY-001', tripType: 'Charter', requesterId: 'distributor-user-01', totalAmount: 85000, commissionRate: 0.1, commissionAmount: 8500, createdAt: '2024-08-01T12:00:00Z', updatedAt: '2024-08-01T12:00:00Z' }
 ];
 
-export const mockAuditLogs: AuditLog[] = [
-    { id: 'LOG-001', timestamp: '2024-07-28T12:00:00Z', user: 'Sanjana Kumar', role: 'Customer', action: 'CREATE RFQ', details: 'Created new personal RFQ', targetId: 'RFQ-COORD-001' },
+export const mockAircrafts: Aircraft[] = [
+    { id: 'AC-001', operatorId: 'operator-user-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 7, homeBase: 'Mumbai', status: 'Available', exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800' },
+    { id: 'AC-002', operatorId: 'operator-user-01', name: 'Bombardier Global 6000', type: 'Heavy Jet', registration: 'VT-STK', paxCapacity: 14, homeBase: 'Delhi', status: 'Available', exteriorImageUrl: 'https://images.unsplash.com/photo-1616193572425-fd11332ec645?q=80&w=800' },
 ];
 
-export const mockBillingRecords: BillingRecord[] = [
-    { id: 'BILL-001', entityName: 'Stark Industries', entityId: 'ctd-stark-01', eventType: 'Subscription', amount: 150000, currency: 'INR', status: 'Paid', date: '2024-07-01' },
-    { id: 'BILL-002', entityName: 'FlyCo Charter', entityId: 'operator-user-01', eventType: 'Participation Fee', amount: 25000, currency: 'INR', status: 'Pending', date: '2024-07-28' },
+export const mockManifests: PassengerManifest[] = [
+    { id: 'MAN-001', charterId: 'RFQ-EXEC-003', submittedBy: 'Sanjana Kumar', passengers: [{ fullName: 'Sanjana Kumar', dob: '1990-01-01', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'L1234567' }], status: 'approved', createdAt: '2024-08-02T10:00:00Z', updatedAt: '2024-08-02T11:00:00Z' }
 ];
 
+export const mockInvoices: Invoice[] = [
+    { id: 'INV-001', relatedEntityId: 'RFQ-EXEC-003', entityType: 'charter', operatorId: 'operator-user-01', issuedBy: 'FlyCo Finance', invoiceNumber: 'INV-FC-882', totalAmount: 4200000, bankDetails: 'AeroBank India • IFSC: AERO0001234', paymentDeadline: '2024-08-10', status: 'paid', createdAt: '2024-08-02T12:00:00Z' }
+];
+
+export const mockPayments: Payment[] = [
+    { id: 'PAY-001', relatedEntityId: 'RFQ-EXEC-003', entityType: 'charter', invoiceId: 'INV-001', submittedBy: 'Sanjana Kumar', utrReference: 'BANK-UTR-992281', status: 'verified', createdAt: '2024-08-03T09:00:00Z', verifiedAt: '2024-08-03T10:30:00Z' }
+];
+
+export const mockActivityLogs: ActivityLog[] = [
+    { id: 'LOG-001', entityId: 'RFQ-EXEC-003', entityType: 'charter', actionType: 'PAYMENT_VERIFIED', performedBy: 'System Admin', role: 'Admin', previousStatus: 'paymentSubmitted', newStatus: 'charterConfirmed', timestamp: '2024-08-03T10:30:00Z' }
+];
+
+export const mockQuotations: Quotation[] = [
+    { id: 'QT-001', rfqId: 'RFQ-EXEC-001', operatorId: 'operator-user-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-001', aircraftName: 'Cessna Citation', price: 850000, status: 'Submitted', submittedAt: '2024-07-29T10:00:00Z', validUntil: '2024-08-05' }
+];
+
+export const mockProperties: Property[] = [
+    { id: 'PROP-01', hotelPartnerId: 'hotel-user-01', name: 'The Grand Hotel Mumbai', address: 'Marine Drive, Mumbai', city: 'Mumbai', status: 'Active', propertyType: 'Luxury Hotel', imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800' }
+];
+
+export const mockRoomCategories: RoomCategory[] = [
+    { id: 'RM-01', propertyId: 'PROP-01', name: 'Deluxe King Ocean View', maxOccupancy: 2, beddingType: 'King', nightlyRate: 25000, imageUrl: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800' }
+];
+
+export const mockAuditLogs: AuditLog[] = [];
+export const mockBillingRecords: BillingRecord[] = [];
 export const mockFeatureFlags: FeatureFlag[] = [
-    { id: 'flag-empty-leg-auto', name: 'Empty Leg Auto-Expiry', description: 'Automatically expire empty leg listings 2 hours before departure.', isEnabled: true },
-    { id: 'flag-ai-compliance', name: 'AI Compliance Guard', description: 'Enable real-time AI checking of NSOP registry data.', isEnabled: true },
+    { id: 'FF-01', name: 'AI Compliance Guard', description: 'Enable real-time AI evaluation of manifests.', isEnabled: true },
+    { id: 'FF-02', name: 'Dynamic Seat Pricing', description: 'Allow operators to set algorithmic pricing floors.', isEnabled: false }
 ];
-
-export const mockPolicyFlags: PolicyFlag[] = [
-    { id: 'POL-001', ctdId: 'ctd-stark-01', name: 'Preferred Operator Protocol', description: 'Mandates selection of operators with sustainability ratings of 4+ stars.', isEnforced: true },
-];
-
-export const mockBlogPosts: BlogPost[] = [
-  { id: 'post-1', title: 'Yield Optimization: Navigating Empty Leg Pricing in 2024', excerpt: 'A technical analysis of dynamic pricing models.', category: 'Empty Leg Insights', imageUrl: getImg('blog-1'), author: 'AeroDesk Intel', date: '2024-07-30', isFeatured: true },
-];
-
-export const mockPressReleases: PressRelease[] = [
-  { id: 'pr-1', title: 'Strategic Expansion: AeroDesk Integrates Mumbai International Heliport', description: 'Enhancing Tier-1 connectivity.', date: '2024-07-30', category: 'Partnership' },
-];
-
-export const mockMediaMentions: MediaMention[] = [
-  { id: 'mm-1', publication: 'The Economic Times', title: 'Digitalizing Indian Skies', snippet: '"AeroDesk is filling a critical gap..."', date: '2024-07-28' },
-];
-
-export const mockBrandAssets: BrandAsset[] = [
-  { id: 'ba-1', title: 'AeroDesk Logo Pack', type: 'Logo', imageUrl: getImg('media-asset-1'), fileSize: '4.2 MB' },
+export const mockPolicyFlags: PolicyFlag[] = [];
+export const mockBlogPosts: BlogPost[] = [];
+export const mockPressReleases: PressRelease[] = [];
+export const mockMediaMentions: MediaMention[] = [];
+export const mockBrandAssets: BrandAsset[] = [];
+export const mockCrew: CrewMember[] = [
+    { id: 'CW-01', operatorId: 'operator-user-01', firstName: 'Rahul', lastName: 'Kapoor', email: 'rahul.k@flyco.com', role: 'Captain', status: 'Available', licenseNumber: 'ATPL-992', assignedAircraftRegistration: 'VT-FLY', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' }
 ];
 
 export function getMockDataForRole(role: string) {

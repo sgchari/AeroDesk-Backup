@@ -9,17 +9,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { useUser } from "@/hooks/use-user";
 import { EmptyLegSeatAllocationRequest } from "@/lib/types";
-import { collectionGroup, query, where } from "firebase/firestore";
-import { Clock, CheckCircle, XCircle, MoreHorizontal } from "lucide-react";
+import { collection, query, where } from "firebase/firestore";
+import { Clock, CheckCircle, XCircle, ArrowRight, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import Link from 'next/link';
 
-const getStatusConfig = (status: EmptyLegSeatAllocationRequest['status']) => {
+const getStatusConfig = (status: string) => {
     switch (status) {
         case 'Requested': return { label: 'Under Coordination', variant: 'warning' as const, icon: Clock };
         case 'Approved': return { label: 'Confirmed Allocation', variant: 'success' as const, icon: CheckCircle };
-        case 'Rejected': return { label: 'Declined by Operator', variant: 'destructive' as const, icon: XCircle };
-        case 'Cancelled': return { label: 'Withdrawn', variant: 'secondary' as const, icon: XCircle };
+        case 'Rejected': return { label: 'Declined', variant: 'destructive' as const, icon: XCircle };
+        case 'seatPaymentSubmitted': return { label: 'Settlement Review', variant: 'primary' as const, icon: Clock };
         default: return { label: status, variant: 'outline' as const, icon: Clock };
     }
 }
@@ -30,86 +30,84 @@ export default function SeatRequestsPage() {
     
     const requestsQuery = useMemoFirebase(() => {
         if (!firestore || !user) return null;
-        return query(collectionGroup(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
+        return query(collection(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
     }, [firestore, user]);
 
     const { data: seatRequests, isLoading: requestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(
         requestsQuery,
-        'emptyLegs/all/seatAllocationRequests'
+        'seatAllocationRequests'
     );
     
     const isLoading = isUserLoading || requestsLoading;
 
     return (
         <>
-            <PageHeader title="Seat Block History" description="Manage and track the lifecycle of your seat allocation leads for empty leg flights." />
+            <PageHeader title="Seat Block History" description="Manage and track the commercial lifecycle of client seat allocations." />
             
-            <Card className="bg-card">
-                <CardHeader>
-                    <CardTitle>Commercial Lead Queue</CardTitle>
-                    <CardDescription>
-                        Time-critical requests submitted to operators for seat blocking.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {isLoading ? <Skeleton className="h-64 w-full" /> : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Lead ID</TableHead>
-                                    <TableHead>Sector / Flight</TableHead>
-                                    <TableHead className="text-center">Capacity</TableHead>
-                                    <TableHead>Client Reference</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {seatRequests?.map((req) => {
-                                    const status = getStatusConfig(req.status);
-                                    return (
-                                        <TableRow key={req.id}>
-                                            <TableCell className="font-medium font-code">{req.id}</TableCell>
-                                            <TableCell className="font-code text-xs">{req.emptyLegId}</TableCell>
-                                            <TableCell className="font-bold text-center">{req.numberOfSeats} Seat(s)</TableCell>
-                                            <TableCell>
-                                                <div className="font-medium">{req.clientReference || 'Institutional Client'}</div>
-                                                <div className="text-[10px] text-muted-foreground uppercase">{new Date(req.requestDateTime).toLocaleDateString()}</div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={status.variant} className="gap-1.5 h-6 text-[10px] font-bold uppercase tracking-wider">
-                                                    <status.icon className="h-3 w-3" />
-                                                    {status.label}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button size="icon" variant="ghost" className="h-8 w-8">
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuLabel>Lead Controls</DropdownMenuLabel>
-                                                        <DropdownMenuItem>View Context</DropdownMenuItem>
-                                                        <DropdownMenuItem>Contact Operator</DropdownMenuItem>
-                                                        {req.status === 'Requested' && <DropdownMenuItem className="text-destructive">Withdraw Request</DropdownMenuItem>}
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </TableCell>
+            <div className="grid gap-6">
+                {isLoading ? <Skeleton className="h-64 w-full" /> : (
+                    <Card className="bg-card overflow-hidden">
+                        <CardHeader>
+                            <CardTitle>Commercial Lead Queue</CardTitle>
+                            <CardDescription>Time-critical seat requests submitted to fleet operators.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="px-0">
+                            <div className="overflow-x-auto">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className="border-white/5 hover:bg-transparent">
+                                            <TableHead className="pl-6 text-[10px] uppercase font-black">Lead Details</TableHead>
+                                            <TableHead className="text-[10px] uppercase font-black text-center">Seats</TableHead>
+                                            <TableHead className="text-[10px] uppercase font-black">Status</TableHead>
+                                            <TableHead className="text-right pr-6"><span className="sr-only">Actions</span></TableHead>
                                         </TableRow>
-                                    )
-                                })}
-                            </TableBody>
-                        </Table>
-                    )}
-                     {(!isLoading && (!seatRequests || seatRequests.length === 0)) && (
-                        <div className="text-center py-20 border-2 border-dashed rounded-lg">
-                            <p className="text-muted-foreground">You haven't initiated any commercial seat leads yet.</p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {seatRequests?.map((req) => {
+                                            const status = getStatusConfig(req.status);
+                                            return (
+                                                <TableRow key={req.id} className="border-white/5 hover:bg-white/[0.02] group">
+                                                    <TableCell className="pl-6 py-4">
+                                                        <div className="space-y-1">
+                                                            <div className="flex items-center gap-2 text-xs font-bold">
+                                                                <Plane className="h-3 w-3 text-accent/60" />
+                                                                Flight ID: {req.emptyLegId}
+                                                            </div>
+                                                            <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                                                                <span className="font-code tracking-tighter uppercase text-accent">{req.id}</span>
+                                                                <span className="font-medium text-foreground">{req.clientReference || 'Standard Client'}</span>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-center font-black text-xs">{req.numberOfSeats}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={status.variant} className="gap-1.5 h-5 text-[9px] font-black uppercase tracking-tighter">
+                                                            <status.icon className="h-2.5 w-2.5" />
+                                                            {status.label}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right pr-6">
+                                                        <Button asChild variant="ghost" size="sm" className="h-8 text-[10px] font-bold uppercase gap-2 hover:bg-accent/10 hover:text-accent">
+                                                            <Link href={`/dashboard/travel-agency/execution/${req.id}?type=seat`}>
+                                                                Execution <ArrowRight className="h-3 w-3" />
+                                                            </Link>
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                            {(!seatRequests || seatRequests.length === 0) && (
+                                <div className="text-center py-20">
+                                    <p className="text-muted-foreground">No active commercial leads.</p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
         </>
     );
 }

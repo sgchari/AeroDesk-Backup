@@ -29,7 +29,7 @@ const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 let db = {
   users: deepCopy(mockUsers),
   operators: deepCopy(mockOperators),
-  charterRequests: deepCopy(mockRfqs), // Mapping mockRfqs to charterRequests
+  charterRequests: deepCopy(mockRfqs),
   aircrafts: deepCopy(mockAircrafts),
   quotations: deepCopy(mockQuotations),
   emptyLegs: deepCopy(mockEmptyLegs),
@@ -51,6 +51,7 @@ let db = {
   invoices: deepCopy(mockInvoices),
   payments: deepCopy(mockPayments),
   activityLogs: deepCopy(mockActivityLogs),
+  commissions: [],
 };
 
 // Simple event emitter
@@ -70,7 +71,6 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
     const pathSegments = path.split('/');
     const collectionName = pathSegments[0];
 
-    // Handle special case for collectionGroup simulation
     if (path === 'emptyLegs/all/seatAllocationRequests') {
         return db.seatAllocationRequests;
     }
@@ -82,91 +82,51 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
                 (currentUser.role === 'Customer' && rfq.customerId === currentUser.id) ||
                 (currentUser.role === 'Requester' && rfq.requesterExternalAuthId === currentUser.id) || 
                 (currentUser.role === 'Operator' && rfq.operatorId === currentUser.id) || 
-                (currentUser.role === 'Operator' && !rfq.operatorId && (rfq.status === 'Bidding Open' || rfq.status === 'New')) || 
+                (currentUser.role === 'Operator' && !rfq.operatorId && (['Bidding Open', 'New', 'rfqSubmitted'].includes(rfq.status))) || 
                 currentUser.role === 'Admin' || 
                 (currentUser.role === 'CTD Admin' && rfq.company === currentUser.company) ||
                 (currentUser.role === 'Travel Agency' && rfq.requesterExternalAuthId === currentUser.id)
             );
-        case 'passengerManifests':
-            return db.passengerManifests;
-        case 'invoices':
-            return db.invoices;
-        case 'payments':
-            return db.payments;
-        case 'activityLogs':
-            return db.activityLogs;
-        case 'operators':
-            if (pathSegments.length > 2 && pathSegments[2] === 'aircrafts') {
-                const operatorId = pathSegments[1];
-                return db.aircrafts.filter(ac => ac.operatorId === operatorId);
-            }
-            if (pathSegments.length > 2 && pathSegments[2] === 'crew') {
-                const operatorId = pathSegments[1];
-                return db.crew.filter(c => c.operatorId === operatorId);
-            }
-            return db.operators;
-        case 'emptyLegs':
-             return db.emptyLegs.filter(leg => 
-                (currentUser && currentUser.role === 'Operator' && leg.operatorId === currentUser.id) || 
-                (currentUser?.role !== 'Operator')
-             );
-        case 'auditTrails': return db.auditTrails;
-        case 'customers': return db.users.filter(u => u.role === 'Customer');
-        case 'platformAdmins': return db.users.filter(u => u.role === 'Admin');
-        case 'distributors': return db.users.filter(u => u.role === 'Travel Agency');
-        case 'hotelPartners': return db.users.filter(u => u.role === 'Hotel Partner');
-        case 'corporateTravelDesks':
-             if (pathSegments.length > 2 && pathSegments[2] === 'users') {
-                const ctdId = pathSegments[1];
-                return db.users.filter(u => u.ctdId === ctdId);
-             }
-             if (pathSegments.length > 2 && pathSegments[2] === 'policyFlags') {
-                const ctdId = pathSegments[1];
-                return db.policyFlags.filter(p => p.ctdId === ctdId);
-             }
-             return db.corporateTravelDesks;
+        case 'seatAllocationRequests':
+            if (!currentUser) return [];
+            return db.seatAllocationRequests.filter(req => 
+                req.requesterExternalAuthId === currentUser.id ||
+                req.operatorId === currentUser.id
+            );
         case 'accommodationRequests':
             if (!currentUser) return [];
             return db.accommodationRequests.filter(req => 
                 req.hotelPartnerId === currentUser.id || 
                 req.requesterId === currentUser.id
             );
-        case 'users': return db.users; // Generic user collection for all roles
-        case 'properties':
-            if (!currentUser) return [];
-            return db.properties.filter(p => p.hotelPartnerId === currentUser.id);
-        case 'roomCategories':
-            return db.roomCategories;
-        case 'billingRecords': return db.billingRecords;
-        case 'featureFlags': return db.featureFlags;
-        case 'policyFlags': return db.policyFlags;
-        case 'crew': 
-            if (currentUser && currentUser.role === 'Operator') {
-                return db.crew.filter(c => c.operatorId === currentUser.id);
-            }
-            return db.crew;
+        case 'passengerManifests': return db.passengerManifests;
+        case 'invoices': return db.invoices;
+        case 'payments': return db.payments;
+        case 'activityLogs': return db.activityLogs;
+        case 'commissions': return db.commissions;
+        case 'operators': return db.operators;
+        case 'emptyLegs': return db.emptyLegs;
+        case 'users': return db.users;
+        case 'properties': return db.properties;
+        case 'roomCategories': return db.roomCategories;
         default:
-            console.warn(`Mock Store: No handler for getCollection path: ${path}`);
-            return [];
+            return (db as any)[collectionName] || [];
     }
 }
 
 const getDoc = (path: string): any | null => {
     const pathSegments = path.split('/');
-    const collection = pathSegments[0];
+    const collectionName = pathSegments[0];
     const docId = pathSegments[1];
     
-    let dataSet: any[] = [];
+    // Normalize collection name for deep paths
+    let actualCollection = collectionName;
+    if (collectionName === 'charterRequests') actualCollection = 'charterRequests';
     
-    if (collection === 'corporateTravelDesks' && pathSegments.length > 3 && pathSegments[2] === 'users') {
-        dataSet = db.users;
-        const ctdUserId = pathSegments[3];
-        return dataSet.find(d => d.id === ctdUserId) || null;
-    } else {
-        dataSet = (db as any)[collection] || db.users;
-    }
+    const dataSet = (db as any)[actualCollection];
+    if (!dataSet) return null;
     
-    return dataSet.find(d => d.id === docId) || null;
+    return dataSet.find((d: any) => d.id === docId) || null;
 }
 
 const addDoc = (path: string, data: any) => {
@@ -176,8 +136,6 @@ const addDoc = (path: string, data: any) => {
 
     if ((db as any)[collectionName]) {
         (db as any)[collectionName].unshift(newDoc as any);
-    } else {
-         console.warn(`Mock Store: No handler for addDoc path: ${path}`);
     }
     
     notify();
@@ -185,11 +143,7 @@ const addDoc = (path: string, data: any) => {
 
 const updateDoc = (collectionPath: string, docId: string, data: any) => {
     const dataSet = (db as any)[collectionPath];
-
-    if (!dataSet) {
-        console.warn(`Mock Store: No collection found for update path: ${collectionPath}`);
-        return;
-    }
+    if (!dataSet) return;
     
     const docIndex = dataSet.findIndex((d: any) => d.id === docId);
     if (docIndex > -1) {
