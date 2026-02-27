@@ -160,7 +160,7 @@ export default function OurNetworkPage() {
                             <div className="pt-2">
                                 <div className="p-4 bg-white/5 rounded-xl border border-white/5">
                                     <p className="text-xs leading-relaxed text-slate-300 italic">
-                                        "End-to-End Insight Across Your Charter Journey"
+                                        "Digitally connecting India’s Private Aviation Ecosystem"
                                     </p>
                                 </div>
                             </div>

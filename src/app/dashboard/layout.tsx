@@ -28,7 +28,7 @@ export default function DashboardLayout({
             </div>
             
             <footer className="mt-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-                <p className="text-center md:text-left">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. NSOP COORDINATION ONLY.</p>
+                <p className="text-center md:text-left">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. charter coordination only.</p>
                 <div className="flex gap-6">
                     <Link href="mailto:feedback@aerodesk.com" className="hover:text-accent transition-colors">Feedback & Suggestions</Link>
                     <Link href="#" className="hover:text-accent transition-colors">System Status</Link>

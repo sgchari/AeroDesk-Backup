@@ -1,4 +1,3 @@
-
 'use client';
 import Link from "next/link";
 import { Logo } from "./logo";
@@ -69,7 +68,7 @@ export function LandingFooter() {
                   Network Connectivity
                 </h3>
                 <p className="text-xs leading-relaxed text-white/60">
-                  India's digitized non-scheduled aviation infrastructure. Powered by institutional coordination protocols.
+                  Digitally connecting India’s Private Aviation Ecosystem.
                 </p>
                 <div className="flex gap-4">
                   {/* Social SVGs remained unchanged for visual brevity */}
@@ -78,7 +77,7 @@ export function LandingFooter() {
             </div>
             <div className="mt-12 border-t border-white/10 pt-8 text-center text-[10px] text-white/40 uppercase tracking-[0.2em]">
               <p>
-                &copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. NSOP COORDINATION ONLY.
+                &copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. charter coordination only.
               </p>
             </div>
           </div>
