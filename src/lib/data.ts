@@ -163,8 +163,13 @@ export const mockBillingLedger: EntityBillingLedger[] = [
 ];
 
 export const mockPlatformInvoices: PlatformInvoice[] = [
-  { id: 'PL-INV-001', entityId: 'op-01', entityName: 'FlyCo Charter', entityType: 'Operator', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 210000, dueDate: '2024-09-10', status: 'paid', createdAt: '2024-09-01T09:00:00Z' },
-  { id: 'PL-INV-002', entityId: 'ag-01', entityName: 'Sky Distributors', entityType: 'Travel Agency', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 1800, dueDate: '2024-09-10', status: 'issued', createdAt: '2024-09-01T09:30:00Z' },
+  { id: 'PL-INV-001', entityId: 'op-01', entityName: 'FlyCo Charter', entityType: 'Operator', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 1370000, dueDate: '2024-09-10', status: 'paid', createdAt: '2024-09-01T09:00:00Z' },
+  { id: 'PL-INV-002', entityId: 'op-02', entityName: 'Taj Air', entityType: 'Operator', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 280000, dueDate: '2024-09-15', status: 'issued', createdAt: '2024-09-01T09:15:00Z' },
+  { id: 'PL-INV-003', entityId: 'op-03', entityName: 'Club One Air', entityType: 'Operator', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 170000, dueDate: '2024-09-15', status: 'issued', createdAt: '2024-09-01T09:20:00Z' },
+  { id: 'PL-INV-004', entityId: 'ag-02', entityName: 'Luxe Travels India', entityType: 'Travel Agency', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 85000, dueDate: '2024-08-25', status: 'overdue', createdAt: '2024-08-01T09:30:00Z' },
+  { id: 'PL-INV-005', entityId: 'hotel-01', entityName: 'The Grand Mumbai', entityType: 'Hotel Partner', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 450000, dueDate: '2024-09-10', status: 'paid', createdAt: '2024-09-01T09:45:00Z' },
+  { id: 'PL-INV-006', entityId: 'ag-01', entityName: 'Sky Distributors', entityType: 'Travel Agency', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 45000, dueDate: '2024-08-20', status: 'overdue', createdAt: '2024-08-01T10:00:00Z' },
+  { id: 'PL-INV-007', entityId: 'ctd-01', entityName: 'Stark Industries', entityType: 'Corporate Admin', billingPeriodStart: '2024-08-01', billingPeriodEnd: '2024-08-31', totalAmount: 1800, dueDate: '2024-08-15', status: 'overdue', createdAt: '2024-08-01T10:30:00Z' },
 ];
 
 // --- OTHER ---

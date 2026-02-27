@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -39,7 +40,7 @@ import {
 import { cn } from "@/lib/utils";
 import { CreateChargeRuleDialog } from "@/components/dashboard/admin/billing/create-charge-rule-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { doc } from "firebase/firestore";
+import { doc, collection } from "firebase/firestore";
 import { useState, useMemo } from "react";
 
 const MOCK_REV_DATA = [
@@ -55,15 +56,27 @@ export default function AdminBillingEnginePage() {
     const [invoiceFilter, setInvoiceFilter] = useState<string | null>(null);
 
     const { data: invoices, isLoading: invoicesLoading } = useCollection<PlatformInvoice>(
-        useMemoFirebase(() => null, []), 'platformInvoices'
+        useMemoFirebase(() => {
+            if (!firestore) return null;
+            return collection(firestore, 'platformInvoices');
+        }, [firestore]), 
+        'platformInvoices'
     );
 
     const { data: ledger, isLoading: ledgerLoading } = useCollection<EntityBillingLedger>(
-        useMemoFirebase(() => null, []), 'entityBillingLedger'
+        useMemoFirebase(() => {
+            if (!firestore) return null;
+            return collection(firestore, 'entityBillingLedger');
+        }, [firestore]), 
+        'entityBillingLedger'
     );
 
     const { data: rules, isLoading: rulesLoading } = useCollection<PlatformChargeRule>(
-        useMemoFirebase(() => null, []), 'platformChargeRules'
+        useMemoFirebase(() => {
+            if (!firestore) return null;
+            return collection(firestore, 'platformChargeRules');
+        }, [firestore]), 
+        'platformChargeRules'
     );
 
     const isLoading = invoicesLoading || ledgerLoading || rulesLoading;
