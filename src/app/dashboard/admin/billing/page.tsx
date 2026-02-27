@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -18,7 +17,8 @@ import {
     Activity,
     CreditCard,
     Briefcase,
-    Zap
+    Zap,
+    XCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking } from "@/firebase";
@@ -40,6 +40,7 @@ import { cn } from "@/lib/utils";
 import { CreateChargeRuleDialog } from "@/components/dashboard/admin/billing/create-charge-rule-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { doc } from "firebase/firestore";
+import { useState, useMemo } from "react";
 
 const MOCK_REV_DATA = [
     { name: 'Jun', rev: 12.5, comm: 8.2 },
@@ -50,6 +51,8 @@ const MOCK_REV_DATA = [
 export default function AdminBillingEnginePage() {
     const firestore = useFirestore();
     const { toast } = useToast();
+    const [activeTab, setActiveTab] = useState("analytics");
+    const [invoiceFilter, setInvoiceFilter] = useState<string | null>(null);
 
     const { data: invoices, isLoading: invoicesLoading } = useCollection<PlatformInvoice>(
         useMemoFirebase(() => null, []), 'platformInvoices'
@@ -64,6 +67,12 @@ export default function AdminBillingEnginePage() {
     );
 
     const isLoading = invoicesLoading || ledgerLoading || rulesLoading;
+
+    const filteredInvoices = useMemo(() => {
+        if (!invoices) return [];
+        if (!invoiceFilter) return invoices;
+        return invoices.filter(inv => inv.status === invoiceFilter);
+    }, [invoices, invoiceFilter]);
 
     const handleToggleRule = (ruleId: string, currentState: boolean) => {
         if (!firestore) return;
@@ -83,6 +92,17 @@ export default function AdminBillingEnginePage() {
         activeRules: rules?.filter(r => r.isActive).length.toString() || "0"
     };
 
+    const showDetails = (tab: string, filter: string | null = null) => {
+        setActiveTab(tab);
+        setInvoiceFilter(filter);
+        if (filter) {
+            toast({
+                title: "View Filtered",
+                description: `Displaying ${filter} platform settlements.`,
+            });
+        }
+    };
+
     return (
         <div className="space-y-6">
             <PageHeader 
@@ -100,13 +120,37 @@ export default function AdminBillingEnginePage() {
             </PageHeader>
 
             <StatsGrid>
-                <StatsCard title="Total Revenue (MTD)" value={stats.totalMTD} icon={DollarSign} description="Settled platform fees" />
-                <StatsCard title="Outstanding Balances" value={stats.outstanding} icon={AlertCircle} description="Unpaid platform invoices" />
-                <StatsCard title="Overdue Accounts" value={stats.overdueCount} icon={ShieldCheck} description="Action required" />
-                <StatsCard title="Active Charge Rules" value={stats.activeRules} icon={Settings} description="Governance constraints" />
+                <StatsCard 
+                    title="Total Revenue (MTD)" 
+                    value={stats.totalMTD} 
+                    icon={DollarSign} 
+                    description="Settled platform fees" 
+                    onClick={() => showDetails("analytics")}
+                />
+                <StatsCard 
+                    title="Outstanding Balances" 
+                    value={stats.outstanding} 
+                    icon={AlertCircle} 
+                    description="Unpaid platform invoices" 
+                    onClick={() => showDetails("invoices", "issued")}
+                />
+                <StatsCard 
+                    title="Overdue Accounts" 
+                    value={stats.overdueCount} 
+                    icon={XCircle} 
+                    description="Action required" 
+                    onClick={() => showDetails("invoices", "overdue")}
+                />
+                <StatsCard 
+                    title="Active Charge Rules" 
+                    value={stats.activeRules} 
+                    icon={Settings} 
+                    description="Governance constraints" 
+                    onClick={() => showDetails("settings")}
+                />
             </StatsGrid>
 
-            <Tabs defaultValue="analytics" className="w-full">
+            <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val); setInvoiceFilter(null); }} className="w-full">
                 <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1 h-auto flex flex-wrap">
                     <TabsTrigger value="analytics" className="gap-2 flex-1 min-w-[120px]">
                         <BarChart2 className="h-3.5 w-3.5" /> Revenue Intelligence
@@ -177,9 +221,18 @@ export default function AdminBillingEnginePage() {
 
                 <TabsContent value="invoices" className="space-y-6 animate-in fade-in slide-in-from-top-2">
                     <Card className="bg-card">
-                        <CardHeader>
-                            <CardTitle>Platform Settlement Queue</CardTitle>
-                            <CardDescription>Official invoices issued by AeroDesk to participating entities.</CardDescription>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle>Platform Settlement Queue</CardTitle>
+                                <CardDescription>
+                                    {invoiceFilter ? `Displaying ${invoiceFilter} platform invoices.` : 'Official invoices issued by AeroDesk to participating entities.'}
+                                </CardDescription>
+                            </div>
+                            {invoiceFilter && (
+                                <Button variant="ghost" size="sm" onClick={() => setInvoiceFilter(null)} className="h-8 text-[9px] uppercase font-bold gap-2">
+                                    Clear Filter <XCircle className="h-3 w-3" />
+                                </Button>
+                            )}
                         </CardHeader>
                         <CardContent>
                             {isLoading ? <Skeleton className="h-64 w-full" /> : (
@@ -195,7 +248,7 @@ export default function AdminBillingEnginePage() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {invoices?.map((inv) => (
+                                        {filteredInvoices.map((inv) => (
                                             <TableRow key={inv.id} className="border-white/5 group hover:bg-white/[0.02]">
                                                 <TableCell className="font-code text-xs font-bold text-accent py-4">{inv.id}</TableCell>
                                                 <TableCell>
@@ -224,6 +277,11 @@ export default function AdminBillingEnginePage() {
                                         ))}
                                     </TableBody>
                                 </Table>
+                            )}
+                            {(!isLoading && filteredInvoices.length === 0) && (
+                                <div className="text-center py-20 border-2 border-dashed rounded-lg bg-muted/5">
+                                    <p className="text-muted-foreground italic">No settlement records found matching the current criteria.</p>
+                                </div>
                             )}
                         </CardContent>
                     </Card>

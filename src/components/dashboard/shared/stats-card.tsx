@@ -10,14 +10,18 @@ type StatsCardProps = {
     icon: LucideIcon;
     description?: string;
     href?: string;
+    onClick?: () => void;
 }
 
-export function StatsCard({ title, value, icon: Icon, description, href }: StatsCardProps) {
+export function StatsCard({ title, value, icon: Icon, description, href, onClick }: StatsCardProps) {
     const cardContent = (
-        <Card className={cn(
-            "glass-card-hover group relative overflow-hidden h-full",
-            href && "cursor-pointer"
-        )}>
+        <Card 
+            className={cn(
+                "glass-card-hover group relative overflow-hidden h-full",
+                (href || onClick) && "cursor-pointer transition-transform active:scale-95"
+            )}
+            onClick={onClick}
+        >
             {/* Soft decorative glow */}
             <div className="absolute top-0 right-0 -mr-4 -mt-4 h-24 w-24 bg-primary/5 blur-3xl rounded-full" />
             
