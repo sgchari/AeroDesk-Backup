@@ -1,5 +1,5 @@
 
-import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset, CrewMember } from './types';
+import type { User, CharterRFQ, EmptyLeg, Aircraft, Quotation, AuditLog, AccommodationRequest, CorporateTravelDesk, Property, RoomCategory, EmptyLegSeatAllocationRequest, Operator, BillingRecord, FeatureFlag, PolicyFlag, BlogPost, PressRelease, MediaMention, BrandAsset, CrewMember, PassengerManifest, Invoice, Payment, ActivityLog } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
 const getImg = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl || '';
@@ -60,9 +60,110 @@ export const mockOperators: Operator[] = [
 
 export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-COORD-001', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-10', departureTime: '10:00', pax: 4, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2024-07-28T12:00:00Z', bidsCount: 0 },
-    { id: 'RFQ-CONF-002', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Bengaluru (BLR)', arrival: 'Goa (GOI)', departureDate: '2024-08-15', departureTime: '11:30', returnDate: '2024-08-18', returnTime: '16:00', pax: 2, aircraftType: 'Any Turboprop', status: 'Confirmed', createdAt: '2024-07-27T15:00:00Z', bidsCount: 1, hotelRequired: true },
-    { id: 'RFQ-CORP-001', customerId: 'employee-user-01', requesterExternalAuthId: 'employee-user-01', customerName: 'Happy Hogan', tripType: 'Onward', departure: 'New York (JFK)', arrival: 'Mumbai (BOM)', departureDate: '2024-09-10', departureTime: '23:00', pax: 1, aircraftType: 'Heavy Jet', status: 'Pending Approval', createdAt: '2024-08-01T10:00:00Z', bidsCount: 0, costCenter: 'EXECUTIVE-MGMT', businessPurpose: 'Global Security Summit', company: 'Stark Industries' },
-    { id: 'RFQ-CORP-002', customerId: 'ctd-admin-user-01', requesterExternalAuthId: 'ctd-admin-user-01', customerName: 'Priya Sharma', tripType: 'Return', departure: 'Delhi (DEL)', arrival: 'London (LHR)', departureDate: '2024-09-20', departureTime: '09:00', returnDate: '2024-09-25', returnTime: '18:00', pax: 5, aircraftType: 'Any Mid-size Jet', status: 'Bidding Open', createdAt: '2024-08-02T14:00:00Z', bidsCount: 3, costCenter: 'R&D-SPECIAL-PROJ', company: 'Stark Industries' },
+    { id: 'RFQ-CONF-002', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Return', departure: 'Bengaluru (BLR)', arrival: 'Goa (GOI)', departureDate: '2024-08-15', departureTime: '11:30', returnDate: '2024-08-18', returnTime: '16:00', pax: 2, aircraftType: 'Any Turboprop', status: 'charterConfirmed', createdAt: '2024-07-27T15:00:00Z', bidsCount: 1, hotelRequired: true, operatorId: 'operator-user-01' },
+    { id: 'RFQ-EXEC-003', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2024-08-05', departureTime: '09:00', pax: 4, aircraftType: 'Light Jet', status: 'boarding', createdAt: '2024-08-01T10:00:00Z', bidsCount: 1, operatorId: 'operator-user-01' },
+    { id: 'RFQ-EXEC-004', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Delhi (DEL)', arrival: 'Bengaluru (BLR)', departureDate: '2024-08-01', departureTime: '14:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'flightCompleted', createdAt: '2024-07-25T09:00:00Z', bidsCount: 1, operatorId: 'operator-user-03' },
+    { id: 'RFQ-EXEC-005', customerId: 'customer-user-01', requesterExternalAuthId: 'customer-user-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Chennai (MAA)', arrival: 'Mumbai (BOM)', departureDate: '2024-08-20', departureTime: '11:00', pax: 3, aircraftType: 'Light Jet', status: 'invoiceIssued', createdAt: '2024-08-03T16:00:00Z', bidsCount: 1, operatorId: 'operator-user-01' },
+];
+
+export const mockManifests: PassengerManifest[] = [
+    {
+        id: 'MAN-001',
+        charterId: 'RFQ-CONF-002',
+        submittedBy: 'Sanjana Kumar',
+        status: 'approved',
+        createdAt: '2024-07-28T10:00:00Z',
+        updatedAt: '2024-07-28T11:00:00Z',
+        passengers: [
+            { fullName: 'Sanjana Kumar', dob: '1992-05-15', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'Z1234567' },
+            { fullName: 'Raj Kumar', dob: '1990-11-20', gender: 'Male', nationality: 'Indian', idType: 'Aadhar', idNumber: '9988-7766-5544' }
+        ]
+    },
+    {
+        id: 'MAN-002',
+        charterId: 'RFQ-EXEC-003',
+        submittedBy: 'Sanjana Kumar',
+        status: 'approved',
+        createdAt: '2024-08-02T09:00:00Z',
+        updatedAt: '2024-08-02T10:30:00Z',
+        passengers: [
+            { fullName: 'Sanjana Kumar', dob: '1992-05-15', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'Z1234567' }
+        ]
+    },
+    {
+        id: 'MAN-003',
+        charterId: 'RFQ-EXEC-005',
+        submittedBy: 'Sanjana Kumar',
+        status: 'submitted',
+        createdAt: '2024-08-04T10:00:00Z',
+        updatedAt: '2024-08-04T10:00:00Z',
+        passengers: [
+            { fullName: 'Sanjana Kumar', dob: '1992-05-15', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'Z1234567' }
+        ]
+    }
+];
+
+export const mockInvoices: Invoice[] = [
+    {
+        id: 'INV-001',
+        charterId: 'RFQ-CONF-002',
+        operatorId: 'operator-user-01',
+        invoiceNumber: 'INV-2024-001',
+        totalAmount: 450000,
+        status: 'paid',
+        createdAt: '2024-07-29T10:00:00Z',
+        bankDetails: 'AeroBank India • IFSC: AERO0001234 • A/C: 9988776655'
+    },
+    {
+        id: 'INV-002',
+        charterId: 'RFQ-EXEC-003',
+        operatorId: 'operator-user-01',
+        invoiceNumber: 'INV-2024-002',
+        totalAmount: 380000,
+        status: 'paid',
+        createdAt: '2024-08-03T09:00:00Z',
+        bankDetails: 'AeroBank India • IFSC: AERO0001234 • A/C: 9988776655'
+    },
+    {
+        id: 'INV-003',
+        charterId: 'RFQ-EXEC-005',
+        operatorId: 'operator-user-01',
+        invoiceNumber: 'INV-2024-003',
+        totalAmount: 290000,
+        status: 'issued',
+        createdAt: '2024-08-04T11:00:00Z',
+        bankDetails: 'AeroBank India • IFSC: AERO0001234 • A/C: 9988776655'
+    }
+];
+
+export const mockPayments: Payment[] = [
+    {
+        id: 'PAY-001',
+        charterId: 'RFQ-CONF-002',
+        invoiceId: 'INV-001',
+        submittedBy: 'Sanjana Kumar',
+        utrReference: 'UTR9988776655',
+        status: 'verified',
+        createdAt: '2024-07-30T14:00:00Z',
+        verifiedAt: '2024-07-30T16:00:00Z'
+    },
+    {
+        id: 'PAY-002',
+        charterId: 'RFQ-EXEC-003',
+        invoiceId: 'INV-002',
+        submittedBy: 'Sanjana Kumar',
+        utrReference: 'UTR1122334455',
+        status: 'verified',
+        createdAt: '2024-08-03T11:00:00Z',
+        verifiedAt: '2024-08-03T12:00:00Z'
+    }
+];
+
+export const mockActivityLogs: ActivityLog[] = [
+    { id: 'LOG-001', charterId: 'RFQ-EXEC-003', actionType: 'MANIFEST_APPROVED', performedBy: 'Rajesh Verma', role: 'Operator', previousStatus: 'manifestSubmitted', newStatus: 'manifestApproved', timestamp: '2024-08-02T10:30:00Z' },
+    { id: 'LOG-002', charterId: 'RFQ-EXEC-003', actionType: 'INVOICE_ISSUED', performedBy: 'FlyCo Finance', role: 'Operator', previousStatus: 'manifestApproved', newStatus: 'invoiceIssued', timestamp: '2024-08-03T09:00:00Z' },
+    { id: 'LOG-003', charterId: 'RFQ-EXEC-003', actionType: 'PAYMENT_VERIFIED', performedBy: 'FlyCo Finance', role: 'Operator', previousStatus: 'paymentSubmitted', newStatus: 'charterConfirmed', timestamp: '2024-08-03T12:00:00Z' },
+    { id: 'LOG-004', charterId: 'RFQ-EXEC-003', actionType: 'OPERATIONAL_STATUS_CHANGE', performedBy: 'Ops Desk', role: 'Operator', previousStatus: 'charterConfirmed', newStatus: 'boarding', timestamp: '2024-08-05T08:45:00Z' },
 ];
 
 export const mockQuotations: Quotation[] = [
@@ -182,6 +283,10 @@ export function getMockDataForRole(role: string) {
         pressReleases: mockPressReleases,
         mediaMentions: mockMediaMentions,
         brandAssets: mockBrandAssets,
-        crew: mockCrew
+        crew: mockCrew,
+        manifests: mockManifests,
+        invoices: mockInvoices,
+        payments: mockPayments,
+        activityLogs: mockActivityLogs
     };
 }

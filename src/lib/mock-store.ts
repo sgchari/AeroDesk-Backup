@@ -16,6 +16,10 @@ import {
   mockFeatureFlags,
   mockPolicyFlags,
   mockCrew,
+  mockManifests,
+  mockInvoices,
+  mockPayments,
+  mockActivityLogs
 } from './data';
 import { User, UserRole } from './types';
 
@@ -43,10 +47,10 @@ let db = {
   featureFlags: deepCopy(mockFeatureFlags),
   policyFlags: deepCopy(mockPolicyFlags),
   crew: deepCopy(mockCrew),
-  passengerManifests: [] as any[],
-  invoices: [] as any[],
-  payments: [] as any[],
-  activityLogs: [] as any[],
+  passengerManifests: deepCopy(mockManifests),
+  invoices: deepCopy(mockInvoices),
+  payments: deepCopy(mockPayments),
+  activityLogs: deepCopy(mockActivityLogs),
 };
 
 // Simple event emitter
