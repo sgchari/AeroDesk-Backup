@@ -27,7 +27,7 @@ import { usePathname } from 'next/navigation';
 import { useUser } from '@/hooks/use-user';
 import type { UserRole } from '@/lib/types';
 import { Logo } from './logo';
-import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSkeleton } from '@/components/ui/sidebar';
+import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSkeleton, useSidebar } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
 const navItems: Record<string, any[]> = {
@@ -120,12 +120,19 @@ function SidebarSkeleton() {
 export function MainSidebar({ className }: { className?: string }) {
   const pathname = usePathname();
   const { user, isLoading } = useUser();
+  const { isMobile, setOpenMobile } = useSidebar();
   const currentNavItems = user ? navItems[user.role as string] || [] : [];
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   return (
     <>
       <SidebarHeader className="flex h-20 items-center border-b border-white/5 px-4 mb-2">
-        <Link href="/dashboard" className="flex items-center gap-2 font-semibold group-data-[state=collapsed]:hidden">
+        <Link href="/dashboard" className="flex items-center gap-2 font-semibold group-data-[state=collapsed]:hidden" onClick={handleLinkClick}>
             <Logo />
         </Link>
       </SidebarHeader>
@@ -141,6 +148,7 @@ export function MainSidebar({ className }: { className?: string }) {
                     asChild
                     isActive={isActive}
                     tooltip={label}
+                    onClick={handleLinkClick}
                     className={cn(
                       "transition-all duration-200 hover:bg-white/5",
                       isActive && "active-glow font-bold text-white shadow-sm"
