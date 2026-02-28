@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { LandingHeader } from '@/components/landing-header';
 import { LandingFooter } from '@/components/landing-footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -84,59 +85,63 @@ export default function BlogPage() {
               
               {/* Featured Large Article (Left) */}
               <div className="lg:col-span-8">
-                <Card className="h-full overflow-hidden border-white/10 bg-black/30 backdrop-blur-xl group hover:border-primary/50 transition-all duration-500">
-                  <div className="relative h-[280px] md:h-[380px]">
-                    <Image
-                      src={leadPost.imageUrl}
-                      alt={leadPost.title}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-80"
-                      priority
-                      data-ai-hint="private jet"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-5">
-                      <Badge variant="outline" className="mb-2 text-accent border-accent/30 bg-accent/10 text-[10px]">
-                        {leadPost.category}
-                      </Badge>
-                      <h2 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight group-hover:text-accent transition-colors">
-                        {leadPost.title}
-                      </h2>
-                      <p className="text-white/70 text-sm mb-3 line-clamp-2 max-w-2xl">
-                        {leadPost.excerpt}
-                      </p>
-                      <div className="flex items-center gap-4">
-                        <Button className="bg-accent text-accent-foreground hover:bg-accent/90 h-8 text-xs px-4" size="sm">
-                          Read Insight
-                          <ArrowRight className="ml-2 h-3.5 w-3.5" />
-                        </Button>
-                        <div className="flex items-center gap-2 text-[9px] text-white/40 font-code uppercase tracking-widest">
-                          <User className="h-3 w-3" />
-                          {leadPost.author}
+                <Link href={`/blog/${leadPost.id}`}>
+                  <Card className="h-full overflow-hidden border-white/10 bg-black/30 backdrop-blur-xl group hover:border-primary/50 transition-all duration-500 cursor-pointer">
+                    <div className="relative h-[280px] md:h-[380px]">
+                      <Image
+                        src={leadPost.imageUrl}
+                        alt={leadPost.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-80"
+                        priority
+                        data-ai-hint="private jet"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <Badge variant="outline" className="mb-2 text-accent border-accent/30 bg-accent/10 text-[10px]">
+                          {leadPost.category}
+                        </Badge>
+                        <h2 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight group-hover:text-accent transition-colors">
+                          {leadPost.title}
+                        </h2>
+                        <p className="text-white/70 text-sm mb-3 line-clamp-2 max-w-2xl">
+                          {leadPost.excerpt}
+                        </p>
+                        <div className="flex items-center gap-4">
+                          <Button className="bg-accent text-accent-foreground hover:bg-accent/90 h-8 text-xs px-4" size="sm">
+                            Read Insight
+                            <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                          </Button>
+                          <div className="flex items-center gap-2 text-[9px] text-white/40 font-code uppercase tracking-widest">
+                            <User className="h-3 w-3" />
+                            {leadPost.author}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               </div>
 
               {/* Trending Stack (Right) */}
               <div className="lg:col-span-4 flex flex-col gap-3">
                 <h3 className="text-[10px] font-bold uppercase tracking-widest text-accent mb-1">Trending Now</h3>
                 {trendingPosts.map((post) => (
-                  <Card key={post.id} className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all cursor-pointer">
-                    <div className="flex gap-3 p-2.5">
-                      <div className="relative h-14 w-16 shrink-0 rounded-md overflow-hidden">
-                        <Image src={post.imageUrl} alt={post.title} fill className="object-cover opacity-70" data-ai-hint="aviation" />
+                  <Link key={post.id} href={`/blog/${post.id}`}>
+                    <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all cursor-pointer">
+                      <div className="flex gap-3 p-2.5">
+                        <div className="relative h-14 w-16 shrink-0 rounded-md overflow-hidden">
+                          <Image src={post.imageUrl} alt={post.title} fill className="object-cover opacity-70 transition-opacity group-hover:opacity-100" data-ai-hint="aviation" />
+                        </div>
+                        <div className="flex flex-col justify-center">
+                          <span className="text-[8px] uppercase tracking-widest text-white/40 mb-0.5">{post.category}</span>
+                          <h4 className="text-[11px] font-bold text-white group-hover:text-accent transition-colors line-clamp-2 leading-tight">
+                            {post.title}
+                          </h4>
+                        </div>
                       </div>
-                      <div className="flex flex-col justify-center">
-                        <span className="text-[8px] uppercase tracking-widest text-white/40 mb-0.5">{post.category}</span>
-                        <h4 className="text-[11px] font-bold text-white group-hover:text-accent transition-colors line-clamp-2 leading-tight">
-                          {post.title}
-                        </h4>
-                      </div>
-                    </div>
-                  </Card>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -166,42 +171,44 @@ export default function BlogPage() {
             {/* Latest Articles Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
               {remainingPosts.map((post) => (
-                <Card key={post.id} className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all flex flex-col h-full">
-                  <div className="relative h-40 w-full">
-                    <Image
-                      src={post.imageUrl}
-                      alt={post.title}
-                      fill
-                      className="object-cover opacity-70 group-hover:opacity-90 transition-opacity"
-                      data-ai-hint="flight cockpit"
-                    />
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-black/60 text-[9px] text-white border-transparent backdrop-blur-md h-5">
-                        {post.category}
-                      </Badge>
+                <Link key={post.id} href={`/blog/${post.id}`} className="block h-full">
+                  <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all flex flex-col h-full cursor-pointer">
+                    <div className="relative h-40 w-full">
+                      <Image
+                        src={post.imageUrl}
+                        alt={post.title}
+                        fill
+                        className="object-cover opacity-70 group-hover:opacity-90 transition-opacity"
+                        data-ai-hint="flight cockpit"
+                      />
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-black/60 text-[9px] text-white border-transparent backdrop-blur-md h-5">
+                          {post.category}
+                        </Badge>
+                      </div>
                     </div>
-                  </div>
-                  <CardContent className="p-4 flex flex-1 flex-col">
-                    <div className="flex items-center gap-2 text-[8px] text-white/40 uppercase tracking-widest mb-2">
-                      <div className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" /> 5 min</div>
-                      <div>•</div>
-                      <div>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-                    </div>
-                    <h4 className="text-base font-bold text-white mb-1.5 group-hover:text-accent transition-colors line-clamp-2 leading-tight">
-                      {post.title}
-                    </h4>
-                    <p className="text-[11px] text-white/60 mb-3 line-clamp-3">
-                      {post.excerpt}
-                    </p>
-                    <div className="mt-auto pt-2.5 border-t border-white/5 flex items-center justify-between">
-                      <Button variant="link" className="p-0 text-accent hover:text-accent/80 h-auto font-bold text-[10px] group/btn">
-                        Read Insight
-                        <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
-                      </Button>
-                      <span className="text-[8px] text-white/30 font-code">{post.author}</span>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <CardContent className="p-4 flex flex-1 flex-col">
+                      <div className="flex items-center gap-2 text-[8px] text-white/40 uppercase tracking-widest mb-2">
+                        <div className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" /> 5 min</div>
+                        <div>•</div>
+                        <div>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                      </div>
+                      <h4 className="text-base font-bold text-white mb-1.5 group-hover:text-accent transition-colors line-clamp-2 leading-tight">
+                        {post.title}
+                      </h4>
+                      <p className="text-[11px] text-white/60 mb-3 line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                      <div className="mt-auto pt-2.5 border-t border-white/5 flex items-center justify-between">
+                        <Button variant="link" className="p-0 text-accent hover:text-accent/80 h-auto font-bold text-[10px] group/btn">
+                          Read Insight
+                          <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
+                        </Button>
+                        <span className="text-[8px] text-white/30 font-code">{post.author}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
 
