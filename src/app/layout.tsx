@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -6,7 +7,7 @@ import { Inter } from 'next/font/google';
 import { UserProvider } from '@/hooks/use-user';
 import { FirebaseClientProvider } from '@/firebase';
 
-// AeroDesk Version: 1.0.4 - Institutional Refresh
+// AeroDesk Version: 1.0.5 - Performance Optimized
 export const metadata: Metadata = {
   title: 'AeroDesk',
   description:
@@ -36,8 +37,7 @@ export default function RootLayout({
       <body
         className={cn(
           'min-h-screen font-body antialiased',
-          inter.variable,
-          process.env.NODE_ENV === 'development' ? 'debug-screens' : ''
+          inter.variable
         )}
       >
         <UserProvider>
