@@ -54,7 +54,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
         const inputValue = e.target.value;
         onChange(inputValue);
 
-        if (inputValue.length >= 2) {
+        if (inputValue.length >= 1) {
             const filtered = primeDestinations.filter(dest =>
                 dest.toLowerCase().includes(inputValue.toLowerCase())
             );
@@ -70,11 +70,10 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
         onChange(suggestion);
         setSuggestions([]);
         setShowSuggestions(false);
-        inputRef.current?.blur();
     };
 
     return (
-        <div className={cn("relative w-full h-full", showSuggestions && "z-50")}>
+        <div className={cn("relative w-full h-full group/autocomplete", showSuggestions && "z-50")}>
             <Input
                 ref={inputRef}
                 type="text"
@@ -82,7 +81,7 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                 value={value}
                 onChange={handleInputChange}
                 onFocus={() => {
-                    if (value.length >= 2) {
+                    if (value.length >= 1) {
                         const filtered = primeDestinations.filter(dest =>
                             dest.toLowerCase().includes(value.toLowerCase())
                         );
@@ -93,18 +92,20 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
                     }
                 }}
                 onBlur={() => {
-                    setTimeout(() => setShowSuggestions(false), 150);
+                    // Timeout to allow onMouseDown to fire on the suggestion
+                    setTimeout(() => setShowSuggestions(false), 200);
                 }}
                 className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-2.5 px-2"
                 autoComplete="off"
             />
             {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-[100] left-0 right-0 top-full bg-slate-900 border border-white/20 rounded-b-md shadow-2xl max-h-60 overflow-y-auto backdrop-blur-xl">
+                <div className="absolute z-[100] left-0 right-0 top-full bg-slate-900 border border-white/20 rounded-b-md shadow-2xl max-h-60 overflow-y-auto backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
                     {suggestions.map((suggestion, index) => (
                         <div
                             key={index}
-                            className="p-3 hover:bg-white/10 cursor-pointer text-white text-sm border-b border-white/5 last:border-0"
+                            className="p-3 hover:bg-white/10 cursor-pointer text-white text-sm border-b border-white/5 last:border-0 text-left transition-colors"
                             onMouseDown={(e) => {
+                                // Prevent onBlur from firing before selection
                                 e.preventDefault();
                                 handleSelectSuggestion(suggestion);
                             }}
@@ -154,7 +155,7 @@ export function BookingWidget() {
 
 
   return (
-    <div className="p-2 sm:p-4 rounded-xl shadow-2xl border border-white/10 max-w-4xl mx-auto bg-black/20 backdrop-blur-md">
+    <div className="p-2 sm:p-4 rounded-xl shadow-2xl border border-white/10 max-w-4xl mx-auto bg-black/20 backdrop-blur-md relative z-20">
         <Tabs defaultValue="jet" className="w-full">
             <TooltipProvider>
                 <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent p-0 mb-4 sm:mb-6">
@@ -212,7 +213,7 @@ export function BookingWidget() {
                     
                     {tripType === 'oneway' && (
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-white/10 rounded-xl border border-white/10 overflow-hidden">
+                            <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-white/10 rounded-xl border border-white/10 overflow-visible bg-black/40">
                                 <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                                 <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                                 <div className="relative">
@@ -230,12 +231,12 @@ export function BookingWidget() {
                     
                     {tripType === 'round' && (
                         <div className="space-y-3">
-                            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10 rounded-xl border border-white/10 overflow-hidden">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10 rounded-xl border border-white/10 overflow-visible bg-black/40">
                                 <AutocompleteInput placeholder="Origin" value={origin} onChange={setOrigin} />
                                 <AutocompleteInput placeholder="Destination" value={destination} onChange={setDestination} />
                                 <Input type="number" placeholder="Passengers" value={passengers} onChange={e => setPassengers(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-2.5" />
                             </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-white/10 rounded-xl border border-white/10 overflow-hidden">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-white/10 rounded-xl border border-white/10 overflow-hidden bg-black/40">
                                 <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Dep Date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-2.5 text-xs" style={{colorScheme: 'dark'}} />
                                 <Input type="text" onFocus={(e) => e.target.type = 'time'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Dep Time" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-2.5 text-xs" style={{colorScheme: 'dark'}} />
                                 <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Ret Date" value={returnDate} onChange={e => setReturnDate(e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-2.5 text-xs" style={{colorScheme: 'dark'}} />
@@ -248,7 +249,7 @@ export function BookingWidget() {
                         <div className="space-y-3">
                             <div className="space-y-2">
                                 {legs.map((leg) => (
-                                    <div key={leg.id} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] divide-y sm:divide-y-0 sm:divide-x divide-white/10 items-stretch rounded-xl border border-white/10 overflow-hidden relative">
+                                    <div key={leg.id} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] divide-y sm:divide-y-0 sm:divide-x divide-white/10 items-stretch rounded-xl border border-white/10 overflow-visible relative bg-black/40">
                                         <AutocompleteInput placeholder="Origin" value={leg.origin} onChange={(val) => handleLegChange(leg.id, 'origin', val)} />
                                         <AutocompleteInput placeholder="Destination" value={leg.destination} onChange={(val) => handleLegChange(leg.id, 'destination', val)} />
                                         <Input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} placeholder="Date" value={leg.departureDate} onChange={(e) => handleLegChange(leg.id, 'departureDate', e.target.value)} className="bg-transparent text-white placeholder:text-white/70 border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 text-center w-full h-full py-2.5 text-xs" style={{colorScheme: 'dark'}} />
