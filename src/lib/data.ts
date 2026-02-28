@@ -173,6 +173,98 @@ export const mockCrew: CrewMember[] = [
     { id: 'CREW-02', operatorId: 'op-01', firstName: 'Sanya', lastName: 'Malhotra', email: 'sanya@flyco.demo.aerodesk.com', role: 'Cabin Crew', status: 'On Duty', assignedAircraftRegistration: 'VT-FLY', createdAt: '2025-01-10T00:00:00Z', updatedAt: '2025-01-10T00:00:00Z' }
 ];
 
+// Content Data
+export const mockBlogPosts: BlogPost[] = [
+  {
+    id: 'post-1',
+    title: "India's Evolving NSOP Framework: 2025 Outlook",
+    excerpt: "An analysis of the new DGCA guidelines for non-scheduled operators and their impact on private charter infrastructure.",
+    category: 'Private Aviation',
+    imageUrl: 'https://images.unsplash.com/photo-1566212775038-532d06eda485?q=80&w=1080',
+    author: 'Capt. Rajesh V.',
+    date: '2025-02-15',
+    isFeatured: true
+  },
+  {
+    id: 'post-2',
+    title: "The Rise of Corporate Shuttle Coordination",
+    excerpt: "How Indian enterprises are utilizing long-term jet seat blocks to optimize executive movement across manufacturing hubs.",
+    category: 'Corporate Travel',
+    imageUrl: 'https://images.unsplash.com/photo-1616142387171-fadb42551e7a?q=80&w=1080',
+    author: 'Priya Sharma',
+    date: '2025-02-10'
+  },
+  {
+    id: 'post-3',
+    title: "Decentralizing Aviation: Tier-2 City Connectivity",
+    excerpt: "Operational insights into the growth of charter activity in cities like Indore, Raipur, and Guwahati.",
+    category: 'Market Trends',
+    imageUrl: 'https://images.unsplash.com/photo-1716161051573-5aad6047161a?q=80&w=1080',
+    author: 'Amit Patel',
+    date: '2025-02-05'
+  },
+  {
+    id: 'post-4',
+    title: "Compliance-First: The New Standard for Charter",
+    excerpt: "Why digital audit trails are becoming mandatory for high-value corporate travel governance.",
+    category: 'Operator Perspectives',
+    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1080',
+    author: 'Vikram Singh',
+    date: '2025-01-28'
+  }
+];
+
+export const mockPressReleases: PressRelease[] = [
+  {
+    id: 'pr-1',
+    title: "AeroDesk Announces Institutional Network Expansion",
+    description: "New partnerships with 12 leading NSOP holders solidify AeroDesk as India's premier coordination infrastructure.",
+    date: '2025-02-20',
+    category: 'Corporate'
+  },
+  {
+    id: 'pr-2',
+    title: "Digital Compliance Protocol v2.0 Launched",
+    description: "Enhanced AI-driven verification for passenger manifests and DGCA license synchronization.",
+    date: '2025-01-15',
+    category: 'Technology'
+  }
+];
+
+export const mockMediaMentions: MediaMention[] = [
+  {
+    id: 'mm-1',
+    publication: 'Economic Times',
+    title: "AeroDesk: The Digital Spine of Indian Private Aviation",
+    snippet: "How a startup is bringing institutional governance to the fragmented charter market.",
+    date: '2025-02-18'
+  },
+  {
+    id: 'mm-2',
+    publication: 'Aviation Week',
+    title: "Streamlining NSOP Workflows in South Asia",
+    snippet: "AeroDesk's coordination model cited as a case study for regional infrastructure maturity.",
+    date: '2025-01-30'
+  }
+];
+
+export const mockBrandAssets: BrandAsset[] = [
+  {
+    id: 'ba-1',
+    title: "Platform UI Overview",
+    type: "Image",
+    imageUrl: "https://images.unsplash.com/photo-1761813409462-9329c23c7541?q=80&w=1080",
+    fileSize: "2.4 MB"
+  },
+  {
+    id: 'ba-2',
+    title: "Institutional Logo Set",
+    type: "Vector",
+    imageUrl: "https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?q=80&w=1080",
+    fileSize: "1.8 MB"
+  }
+];
+
 // Fallback exports
 export const mockFeatureFlags: FeatureFlag[] = [
     { id: 'FF-01', name: 'AI_REVENUE_INSIGHTS', description: 'Enable AI-driven revenue forecasting on dashboards', isEnabled: true },
@@ -188,7 +280,3 @@ export const mockActivityLogs: ActivityLog[] = [];
 export const mockPlatformChargeRules: PlatformChargeRule[] = [];
 export const mockBillingLedger: EntityBillingLedger[] = [];
 export const mockSubscriptionPlans: SubscriptionPlan[] = [];
-export const mockPressReleases: PressRelease[] = [];
-export const mockMediaMentions: MediaMention[] = [];
-export const mockBrandAssets: BrandAsset[] = [];
-export const mockBlogPosts: BlogPost[] = [];

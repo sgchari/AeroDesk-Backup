@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -25,6 +24,32 @@ export default function BlogPage() {
   const leadPost = mockBlogPosts[0];
   const trendingPosts = mockBlogPosts.slice(1, 4);
   const remainingPosts = mockBlogPosts.slice(4);
+
+  // Safety guard for empty data registry
+  if (!leadPost) {
+    return (
+      <div className="w-full">
+        <div
+          className="fixed inset-0 z-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
+          }}
+        >
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+        <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
+          <LandingHeader activePage="Blog" />
+          <main className="flex-1 py-12 flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <h1 className="text-2xl font-bold text-white">Institutional Intelligence</h1>
+              <p className="text-white/60">No reports are currently available in the public registry.</p>
+            </div>
+          </main>
+          <LandingFooter />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
