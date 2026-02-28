@@ -1,7 +1,7 @@
 'use client';
 import Link from "next/link";
 import { Logo } from "./logo";
-import { Phone, Mail, MessageSquare } from "lucide-react";
+import { Phone, Mail, MessageSquare, Linkedin, Twitter, Instagram } from "lucide-react";
 
 export function LandingFooter() {
     return (
@@ -70,8 +70,19 @@ export function LandingFooter() {
                 <p className="text-xs leading-relaxed text-white/60">
                   Digitally connecting India’s Private Aviation Ecosystem.
                 </p>
-                <div className="flex gap-4">
-                  {/* Social SVGs remained unchanged for visual brevity */}
+                <div className="flex gap-4 pt-2">
+                  <Link href="#" className="text-white/60 hover:text-accent transition-colors">
+                    <Linkedin className="h-5 w-5" />
+                    <span className="sr-only">LinkedIn</span>
+                  </Link>
+                  <Link href="#" className="text-white/60 hover:text-accent transition-colors">
+                    <Twitter className="h-5 w-5" />
+                    <span className="sr-only">Twitter</span>
+                  </Link>
+                  <Link href="#" className="text-white/60 hover:text-accent transition-colors">
+                    <Instagram className="h-5 w-5" />
+                    <span className="sr-only">Instagram</span>
+                  </Link>
                 </div>
               </div>
             </div>
