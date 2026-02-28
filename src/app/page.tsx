@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -155,7 +156,7 @@ export default function Home() {
                       key={index}
                       className="flex flex-col items-center rounded-xl border-white/10 bg-black/15 p-6 text-center backdrop-blur-md"
                     >
-                      <feature.icon className="h-10 w-10 text-yellow-300" />
+                      <feature.icon className="h-7 w-7 text-yellow-300" />
                       <h3 className="mt-4 text-lg font-bold text-white">
                         {feature.title}
                       </h3>
