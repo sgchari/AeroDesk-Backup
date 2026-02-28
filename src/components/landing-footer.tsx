@@ -76,13 +76,13 @@ export function LandingFooter() {
                     <Linkedin className="h-5 w-5 fill-current" />
                     <span className="sr-only">LinkedIn</span>
                   </Link>
-                  <Link href="#" className="text-[#1DA1F2] transition-opacity hover:opacity-80">
-                    <Twitter className="h-5 w-5 fill-current" />
-                    <span className="sr-only">Twitter</span>
-                  </Link>
                   <Link href="#" className="text-[#E4405F] transition-opacity hover:opacity-80">
                     <Instagram className="h-5 w-5" />
                     <span className="sr-only">Instagram</span>
+                  </Link>
+                  <Link href="#" className="text-[#1DA1F2] transition-opacity hover:opacity-80">
+                    <Twitter className="h-5 w-5 fill-current" />
+                    <span className="sr-only">Twitter</span>
                   </Link>
                 </div>
               </div>
