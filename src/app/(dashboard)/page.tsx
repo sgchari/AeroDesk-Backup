@@ -1,5 +1,6 @@
-// This file is intentionally left blank to resolve a route conflict.
-// The dashboard logic has been moved to /app/dashboard/page.tsx.
-export default function OldDashboardPage() {
-  return null;
+
+// Redundant page removed to resolve route conflict.
+import { redirect } from 'next/navigation';
+export default function RedundantPage() {
+  redirect('/dashboard');
 }

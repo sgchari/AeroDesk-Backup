@@ -20,16 +20,17 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Memoized fetch function to ensure stability
   const fetchUser = useCallback(() => {
-    setLoading(true);
+    // Optimization: Only set global loading if we don't already have a user
+    // This allows for background verification without UI flicker
+    if (!user) setLoading(true);
+    
     setError(null);
     try {
         const demoUserId = typeof window !== 'undefined' ? localStorage.getItem('demoUserId') : null;
         if (demoUserId) {
             const foundUser = mockUsers.find(u => u.id === demoUserId);
             if (foundUser) {
-                // If the user is part of a corporate desk, find their company name
                 if (['CTD Admin', 'Corporate Admin', 'Requester'].includes(foundUser.role) && foundUser.ctdId) {
                     const ctd = mockCorporateTravelDesks.find(d => d.id === foundUser.ctdId);
                     const userWithCompany = {
@@ -53,12 +54,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } finally {
         setLoading(false);
     }
-  }, []);
+  }, [user]);
 
-  // Initialize once on mount
   useEffect(() => {
     fetchUser();
-  }, [fetchUser]);
+  }, []); // Run only on initial mount
 
   const login = (uid: string) => {
     localStorage.setItem('demoUserId', uid);

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -29,14 +30,16 @@ export default function BlogPage() {
   // Safety guard for empty data registry
   if (!leadPost) {
     return (
-      <div className="w-full">
-        <div
-          className="fixed inset-0 z-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/40" />
+      <div className="w-full relative min-h-screen">
+        <div className="fixed inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop"
+            alt="Background"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
         </div>
         <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
           <LandingHeader activePage="Blog" />
@@ -53,15 +56,17 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="w-full">
-      {/* Fixed Background Layer */}
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40" />
+    <div className="w-full relative min-h-screen">
+      {/* Optimized Background Layer */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col bg-transparent">

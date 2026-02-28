@@ -4,6 +4,7 @@ import { MainSidebar } from '@/components/main-sidebar';
 import { Sidebar, SidebarInset, SidebarProvider, SidebarRail } from '@/components/ui/sidebar';
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function DashboardLayout({
   children,
@@ -12,8 +13,19 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-background">
-      {/* Dynamic Aviation Atmosphere Layer */}
+      {/* Dynamic Aviation Atmosphere Layer - Optimized */}
       <div className="fixed inset-0 z-0 bg-aviation-radial" />
+      
+      {/* Secondary Depth Layer */}
+      <div className="fixed inset-0 z-0 opacity-20 mix-blend-overlay">
+        <Image 
+          src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop"
+          alt="Atmosphere"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
       
       <SidebarProvider className="relative z-10">
         <Sidebar collapsible="icon" className="border-r-0 bg-transparent">
@@ -23,7 +35,7 @@ export default function DashboardLayout({
         <SidebarInset className="bg-transparent overflow-x-hidden">
           <Header />
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-8 lg:p-8 min-w-0">
-            <div className="flex-1 w-full">
+            <div className="flex-1 w-full animate-in fade-in duration-500">
               {children}
             </div>
             

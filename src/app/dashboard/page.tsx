@@ -50,7 +50,7 @@ const quickLinks = [
 
 function CustomerGateway() {
     return (
-        <>
+        <div className="space-y-6">
             <PageHeader 
                 title="Fly Without Convention"
                 description="Your private aviation journey, perfectly coordinated. What would you like to do today?"
@@ -80,7 +80,7 @@ function CustomerGateway() {
                     </Card>
                 ))}
             </div>
-        </>
+        </div>
     )
 }
 
@@ -89,15 +89,8 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoading) {
-      return; 
-    }
-
-    if (!user && !error) {
-      const demoUserId = typeof window !== 'undefined' ? localStorage.getItem('demoUserId') : null;
-      if (!demoUserId) {
-        router.replace('/login');
-      }
+    if (!isLoading && !user && !error) {
+      router.replace('/login');
     }
   }, [user, isLoading, error, router]);
 
@@ -123,7 +116,7 @@ export default function DashboardPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !user) {
     return <DashboardSkeleton />;
   }
 
@@ -131,8 +124,7 @@ export default function DashboardPage() {
     return (
         <div className="p-4 rounded-md border border-destructive bg-destructive/10 text-destructive-foreground">
             <h3 className="font-bold">Governance Context Error</h3>
-            <p>There was a problem loading your institutional profile. This often occurs if the session token has expired or the database record is missing.</p>
-            <p className="text-xs mt-2 font-code">Details: {error.message}</p>
+            <p>There was a problem loading your institutional profile. Details: {error.message}</p>
             <Button variant="link" onClick={() => router.replace('/login')} className="p-0 mt-2 text-destructive-foreground">
               Re-authenticate to Platform
             </Button>
