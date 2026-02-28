@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -44,9 +43,9 @@ import { LandingFooter } from '@/components/landing-footer';
 const features = [
   {
     icon: FileText,
-    title: 'Flight Request & Lifecycle Tracking',
+    title: 'Charter Request & Full Journey Tracking',
     description:
-      'Create charter requests, specify flight and accommodation needs, and maintain visibility across the full request lifecycle.',
+      'Create private flight requests, define travel and stay requirements, and monitor every stage of your journey from submission to completion.',
   },
   {
     icon: GanttChartSquare,
