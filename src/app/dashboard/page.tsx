@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useUser } from '@/hooks/use-user';
@@ -90,7 +89,8 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isLoading && !user && !error) {
-      router.replace('/login');
+      // Redirection logic synchronized to homepage for all screen sizes
+      router.replace('/');
     }
   }, [user, isLoading, error, router]);
 

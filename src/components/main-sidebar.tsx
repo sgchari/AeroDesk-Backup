@@ -1,4 +1,3 @@
-
 'use client';
 import {
   Home,
@@ -19,15 +18,25 @@ import {
   Bell,
   CalendarCheck,
   Coins,
-  Zap
+  Zap,
+  LogOut
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { useUser } from '@/hooks/use-user';
 import type { UserRole } from '@/lib/types';
 import { Logo } from './logo';
-import { SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSkeleton, useSidebar } from '@/components/ui/sidebar';
+import { 
+  SidebarHeader, 
+  SidebarContent, 
+  SidebarMenu, 
+  SidebarMenuItem, 
+  SidebarMenuButton, 
+  SidebarMenuSkeleton, 
+  useSidebar,
+  SidebarFooter
+} from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
 const navItems: Record<string, any[]> = {
@@ -119,7 +128,8 @@ function SidebarSkeleton() {
 
 export function MainSidebar({ className }: { className?: string }) {
   const pathname = usePathname();
-  const { user, isLoading } = useUser();
+  const router = useRouter();
+  const { user, isLoading, logout } = useUser();
   const { isMobile, setOpenMobile } = useSidebar();
   const currentNavItems = user ? navItems[user.role as string] || [] : [];
 
@@ -127,6 +137,15 @@ export function MainSidebar({ className }: { className?: string }) {
     if (isMobile) {
       setOpenMobile(false);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+    // Redirection to homepage
+    router.push('/');
   };
 
   return (
@@ -165,6 +184,22 @@ export function MainSidebar({ className }: { className?: string }) {
           </SidebarMenu>
         )}
       </SidebarContent>
+
+      {!isLoading && user && (
+        <SidebarFooter className="p-4 border-t border-white/5">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                onClick={handleLogout}
+                className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Logout System</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      )}
     </>
   );
 }
