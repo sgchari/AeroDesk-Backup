@@ -12,56 +12,74 @@ import { RequestSeatAllocationDialog } from "@/components/dashboard/travel-agenc
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
 
-const OpportunityCard = ({ leg, onAction }: { leg: EmptyLeg, onAction: () => void }) => (
-    <Card className="bg-card flex flex-col group hover:border-accent/40 transition-all duration-300 w-full overflow-hidden h-full">
-        <CardHeader className="pb-3 pt-6 px-6">
-            <div className="flex justify-between items-center mb-4">
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">
-                    {leg.operatorName || 'Private Operator'}
-                </span>
-                <span className="text-[9px] font-bold text-muted-foreground uppercase">
-                    {leg.aircraftName || 'Jet Opportunity'}
-                </span>
-            </div>
-            <CardTitle className="text-xl md:text-2xl font-headline font-bold text-white text-center py-2">
-                {leg.departure} <span className="text-accent/40 px-1">—</span> {leg.arrival}
-            </CardTitle>
-        </CardHeader>
-        <CardContent className="flex-grow space-y-6 px-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex flex-col gap-1">
-                    <p className="text-[8px] uppercase font-black text-muted-foreground tracking-[0.2em]">Positioning Date</p>
-                    <div className="flex items-center text-sm text-foreground font-medium">
-                        <Calendar className="h-3.5 w-3.5 mr-2 text-accent/60" />
-                        <span>{new Date(leg.departureTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+const OpportunityCard = ({ leg, onAction }: { leg: EmptyLeg, onAction: () => void }) => {
+    const { toast } = useToast();
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(`https://aerodesk.com/opportunity/${leg.id}`);
+        toast({
+            title: "Commercial Lead Shared",
+            description: "Institutional link copied to clipboard.",
+        });
+    };
+
+    return (
+        <Card className="bg-card flex flex-col group hover:border-accent/40 transition-all duration-300 w-full overflow-hidden h-full">
+            <CardHeader className="pb-3 pt-6 px-6">
+                <div className="flex justify-between items-center mb-4">
+                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">
+                        {leg.operatorName || 'Private Operator'}
+                    </span>
+                    <span className="text-[9px] font-bold text-muted-foreground uppercase">
+                        {leg.aircraftName || 'Jet Opportunity'}
+                    </span>
+                </div>
+                <CardTitle className="text-lg font-headline font-bold text-white text-center py-2">
+                    {leg.departure} <span className="text-accent/40 px-1">—</span> {leg.arrival}
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow space-y-6 px-6">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex flex-col gap-1">
+                        <p className="text-[8px] uppercase font-black text-muted-foreground tracking-[0.2em]">Positioning Date</p>
+                        <div className="flex items-center text-sm text-foreground font-medium">
+                            <Calendar className="h-3.5 w-3.5 mr-2 text-accent/60" />
+                            <span>{new Date(leg.departureTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-1 items-end">
+                        <p className="text-[8px] uppercase font-black text-muted-foreground tracking-[0.2em]">Recoverable Seats</p>
+                        <div className="flex items-center text-sm text-green-500 font-black">
+                            <Users className="h-3.5 w-3.5 mr-2 text-accent/60" />
+                            <span>{leg.availableSeats} Available</span>
+                        </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-1 items-end">
-                    <p className="text-[8px] uppercase font-black text-muted-foreground tracking-[0.2em]">Recoverable Seats</p>
-                    <div className="flex items-center text-sm text-green-500 font-black">
-                        <Users className="h-3.5 w-3.5 mr-2 text-accent/60" />
-                        <span>{leg.availableSeats} Available</span>
-                    </div>
+                
+                <div className="p-3 bg-muted/20 rounded-lg border border-white/5 italic text-[10px] text-muted-foreground text-center flex items-center justify-center gap-2">
+                    <Info className="h-3.5 w-3.5 shrink-0 text-accent/40" />
+                    Final confirmation is subject to operator approval and aircraft positioning.
                 </div>
-            </div>
-            
-            <div className="p-3 bg-muted/20 rounded-lg border border-white/5 italic text-[10px] text-muted-foreground text-center flex items-center justify-center gap-2">
-                <Info className="h-3.5 w-3.5 shrink-0 text-accent/40" />
-                Subject to institutional coordination.
-            </div>
-        </CardContent>
-        <Separator className="bg-white/5 mx-6" />
-        <CardFooter className="py-4 px-6 flex gap-3">
-            <Button variant="outline" size="icon" className="h-10 w-10 border-white/10 text-muted-foreground hover:text-accent hover:bg-accent/10 shrink-0">
-                <Share2 className="h-4 w-4" />
-            </Button>
-            <Button onClick={onAction} className="flex-1 h-10 text-[10px] bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-[0.1em] shadow-xl shadow-accent/5">
-                Request Seat Block
-            </Button>
-        </CardFooter>
-    </Card>
-);
+            </CardContent>
+            <Separator className="bg-white/5 mx-6" />
+            <CardFooter className="py-4 px-6 flex gap-3">
+                <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-10 w-10 border-white/10 text-muted-foreground hover:text-accent hover:bg-accent/10 shrink-0"
+                    onClick={handleShare}
+                >
+                    <Share2 className="h-4 w-4" />
+                </Button>
+                <Button onClick={onAction} className="flex-1 h-10 text-[10px] bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-[0.1em] shadow-xl shadow-accent/5">
+                    Request Seat Block
+                </Button>
+            </CardFooter>
+        </Card>
+    );
+};
 
 export default function AvailableSeatsPage() {
   const firestore = useFirestore();
@@ -90,7 +108,7 @@ export default function AvailableSeatsPage() {
             <Input 
                 placeholder="Search by sector (e.g. Mumbai)..." 
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => setSearch(setSearchTerm(e.target.value))}
                 className="pl-11 bg-muted/20 border-white/10 h-10 text-sm"
             />
         </div>
@@ -134,4 +152,8 @@ export default function AvailableSeatsPage() {
       />
     </div>
   );
+}
+
+function setSearchTerm(value: string): string {
+    return value;
 }

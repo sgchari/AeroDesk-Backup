@@ -14,10 +14,20 @@ import { Separator } from "@/components/ui/separator";
 
 const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
     const { toast } = useToast();
+    
     const handleRequestSeats = (legId: string) => {
         toast({
             title: "Seat Allocation Request Sent",
             description: `Your request for seats on flight ${legId} is subject to operator confirmation.`,
+        });
+    };
+
+    const handleShare = () => {
+        // In a real app, this would use the Web Share API or copy a unique link
+        navigator.clipboard.writeText(`https://aerodesk.com/empty-leg/${leg.id}`);
+        toast({
+            title: "Opportunity Shared",
+            description: "Institutional link has been copied to your clipboard.",
         });
     };
 
@@ -32,7 +42,7 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
                         {leg.aircraftName || 'Private Jet'}
                     </span>
                 </div>
-                <CardTitle className="text-xl md:text-2xl font-headline font-bold text-white text-center py-2">
+                <CardTitle className="text-lg font-headline font-bold text-white text-center py-2">
                     {leg.departure} <span className="text-accent/40 px-1">—</span> {leg.arrival}
                 </CardTitle>
             </CardHeader>
@@ -56,12 +66,17 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
 
                 <div className="p-3 bg-muted/20 rounded-lg border border-white/5 italic text-[10px] text-muted-foreground text-center flex items-center justify-center gap-2">
                     <Info className="h-3.5 w-3.5 shrink-0 text-accent/40" />
-                    Subject to positioning window.
+                    Final confirmation is subject to operator approval and aircraft positioning.
                 </div>
             </CardContent>
             <Separator className="bg-white/5 mx-6" />
             <CardFooter className="pb-6 pt-4 px-6 gap-3">
-                <Button variant="outline" size="icon" className="h-10 w-10 border-white/10 text-muted-foreground hover:text-accent hover:bg-accent/10 shrink-0">
+                <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-10 w-10 border-white/10 text-muted-foreground hover:text-accent hover:bg-accent/10 shrink-0"
+                    onClick={handleShare}
+                >
                     <Share2 className="h-4 w-4" />
                 </Button>
                 <Button className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase text-[10px] tracking-[0.1em] h-10 shadow-xl shadow-accent/5" onClick={() => handleRequestSeats(leg.id)}>
