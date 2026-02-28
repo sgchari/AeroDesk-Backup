@@ -24,7 +24,7 @@ export function UserNav() {
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.push('/');
   };
   
   if (isLoading) {
