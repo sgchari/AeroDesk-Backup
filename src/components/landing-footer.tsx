@@ -1,3 +1,4 @@
+
 'use client';
 import Link from "next/link";
 import { Logo } from "./logo";
@@ -71,15 +72,15 @@ export function LandingFooter() {
                   Digitally connecting India’s Private Aviation Ecosystem.
                 </p>
                 <div className="flex gap-4 pt-2">
-                  <Link href="#" className="text-white/60 hover:text-accent transition-colors">
-                    <Linkedin className="h-5 w-5" />
+                  <Link href="#" className="text-[#0077B5] transition-opacity hover:opacity-80">
+                    <Linkedin className="h-5 w-5 fill-current" />
                     <span className="sr-only">LinkedIn</span>
                   </Link>
-                  <Link href="#" className="text-white/60 hover:text-accent transition-colors">
-                    <Twitter className="h-5 w-5" />
+                  <Link href="#" className="text-[#1DA1F2] transition-opacity hover:opacity-80">
+                    <Twitter className="h-5 w-5 fill-current" />
                     <span className="sr-only">Twitter</span>
                   </Link>
-                  <Link href="#" className="text-white/60 hover:text-accent transition-colors">
+                  <Link href="#" className="text-[#E4405F] transition-opacity hover:opacity-80">
                     <Instagram className="h-5 w-5" />
                     <span className="sr-only">Instagram</span>
                   </Link>
