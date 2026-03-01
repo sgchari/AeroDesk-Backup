@@ -1,6 +1,8 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import type { Operator, CharterRFQ, EmptyLeg } from '@/lib/types';
@@ -79,13 +81,16 @@ export default function OurNetworkPage() {
 
     return (
         <div className="w-full relative min-h-screen text-[#EAEAEA]">
-            {/* Background Layer with Frosted Effect */}
-            <div
-                className="fixed inset-0 z-0 bg-cover bg-center"
-                style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')",
-                }}
-            >
+            {/* Background Layer with Frosted Effect: Optimized with next/image */}
+            <div className="fixed inset-0 z-0">
+                <Image
+                    src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
+                    alt="Aviation Background"
+                    fill
+                    priority
+                    className="object-cover"
+                    data-ai-hint="airplane beach"
+                />
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-md" />
             </div>
 

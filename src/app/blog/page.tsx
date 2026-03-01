@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -37,6 +38,7 @@ export default function BlogPage() {
             fill
             className="object-cover"
             priority
+            data-ai-hint="airplane beach"
           />
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
         </div>
@@ -64,6 +66,7 @@ export default function BlogPage() {
           fill
           className="object-cover"
           priority
+          data-ai-hint="airplane beach"
         />
         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       </div>
@@ -152,7 +155,7 @@ export default function BlogPage() {
 
             {/* Content Utility Bar */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-3 mb-8 bg-white/5 backdrop-blur-md border border-white/10 p-2.5 rounded-xl">
-              <nav className="flex flex-wrap items-center gap-4">
+              <nav className="flex wrap items-center gap-4">
                 {categories.slice(0, 4).map((cat) => (
                   <button
                     key={cat}

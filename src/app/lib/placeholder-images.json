@@ -1,0 +1,101 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "landing-hero",
+      "description": "An airplane flying low over the ocean near a beach",
+      "imageUrl": "https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "airplane beach"
+    },
+    {
+      "id": "landing-features",
+      "description": "Cockpit of a modern aircraft",
+      "imageUrl": "https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "aircraft cockpit"
+    },
+    {
+      "id": "landing-payment",
+      "description": "Clean airport terminal",
+      "imageUrl": "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080",
+      "imageHint": "airport terminal"
+    },
+    {
+      "id": "blog-1",
+      "description": "Private jet on a runway at sunset",
+      "imageUrl": "https://images.unsplash.com/photo-1566212775038-532d06eda485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwcml2YXRlJTIwamV0fGVufDB8fHx8MTc3MjAxOTcxOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "private jet"
+    },
+    {
+      "id": "blog-2",
+      "description": "Pilot checking flight documents",
+      "imageUrl": "https://images.unsplash.com/photo-1758837573876-63871cc70fd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmbGlnaHQlMjBvcGVyYXRpb25zfGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "flight operations"
+    },
+    {
+      "id": "blog-3",
+      "description": "Luxury jet interior seating",
+      "imageUrl": "https://images.unsplash.com/photo-1616142387171-fadb42551e7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxqZXQlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzIwODI3MzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jet interior"
+    },
+    {
+      "id": "blog-4",
+      "description": "Executive mid-size jet in flight",
+      "imageUrl": "https://images.unsplash.com/photo-1768346564233-d71f37bd19b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxleGVjdXRpdmUlMjBqZXR8ZW58MHx8fHwxNzcyMDgyNzM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "executive jet"
+    },
+    {
+      "id": "blog-5",
+      "description": "Regional airport hangar",
+      "imageUrl": "https://images.unsplash.com/photo-1716161051573-5aad6047161a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhaXJwb3J0JTIwaGFuZ2FyfGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "airport hangar"
+    },
+    {
+      "id": "blog-6",
+      "description": "Aircraft engine close up",
+      "imageUrl": "https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhaXJjcmFmdCUyMGVuZ2luZXxlbnwwfHx8fDE3NzIwODI3MzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "aircraft engine"
+    },
+    {
+      "id": "blog-7",
+      "description": "Metropolitan city skyline from above",
+      "imageUrl": "https://images.unsplash.com/photo-1573108724029-4c46571d6490?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYWVyaWFsfGVufDB8fHx8MTc3MTk4NjQyM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "city aerial"
+    },
+    {
+      "id": "blog-8",
+      "description": "Cybersecurity digital grid",
+      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjeWJlcnNlY3VyaXR5fGVufDB8fHx8MTc3MjA4MjczNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cybersecurity"
+    },
+    {
+      "id": "blog-9",
+      "description": "Modern vertical take-off craft concept",
+      "imageUrl": "https://images.unsplash.com/photo-1692128236852-af552fda49f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhdmlhdGlvbiUyMHRlY2h8ZW58MHx8fHwxNzcyMDgyNzM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "aviation tech"
+    },
+    {
+      "id": "blog-10",
+      "description": "Medical transport aircraft",
+      "imageUrl": "https://picsum.photos/seed/blog10/1080/800",
+      "imageHint": "medevac jet"
+    },
+    {
+      "id": "media-asset-1",
+      "description": "AeroDesk brand logo set",
+      "imageUrl": "https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhdmlhdGlvbiUyMGxvZ298ZW58MHx8fHwxNzcyMDgzMDIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "aviation logo"
+    },
+    {
+      "id": "media-asset-2",
+      "description": "Premium aircraft fleet photography",
+      "imageUrl": "https://images.unsplash.com/photo-1616193572425-fd11332ec645?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcml2YXRlJTIwamV0fGVufDB8fHx8MTc3MjAxOTcxOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "private jet"
+    },
+    {
+      "id": "media-asset-3",
+      "description": "AeroDesk digital platform interface",
+      "imageUrl": "https://images.unsplash.com/photo-1761813409462-9329c23c7541?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmbGlnaHQlMjBkYXNoYm9hcmR8ZW58MHx8fHwxNzcyMDgzMDIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "flight dashboard"
+    }
+  ]
+}

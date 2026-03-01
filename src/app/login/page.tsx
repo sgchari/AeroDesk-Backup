@@ -1,6 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,12 +25,16 @@ export default function LoginPage() {
 
   return (
     <div className="w-full">
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')",
-        }}
-      >
+      {/* Background Layer: Optimized with next/image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
+          alt="Aviation Background"
+          fill
+          priority
+          className="object-cover"
+          data-ai-hint="airplane beach"
+        />
         <div className="absolute inset-0 bg-black/30" />
       </div>
       <div className="relative z-10 flex min-h-screen flex-col bg-transparent">

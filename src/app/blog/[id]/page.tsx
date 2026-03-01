@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -28,13 +29,16 @@ export default function BlogPostPage() {
 
   return (
     <div className="w-full">
-      {/* Background Layer */}
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')",
-        }}
-      >
+      {/* Background Layer: Optimized with next/image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+          data-ai-hint="airplane beach"
+        />
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       </div>
 
