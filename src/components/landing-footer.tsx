@@ -5,9 +5,9 @@ import { Phone, Mail, MessageSquare, Linkedin, Twitter, Instagram } from "lucide
 
 export function LandingFooter() {
     return (
-        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-6">
+        <footer className="border-t border-white/10 bg-black/30 text-white/80 backdrop-blur-md py-4 md:py-6">
           <div className="container px-4">
-            <div className="grid w-full grid-cols-1 items-start gap-8 md:grid-cols-4 md:text-left">
+            <div className="grid w-full grid-cols-1 items-start gap-6 md:gap-8 md:grid-cols-4 md:text-left">
               <div className="flex flex-col items-start col-span-2 md:col-span-1">
                 <Link href="/" className="hover:opacity-90 transition-opacity">
                   <Logo />
@@ -86,7 +86,7 @@ export function LandingFooter() {
                 </div>
               </div>
             </div>
-            <div className="mt-8 border-t border-white/10 pt-4 text-center text-[9px] text-white/40 uppercase tracking-[0.2em]">
+            <div className="mt-6 md:mt-8 border-t border-white/10 pt-3 md:pt-4 text-center text-[9px] text-white/40 uppercase tracking-[0.2em]">
               <p>
                 &copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. charter coordination only.
               </p>
