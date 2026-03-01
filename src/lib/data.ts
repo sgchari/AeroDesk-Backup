@@ -274,10 +274,62 @@ export const mockFeatureFlags: FeatureFlag[] = [
 export const mockPolicyFlags: PolicyFlag[] = [
     { id: 'POL-01', ctdId: 'ctd-corp-01', name: 'International Heavy Jet Justification', description: 'Require detailed justification for flights outside APAC using Heavy Jets.', isEnforced: true }
 ];
-export const mockManifests: PassengerManifest[] = [];
-export const mockInvoices: Invoice[] = [];
-export const mockPayments: Payment[] = [];
-export const mockActivityLogs: ActivityLog[] = [];
+
+export const mockManifests: PassengerManifest[] = [
+    {
+        id: 'MAN-004',
+        charterId: 'RFQ-DEMO-004',
+        submittedBy: 'Vikram Malhotra',
+        passengers: [
+            { fullName: 'Vikram Malhotra', dob: '1985-05-12', gender: 'Male', nationality: 'Indian', idType: 'Passport', idNumber: 'L1234567' },
+            { fullName: 'Anita Malhotra', dob: '1988-08-22', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'L7654321' },
+            { fullName: 'Rohan Malhotra', dob: '2015-03-10', gender: 'Male', nationality: 'Indian', idType: 'Passport', idNumber: 'L9988776' },
+            { fullName: 'Sia Malhotra', dob: '2018-11-05', gender: 'Female', nationality: 'Indian', idType: 'Passport', idNumber: 'L1122334' }
+        ],
+        status: 'approved',
+        createdAt: '2025-01-12T10:00:00Z',
+        updatedAt: '2025-01-13T09:00:00Z'
+    }
+];
+
+export const mockInvoices: Invoice[] = [
+    {
+        id: 'INV-004',
+        relatedEntityId: 'RFQ-DEMO-004',
+        entityType: 'charter',
+        operatorId: 'op-01',
+        issuedBy: 'FlyCo Charter',
+        invoiceNumber: 'INV-BOM-004',
+        totalAmount: 1250000,
+        bankDetails: 'HDFC Bank • IFSC: HDFC0000123 • A/C: 5010022334455',
+        paymentDeadline: '2025-01-20',
+        status: 'paid',
+        createdAt: '2025-01-14T11:00:00Z'
+    }
+];
+
+export const mockPayments: Payment[] = [
+    {
+        id: 'PAY-004',
+        relatedEntityId: 'RFQ-DEMO-004',
+        entityType: 'charter',
+        invoiceId: 'INV-004',
+        submittedBy: 'Vikram Malhotra',
+        utrReference: 'BANK-TRF-998877',
+        status: 'verified',
+        createdAt: '2025-01-15T14:00:00Z',
+        verifiedAt: '2025-01-16T10:00:00Z'
+    }
+];
+
+export const mockActivityLogs: ActivityLog[] = [
+    { id: 'LOG-001', charterId: 'RFQ-DEMO-004', entityId: 'RFQ-DEMO-004', entityType: 'charter', actionType: 'TRIP_CLOSED', performedBy: 'Ops Desk', role: 'Operator', previousStatus: 'flightCompleted', newStatus: 'tripClosed', timestamp: '2025-02-11T18:00:00Z' },
+    { id: 'LOG-002', charterId: 'RFQ-DEMO-004', entityId: 'RFQ-DEMO-004', entityType: 'charter', actionType: 'FLIGHT_COMPLETED', performedBy: 'Captain', role: 'Pilot', previousStatus: 'arrived', newStatus: 'flightCompleted', timestamp: '2025-02-10T22:30:00Z' },
+    { id: 'LOG-003', charterId: 'RFQ-DEMO-004', entityId: 'RFQ-DEMO-004', entityType: 'charter', actionType: 'ARRIVED', performedBy: 'Ops Desk', role: 'Operator', previousStatus: 'departed', newStatus: 'arrived', timestamp: '2025-02-10T21:45:00Z' },
+    { id: 'LOG-004', charterId: 'RFQ-DEMO-004', entityId: 'RFQ-DEMO-004', entityType: 'charter', actionType: 'DEPARTED', performedBy: 'Ops Desk', role: 'Operator', previousStatus: 'boarding', newStatus: 'departed', timestamp: '2025-02-10T20:15:00Z' },
+    { id: 'LOG-005', charterId: 'RFQ-DEMO-004', entityId: 'RFQ-DEMO-004', entityType: 'charter', actionType: 'BOARDING', performedBy: 'Gate Agent', role: 'Ground Staff', previousStatus: 'charterConfirmed', newStatus: 'boarding', timestamp: '2025-02-10T19:45:00Z' }
+];
+
 export const mockPlatformChargeRules: PlatformChargeRule[] = [];
 export const mockBillingLedger: EntityBillingLedger[] = [];
 export const mockSubscriptionPlans: SubscriptionPlan[] = [];
