@@ -63,7 +63,7 @@ export default function OurNetworkPage() {
     // Derived Metrics
     const metrics = useMemo(() => {
         const approved = operators || [];
-        const inProgress = rfqs?.filter(r => ['operationalPreparation', 'boarding', 'departed'].includes(r.status)) || [];
+        const inProgress = rfqs?.filter(r => ['operationalPreparation', 'boarding', 'departed', 'arrived'].includes(r.status)) || [];
         return {
             activeOperators: approved.length,
             totalFleet: 124, // In a real app, sum(operator.fleetCount)
@@ -83,7 +83,7 @@ export default function OurNetworkPage() {
             <div
                 className="fixed inset-0 z-0 bg-cover bg-center"
                 style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop')",
+                    backgroundImage: "url('https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop')",
                 }}
             >
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-md" />

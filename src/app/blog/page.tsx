@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -33,7 +32,7 @@ export default function BlogPage() {
       <div className="w-full relative min-h-screen">
         <div className="fixed inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
             alt="Background"
             fill
             className="object-cover"
@@ -60,7 +59,7 @@ export default function BlogPage() {
       {/* Optimized Background Layer */}
       <div className="fixed inset-0 z-0">
         <Image
-          src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2187&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
           alt="Background"
           fill
           className="object-cover"
