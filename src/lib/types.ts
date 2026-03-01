@@ -1,4 +1,5 @@
 
+
 export type UserRole =
   | 'Customer'
   | 'Operator'
@@ -48,6 +49,8 @@ export type Operator = {
   city?: string;
   zone?: 'North' | 'South' | 'East' | 'West' | 'Central';
   featured?: boolean;
+  fleetCount?: number;
+  baseLocation?: { lat: number; lng: number };
 };
 
 export type RfqStatus =
@@ -548,3 +551,4 @@ export type RevenueAuditLog = {
   newValue?: any;
   timestamp: string;
 };
+

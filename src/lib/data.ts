@@ -1,3 +1,4 @@
+
 import type { 
   User, 
   CharterRFQ, 
@@ -73,9 +74,9 @@ export const mockUsers: User[] = [
 ];
 
 export const mockOperators: Operator[] = [
-    { id: 'op-01', externalAuthId: 'op-01', companyName: 'FlyCo Charter', nsopLicenseNumber: 'NSOP/FLYCO/2021', contactPersonName: 'Rajesh Verma', contactEmail: 'ops@flyco.demo.aerodesk.com', status: 'Approved', mouAcceptedAt: '2025-01-10T09:00:00Z', createdAt: '2025-01-10T09:00:00Z', updatedAt: '2025-01-10T09:00:00Z', city: 'Mumbai', zone: 'West' },
-    { id: 'op-02', externalAuthId: 'op-02', companyName: 'Taj Air', nsopLicenseNumber: 'NSOP/TAJ/02', contactPersonName: 'Vikram Singh', contactEmail: 'dispatch@tajair.demo.aerodesk.com', status: 'Approved', mouAcceptedAt: '2025-01-15T10:00:00Z', createdAt: '2025-01-15T10:00:00Z', updatedAt: '2025-01-15T10:00:00Z', city: 'Mumbai', zone: 'West' },
-    { id: 'op-03', externalAuthId: 'op-03', companyName: 'Club One Air', nsopLicenseNumber: 'NSOP/COA/05', contactPersonName: 'Anita Desai', contactEmail: 'fleet@clubone.demo.aerodesk.com', status: 'Approved', mouAcceptedAt: '2025-01-01T11:00:00Z', createdAt: '2025-01-01T11:00:00Z', updatedAt: '2025-01-01T11:00:00Z', city: 'Delhi', zone: 'North' }
+    { id: 'op-01', externalAuthId: 'op-01', companyName: 'FlyCo Charter', nsopLicenseNumber: 'NSOP/FLYCO/2021', contactPersonName: 'Rajesh Verma', contactEmail: 'ops@flyco.demo.aerodesk.com', status: 'Approved', mouAcceptedAt: '2025-01-10T09:00:00Z', createdAt: '2025-01-10T09:00:00Z', updatedAt: '2025-01-10T09:00:00Z', city: 'Mumbai', zone: 'West', fleetCount: 12 },
+    { id: 'op-02', externalAuthId: 'op-02', companyName: 'Taj Air', nsopLicenseNumber: 'NSOP/TAJ/02', contactPersonName: 'Vikram Singh', contactEmail: 'dispatch@tajair.demo.aerodesk.com', status: 'Approved', mouAcceptedAt: '2025-01-15T10:00:00Z', createdAt: '2025-01-15T10:00:00Z', updatedAt: '2025-01-15T10:00:00Z', city: 'Mumbai', zone: 'West', fleetCount: 8 },
+    { id: 'op-03', externalAuthId: 'op-03', companyName: 'Club One Air', nsopLicenseNumber: 'NSOP/COA/05', contactPersonName: 'Anita Desai', contactEmail: 'fleet@clubone.demo.aerodesk.com', status: 'Approved', mouAcceptedAt: '2025-01-01T11:00:00Z', createdAt: '2025-01-01T11:00:00Z', updatedAt: '2025-01-01T11:00:00Z', city: 'Delhi', zone: 'North', fleetCount: 15 }
 ];
 
 export const mockAircrafts: Aircraft[] = [
@@ -88,19 +89,19 @@ export const mockAircrafts: Aircraft[] = [
 
 export const mockRfqs: CharterRFQ[] = [
     // Bidding Phase
-    { id: 'RFQ-DEMO-001', customerId: 'cust-01', requesterExternalAuthId: 'cust-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureDate: '2025-03-15', pax: 4, aircraftType: 'Light Jet', status: 'Bidding Open', createdAt: '2025-02-20T12:00:00Z', bidsCount: 2, bookingChannel: 'direct' },
+    { id: 'RFQ-DEMO-001', customerId: 'cust-01', requesterExternalAuthId: 'cust-01', customerName: 'Sanjana Kumar', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', pax: 4, aircraftType: 'Light Jet', status: 'Bidding Open', createdAt: '2025-02-20T12:00:00Z', bidsCount: 2, bookingChannel: 'direct' },
     
     // Corporate Phase - Stark Industries
-    { id: 'RFQ-CORP-001', customerId: 'ctd-01', requesterExternalAuthId: 'ctd-01', company: 'Stark Industries', customerName: 'Priya Sharma', tripType: 'Onward', departure: 'Delhi (DEL)', arrival: 'London (LHR)', departureDate: '2025-03-20', pax: 6, aircraftType: 'Heavy Jet', status: 'Pending Approval', createdAt: '2025-02-25T10:00:00Z', bidsCount: 0, bookingChannel: 'corporate', costCenter: 'EXEC-PROJ-A', businessPurpose: 'Strategic Global Tech Summit - Board Coordination' },
+    { id: 'RFQ-CORP-001', customerId: 'ctd-01', requesterExternalAuthId: 'ctd-01', company: 'Stark Industries', customerName: 'Priya Sharma', tripType: 'Onward', departure: 'Delhi (VIDP)', arrival: 'London (LHR)', departureDate: '2025-03-20', pax: 6, aircraftType: 'Heavy Jet', status: 'Pending Approval', createdAt: '2025-02-25T10:00:00Z', bidsCount: 0, bookingChannel: 'corporate', costCenter: 'EXEC-PROJ-A', businessPurpose: 'Strategic Global Tech Summit - Board Coordination' },
     
     // Corporate Phase - Reliance Exec
-    { id: 'RFQ-CORP-002', customerId: 'ctd-02', requesterExternalAuthId: 'ctd-02', company: 'Reliance Exec', customerName: 'Rahul Mehta', tripType: 'Return', departure: 'Mumbai (BOM)', arrival: 'Bangalore (BLR)', departureDate: '2025-03-25', pax: 3, aircraftType: 'Mid-size Jet', status: 'Pending Approval', createdAt: '2025-02-26T14:00:00Z', bidsCount: 0, bookingChannel: 'corporate', costCenter: 'RE-LOGISTICS', businessPurpose: 'Facility Inspection & Regional Site Governance' },
+    { id: 'RFQ-CORP-002', customerId: 'ctd-02', requesterExternalAuthId: 'ctd-02', company: 'Reliance Exec', customerName: 'Rahul Mehta', tripType: 'Return', departure: 'Mumbai (VABB)', arrival: 'Bangalore (VOBL)', departureDate: '2025-03-25', pax: 3, aircraftType: 'Mid-size Jet', status: 'Pending Approval', createdAt: '2025-02-26T14:00:00Z', bidsCount: 0, bookingChannel: 'corporate', costCenter: 'RE-LOGISTICS', businessPurpose: 'Facility Inspection & Regional Site Governance' },
 
     // Agency Execution Phase
-    { id: 'RFQ-EXEC-003', customerId: 'ag-01', requesterExternalAuthId: 'ag-01', agencyId: 'ag-01', operatorId: 'op-01', customerName: 'Sky Distributors (Client: Smith)', tripType: 'Onward', departure: 'Mumbai (BOM)', arrival: 'Dubai (DXB)', departureDate: '2025-02-28', pax: 2, aircraftType: 'Heavy Jet', status: 'boarding', createdAt: '2025-02-15T10:00:00Z', bidsCount: 3, totalAmount: 4200000, bookingChannel: 'agency' },
+    { id: 'RFQ-EXEC-003', customerId: 'ag-01', requesterExternalAuthId: 'ag-01', agencyId: 'ag-01', operatorId: 'op-01', customerName: 'Sky Distributors (Client: Smith)', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Dubai (DXB)', departureDate: '2025-02-28', pax: 2, aircraftType: 'Heavy Jet', status: 'boarding', createdAt: '2025-02-15T10:00:00Z', bidsCount: 3, totalAmount: 4200000, bookingChannel: 'agency' },
     
     // Completed Phase
-    { id: 'RFQ-DONE-004', customerId: 'cust-02', requesterExternalAuthId: 'cust-02', operatorId: 'op-02', customerName: 'Vikram Malhotra', tripType: 'Return', departure: 'Mumbai (BOM)', arrival: 'Goa (GOI)', departureDate: '2025-02-10', pax: 4, aircraftType: 'Mid-size Jet', status: 'tripClosed', createdAt: '2025-01-10T09:00:00Z', bidsCount: 4, totalAmount: 1250000, bookingChannel: 'direct' }
+    { id: 'RFQ-DONE-004', customerId: 'cust-02', requesterExternalAuthId: 'cust-02', operatorId: 'op-02', customerName: 'Vikram Malhotra', tripType: 'Return', departure: 'Mumbai (VABB)', arrival: 'Goa (VOGO)', departureDate: '2025-02-10', pax: 4, aircraftType: 'Mid-size Jet', status: 'tripClosed', createdAt: '2025-01-10T09:00:00Z', bidsCount: 4, totalAmount: 1250000, bookingChannel: 'direct' }
 ];
 
 export const mockQuotations: Quotation[] = [
@@ -109,8 +110,8 @@ export const mockQuotations: Quotation[] = [
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
-    { id: 'EL-901', operatorId: 'op-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-001', aircraftName: 'Cessna Citation', departure: 'Mumbai (BOM)', arrival: 'Delhi (DEL)', departureTime: '2025-03-15T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published', seatPricingStrategy: 'Dynamic', estimatedPricePerSeat: 45000 },
-    { id: 'EL-902', operatorId: 'op-03', operatorName: 'Club One Air', aircraftId: 'AC-005', aircraftName: 'King Air B200', departure: 'Bangalore (BLR)', arrival: 'Hyderabad (HYD)', departureTime: '2025-03-18T09:00:00Z', availableSeats: 6, seatsAllocated: 0, status: 'Published', seatPricingStrategy: 'Fixed', estimatedPricePerSeat: 22000 }
+    { id: 'EL-901', operatorId: 'op-01', operatorName: 'FlyCo Charter', aircraftId: 'AC-001', aircraftName: 'Cessna Citation', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureTime: '2025-03-15T14:00:00Z', availableSeats: 4, seatsAllocated: 2, status: 'Published', seatPricingStrategy: 'Dynamic', estimatedPricePerSeat: 45000 },
+    { id: 'EL-902', operatorId: 'op-03', operatorName: 'Club One Air', aircraftId: 'AC-005', aircraftName: 'King Air B200', departure: 'Bangalore (VOBL)', arrival: 'Hyderabad (VOHS)', departureTime: '2025-03-18T09:00:00Z', availableSeats: 6, seatsAllocated: 0, status: 'Published', seatPricingStrategy: 'Fixed', estimatedPricePerSeat: 22000 }
 ];
 
 export const mockEmptyLegSeatAllocationRequests: EmptyLegSeatAllocationRequest[] = [
@@ -280,3 +281,4 @@ export const mockActivityLogs: ActivityLog[] = [];
 export const mockPlatformChargeRules: PlatformChargeRule[] = [];
 export const mockBillingLedger: EntityBillingLedger[] = [];
 export const mockSubscriptionPlans: SubscriptionPlan[] = [];
+
