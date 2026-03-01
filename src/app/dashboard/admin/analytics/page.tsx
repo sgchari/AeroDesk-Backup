@@ -61,7 +61,7 @@ const BASE_ACTIVITY_DATA = [
 
 const BASE_REVENUE_DATA = [
     { name: 'Operators', value: 42, color: '#0EA5E9' },
-    { name: 'Agencies', value: 38, color: '#EEDC5B' },
+    { name: 'Agencies', value: 38, color: '#FFFFBD' },
     { name: 'Hotels', value: 20, color: '#10B981' },
 ];
 
@@ -182,8 +182,8 @@ export default function PortalAdminAnalyticsPage() {
                                                 <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
                                             </linearGradient>
                                             <linearGradient id="colorSeat" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#EEDC5B" stopOpacity={0.3}/>
-                                                <stop offset="95%" stopColor="#EEDC5B" stopOpacity={0}/>
+                                                <stop offset="5%" stopColor="#FFFFBD" stopOpacity={0.3}/>
+                                                <stop offset="95%" stopColor="#FFFFBD" stopOpacity={0}/>
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
@@ -191,7 +191,7 @@ export default function PortalAdminAnalyticsPage() {
                                         <YAxis stroke="#94a3b8" fontSize={10} />
                                         <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
                                         <Area type="monotone" dataKey="charters" stroke="#0EA5E9" fillOpacity={1} fill="url(#colorChar)" name="Charters" />
-                                        <Area type="monotone" dataKey="seats" stroke="#EEDC5B" fillOpacity={1} fill="url(#colorSeat)" name="Seats" />
+                                        <Area type="monotone" dataKey="seats" stroke="#FFFFBD" fillOpacity={1} fill="url(#colorSeat)" name="Seats" />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </CardContent>
@@ -366,11 +366,11 @@ export default function PortalAdminAnalyticsPage() {
                                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                                             <XAxis dataKey="zone" stroke="#94a3b8" fontSize={10} />
                                             <YAxis yAxisId="left" stroke="#94a3b8" fontSize={10} />
-                                            <YAxis yAxisId="right" orientation="right" stroke="#EEDC5B" fontSize={10} domain={[0, 3]} />
+                                            <YAxis yAxisId="right" orientation="right" stroke="#FFFFBD" fontSize={10} domain={[0, 3]} />
                                             <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
                                             <Bar yAxisId="left" dataKey="supply" name="Supply" fill="#0EA5E9" radius={[4, 4, 0, 0]} barSize={20} />
                                             <Bar yAxisId="left" dataKey="demand" name="Demand" fill="#10B981" radius={[4, 4, 0, 0]} barSize={20} />
-                                            <Line yAxisId="right" type="monotone" dataKey="pressure" name="Pressure" stroke="#EEDC5B" strokeWidth={2} dot={{ fill: '#EEDC5B' }} />
+                                            <Line yAxisId="right" type="monotone" dataKey="pressure" name="Pressure" stroke="#FFFFBD" strokeWidth={2} dot={{ fill: '#FFFFBD' }} />
                                         </ComposedChart>
                                     </ResponsiveContainer>
                                 </div>

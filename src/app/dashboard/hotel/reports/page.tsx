@@ -55,7 +55,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 // --- MOCK DATA FOR SCALING ---
 const BASE_REVENUE_DATA = [
     { name: 'Deluxe King', value: 45, color: '#0EA5E9' },
-    { name: 'Executive Suite', value: 35, color: '#EEDC5B' },
+    { name: 'Executive Suite', value: 35, color: '#FFFFBD' },
     { name: 'Presidential', value: 20, color: '#10B981' },
 ];
 
@@ -77,7 +77,7 @@ const BASE_LIFECYCLE_DATA = [
 
 const STAKEHOLDER_DATA = [
     { name: 'Corporate Desk', value: 55, color: '#0EA5E9' },
-    { name: 'HNWI Direct', value: 25, color: '#EEDC5B' },
+    { name: 'HNWI Direct', value: 25, color: '#FFFFBD' },
     { name: 'Travel Agency', value: 20, color: '#8B5CF6' },
 ];
 
@@ -324,7 +324,7 @@ export default function HotelReportsPage() {
                                         <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
                                         <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `${val}%`} />
                                         <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                        <Line type="monotone" dataKey="occupancy" stroke="#EEDC5B" strokeWidth={3} dot={{ fill: '#EEDC5B', r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} name="Occupancy %" />
+                                        <Line type="monotone" dataKey="occupancy" stroke="#FFFFBD" strokeWidth={3} dot={{ fill: '#FFFFBD', r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} name="Occupancy %" />
                                     </LineChart>
                                 </ResponsiveContainer>
                             </CardContent>

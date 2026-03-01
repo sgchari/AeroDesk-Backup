@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -201,7 +200,7 @@ export default function AdminBillingEnginePage() {
                                         <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
                                         <Legend />
                                         <Bar dataKey="rev" name="Gross Volume (Cr)" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
-                                        <Bar dataKey="comm" name="Platform Fees (L)" fill="#EEDC5B" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="comm" name="Platform Fees (L)" fill="#FFFFBD" radius={[4, 4, 0, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </CardContent>

@@ -66,7 +66,7 @@ const BASE_REQUEST_LIFECYCLE = [
 
 const BASE_MODE_MIX = [
     { name: 'Full Charter', value: 60, color: '#0EA5E9' },
-    { name: 'Jet Seat (EL)', value: 40, color: '#EEDC5B' },
+    { name: 'Jet Seat (EL)', value: 40, color: '#FFFFBD' },
 ];
 
 const BASE_COST_CENTER_DATA = [
@@ -309,7 +309,7 @@ export default function CTDAnalyticsPage() {
                                             <Legend />
                                             <Bar dataKey="budget" name="Allocated Budget" fill="#1e293b" radius={[4, 4, 0, 0]} />
                                             <Bar dataKey="consumed" name="Consumed Amount" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
-                                            <Line type="monotone" dataKey="variance" name="Variance Threshold" stroke="#EEDC5B" strokeWidth={2} dot={{ fill: '#EEDC5B' }} />
+                                            <Line type="monotone" dataKey="variance" name="Variance Threshold" stroke="#FFFFBD" strokeWidth={2} dot={{ fill: '#FFFFBD' }} />
                                         </ComposedChart>
                                     </ResponsiveContainer>
                                 </CardContent>
@@ -348,7 +348,7 @@ export default function CTDAnalyticsPage() {
                                         <p className="text-[10px] text-muted-foreground">Current period reconciliation is <span className="text-green-500 font-bold">ON TRACK</span>. 98% of charter segments validated.</p>
                                     </div>
                                 </CardContent>
-                            </Card>
+                            </div>
                         </div>
                     </TabsContent>
                 </Tabs>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -55,7 +54,7 @@ export function AgencyAIInsights() {
 
                 <div className="grid gap-4 md:grid-cols-3">
                     {insights.map((insight, idx) => (
-                        <div key={idx} className="p-4 rounded-xl bg-black/20 border border-white/5 hover:border-white/10 transition-all flex flex-col gap-3 group/item">
+                        <div key={insight.title} className="p-4 rounded-xl bg-black/20 border border-white/5 hover:border-white/10 transition-all flex flex-col gap-3 group/item">
                             <div className="flex items-center justify-between">
                                 <Badge variant="outline" className={cn("text-[8px] uppercase font-bold tracking-widest border-white/10", insight.color)}>
                                     {insight.type}
@@ -77,7 +76,7 @@ export function AgencyAIInsights() {
                             <div className="mt-auto pt-3 border-t border-white/5 flex items-center justify-between">
                                 <span className="text-[9px] font-bold text-muted-foreground/60 uppercase">Impact: {insight.impact}</span>
                                 <div className="flex gap-1">
-                                    <div className="w-1 h-1 rounded-full bg-accent animate-ping" />
+                                    <div className="w-1 h-1 rounded-full bg-primary animate-ping" />
                                     <span className="text-[8px] font-code text-accent uppercase tracking-tighter">Live Signal</span>
                                 </div>
                             </div>

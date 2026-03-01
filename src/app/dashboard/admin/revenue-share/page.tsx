@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -73,7 +72,7 @@ export default function RevenueShareEnginePage() {
 
     const channelData = [
         { name: 'Agency Channel', value: ledger?.filter(l => l.bookingChannel === 'agency').length || 0, color: '#0EA5E9' },
-        { name: 'Direct Channel', value: ledger?.filter(l => l.bookingChannel === 'direct' || l.bookingChannel === 'corporate').length || 0, color: '#EEDC5B' },
+        { name: 'Direct Channel', value: ledger?.filter(l => l.bookingChannel === 'direct' || l.bookingChannel === 'corporate').length || 0, color: '#FFFFBD' },
     ];
 
     return (

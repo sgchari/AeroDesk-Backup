@@ -90,7 +90,7 @@ export const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
             >
               <Link href="/login">Login</Link>
             </Button>
-            <Button asChild style={{ backgroundColor: '#EEDC5B', color: 'black' }}>
+            <Button asChild style={{ backgroundColor: '#FFFFBD', color: 'black' }}>
               <Link href="/register">Register</Link>
             </Button>
           </div>
@@ -138,7 +138,7 @@ export const LandingHeader: FC<{activePage?: string}> = ({activePage}) => {
                       +91 9819754038
                     </a>
                     <div className="mt-2 grid grid-cols-2 gap-2">
-                      <Button asChild style={{ backgroundColor: '#EEDC5B', color: 'black' }}>
+                      <Button asChild style={{ backgroundColor: '#FFFFBD', color: 'black' }}>
                         <Link href="/login">Login</Link>
                       </Button>
                       <Button

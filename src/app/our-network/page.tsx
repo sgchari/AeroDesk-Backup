@@ -236,8 +236,8 @@ export default function OurNetworkPage() {
                                 </TooltipProvider>
 
                                 {/* Decorative Animated Route Arcs (Subtle) */}
-                                <path d="M480 220 Q 400 400, 320 580" fill="none" stroke="rgba(238, 220, 91, 0.15)" strokeWidth="1" strokeDasharray="5,5" className="animate-pulse" />
-                                <path d="M480 220 Q 650 500, 480 780" fill="none" stroke="rgba(238, 220, 91, 0.15)" strokeWidth="1" strokeDasharray="5,5" className="animate-pulse" />
+                                <path d="M480 220 Q 400 400, 320 580" fill="none" stroke="rgba(255, 255, 189, 0.15)" strokeWidth="1" strokeDasharray="5,5" className="animate-pulse" />
+                                <path d="M480 220 Q 650 500, 480 780" fill="none" stroke="rgba(255, 255, 189, 0.15)" strokeWidth="1" strokeDasharray="5,5" className="animate-pulse" />
                             </svg>
                         </div>
 

@@ -75,7 +75,7 @@ const SECTOR_YIELD_DATA = [
     { sector: 'MAA-SIN', count: 3, yield: 1.5, revenue: 6800000 },
 ];
 
-const COLORS = ['#0EA5E9', '#EEDC5B', '#F43F5E', '#10B981'];
+const COLORS = ['#0EA5E9', '#FFFFBD', '#F43F5E', '#10B981'];
 
 export default function OperatorReportsPage() {
     const { user } = useUser();
@@ -200,7 +200,7 @@ export default function OperatorReportsPage() {
                                                 formatter={(val: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(val)}
                                                 contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }}
                                             />
-                                            <Line type="monotone" dataKey="revenue" stroke="#EEDC5B" strokeWidth={3} dot={{ fill: '#EEDC5B', r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                                            <Line type="monotone" dataKey="revenue" stroke="#FFFFBD" strokeWidth={3} dot={{ fill: '#FFFFBD', r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} />
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </CardContent>

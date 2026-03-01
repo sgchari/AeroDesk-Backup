@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -51,7 +50,7 @@ export function StatusTimeline({ currentStatus }: { currentStatus: string }) {
                             <div className={cn(
                                 "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-500",
                                 isCompleted ? "bg-accent border-accent text-accent-foreground" : 
-                                isActive ? "bg-background border-accent text-accent scale-110 shadow-[0_0_15px_rgba(238,220,91,0.3)]" : 
+                                isActive ? "bg-background border-accent text-accent scale-110 shadow-[0_0_15px_rgba(255,255,189,0.3)]" : 
                                 "bg-muted border-white/10 text-muted-foreground"
                             )}>
                                 {isCompleted ? <Check className="h-4 w-4" /> : <span className="text-[10px] font-bold">{idx + 1}</span>}
