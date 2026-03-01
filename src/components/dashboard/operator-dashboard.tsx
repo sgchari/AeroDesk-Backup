@@ -34,7 +34,7 @@ export function OperatorDashboard() {
     return query(
         collection(firestore, 'charterRequests'), 
         where('operatorId', '==', user.id),
-        where('status', 'not-in', ['Draft', 'New', 'Bidding Open', 'tripClosed', 'Cancelled'])
+        where('status', 'not-in', ['Draft', 'New', 'Bidding Open', 'Cancelled'])
     );
   }, [firestore, user]);
   const { data: rawActiveMissions, isLoading: missionsLoading } = useCollection<CharterRFQ>(activeMissionsQuery, 'charterRequests');
@@ -42,7 +42,7 @@ export function OperatorDashboard() {
   // High-fidelity client-side filtering for simulation mode
   const activeMissions = useMemo(() => {
     return rawActiveMissions?.filter(m => 
-        !['Draft', 'New', 'Bidding Open', 'tripClosed', 'Cancelled'].includes(m.status)
+        !['Draft', 'New', 'Bidding Open', 'Cancelled'].includes(m.status)
     ) || [];
   }, [rawActiveMissions]);
 

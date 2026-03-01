@@ -81,7 +81,7 @@ const notify = () => {
 };
 
 const resolveCollectionKey = (collectionName: string) => {
-    if (collectionName === 'charterRequests') return 'charterRFQs';
+    if (collectionName === 'charterRequests' || collectionName === 'charterRFQs') return 'charterRFQs';
     return collectionName;
 };
 
@@ -146,7 +146,8 @@ const getDoc = (path: string): any | null => {
     const dataSet = (db as any)[resolvedKey];
     if (!dataSet) return null;
     
-    return dataSet.find((d: any) => d.id === docId) || null;
+    const foundDoc = dataSet.find((d: any) => d.id === docId);
+    return foundDoc ? deepCopy(foundDoc) : null;
 }
 
 const addDoc = (path: string, data: any) => {

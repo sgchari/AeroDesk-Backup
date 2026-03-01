@@ -100,8 +100,8 @@ export const mockRfqs: CharterRFQ[] = [
     // Agency Execution Phase
     { id: 'RFQ-EXEC-003', customerId: 'ag-01', requesterExternalAuthId: 'ag-01', agencyId: 'ag-01', operatorId: 'op-01', customerName: 'Sky Distributors (Client: Smith)', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Dubai (DXB)', departureDate: '2025-02-28', pax: 2, aircraftType: 'Heavy Jet', status: 'boarding', createdAt: '2025-02-15T10:00:00Z', bidsCount: 3, totalAmount: 4200000, bookingChannel: 'agency' },
     
-    // Completed Phase
-    { id: 'RFQ-DEMO-004', customerId: 'cust-02', requesterExternalAuthId: 'cust-02', operatorId: 'op-02', customerName: 'Vikram Malhotra', tripType: 'Return', departure: 'Mumbai (VABB)', arrival: 'Goa (VOGO)', departureDate: '2025-02-10', pax: 4, aircraftType: 'Mid-size Jet', status: 'tripClosed', createdAt: '2025-01-10T09:00:00Z', bidsCount: 4, totalAmount: 1250000, bookingChannel: 'direct' }
+    // Completed Phase - Assigned to op-01 for visibility
+    { id: 'RFQ-DEMO-004', customerId: 'cust-02', requesterExternalAuthId: 'cust-02', operatorId: 'op-01', customerName: 'Vikram Malhotra', tripType: 'Return', departure: 'Mumbai (VABB)', arrival: 'Goa (VOGO)', departureDate: '2025-02-10', pax: 4, aircraftType: 'Mid-size Jet', status: 'tripClosed', createdAt: '2025-01-10T09:00:00Z', bidsCount: 4, totalAmount: 1250000, bookingChannel: 'direct' }
 ];
 
 export const mockQuotations: Quotation[] = [
