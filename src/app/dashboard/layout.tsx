@@ -1,4 +1,3 @@
-
 import { Header } from '@/components/header';
 import { MainSidebar } from '@/components/main-sidebar';
 import { Sidebar, SidebarInset, SidebarProvider, SidebarRail } from '@/components/ui/sidebar';
@@ -39,10 +38,10 @@ export default function DashboardLayout({
               {children}
             </div>
             
-            <footer className="mt-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-                <p className="text-center md:text-left">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure. charter coordination only.</p>
+            <footer className="mt-auto pt-4 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                <p className="text-center md:text-left">&copy; {new Date().getFullYear()} AeroDesk Aviation Infrastructure.</p>
                 <div className="flex gap-6">
-                    <Link href="mailto:feedback@aerodesk.com" className="hover:text-accent transition-colors">Feedback & Suggestions</Link>
+                    <Link href="mailto:feedback@aerodesk.com" className="hover:text-accent transition-colors">Feedback</Link>
                     <Link href="#" className="hover:text-accent transition-colors">System Status</Link>
                 </div>
             </footer>
