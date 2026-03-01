@@ -19,7 +19,7 @@ export default function DashboardLayout({
       {/* Secondary Depth Layer: Using high-quality aviation background */}
       <div className="fixed inset-0 z-0 opacity-20 mix-blend-overlay">
         <Image 
-          src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
           alt="Atmosphere"
           fill
           className="object-cover"

@@ -24,11 +24,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full relative min-h-screen">
       {/* Background Layer: Optimized with next/image */}
       <div className="fixed inset-0 z-0">
         <Image
-          src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
           alt="Aviation Background"
           fill
           priority
