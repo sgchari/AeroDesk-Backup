@@ -101,7 +101,7 @@ export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-EXEC-003', customerId: 'ag-01', requesterExternalAuthId: 'ag-01', agencyId: 'ag-01', operatorId: 'op-01', customerName: 'Sky Distributors (Client: Smith)', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Dubai (DXB)', departureDate: '2025-02-28', pax: 2, aircraftType: 'Heavy Jet', status: 'boarding', createdAt: '2025-02-15T10:00:00Z', bidsCount: 3, totalAmount: 4200000, bookingChannel: 'agency' },
     
     // Completed Phase
-    { id: 'RFQ-DONE-004', customerId: 'cust-02', requesterExternalAuthId: 'cust-02', operatorId: 'op-02', customerName: 'Vikram Malhotra', tripType: 'Return', departure: 'Mumbai (VABB)', arrival: 'Goa (VOGO)', departureDate: '2025-02-10', pax: 4, aircraftType: 'Mid-size Jet', status: 'tripClosed', createdAt: '2025-01-10T09:00:00Z', bidsCount: 4, totalAmount: 1250000, bookingChannel: 'direct' }
+    { id: 'RFQ-DEMO-004', customerId: 'cust-02', requesterExternalAuthId: 'cust-02', operatorId: 'op-02', customerName: 'Vikram Malhotra', tripType: 'Return', departure: 'Mumbai (VABB)', arrival: 'Goa (VOGO)', departureDate: '2025-02-10', pax: 4, aircraftType: 'Mid-size Jet', status: 'tripClosed', createdAt: '2025-01-10T09:00:00Z', bidsCount: 4, totalAmount: 1250000, bookingChannel: 'direct' }
 ];
 
 export const mockQuotations: Quotation[] = [
@@ -132,7 +132,7 @@ export const mockRevenueShareConfigs: RevenueShareConfig[] = [
 
 export const mockCommissionLedger: CommissionLedgerEntry[] = [
   { id: 'CLE-001', transactionId: 'RFQ-EXEC-003', entityId: 'ag-01', agencyId: 'ag-01', bookingChannel: 'agency', entityType: 'Travel Agency', serviceType: 'charter', grossAmount: 4200000, commissionRatePercent: 5, totalCommission: 210000, agencySharePercent: 70, aerodeskSharePercent: 30, agencyCommissionAmount: 147000, aerodeskCommissionAmount: 63000, status: 'pending', ruleVersionReference: 'RSC-02', createdAt: '2025-02-20T10:30:00Z' },
-  { id: 'CLE-002', transactionId: 'RFQ-DONE-004', entityId: 'admin-01', agencyId: null, bookingChannel: 'direct', entityType: 'Admin', serviceType: 'charter', grossAmount: 1250000, commissionRatePercent: 5, totalCommission: 62500, agencySharePercent: 0, aerodeskSharePercent: 100, agencyCommissionAmount: 0, aerodeskCommissionAmount: 62500, status: 'settled', ruleVersionReference: 'DIRECT', createdAt: '2025-02-15T11:00:00Z' },
+  { id: 'CLE-002', transactionId: 'RFQ-DEMO-004', entityId: 'admin-01', agencyId: null, bookingChannel: 'direct', entityType: 'Admin', serviceType: 'charter', grossAmount: 1250000, commissionRatePercent: 5, totalCommission: 62500, agencySharePercent: 0, aerodeskSharePercent: 100, agencyCommissionAmount: 0, aerodeskCommissionAmount: 62500, status: 'settled', ruleVersionReference: 'DIRECT', createdAt: '2025-02-15T11:00:00Z' },
 ];
 
 export const mockSettlementRecords: SettlementRecord[] = [
@@ -281,4 +281,3 @@ export const mockActivityLogs: ActivityLog[] = [];
 export const mockPlatformChargeRules: PlatformChargeRule[] = [];
 export const mockBillingLedger: EntityBillingLedger[] = [];
 export const mockSubscriptionPlans: SubscriptionPlan[] = [];
-

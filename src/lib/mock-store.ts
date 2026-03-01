@@ -1,3 +1,4 @@
+
 import {
   mockUsers,
   mockRfqs,
@@ -79,17 +80,22 @@ const notify = () => {
   listeners.forEach(cb => cb());
 };
 
+const resolveCollectionKey = (collectionName: string) => {
+    if (collectionName === 'charterRequests') return 'charterRFQs';
+    return collectionName;
+};
+
 const getCollection = (path: string, currentUser?: User | null): any[] => {
     const pathSegments = path.split('/');
     const collectionName = pathSegments[0];
+    const resolvedKey = resolveCollectionKey(collectionName);
 
     if (path === 'emptyLegs/all/seatAllocationRequests') {
         return db.seatAllocationRequests;
     }
 
-    switch(collectionName) {
+    switch(resolvedKey) {
         case 'charterRFQs':
-        case 'charterRequests':
             if (!currentUser) return [];
             return db.charterRFQs.filter(rfq => 
                 (currentUser.role === 'Customer' && rfq.customerId === currentUser.id) ||
@@ -127,7 +133,7 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             }
             return db.aircrafts;
         default:
-            return (db as any)[collectionName] || [];
+            return (db as any)[resolvedKey] || [];
     }
 }
 
@@ -136,7 +142,8 @@ const getDoc = (path: string): any | null => {
     const collectionName = pathSegments[0];
     const docId = pathSegments[1];
     
-    const dataSet = (db as any)[collectionName];
+    const resolvedKey = resolveCollectionKey(collectionName);
+    const dataSet = (db as any)[resolvedKey];
     if (!dataSet) return null;
     
     return dataSet.find((d: any) => d.id === docId) || null;
@@ -145,17 +152,19 @@ const getDoc = (path: string): any | null => {
 const addDoc = (path: string, data: any) => {
     const pathSegments = path.split('/');
     const collectionName = pathSegments[0];
-    let newDoc = { ...data, id: `demo-${collectionName.slice(0, 4)}-${Date.now()}` };
+    const resolvedKey = resolveCollectionKey(collectionName);
+    let newDoc = { ...data, id: `demo-${resolvedKey.slice(0, 4)}-${Date.now()}` };
 
-    if ((db as any)[collectionName]) {
-        (db as any)[collectionName].unshift(newDoc as any);
+    if ((db as any)[resolvedKey]) {
+        (db as any)[resolvedKey].unshift(newDoc as any);
     }
     
     notify();
 };
 
 const updateDoc = (collectionPath: string, docId: string, data: any) => {
-    const dataSet = (db as any)[collectionPath];
+    const resolvedKey = resolveCollectionKey(collectionPath);
+    const dataSet = (db as any)[resolvedKey];
     if (!dataSet) return;
     
     const docIndex = dataSet.findIndex((d: any) => d.id === docId);
@@ -166,9 +175,10 @@ const updateDoc = (collectionPath: string, docId: string, data: any) => {
 };
 
 const deleteDoc = (collectionPath: string, docId: string) => {
-    const dataSet = (db as any)[collectionPath];
+    const resolvedKey = resolveCollectionKey(collectionPath);
+    const dataSet = (db as any)[resolvedKey];
     if (!dataSet) return;
-    (db as any)[collectionPath] = dataSet.filter((d: any) => d.id !== docId);
+    (db as any)[resolvedKey] = dataSet.filter((d: any) => d.id !== docId);
     notify();
 };
 

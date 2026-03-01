@@ -15,6 +15,7 @@ import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where, limit } from "firebase/firestore";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 export function OperatorDashboard() {
   const { user, isLoading: isUserLoading } = useUser();
@@ -36,7 +37,14 @@ export function OperatorDashboard() {
         where('status', 'not-in', ['Draft', 'New', 'Bidding Open', 'tripClosed', 'Cancelled'])
     );
   }, [firestore, user]);
-  const { data: activeMissions, isLoading: missionsLoading } = useCollection<CharterRFQ>(activeMissionsQuery, 'charterRequests');
+  const { data: rawActiveMissions, isLoading: missionsLoading } = useCollection<CharterRFQ>(activeMissionsQuery, 'charterRequests');
+
+  // High-fidelity client-side filtering for simulation mode
+  const activeMissions = useMemo(() => {
+    return rawActiveMissions?.filter(m => 
+        !['Draft', 'New', 'Bidding Open', 'tripClosed', 'Cancelled'].includes(m.status)
+    ) || [];
+  }, [rawActiveMissions]);
 
   const aircraftsQuery = useMemoFirebase(() => {
     if (!firestore || !user || firestore._isMock) return null;
