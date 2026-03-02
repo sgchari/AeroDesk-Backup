@@ -123,7 +123,7 @@ export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-LIVE-002', operatorId: 'op-north-01', operatorName: 'Delhi Air Logistics', aircraftId: 'ac-03', aircraftName: 'VT-PC', aircraftType: 'Mid-size Jet', departure: 'Delhi', arrival: 'Bengaluru', departureTime: '2025-03-12T10:00:00Z', totalCapacity: 10, availableSeats: 8, seatAllocationEnabled: true, pricingModel: 'fixed', pricePerSeat: 55000, minSeatsPerRequest: 2, bookingChannelAllowed: 'agency', status: 'live', createdAt: '2025-02-05T10:00:00Z' },
 ];
 
-export const mockSeatAllocations: SeatAllocation[] = [
+export const mockSeatRequests: SeatAllocation[] = [
     { id: 'SAR-001', flightId: 'EL-LIVE-001', operatorId: 'op-west-01', customerId: 'ag-west-01', agencyId: 'ag-west-01', bookingChannel: 'agency', seatsRequested: 2, pricePerSeat: 45000, totalAmount: 90000, status: 'pendingApproval', paymentStatus: 'pending', passengerName: 'Anil Ambani', clientReference: 'VIP-WEST-01', createdAt: '2025-02-15T10:00:00Z' }
 ];
 

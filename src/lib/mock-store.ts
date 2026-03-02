@@ -7,8 +7,7 @@ import {
   mockAircrafts,
   mockQuotations,
   mockEmptyLegs,
-  mockSeatAllocations,
-  mockSeatInventoryLogs,
+  mockSeatRequests,
   mockAuditLogs,
   mockAccommodationRequests,
   mockFeatureFlags,
@@ -32,17 +31,17 @@ let db = {
   users: deepCopy(mockUsers),
   operators: deepCopy(mockOperators),
   travelAgencies: deepCopy(mockAgencies),
-  distributors: deepCopy(mockAgencies), // Alias for travel agencies
+  distributors: deepCopy(mockAgencies), // Alias
   corporateTravelDesks: deepCopy(mockCorporates),
   charterRFQs: deepCopy(mockRfqs),
-  charterRequests: deepCopy(mockRfqs), // Alias for RFQs
+  charterRequests: deepCopy(mockRfqs), // Alias
   aircrafts: deepCopy(mockAircrafts),
   quotations: deepCopy(mockQuotations),
   emptyLegs: deepCopy(mockEmptyLegs),
-  emptyLegFlights: deepCopy(mockEmptyLegs), // Target collection for module
-  seatAllocations: deepCopy(mockSeatAllocations),
-  seatAllocationRequests: deepCopy(mockSeatAllocations), // Alias
-  seatInventoryLogs: deepCopy(mockSeatInventoryLogs),
+  emptyLegFlights: deepCopy(mockEmptyLegs), // Alias
+  seatAllocations: deepCopy(mockSeatRequests),
+  seatAllocationRequests: deepCopy(mockSeatRequests), // Alias
+  seatInventoryLogs: [],
   auditTrails: deepCopy(mockAuditLogs),
   auditLogs: deepCopy(mockAuditLogs),
   accommodationRequests: deepCopy(mockAccommodationRequests),
@@ -73,7 +72,9 @@ const notify = () => {
 };
 
 const resolveCollectionKey = (path: string): string => {
-    const key = path.split('/')[0];
+    if (!path) return '';
+    const segments = path.split('/');
+    const key = segments[0];
     const mappings: Record<string, string> = {
         'charterRequests': 'charterRFQs',
         'auditTrails': 'auditLogs',
@@ -81,8 +82,11 @@ const resolveCollectionKey = (path: string): string => {
         'platformAdmins': 'users',
         'emptyLegFlights': 'emptyLegs'
     };
-    if (path.includes('seatAllocationRequests')) return 'seatAllocations';
-    if (path.includes('seatAllocations')) return 'seatAllocations';
+    
+    // Subcollection routing
+    if (path.includes('seatAllocationRequests') || path.includes('seatAllocations')) return 'seatAllocations';
+    if (path.includes('aircrafts')) return 'aircrafts';
+    
     return mappings[key] || key;
 };
 
@@ -136,33 +140,10 @@ const getDoc = (path: string): any | null => {
     return dataSet.find((d: any) => d.id === docId) || null;
 }
 
-const logInventoryChange = (flightId: string, seatsBefore: number, seatsAfter: number, action: InventoryLogAction, actor: string) => {
-    const newLog = {
-        id: `LOG-${Date.now()}`,
-        flightId,
-        seatsBefore,
-        seatsAfter,
-        actionType: action,
-        changedBy: actor,
-        timestamp: new Date().toISOString()
-    };
-    db.seatInventoryLogs.unshift(newLog);
-};
-
 const addDoc = (path: string, data: any) => {
     const collectionName = resolveCollectionKey(path);
     const newDoc = { ...data, id: `demo-${Date.now()}` };
     
-    // Inventory Logic for Seat Allocations
-    if (collectionName === 'seatAllocations' && data.status === 'pendingApproval') {
-        const flight = db.emptyLegs.find((l: any) => l.id === data.flightId);
-        if (flight) {
-            const seatsBefore = flight.availableSeats;
-            flight.availableSeats -= data.seatsRequested;
-            logInventoryChange(flight.id, seatsBefore, flight.availableSeats, 'hold', `Request: ${newDoc.id}`);
-        }
-    }
-
     if ((db as any)[collectionName]) {
         (db as any)[collectionName].unshift(newDoc);
     }
@@ -176,29 +157,6 @@ const updateDoc = (collectionPath: string, docId: string, data: any) => {
     
     const index = dataSet.findIndex((d: any) => d.id === docId);
     if (index > -1) {
-        const oldDoc = dataSet[index];
-        
-        // Handle Inventory Release on Rejection/Cancellation
-        if (collectionName === 'seatAllocations') {
-            const isReleasing = (data.status === 'rejected' || data.status === 'cancelled') && oldDoc.status !== 'rejected' && oldDoc.status !== 'cancelled';
-            if (isReleasing) {
-                const flight = db.emptyLegs.find((l: any) => l.id === oldDoc.flightId);
-                if (flight) {
-                    const seatsBefore = flight.availableSeats;
-                    flight.availableSeats += oldDoc.seatsRequested;
-                    logInventoryChange(flight.id, seatsBefore, flight.availableSeats, 'release', `Action: ${data.status} (${docId})`);
-                }
-            }
-            
-            // Handle Inventory Confirmation
-            if (data.status === 'confirmed' && oldDoc.status !== 'confirmed') {
-                const flight = db.emptyLegs.find((l: any) => l.id === oldDoc.flightId);
-                if (flight) {
-                    logInventoryChange(flight.id, flight.availableSeats, flight.availableSeats, 'confirm', `Action: confirmed (${docId})`);
-                }
-            }
-        }
-
         dataSet[index] = { ...dataSet[index], ...data, updatedAt: new Date().toISOString() };
         notify();
     }

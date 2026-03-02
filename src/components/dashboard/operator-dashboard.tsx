@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,14 +22,14 @@ export function OperatorDashboard() {
 
   // Demand Stream: New RFQs
   const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore || firestore._isMock) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'charterRequests'), where('status', 'in', ['Bidding Open', 'New']), limit(5));
   }, [firestore]);
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
   // Execution Queue: Accepted quotes and beyond
   const activeMissionsQuery = useMemoFirebase(() => {
-    if (!firestore || !user || firestore._isMock) return null;
+    if (!firestore || !user || (firestore as any)._isMock) return null;
     return query(
         collection(firestore, 'charterRequests'), 
         where('operatorId', '==', user.id),
@@ -47,13 +46,13 @@ export function OperatorDashboard() {
   }, [rawActiveMissions]);
 
   const aircraftsQuery = useMemoFirebase(() => {
-    if (!firestore || !user || firestore._isMock) return null;
+    if (!firestore || !user || (firestore as any)._isMock) return null;
     return collection(firestore, 'operators', user.id, 'aircrafts');
   }, [firestore, user]);
-  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, user ? `operators/${user.id}/aircrafts` : undefined);
+  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, 'aircrafts');
 
   const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore || !user || firestore._isMock) return null;
+    if (!firestore || !user || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'emptyLegs'), where('operatorId', '==', user.id));
   }, [firestore, user]);
   const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
@@ -65,7 +64,7 @@ export function OperatorDashboard() {
   const stats = {
     pendingRfqs: rfqs?.length ?? 0,
     activeMissions: activeMissions?.length ?? 0,
-    activeEmptyLegs: emptyLegs?.filter(l => l.status === 'Published').length ?? 0,
+    activeEmptyLegs: emptyLegs?.filter(l => l.status === 'Published' || l.status === 'live').length ?? 0,
     aircraftAlerts: aircrafts?.filter(a => a.status === 'AOG' || a.status === 'Under Maintenance').length ?? 0,
   }
 
@@ -76,7 +75,7 @@ export function OperatorDashboard() {
       <StatsGrid>
         <StatsCard title="Marketplace Demand" href="/dashboard/operator/rfq-marketplace" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingRfqs.toString()} icon={FileText} description="RFQs open for bidding" />
         <StatsCard title="Active Missions" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeMissions.toString()} icon={Activity} description="Missions in execution" />
-        <StatsCard title="Seat Allocation Queue" href="/dashboard/operator/seat-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : (allSeatRequests?.filter(r => r.status === 'Requested').length ?? 0).toString()} icon={Users} description="Time-critical seat leads" />
+        <StatsCard title="Seat Allocation Queue" href="/dashboard/operator/seat-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : (allSeatRequests?.filter(r => r.status === 'pendingApproval').length ?? 0).toString()} icon={Users} description="Time-critical seat leads" />
         <StatsCard title="Fleet Alerts" href="/dashboard/operator/fleet" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.aircraftAlerts.toString()} icon={AlertTriangle} description="AOG or maintenance events" />
       </StatsGrid>
 

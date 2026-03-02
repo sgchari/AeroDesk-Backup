@@ -1,4 +1,3 @@
-
 'use client';
     
 import { useState, useEffect } from 'react';
@@ -38,7 +37,9 @@ export function useDoc<T = any>(
   const [data, setData] = useState<WithId<T> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
-  const isDemoMode = !memoizedDocRef?.firestore?.app || memoizedDocRef?.firestore?._isMock;
+  
+  // Safe detection of demo mode even if ref is null
+  const isDemoMode = !memoizedDocRef || !memoizedDocRef.firestore?.app || (memoizedDocRef.firestore as any)._isMock;
 
   useEffect(() => {
     if (!isDemoMode) {
@@ -51,9 +52,6 @@ export function useDoc<T = any>(
     // --- DEMO MODE LOGIC ---
     const path = demoPath;
     if (!path) {
-        if (memoizedDocRef) { // Allow silent fail if no ref is passed.
-            console.warn(`useDoc called in demo mode without a demoPath.`);
-        }
         setIsLoading(false);
         return;
     }

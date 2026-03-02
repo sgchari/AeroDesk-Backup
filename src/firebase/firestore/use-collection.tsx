@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,8 +9,6 @@ import {
 } from 'firebase/firestore';
 import { mockStore } from '@/lib/mock-store';
 import { useUser } from '@/hooks/use-user';
-import type { UserRole } from '@/lib/types';
-
 
 /** Utility type to add an 'id' field to a given type T. */
 export type WithId<T> = T & { id: string };
@@ -43,7 +40,9 @@ export function useCollection<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   const { user, isLoading: isUserLoading } = useUser();
-  const isDemoMode = !memoizedTargetRefOrQuery?.firestore?.app || memoizedTargetRefOrQuery?.firestore?._isMock;
+  
+  // Safe detection of demo mode even if ref is null
+  const isDemoMode = !memoizedTargetRefOrQuery || !memoizedTargetRefOrQuery.firestore?.app || (memoizedTargetRefOrQuery.firestore as any)._isMock;
 
   useEffect(() => {
     // If not in demo mode, use live data (currently not implemented in this branch)
@@ -61,15 +60,12 @@ export function useCollection<T = any>(
     }
     
     const fetchData = () => {
-        // For demo mode, we need to handle public vs private collections.
-        // Some collections can be viewed without being logged in.
-        const publicPaths = ['emptyLegs', 'operators'];
-        
         if (isUserLoading) {
             // Don't do anything until we know if there is a user or not.
             return;
         }
 
+        const publicPaths = ['emptyLegs', 'operators'];
         if (!user && !publicPaths.includes(path)) {
             // For private collections, if there's no user, clear data and stop.
             setIsLoading(false);
