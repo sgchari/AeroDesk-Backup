@@ -34,7 +34,7 @@ export default function FleetManagementPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const aircraftsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || !user || (firestore as any)._isMock) return null;
     return collection(firestore, 'operators', user.id, 'aircrafts');
   }, [firestore, user]);
   const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, user ? `operators/${user.id}/aircrafts` : undefined);
@@ -63,7 +63,7 @@ export default function FleetManagementPage() {
                     <div className="relative h-44 w-full bg-muted/20">
                         <Image 
                             src={ac.exteriorImageUrl || `https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800`} 
-                            alt={ac.registration || ac.name || 'Aircraft Exterior'} 
+                            alt={ac.registration} 
                             fill 
                             className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                             data-ai-hint="private jet"

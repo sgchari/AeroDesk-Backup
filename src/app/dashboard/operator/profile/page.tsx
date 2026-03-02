@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PageHeader } from '@/components/dashboard/shared/page-header';
 import { useUser } from '@/hooks/use-user';
-import { useFirestore, useDoc, updateDocumentNonBlocking } from '@/firebase';
+import { useFirestore, useDoc, updateDocumentNonBlocking, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import React from 'react';
@@ -33,8 +33,13 @@ export default function OperatorCompanyProfilePage() {
   const firestore = useFirestore();
   const { toast } = useToast();
 
+  const operatorRef = useMemoFirebase(() => {
+    if (!firestore || !user?.operatorId || (firestore as any)._isMock) return null;
+    return doc(firestore, 'operators', user.operatorId);
+  }, [firestore, user?.operatorId]);
+
   const { data: operator, isLoading } = useDoc<Operator>(
-    user?.operatorId ? doc(firestore!, 'operators', user.operatorId) : null,
+    operatorRef,
     user?.operatorId ? `operators/${user.operatorId}` : undefined
   );
 

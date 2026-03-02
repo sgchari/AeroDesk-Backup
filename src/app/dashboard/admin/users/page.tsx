@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -38,10 +37,16 @@ export default function UserManagementPage() {
     const [userToEdit, setUserToEdit] = useState<DisplayUser | null>(null);
     
     const { data: allUsersRaw, isLoading: usersRawLoading } = useCollection<AppUser>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]), 'users'
+        useMemoFirebase(() => {
+            if (!firestore || (firestore as any)._isMock) return null;
+            return collection(firestore, 'users');
+        }, [firestore]), 'users'
     );
     const { data: ctds, isLoading: ctdsLoading } = useCollection<CorporateTravelDesk>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]), 'corporateTravelDesks'
+        useMemoFirebase(() => {
+            if (!firestore || (firestore as any)._isMock) return null;
+            return collection(firestore, 'corporateTravelDesks');
+        }, [firestore]), 'corporateTravelDesks'
     );
 
     useEffect(() => {
