@@ -684,7 +684,7 @@ export const mockRevenueShareConfigs: RevenueShareConfig[] = [
 ];
 
 export const mockCommissionLedger: CommissionLedgerEntry[] = [
-    { id: 'cle-01', transactionId: 'RFQ-DEMO-004', bookingChannel: 'direct', grossAmount: 850000, agencyCommissionAmount: 0, aerodeskCommissionAmount: 42500, agencySharePercent: 0, status: 'settled', serviceType: 'charter', createdAt: '2025-02-02T12:00:00Z' },
+    { id: 'cle-01', transactionId: 'RFQ-DEMO-004', bookingChannel: 'direct', grossAmount: 850000, totalCommission: 42500, agencyCommissionAmount: 0, aerodeskCommissionAmount: 42500, agencySharePercent: 0, status: 'settled', serviceType: 'charter', createdAt: '2025-02-02T12:00:00Z' },
 ];
 
 export const mockSettlementRecords: SettlementRecord[] = [

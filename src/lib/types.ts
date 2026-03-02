@@ -355,6 +355,7 @@ export type CommissionLedgerEntry = {
   transactionId: string;
   bookingChannel: BookingChannel | string;
   grossAmount: number;
+  totalCommission: number;
   agencyCommissionAmount: number;
   aerodeskCommissionAmount: number;
   agencySharePercent: number;

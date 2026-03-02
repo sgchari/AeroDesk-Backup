@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -23,6 +22,7 @@ import {
     Briefcase
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 export default function AgencyRevenuePortal() {
     const { user } = useUser();
@@ -54,8 +54,8 @@ export default function AgencyRevenuePortal() {
 
     const isLoading = ledgerLoading || settlementsLoading;
 
-    const pendingEarnings = ledger?.filter(l => l.status === 'pending').reduce((acc, curr) => acc + curr.agencyCommissionAmount, 0) || 0;
-    const settledEarnings = settlements?.filter(s => s.status === 'paid').reduce((acc, curr) => acc + curr.totalAgencyCommission, 0) || 0;
+    const pendingEarnings = ledger?.filter(l => l.status === 'pending').reduce((acc, curr) => acc + (curr.agencyCommissionAmount || 0), 0) || 0;
+    const settledEarnings = settlements?.filter(s => s.status === 'paid').reduce((acc, curr) => acc + (curr.totalAgencyCommission || 0), 0) || 0;
 
     return (
         <div className="space-y-6">
@@ -65,8 +65,8 @@ export default function AgencyRevenuePortal() {
             />
 
             <StatsGrid>
-                <StatsCard title="Accrued Earnings" value={`₹ ${(pendingEarnings / 1000).toFixed(1)} K`} icon={Clock} description="Awaiting settlement" />
-                <StatsCard title="Total Settled" value={`₹ ${(settledEarnings / 1000).toFixed(1)} K`} icon={CheckCircle2} description="Paid to agency" />
+                <StatsCard title="Accrued Earnings" value={isLoading ? <Skeleton className="h-6 w-12" /> : `₹ ${(pendingEarnings / 1000).toFixed(1)} K`} icon={Clock} description="Awaiting settlement" />
+                <StatsCard title="Total Settled" value={isLoading ? <Skeleton className="h-6 w-12" /> : `₹ ${(settledEarnings / 1000).toFixed(1)} K`} icon={CheckCircle2} description="Paid to agency" />
                 <StatsCard title="Avg. Share Ratio" value="65%" icon={Zap} description="Across all services" />
                 <StatsCard title="Active Leads" value={ledger?.filter(l => l.status === 'pending').length.toString() || "0"} icon={Briefcase} description="In coordination" />
             </StatsGrid>
@@ -104,12 +104,12 @@ export default function AgencyRevenuePortal() {
                                             <TableRow key={entry.id} className="border-white/5 group hover:bg-white/[0.02]">
                                                 <TableCell className="py-4">
                                                     <p className="text-xs font-bold font-code group-hover:text-accent transition-colors">{entry.transactionId}</p>
-                                                    <p className="text-[9px] text-muted-foreground">{new Date(entry.createdAt).toLocaleDateString()}</p>
+                                                    <p className="text-[9px] text-muted-foreground">{entry.createdAt ? new Date(entry.createdAt).toLocaleDateString() : 'N/A'}</p>
                                                 </TableCell>
                                                 <TableCell className="capitalize text-[10px] font-bold">{entry.serviceType}</TableCell>
-                                                <TableCell className="text-right text-xs">₹ {entry.totalCommission.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right text-xs">₹ {(entry.totalCommission || 0).toLocaleString()}</TableCell>
                                                 <TableCell className="text-right text-xs font-black text-accent">
-                                                    ₹ {entry.agencyCommissionAmount.toLocaleString()}
+                                                    ₹ {(entry.agencyCommissionAmount || 0).toLocaleString()}
                                                     <span className="ml-1 text-[8px] text-muted-foreground">({entry.agencySharePercent}%)</span>
                                                 </TableCell>
                                                 <TableCell className="text-center">
@@ -150,9 +150,11 @@ export default function AgencyRevenuePortal() {
                                                 <p className="text-[9px] text-muted-foreground uppercase">{set.paymentReference || 'Batch Settlement'}</p>
                                             </TableCell>
                                             <TableCell className="text-[10px]">
-                                                {new Date(set.settlementPeriodStart).toLocaleDateString()} - {new Date(set.settlementPeriodEnd).toLocaleDateString()}
+                                                {set.settlementPeriodStart && set.settlementPeriodEnd ? 
+                                                    `${new Date(set.settlementPeriodStart).toLocaleDateString()} - ${new Date(set.settlementPeriodEnd).toLocaleDateString()}` 
+                                                    : 'N/A'}
                                             </TableCell>
-                                            <TableCell className="text-right text-xs font-black text-accent">₹ {set.totalAgencyCommission.toLocaleString()}</TableCell>
+                                            <TableCell className="text-right text-xs font-black text-accent">₹ {(set.totalAgencyCommission || 0).toLocaleString()}</TableCell>
                                             <TableCell>
                                                 <Badge className="bg-green-500/20 text-green-500 border-none text-[9px] uppercase font-black">
                                                     {set.status}
