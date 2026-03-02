@@ -19,7 +19,8 @@ import {
   CalendarCheck,
   Coins,
   Zap,
-  LogOut
+  LogOut,
+  Scale
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -101,6 +102,8 @@ const navItems: Record<string, any[]> = {
     { href: '/dashboard/admin/analytics', label: 'Platform Intelligence', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/admin/revenue-share', label: 'Revenue Share Engine', icon: Zap, color: 'text-accent' },
     { href: '/dashboard/admin/approvals', label: 'Approvals & Compliance', icon: ShieldCheck, color: 'text-emerald-400' },
+    { href: '/dashboard/admin/gst-verification', label: 'GST Verification', icon: Scale, color: 'text-amber-400' },
+    { href: '/dashboard/admin/tax-settings', label: 'Tax Configuration', icon: Settings, color: 'text-slate-400' },
     { href: '/dashboard/admin/users', label: 'User & Entity Governance', icon: Users, color: 'text-violet-400' },
     { href: '/dashboard/admin/operators', label: 'Operator Governance', icon: Plane, color: 'text-slate-400' },
     { href: '/dashboard/admin/partners', label: 'Partner Governance', icon: Briefcase, color: 'text-rose-400' },

@@ -13,8 +13,9 @@ import { Button } from '@/components/ui/button';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Plane, Armchair, Calendar, LifeBuoy } from "lucide-react";
+import { ArrowRight, Plane, Armchair, Calendar, LifeBuoy, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const quickLinks = [
     {
@@ -89,31 +90,55 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isLoading && !user && !error) {
-      // Redirection logic synchronized to homepage for all screen sizes
       router.replace('/');
     }
   }, [user, isLoading, error, router]);
 
   const renderDashboard = () => {
     if (!user) return null;
-    switch (user.role) {
-      case 'Customer':
-      case 'Requester':
-        return <CustomerGateway />;
-      case 'Operator':
-        return <OperatorDashboard />;
-      case 'Admin':
-        return <AdminDashboard />;
-      case 'CTD Admin':
-      case 'Corporate Admin':
-        return <CTDDashboard />;
-      case 'Travel Agency':
-        return <TravelAgencyDashboard />;
-      case 'Hotel Partner':
-        return <HotelDashboard />;
-      default:
-        return <div className="p-4">Invalid user role context. Please contact platform support.</div>;
-    }
+
+    // GST Compliance Lock Check
+    const isRestrictedRole = ['Operator', 'Travel Agency', 'CTD Admin', 'Corporate Admin'].includes(user.role);
+    const gstRequirement = isRestrictedRole && user.gstVerificationStatus !== 'verified';
+
+    const dashboard = (() => {
+        switch (user.role) {
+            case 'Customer':
+            case 'Requester':
+              return <CustomerGateway />;
+            case 'Operator':
+              return <OperatorDashboard />;
+            case 'Admin':
+              return <AdminDashboard />;
+            case 'CTD Admin':
+            case 'Corporate Admin':
+              return <CTDDashboard />;
+            case 'Travel Agency':
+              return <TravelAgencyDashboard />;
+            case 'Hotel Partner':
+              return <HotelDashboard />;
+            default:
+              return <div className="p-4">Invalid user role context. Please contact platform support.</div>;
+          }
+    })();
+
+    return (
+        <div className="space-y-6">
+            {gstRequirement && (
+                <Alert variant="destructive" className="bg-amber-500/10 border-amber-500/20 text-amber-500 animate-in fade-in slide-in-from-top-4">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle className="font-black uppercase text-[10px] tracking-widest">Compliance Warning: GST Verification Required</AlertTitle>
+                    <AlertDescription className="text-xs">
+                        Institutional invoicing and settlement features are restricted until your GST profile is verified. 
+                        <Button asChild variant="link" className="h-auto p-0 ml-2 text-amber-500 font-bold hover:text-amber-400">
+                            <Link href="/dashboard/profile">Complete Tax Profile</Link>
+                        </Button>
+                    </AlertDescription>
+                </Alert>
+            )}
+            {dashboard}
+        </div>
+    );
   };
 
   if (isLoading && !user) {

@@ -1,4 +1,3 @@
-
 import {
   mockUsers,
   mockRfqs,
@@ -35,7 +34,7 @@ const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 let db = {
   users: deepCopy(mockUsers),
   operators: deepCopy(mockOperators),
-  charterRFQs: deepCopy(mockRfqs), // Standard naming across governance views
+  charterRFQs: deepCopy(mockRfqs),
   aircrafts: deepCopy(mockAircrafts),
   quotations: deepCopy(mockQuotations),
   emptyLegs: deepCopy(mockEmptyLegs),
@@ -66,6 +65,13 @@ let db = {
   commissionLedger: deepCopy(mockCommissionLedger),
   settlementRecords: deepCopy(mockSettlementRecords),
   revenueAuditLogs: [],
+  taxConfig: [
+    { id: 'TX-01', serviceType: 'charter', taxRatePercent: 18, sacCode: '996411', effectiveFrom: '2025-01-01', isActive: true },
+    { id: 'TX-02', serviceType: 'seat', taxRatePercent: 18, sacCode: '996412', effectiveFrom: '2025-01-01', isActive: true },
+    { id: 'TX-03', serviceType: 'accommodation', taxRatePercent: 12, sacCode: '996311', effectiveFrom: '2025-01-01', isActive: true }
+  ],
+  gstAuditLogs: [],
+  creditNotes: []
 };
 
 type Listener = () => void;
@@ -132,6 +138,13 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
                 return db.aircrafts.filter(ac => ac.operatorId === currentUser.id);
             }
             return db.aircrafts;
+        case 'operators':
+            // For admin verification, return all
+            if (currentUser?.role === 'Admin') return db.operators;
+            return db.operators;
+        case 'distributors':
+            if (currentUser?.role === 'Admin') return db.distributors;
+            return db.distributors;
         default:
             return (db as any)[resolvedKey] || [];
     }
@@ -170,6 +183,19 @@ const updateDoc = (collectionPath: string, docId: string, data: any) => {
     
     const docIndex = dataSet.findIndex((d: any) => d.id === docId);
     if (docIndex > -1) {
+        // GST Audit Log Logic
+        if (data.gstin && data.gstin !== dataSet[docIndex].gstin) {
+            db.gstAuditLogs.push({
+                id: `AUDIT-${Date.now()}`,
+                entityId: docId,
+                entityType: collectionPath,
+                oldGstin: dataSet[docIndex].gstin,
+                newGstin: data.gstin,
+                changedBy: 'System/User',
+                timestamp: new Date().toISOString()
+            } as any);
+        }
+
         dataSet[docIndex] = { ...dataSet[docIndex], ...data, updatedAt: new Date().toISOString() };
         notify();
     }

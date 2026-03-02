@@ -1,5 +1,3 @@
-
-
 export type UserRole =
   | 'Customer'
   | 'Operator'
@@ -11,6 +9,19 @@ export type UserRole =
   | 'Corporate Admin';
 
 export type BookingChannel = 'agency' | 'direct' | 'corporate';
+
+export type GSTVerificationStatus = 'pending' | 'verified' | 'rejected';
+
+export interface GSTProfile {
+  legalEntityName: string;
+  gstin: string;
+  gstRegisteredAddress: string;
+  stateCode: string; // First 2 digits of GSTIN
+  gstCertificateUrl?: string;
+  gstVerificationStatus: GSTVerificationStatus;
+  gstVerifiedBy?: string;
+  gstVerifiedAt?: string;
+}
 
 export type User = {
   id: string;
@@ -31,7 +42,7 @@ export type User = {
   companyName?: string;
   city?: string;
   zone?: 'North' | 'South' | 'East' | 'West' | 'Central';
-};
+} & Partial<GSTProfile>;
 
 export type Operator = {
   id: string;
@@ -51,7 +62,7 @@ export type Operator = {
   featured?: boolean;
   fleetCount?: number;
   baseLocation?: { lat: number; lng: number };
-};
+} & Partial<GSTProfile>;
 
 export type RfqStatus =
   | 'rfqSubmitted'
@@ -168,16 +179,20 @@ export type PassengerManifest = {
 
 export type Invoice = {
   id: string;
-  relatedEntityId: string;
-  entityType: 'charter' | 'seat' | 'accommodation';
-  operatorId: string;
-  issuedBy: string;
-  invoiceNumber: string;
-  totalAmount: number;
-  bankDetails: string;
-  paymentDeadline: string;
-  invoicePdfUrl?: string;
-  status: 'issued' | 'paid' | 'expired';
+  transactionId: string;
+  sellerEntityId: string;
+  buyerEntityId: string;
+  sellerGSTIN?: string;
+  buyerGSTIN?: string;
+  placeOfSupply: string;
+  taxableAmount: number;
+  cgstAmount: number;
+  sgstAmount: number;
+  igstAmount: number;
+  totalInvoiceAmount: number;
+  invoiceType: 'B2B' | 'B2C';
+  sacCode?: string;
+  status: 'issued' | 'paid' | 'cancelled';
   createdAt: string;
 };
 
@@ -552,3 +567,44 @@ export type RevenueAuditLog = {
   timestamp: string;
 };
 
+// --- TAX & GST COMPLIANCE ---
+
+export type TaxConfig = {
+  id: string;
+  serviceType: BillingServiceType;
+  taxRatePercent: number;
+  sacCode: string;
+  effectiveFrom: string;
+  effectiveTo?: string;
+  isActive: boolean;
+};
+
+export type GSTAuditLog = {
+  id: string;
+  entityId: string;
+  entityType: string;
+  oldGstin?: string;
+  newGstin: string;
+  changedBy: string;
+  timestamp: string;
+};
+
+export type CreditNote = {
+  id: string;
+  originalInvoiceId: string;
+  transactionId: string;
+  adjustedTaxAmount: number;
+  adjustedCommission: number;
+  reason: string;
+  createdAt: string;
+};
+
+export type CorporateTravelDesk = {
+  id: string;
+  companyName: string;
+  adminExternalAuthId: string;
+  status: 'Active' | 'Inactive' | 'Pending Setup';
+  createdAt: string;
+  updatedAt: string;
+  financeEmail?: string;
+} & Partial<GSTProfile>;
