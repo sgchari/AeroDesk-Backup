@@ -29,7 +29,8 @@ import type {
   RevenueShareConfig,
   CommissionLedgerEntry,
   SettlementRecord,
-  TaxConfig
+  TaxConfig,
+  HotelPartner
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -43,19 +44,20 @@ export const VERIFIED_NSOP_REGISTRY = [
 export const mockUsers: User[] = [
     { 
       id: 'admin-01', 
-      email: 'governance@demo.aerodesk.com', 
+      email: 'governance@aerodesk.aero', 
       firstName: 'AeroDesk', 
-      lastName: 'Admin', 
+      lastName: 'Governance', 
       role: 'Admin', 
       platformRole: 'admin', 
       firmRole: 'admin',
       status: 'active', 
+      avatar: 'https://picsum.photos/seed/admin/200/200',
       createdAt: "2025-01-01T10:00:00Z", 
       updatedAt: "2025-01-01T10:00:00Z" 
     },
     { 
       id: 'op-admin-01', 
-      email: 'admin@flyco.aero', 
+      email: 'rajesh@flyco.aero', 
       firstName: 'Rajesh', 
       lastName: 'Verma', 
       role: 'Operator', 
@@ -64,30 +66,13 @@ export const mockUsers: User[] = [
       operatorId: 'op-01',
       company: 'FlyCo Charter',
       status: 'active', 
+      avatar: 'https://picsum.photos/seed/op1/200/200',
       gstVerificationStatus: 'verified',
       gstin: '27AAAAA0000A1Z5',
       stateCode: '27',
       legalEntityName: 'FlyCo Aviation Private Limited',
       createdAt: "2025-01-10T09:00:00Z", 
       updatedAt: "2025-01-10T09:00:00Z" 
-    },
-    { 
-      id: 'op-admin-02', 
-      email: 'ops@spanair.in', 
-      firstName: 'Vikram', 
-      lastName: 'Singh', 
-      role: 'Operator', 
-      platformRole: 'operator', 
-      firmRole: 'admin',
-      operatorId: 'op-02',
-      company: 'Span Air',
-      status: 'active', 
-      gstVerificationStatus: 'pending',
-      gstin: '07BBBBB1111B1Z2',
-      stateCode: '07',
-      legalEntityName: 'Span Air Services India',
-      createdAt: "2025-01-15T11:00:00Z", 
-      updatedAt: "2025-01-15T11:00:00Z" 
     },
     { 
       id: 'ag-admin-01', 
@@ -100,6 +85,7 @@ export const mockUsers: User[] = [
       agencyId: 'ag-01',
       company: 'Sky Distributors',
       status: 'active', 
+      avatar: 'https://picsum.photos/seed/ag1/200/200',
       gstVerificationStatus: 'verified',
       gstin: '27CCCCC2222C1Z3',
       stateCode: '27',
@@ -118,12 +104,47 @@ export const mockUsers: User[] = [
       corporateId: 'corp-01',
       company: 'Stark Industries',
       status: 'active', 
+      avatar: 'https://picsum.photos/seed/corp1/200/200',
       gstVerificationStatus: 'verified',
       gstin: '27DDDDD3333D1Z4',
       stateCode: '27',
       legalEntityName: 'Stark Industries India Pvt Ltd',
       createdAt: "2025-01-01T14:00:00Z", 
       updatedAt: "2025-01-01T14:00:00Z" 
+    },
+    { 
+      id: 'corp-req-01', 
+      email: 'rahul@stark.corp', 
+      firstName: 'Rahul', 
+      lastName: 'Kapoor', 
+      role: 'Requester', 
+      platformRole: 'corporate', 
+      firmRole: 'viewer',
+      corporateId: 'corp-01',
+      company: 'Stark Industries',
+      status: 'active', 
+      avatar: 'https://picsum.photos/seed/corp2/200/200',
+      createdAt: "2025-02-01T11:00:00Z", 
+      updatedAt: "2025-02-01T11:00:00Z" 
+    },
+    { 
+      id: 'hotel-admin-01', 
+      email: 'concierge@grandhotels.com', 
+      firstName: 'Ananya', 
+      lastName: 'Iyer', 
+      role: 'Hotel Partner', 
+      platformRole: 'hotel', 
+      firmRole: 'admin',
+      hotelPartnerId: 'hotel-01',
+      company: 'Grand Hotels Group',
+      status: 'active', 
+      avatar: 'https://picsum.photos/seed/hotel1/200/200',
+      gstVerificationStatus: 'verified',
+      gstin: '27EEEEE4444E1Z1',
+      stateCode: '27',
+      legalEntityName: 'Grand Hospitality Services',
+      createdAt: "2025-01-05T10:00:00Z", 
+      updatedAt: "2025-01-05T10:00:00Z" 
     },
     { 
       id: 'cust-01', 
@@ -134,6 +155,7 @@ export const mockUsers: User[] = [
       platformRole: 'individual', 
       firmRole: 'viewer',
       status: 'active', 
+      avatar: 'https://picsum.photos/seed/cust1/200/200',
       createdAt: "2025-02-01T10:00:00Z", 
       updatedAt: "2025-02-01T10:00:00Z" 
     },
@@ -216,6 +238,22 @@ export const mockCorporates: CorporateTravelDesk[] = [
     }
 ];
 
+export const mockHotelPartners: HotelPartner[] = [
+    {
+        id: 'hotel-01',
+        companyName: 'Grand Hotels Group',
+        officialEmail: 'corporate@grandhotels.com',
+        address: 'Nariman Point, Mumbai',
+        status: 'Approved',
+        gstVerificationStatus: 'verified',
+        gstin: '27EEEEE4444E1Z1',
+        stateCode: '27',
+        legalEntityName: 'Grand Hospitality Services',
+        createdAt: '2025-01-05T10:00:00Z',
+        updatedAt: '2025-01-05T10:00:00Z'
+    }
+];
+
 export const mockAircrafts: Aircraft[] = [
     { id: 'ac-01', operatorId: 'op-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'BOM', status: 'Available', exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800' },
     { id: 'ac-02', operatorId: 'op-01', name: 'Bombardier Global 6000', type: 'Heavy Jet', registration: 'VT-JSG', paxCapacity: 14, homeBase: 'BOM', status: 'Under Maintenance', exteriorImageUrl: 'https://images.unsplash.com/photo-1616193572425-fd11332ec645?q=80&w=800' },
@@ -257,37 +295,18 @@ export const mockRfqs: CharterRFQ[] = [
         createdAt: '2025-01-20T09:00:00Z', 
         updatedAt: '2025-02-05T18:00:00Z' 
     },
-    { 
-        id: 'RFQ-DEMO-005', 
-        customerId: 'ag-admin-01', 
-        requesterExternalAuthId: 'ag-admin-01', 
-        customerName: 'Amit Patel', 
-        company: 'Sky Distributors',
-        tripType: 'Onward', 
-        departure: 'Bengaluru (VOBL)', 
-        arrival: 'Mumbai (VABB)', 
-        departureDate: '2025-03-20', 
-        pax: 2, 
-        aircraftType: 'Turboprop', 
-        status: 'Pending Approval', 
-        createdAt: '2025-02-12T14:00:00Z', 
-        updatedAt: '2025-02-12T14:00:00Z' 
-    }
 ];
 
 export const mockQuotations: Quotation[] = [
     { id: 'QT-001', rfqId: 'RFQ-DEMO-001', operatorId: 'op-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-01', aircraftName: 'Cessna Citation XLS+', price: 450000, status: 'Submitted', submittedAt: '2025-02-11T09:00:00Z', validUntil: '2025-02-15' },
-    { id: 'QT-002', rfqId: 'RFQ-DEMO-001', operatorId: 'op-02', operatorName: 'Span Air', aircraftId: 'ac-03', aircraftName: 'Hawker 850XP', price: 520000, status: 'Submitted', submittedAt: '2025-02-11T11:00:00Z', validUntil: '2025-02-14' },
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-001', operatorId: 'op-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-01', aircraftName: 'VT-FLY', departure: 'Mumbai', arrival: 'Delhi', departureTime: '2025-03-10T14:00:00Z', availableSeats: 6, status: 'Published' },
-    { id: 'EL-002', operatorId: 'op-02', operatorName: 'Span Air', aircraftId: 'ac-03', aircraftName: 'VT-SPAN', departure: 'Delhi', arrival: 'Bengaluru', departureTime: '2025-03-12T09:00:00Z', availableSeats: 4, status: 'Approved' },
 ];
 
 export const mockAuditLogs: AuditLog[] = [
     { id: 'audit-01', actionType: 'PROFILE_UPDATE', entityType: 'Operator', entityId: 'op-01', changedBy: 'op-admin-01', timestamp: '2025-02-10T10:30:00Z', user: 'Rajesh Verma', role: 'Operator Admin', action: 'Updated NSOP Document', details: 'Renewal document uploaded for verification.', targetId: 'op-01' },
-    { id: 'audit-02', actionType: 'GST_VERIFIED', entityType: 'Operator', entityId: 'op-01', changedBy: 'admin-01', timestamp: '2025-02-11T12:00:00Z', user: 'AeroDesk Admin', role: 'Platform Admin', action: 'Verified GST Profile', details: 'Manual verification of legal entity and state code.', targetId: 'op-01' },
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
@@ -296,17 +315,14 @@ export const mockAccommodationRequests: AccommodationRequest[] = [
 
 export const mockFeatureFlags: FeatureFlag[] = [
     { id: 'ff-01', name: 'EmptyLegAutoExpiry', description: 'Automatically expire EL listings after departure time.', isEnabled: true },
-    { id: 'ff-02', name: 'InstitutionalGSTLock', description: 'Prevent invoice issuance without verified GST.', isEnabled: true },
 ];
 
 export const mockPolicyFlags: PolicyFlag[] = [
     { id: 'pol-01', ctdId: 'corp-01', name: 'Premium Cabin Restriction', description: 'Heavy jet category requires senior director approval.', isEnforced: true },
-    { id: 'pol-02', ctdId: 'corp-01', name: 'Lead Time Threshold', description: 'Requests with < 24h lead time trigger warning.', isEnforced: false },
 ];
 
 export const mockCrew: CrewMember[] = [
     { id: 'crew-01', operatorId: 'op-01', firstName: 'Sanjay', lastName: 'Kapoor', role: 'Captain', status: 'Available', licenseNumber: 'ATPL-4567', assignedAircraftRegistration: 'VT-FLY', createdAt: '2025-01-10T09:00:00Z' },
-    { id: 'crew-02', operatorId: 'op-01', firstName: 'Neha', lastName: 'Gupta', role: 'First Officer', status: 'On Duty', licenseNumber: 'CPL-8890', assignedAircraftRegistration: 'VT-JSG', createdAt: '2025-01-10T09:00:00Z' },
 ];
 
 export const mockManifests: PassengerManifest[] = [
@@ -317,9 +333,7 @@ export const mockManifests: PassengerManifest[] = [
         createdAt: '2025-01-25T10:00:00Z',
         passengers: [
             { fullName: 'Vikram Malhotra', nationality: 'Indian', idNumber: 'L1234567', idType: 'Passport' },
-            { fullName: 'Anjali Malhotra', nationality: 'Indian', idNumber: 'L7654321', idType: 'Passport' },
-            { fullName: 'Rohan Malhotra', nationality: 'Indian', idNumber: 'L9988776', idType: 'Passport' },
-            { fullName: 'Saira Malhotra', nationality: 'Indian', idNumber: 'L5544332', idType: 'Passport' }
+            { fullName: 'Anjali Malhotra', nationality: 'Indian', idNumber: 'L7654321', idType: 'Passport' }
         ]
     }
 ];
@@ -333,15 +347,11 @@ export const mockPayments: Payment[] = [
 ];
 
 export const mockActivityLogs: ActivityLog[] = [
-    { id: 'log-01', charterId: 'RFQ-DEMO-004', actionType: 'BOARDING', performedBy: 'Rajesh Verma', role: 'Operator', timestamp: '2025-02-01T09:30:00Z' },
-    { id: 'log-02', charterId: 'RFQ-DEMO-004', actionType: 'DEPARTED', performedBy: 'Rajesh Verma', role: 'Operator', timestamp: '2025-02-01T10:15:00Z' },
-    { id: 'log-03', charterId: 'RFQ-DEMO-004', actionType: 'ARRIVED', performedBy: 'Rajesh Verma', role: 'Operator', timestamp: '2025-02-01T12:45:00Z' },
-    { id: 'log-04', charterId: 'RFQ-DEMO-004', actionType: 'TRIP_CLOSED', performedBy: 'Rajesh Verma', role: 'Operator', timestamp: '2025-02-02T11:00:00Z' },
+    { id: 'log-01', charterId: 'RFQ-DEMO-004', actionType: 'TRIP_CLOSED', performedBy: 'Rajesh Verma', role: 'Operator', timestamp: '2025-02-02T11:00:00Z' },
 ];
 
 export const mockCommissionRules: CommissionRule[] = [
     { id: 'cru-01', serviceType: 'charter', commissionRatePercent: 5, effectiveFrom: '2025-01-01', isActive: true },
-    { id: 'cru-02', serviceType: 'seat', commissionRatePercent: 8, effectiveFrom: '2025-01-01', isActive: true },
 ];
 
 export const mockRevenueShareConfigs: RevenueShareConfig[] = [
@@ -370,30 +380,28 @@ export const mockBillingLedger: EntityBillingLedger[] = [
 
 export const mockRoomCategories: RoomCategory[] = [
     { id: 'room-01', propertyId: 'prop-01', name: 'Deluxe King Room', maxOccupancy: 2, nightlyRate: 18500, beddingType: 'King' },
-    { id: 'room-02', propertyId: 'prop-01', name: 'Executive Suite', maxOccupancy: 3, nightlyRate: 32000, beddingType: 'Queen + Sofa' },
 ];
 
 export const mockProperties: Property[] = [
-    { id: 'prop-01', hotelPartnerId: 'hotel-01', name: 'The Taj Mahal Palace', city: 'Mumbai', address: 'Apollo Bandar, Colaba, Mumbai', status: 'Active', imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800' },
+    { id: 'prop-01', hotelPartnerId: 'hotel-01', name: 'The Taj Mahal Palace', city: 'Mumbai', address: 'Colaba, Mumbai', status: 'Active', imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800' },
 ];
 
 export const mockTaxConfig: TaxConfig[] = [
     { id: 'tax-01', serviceType: 'charter', taxRatePercent: 18, sacCode: '9964', effectiveFrom: '2025-01-01', isActive: true },
-    { id: 'tax-02', serviceType: 'accommodation', taxRatePercent: 12, sacCode: '9963', effectiveFrom: '2025-01-01', isActive: true },
 ];
 
 export const mockPressReleases: PressRelease[] = [
-    { id: 'pr-01', title: 'AeroDesk Expands to South Zone Hubs', description: 'New coordination protocols established for Bengaluru and Chennai hubs.', date: '2025-02-01', category: 'Expansion' },
+    { id: 'pr-01', title: 'AeroDesk Expansion', description: 'New hubs active.', date: '2025-02-01', category: 'Expansion' },
 ];
 
 export const mockMediaMentions: MediaMention[] = [
-    { id: 'mm-01', publication: 'Aviation Week', title: 'Digital Transformation in Indian NSOP', snippet: 'AeroDesk identified as primary infrastructure player.', date: '2025-01-15' },
+    { id: 'mm-01', publication: 'Aviation Week', title: 'Digital Transformation', snippet: 'AeroDesk leads the way.', date: '2025-01-15' },
 ];
 
 export const mockBrandAssets: BrandAsset[] = [
-    { id: 'ba-01', title: 'AeroDesk Logo Pack', type: 'Vector', imageUrl: 'https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?q=80&w=800', fileSize: '2.4MB' },
+    { id: 'ba-01', title: 'Logo Pack', type: 'Vector', imageUrl: 'https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?q=80&w=800', fileSize: '2.4MB' },
 ];
 
 export const mockBlogPosts: BlogPost[] = [
-    { id: 'post-01', title: 'The Future of NSOP Governance', excerpt: 'How digital layers are standardizing private aviation in India.', category: 'Institutional', author: 'AeroDesk Intelligence', date: '2025-02-10', imageUrl: 'https://images.unsplash.com/photo-1566212775038-532d06eda485?q=80&w=800' },
+    { id: 'post-01', title: 'Future of NSOP', excerpt: 'Digital standardisation.', category: 'Institutional', author: 'AeroDesk Intelligence', date: '2025-02-10', imageUrl: 'https://images.unsplash.com/photo-1566212775038-532d06eda485?q=80&w=800' },
 ];

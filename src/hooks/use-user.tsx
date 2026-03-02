@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, ReactNode, useState, useEffect, useCallback } from 'react';
 import type { User as AppUser } from '@/lib/types';
-import { mockUsers, mockCorporates } from '@/lib/data';
+import { mockUsers, mockCorporates, mockOperators, mockAgencies, mockHotelPartners } from '@/lib/data';
 
 interface UserContextType {
   user: AppUser | null;
@@ -20,8 +20,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
 
   const fetchUser = useCallback(() => {
-    // Optimization: Only set global loading if we don't already have a user
-    // This allows for background verification without UI flicker
     if (!user) setLoading(true);
     
     setError(null);
@@ -30,18 +28,29 @@ export function UserProvider({ children }: { children: ReactNode }) {
         if (demoUserId) {
             const foundUser = mockUsers.find(u => u.id === demoUserId);
             if (foundUser) {
-                if (['CTD Admin', 'Corporate Admin', 'Requester'].includes(foundUser.role) && foundUser.ctdId) {
-                    const ctd = mockCorporates.find(d => d.id === foundUser.ctdId);
-                    const userWithCompany = {
-                        ...foundUser,
-                        company: ctd?.companyName || "Corporate Inc."
-                    };
-                    setUser(userWithCompany as AppUser);
-                } else {
-                    setUser(foundUser as AppUser);
+                // Institutional Firm Mapping
+                let firmName = foundUser.company || "";
+                
+                if (foundUser.corporateId) {
+                    const ctd = mockCorporates.find(d => d.id === foundUser.corporateId);
+                    firmName = ctd?.companyName || "Stark Industries";
+                } else if (foundUser.operatorId) {
+                    const op = mockOperators.find(o => o.id === foundUser.operatorId);
+                    firmName = op?.companyName || "FlyCo Charter";
+                } else if (foundUser.agencyId) {
+                    const ag = mockAgencies.find(a => a.id === foundUser.agencyId);
+                    firmName = ag?.companyName || "Sky Distributors";
+                } else if (foundUser.hotelPartnerId) {
+                    const hotel = mockHotelPartners.find(h => h.id === foundUser.hotelPartnerId);
+                    firmName = hotel?.companyName || "Grand Hotels Group";
                 }
+
+                setUser({
+                    ...foundUser,
+                    company: firmName
+                } as AppUser);
             } else {
-                setError(new Error("Demo user session invalid. Please log in again."));
+                setError(new Error("Demo session invalid."));
                 localStorage.removeItem('demoUserId');
                 setUser(null);
             }
@@ -57,7 +66,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchUser();
-  }, []); // Run only on initial mount
+  }, [fetchUser]);
 
   const login = (uid: string) => {
     localStorage.setItem('demoUserId', uid);
