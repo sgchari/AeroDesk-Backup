@@ -11,10 +11,7 @@ import {
   Settings,
   GanttChartSquare,
   CreditCard,
-  LifeBuoy,
   Armchair,
-  History,
-  BedDouble,
   Coins,
   Zap,
   LogOut,
@@ -37,7 +34,7 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
-const navItems: Record<string, any[]> = {
+const NAV_ITEMS: Record<string, any[]> = {
   admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-sky-400' },
     { href: '/dashboard/admin/analytics', label: 'Platform Intelligence', icon: BarChart2, color: 'text-fuchsia-400' },
@@ -87,7 +84,7 @@ export function MainSidebar() {
   const { isMobile, setOpenMobile } = useSidebar();
   
   const platformRole = user?.platformRole || 'individual';
-  const currentNavItems = navItems[platformRole] || [];
+  const currentNavItems = NAV_ITEMS[platformRole] || [];
 
   const handleLinkClick = () => {
     if (isMobile) setOpenMobile(false);

@@ -11,7 +11,7 @@ import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking
 import { User as AppUser, UserRole, CorporateTravelDesk } from "@/lib/types";
 import { collection, doc } from "firebase/firestore";
 import { MoreHorizontal, Pencil } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AddUserDialog } from "@/components/dashboard/admin/add-user-dialog";
@@ -31,32 +31,28 @@ type DisplayUser = {
 export default function UserManagementPage() {
     const firestore = useFirestore();
     const { toast } = useToast();
-    const [allUsers, setAllUsers] = useState<DisplayUser[]>([]);
-    const [isUsersLoading, setUsersLoading] = useState(true);
     const [userToDelete, setUserToDelete] = useState<DisplayUser | null>(null);
     const [userToEdit, setUserToEdit] = useState<DisplayUser | null>(null);
     
-    const { data: allUsersRaw, isLoading: usersRawLoading } = useCollection<AppUser>(
-        useMemoFirebase(() => {
-            if (!firestore || (firestore as any)._isMock) return null;
-            return collection(firestore, 'users');
-        }, [firestore]), 'users'
-    );
-    const { data: ctds, isLoading: ctdsLoading } = useCollection<CorporateTravelDesk>(
-        useMemoFirebase(() => {
-            if (!firestore || (firestore as any)._isMock) return null;
-            return collection(firestore, 'corporateTravelDesks');
-        }, [firestore]), 'corporateTravelDesks'
-    );
+    const usersQuery = useMemoFirebase(() => {
+        if (!firestore || (firestore as any)._isMock) return null;
+        return collection(firestore, 'users');
+    }, [firestore]);
 
-    useEffect(() => {
-        const loading = usersRawLoading || ctdsLoading;
-        setUsersLoading(loading);
-        if (loading) return;
+    const ctdsQuery = useMemoFirebase(() => {
+        if (!firestore || (firestore as any)._isMock) return null;
+        return collection(firestore, 'corporateTravelDesks');
+    }, [firestore]);
+
+    const { data: allUsersRaw, isLoading: usersRawLoading } = useCollection<AppUser>(usersQuery, 'users');
+    const { data: ctds, isLoading: ctdsLoading } = useCollection<CorporateTravelDesk>(ctdsQuery, 'corporateTravelDesks');
+
+    const allUsers = useMemo(() => {
+        if (usersRawLoading || ctdsLoading) return [];
 
         const ctdMap = new Map(ctds?.map(ctd => [ctd.id, ctd.companyName]));
 
-        const normalizedUsers = allUsersRaw?.map(user => {
+        return allUsersRaw?.map(user => {
             let name = `${user.firstName} ${user.lastName}`;
             let linkedEntity = '-';
 
@@ -78,9 +74,7 @@ export default function UserManagementPage() {
                 ctdId: user.ctdId,
                 linkedEntity: linkedEntity,
             };
-        }).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-
-        setAllUsers(normalizedUsers || []);
+        }).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()) || [];
 
     }, [allUsersRaw, ctds, usersRawLoading, ctdsLoading]);
     
@@ -124,6 +118,8 @@ export default function UserManagementPage() {
         setUserToDelete(null);
     };
 
+    const isPageLoading = usersRawLoading || ctdsLoading;
+
     return (
         <>
             <PageHeader title="User & Entity Governance" description="Create, approve, and manage all platform users and their roles.">
@@ -137,7 +133,7 @@ export default function UserManagementPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="px-0 sm:px-6">
-                    {isUsersLoading ? <div className="p-6"><Skeleton className="h-64 w-full" /></div> : (
+                    {isPageLoading ? <div className="p-6"><Skeleton className="h-64 w-full" /></div> : (
                         <div className="w-full overflow-x-auto">
                             <Table className="min-w-[1000px]">
                                 <TableHeader>
