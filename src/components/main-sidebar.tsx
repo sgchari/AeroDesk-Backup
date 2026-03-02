@@ -25,13 +25,13 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { useUser } from '@/hooks/use-user';
 import { Logo } from './logo';
-import { 
-  SidebarHeader, 
-  SidebarContent, 
-  SidebarMenu, 
-  SidebarMenuItem, 
-  SidebarMenuButton, 
-  SidebarMenuSkeleton, 
+import {
+  SidebarHeader,
+  SidebarContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarMenuSkeleton,
   useSidebar,
   SidebarFooter
 } from '@/components/ui/sidebar';
@@ -57,7 +57,10 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard', label: 'Command Center', icon: Home, color: 'text-sky-400' },
     { href: '/dashboard/operator/rfq-marketplace', label: 'Marketplace', icon: GanttChartSquare, color: 'text-amber-400' },
     { href: '/dashboard/operator/fleet', label: 'Fleet Registry', icon: Plane, color: 'text-slate-400' },
-    { href: '/dashboard/operator/users', label: 'Firm Personnel', icon: Users, color: 'text-violet-400' },
+    { href: '/dashboard/operator/crew', label: 'Crew & Logistics', icon: Users, color: 'text-sky-400' },
+    { href: '/dashboard/operator/empty-legs', label: 'Empty Leg Inventory', icon: Zap, color: 'text-accent' },
+    { href: '/dashboard/operator/seat-requests', label: 'Seat Request Queue', icon: Armchair, color: 'text-emerald-400' },
+    { href: '/dashboard/operator/users', label: 'Firm Personnel', icon: ShieldCheck, color: 'text-violet-400' },
     { href: '/dashboard/operator/profile', label: 'Company Profile', icon: Building, color: 'text-accent' },
     { href: '/dashboard/operator/reports', label: 'Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
   ],
@@ -94,7 +97,7 @@ export function MainSidebar() {
   const router = useRouter();
   const { user, isLoading, logout } = useUser();
   const { isMobile, setOpenMobile } = useSidebar();
-  
+
   const platformRole = user?.platformRole || 'individual';
   const currentNavItems = NAV_ITEMS[platformRole] || [];
 
@@ -115,7 +118,7 @@ export function MainSidebar() {
             <Logo />
         </Link>
       </SidebarHeader>
-      
+
       <SidebarContent className="px-2">
         {isLoading ? <div className="space-y-2 p-2"><SidebarMenuSkeleton /><SidebarMenuSkeleton /></div> : (
           <SidebarMenu className="gap-1">
@@ -149,7 +152,7 @@ export function MainSidebar() {
         <SidebarFooter className="p-4 border-t border-white/5">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton 
+              <SidebarMenuButton
                 onClick={handleLogout}
                 className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors"
               >
