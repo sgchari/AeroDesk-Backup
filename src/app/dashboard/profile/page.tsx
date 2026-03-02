@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { PageHeader } from '@/components/dashboard/shared/page-header';
 import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -21,6 +22,7 @@ import { Upload, ShieldCheck, FileText, Globe } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { validateGSTIN } from '@/lib/tax-utils';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 const profileSchema = z.object({
   firstName: z.string().min(1, 'First name is required.'),
@@ -110,6 +112,7 @@ export default function ProfilePage() {
   
   const uploadAvatar = async (file: File): Promise<string> => {
     if (!user) throw new Error('User not authenticated for upload.');
+    if (!storage) throw new Error('Storage service unavailable.');
     const avatarRef = storageRef(storage, `avatars/${user.id}/${file.name}`);
     const snapshot = await uploadBytes(avatarRef, file);
     const downloadURL = await getDownloadURL(snapshot.ref);
