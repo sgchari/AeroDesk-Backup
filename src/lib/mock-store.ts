@@ -1,31 +1,27 @@
 import {
   mockUsers,
+  mockOperators,
+  mockAgencies,
+  mockCorporates,
   mockRfqs,
   mockAircrafts,
   mockQuotations,
   mockEmptyLegs,
   mockAuditLogs,
   mockAccommodationRequests,
-  mockCorporateTravelDesks,
-  mockProperties,
-  mockRoomCategories,
-  mockEmptyLegSeatAllocationRequests,
-  mockOperators,
   mockFeatureFlags,
   mockCrew,
   mockManifests,
   mockInvoices,
   mockPayments,
   mockActivityLogs,
-  mockPlatformChargeRules,
-  mockBillingLedger,
-  mockPlatformInvoices,
-  mockSubscriptionPlans,
   mockCommissionRules,
   mockRevenueShareConfigs,
   mockCommissionLedger,
   mockSettlementRecords,
-  mockPolicyFlags
+  mockPolicyFlags,
+  mockProperties,
+  mockRoomCategories
 } from './data';
 import { User } from './types';
 
@@ -34,20 +30,14 @@ const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 let db = {
   users: deepCopy(mockUsers),
   operators: deepCopy(mockOperators),
+  travelAgencies: deepCopy(mockAgencies),
+  corporateTravelDesks: deepCopy(mockCorporates),
   charterRFQs: deepCopy(mockRfqs),
   aircrafts: deepCopy(mockAircrafts),
   quotations: deepCopy(mockQuotations),
   emptyLegs: deepCopy(mockEmptyLegs),
-  auditTrails: deepCopy(mockAuditLogs),
+  auditLogs: deepCopy(mockAuditLogs),
   accommodationRequests: deepCopy(mockAccommodationRequests),
-  corporateTravelDesks: deepCopy(mockCorporateTravelDesks),
-  properties: deepCopy(mockProperties),
-  roomCategories: deepCopy(mockRoomCategories),
-  seatAllocationRequests: deepCopy(mockEmptyLegSeatAllocationRequests),
-  platformAdmins: deepCopy(mockUsers.filter(u => u.role === 'Admin')),
-  customers: deepCopy(mockUsers.filter(u => u.role === 'Customer')),
-  distributors: deepCopy(mockUsers.filter(u => u.role === 'Travel Agency')),
-  hotelPartners: deepCopy(mockUsers.filter(u => u.role === 'Hotel Partner')),
   featureFlags: deepCopy(mockFeatureFlags),
   policyFlags: deepCopy(mockPolicyFlags),
   crew: deepCopy(mockCrew),
@@ -55,23 +45,12 @@ let db = {
   invoices: deepCopy(mockInvoices),
   payments: deepCopy(mockPayments),
   activityLogs: deepCopy(mockActivityLogs),
-  commissions: [],
-  platformChargeRules: deepCopy(mockPlatformChargeRules),
-  entityBillingLedger: deepCopy(mockBillingLedger),
-  platformInvoices: deepCopy(mockPlatformInvoices),
-  subscriptionPlans: deepCopy(mockSubscriptionPlans),
   commissionRules: deepCopy(mockCommissionRules),
   revenueShareConfigs: deepCopy(mockRevenueShareConfigs),
   commissionLedger: deepCopy(mockCommissionLedger),
   settlementRecords: deepCopy(mockSettlementRecords),
-  revenueAuditLogs: [],
-  taxConfig: [
-    { id: 'TX-01', serviceType: 'charter', taxRatePercent: 18, sacCode: '996411', effectiveFrom: '2025-01-01', isActive: true },
-    { id: 'TX-02', serviceType: 'seat', taxRatePercent: 18, sacCode: '996412', effectiveFrom: '2025-01-01', isActive: true },
-    { id: 'TX-03', serviceType: 'accommodation', taxRatePercent: 12, sacCode: '996311', effectiveFrom: '2025-01-01', isActive: true }
-  ],
-  gstAuditLogs: [],
-  creditNotes: []
+  properties: deepCopy(mockProperties),
+  roomCategories: deepCopy(mockRoomCategories)
 };
 
 type Listener = () => void;
@@ -86,127 +65,87 @@ const notify = () => {
   listeners.forEach(cb => cb());
 };
 
-const resolveCollectionKey = (collectionName: string) => {
-    if (collectionName === 'charterRequests' || collectionName === 'charterRFQs') return 'charterRFQs';
-    return collectionName;
-};
-
 const getCollection = (path: string, currentUser?: User | null): any[] => {
-    const pathSegments = path.split('/');
-    const collectionName = pathSegments[0];
-    const resolvedKey = resolveCollectionKey(collectionName);
+    const collectionName = path.split('/')[0];
+    const dataSet = (db as any)[collectionName] || [];
 
-    if (path === 'emptyLegs/all/seatAllocationRequests') {
-        return db.seatAllocationRequests;
-    }
+    if (!currentUser || currentUser.platformRole === 'admin') return dataSet;
 
-    switch(resolvedKey) {
-        case 'charterRFQs':
-            if (!currentUser) return [];
-            return db.charterRFQs.filter(rfq => 
-                (currentUser.role === 'Customer' && rfq.customerId === currentUser.id) ||
-                (currentUser.role === 'Requester' && rfq.requesterExternalAuthId === currentUser.id) || 
-                (currentUser.role === 'Operator' && rfq.operatorId === currentUser.id) || 
-                (currentUser.role === 'Operator' && !rfq.operatorId && (['Bidding Open', 'New'].includes(rfq.status))) || 
-                currentUser.role === 'Admin' || 
-                (currentUser.role === 'CTD Admin' && rfq.company === currentUser.company) ||
-                (currentUser.role === 'Travel Agency' && rfq.requesterExternalAuthId === currentUser.id)
-            );
-        case 'seatAllocationRequests':
-            if (!currentUser) return [];
-            return db.seatAllocationRequests.filter(req => 
-                req.requesterExternalAuthId === currentUser.id ||
-                req.operatorId === currentUser.id
-            );
-        case 'accommodationRequests':
-            if (!currentUser) return [];
-            return db.accommodationRequests.filter(req => 
-                req.hotelPartnerId === currentUser.id || 
-                req.requesterId === currentUser.id
-            );
-        case 'commissionLedger':
-            if (!currentUser) return [];
-            if (currentUser.role === 'Admin') return db.commissionLedger;
-            return db.commissionLedger.filter(l => l.entityId === currentUser.id);
-        case 'settlementRecords':
-            if (!currentUser) return [];
-            if (currentUser.role === 'Admin') return db.settlementRecords;
-            return db.settlementRecords.filter(s => s.entityId === currentUser.id);
-        case 'aircrafts':
-            if (!currentUser) return [];
-            if (currentUser.role === 'Operator') {
-                return db.aircrafts.filter(ac => ac.operatorId === currentUser.id);
-            }
-            return db.aircrafts;
+    // Firm-based isolation logic
+    switch(collectionName) {
+        case 'users':
+            if (currentUser.operatorId) return dataSet.filter((u: any) => u.operatorId === currentUser.operatorId);
+            if (currentUser.agencyId) return dataSet.filter((u: any) => u.agencyId === currentUser.agencyId);
+            if (currentUser.corporateId) return dataSet.filter((u: any) => u.corporateId === currentUser.corporateId);
+            return [currentUser];
         case 'operators':
-            // For admin verification, return all
-            if (currentUser?.role === 'Admin') return db.operators;
-            return db.operators;
-        case 'distributors':
-            if (currentUser?.role === 'Admin') return db.distributors;
-            return db.distributors;
+            return currentUser.operatorId ? dataSet.filter((o: any) => o.id === currentUser.operatorId) : [];
+        case 'travelAgencies':
+            return currentUser.agencyId ? dataSet.filter((a: any) => a.id === currentUser.agencyId) : [];
+        case 'corporateTravelDesks':
+            return currentUser.corporateId ? dataSet.filter((c: any) => c.id === currentUser.corporateId) : [];
+        case 'charterRFQs':
+            if (currentUser.operatorId) return dataSet.filter((r: any) => r.operatorId === currentUser.operatorId || r.status === 'Bidding Open');
+            if (currentUser.agencyId) return dataSet.filter((r: any) => r.agencyId === currentUser.agencyId);
+            if (currentUser.corporateId) return dataSet.filter((r: any) => r.corporateId === currentUser.corporateId);
+            return dataSet.filter((r: any) => r.customerId === currentUser.id);
+        case 'aircrafts':
+            return currentUser.operatorId ? dataSet.filter((a: any) => a.operatorId === currentUser.operatorId) : [];
         default:
-            return (db as any)[resolvedKey] || [];
+            return dataSet;
     }
 }
 
 const getDoc = (path: string): any | null => {
-    const pathSegments = path.split('/');
-    const collectionName = pathSegments[0];
-    const docId = pathSegments[1];
-    
-    const resolvedKey = resolveCollectionKey(collectionName);
-    const dataSet = (db as any)[resolvedKey];
+    const [collectionName, docId] = path.split('/');
+    const dataSet = (db as any)[collectionName];
     if (!dataSet) return null;
-    
-    const foundDoc = dataSet.find((d: any) => d.id === docId);
-    return foundDoc ? deepCopy(foundDoc) : null;
+    return dataSet.find((d: any) => d.id === docId) || null;
 }
 
 const addDoc = (path: string, data: any) => {
-    const pathSegments = path.split('/');
-    const collectionName = pathSegments[0];
-    const resolvedKey = resolveCollectionKey(collectionName);
-    let newDoc = { ...data, id: `demo-${resolvedKey.slice(0, 4)}-${Date.now()}` };
-
-    if ((db as any)[resolvedKey]) {
-        (db as any)[resolvedKey].unshift(newDoc as any);
+    const collectionName = path.split('/')[0];
+    const newDoc = { ...data, id: `demo-${Date.now()}` };
+    if ((db as any)[collectionName]) {
+        (db as any)[collectionName].unshift(newDoc);
+        // Log Audit
+        logAudit('CREATE', collectionName, newDoc.id, 'System', null, newDoc);
     }
-    
     notify();
 };
 
 const updateDoc = (collectionPath: string, docId: string, data: any) => {
-    const resolvedKey = resolveCollectionKey(collectionPath);
-    const dataSet = (db as any)[resolvedKey];
+    const dataSet = (db as any)[collectionPath];
     if (!dataSet) return;
-    
-    const docIndex = dataSet.findIndex((d: any) => d.id === docId);
-    if (docIndex > -1) {
-        // GST Audit Log Logic
-        if (data.gstin && data.gstin !== dataSet[docIndex].gstin) {
-            db.gstAuditLogs.push({
-                id: `AUDIT-${Date.now()}`,
-                entityId: docId,
-                entityType: collectionPath,
-                oldGstin: dataSet[docIndex].gstin,
-                newGstin: data.gstin,
-                changedBy: 'System/User',
-                timestamp: new Date().toISOString()
-            } as any);
-        }
-
-        dataSet[docIndex] = { ...dataSet[docIndex], ...data, updatedAt: new Date().toISOString() };
+    const index = dataSet.findIndex((d: any) => d.id === docId);
+    if (index > -1) {
+        const prev = { ...dataSet[index] };
+        dataSet[index] = { ...dataSet[index], ...data, updatedAt: new Date().toISOString() };
+        logAudit('UPDATE', collectionPath, docId, 'System', prev, dataSet[index]);
         notify();
     }
 };
 
 const deleteDoc = (collectionPath: string, docId: string) => {
-    const resolvedKey = resolveCollectionKey(collectionPath);
-    const dataSet = (db as any)[resolvedKey];
+    const dataSet = (db as any)[collectionPath];
     if (!dataSet) return;
-    (db as any)[resolvedKey] = dataSet.filter((d: any) => d.id !== docId);
+    const prev = dataSet.find((d: any) => d.id === docId);
+    (db as any)[collectionPath] = dataSet.filter((d: any) => d.id !== docId);
+    logAudit('DELETE', collectionPath, docId, 'System', prev, null);
     notify();
+};
+
+const logAudit = (action: string, entity: string, id: string, user: string, prev: any, next: any) => {
+    db.auditLogs.unshift({
+        id: `audit-${Date.now()}`,
+        actionType: action,
+        entityType: entity,
+        entityId: id,
+        changedBy: user,
+        previousData: prev,
+        newData: next,
+        timestamp: new Date().toISOString()
+    });
 };
 
 export const mockStore = {

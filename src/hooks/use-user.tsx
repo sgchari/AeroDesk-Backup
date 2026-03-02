@@ -1,9 +1,8 @@
-
 'use client';
 
 import React, { createContext, useContext, ReactNode, useState, useEffect, useCallback } from 'react';
 import type { User as AppUser } from '@/lib/types';
-import { mockUsers, mockCorporateTravelDesks } from '@/lib/data';
+import { mockUsers, mockCorporates } from '@/lib/data';
 
 interface UserContextType {
   user: AppUser | null;
@@ -32,7 +31,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             const foundUser = mockUsers.find(u => u.id === demoUserId);
             if (foundUser) {
                 if (['CTD Admin', 'Corporate Admin', 'Requester'].includes(foundUser.role) && foundUser.ctdId) {
-                    const ctd = mockCorporateTravelDesks.find(d => d.id === foundUser.ctdId);
+                    const ctd = mockCorporates.find(d => d.id === foundUser.ctdId);
                     const userWithCompany = {
                         ...foundUser,
                         company: ctd?.companyName || "Corporate Inc."
