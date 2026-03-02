@@ -9,7 +9,7 @@ import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking
 import { useUser } from "@/hooks/use-user";
 import type { User, FirmRole } from "@/lib/types";
 import { collection, query, where, doc } from "firebase/firestore";
-import { MoreHorizontal, Shield, Mail } from "lucide-react";
+import { MoreHorizontal, Shield, Mail, Users } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
