@@ -100,6 +100,7 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             if (currentUser.operatorId) return dataSet.filter((u: any) => u.operatorId === currentUser.operatorId);
             if (currentUser.agencyId) return dataSet.filter((u: any) => u.agencyId === currentUser.agencyId);
             if (currentUser.corporateId) return dataSet.filter((u: any) => u.corporateId === currentUser.corporateId);
+            if (currentUser.hotelPartnerId) return dataSet.filter((u: any) => u.hotelPartnerId === currentUser.hotelPartnerId);
             return [currentUser];
         case 'operators':
             return currentUser.operatorId ? dataSet.filter((o: any) => o.id === currentUser.operatorId) : [];
