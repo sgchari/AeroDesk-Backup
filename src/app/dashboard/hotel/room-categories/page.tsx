@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -20,13 +19,10 @@ export default function HotelRoomCategoriesPage() {
 
     const propertiesQuery = useMemoFirebase(() => {
         if (!firestore || !user) return null;
-        // In a real app, this would be a query on the properties subcollection.
-        // For the demo, we fetch all and filter.
         return query(collection(firestore, 'properties'), where('hotelPartnerId', '==', user.id));
     }, [firestore, user]);
     const { data: properties, isLoading: propertiesLoading } = useCollection<Property>(propertiesQuery, 'properties');
 
-    // For the demo, fetch all room categories and filter on the client.
     const roomCategoriesQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return collection(firestore, 'roomCategories');
@@ -66,7 +62,12 @@ export default function HotelRoomCategoriesPage() {
                                                 {propertyRooms.map(room => (
                                                     <Card key={room.id} className="bg-background flex flex-col overflow-hidden">
                                                         <div className="relative h-40 w-full">
-                                                            <Image src={room.imageUrl || 'https://picsum.photos/seed/room/600/400'} alt={room.name} layout="fill" objectFit="cover" />
+                                                            <Image 
+                                                                src={room.imageUrl || 'https://picsum.photos/seed/room/600/400'} 
+                                                                alt={room.name || 'Hotel Room'} 
+                                                                fill 
+                                                                className="object-cover" 
+                                                            />
                                                         </div>
                                                         <CardHeader className="pb-4">
                                                             <div className="flex items-start justify-between">

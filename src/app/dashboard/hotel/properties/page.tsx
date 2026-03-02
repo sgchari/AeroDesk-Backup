@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,12 @@ export default function HotelPropertiesPage() {
                         {properties.map(prop => (
                             <Card key={prop.id} className="bg-card flex flex-col overflow-hidden">
                                 <div className="relative h-48 w-full">
-                                    <Image src={prop.imageUrl || 'https://picsum.photos/seed/hotel/600/400'} alt={prop.name} layout="fill" objectFit="cover" />
+                                    <Image 
+                                        src={prop.imageUrl || 'https://picsum.photos/seed/hotel/600/400'} 
+                                        alt={prop.name || 'Hotel Property'} 
+                                        fill 
+                                        className="object-cover" 
+                                    />
                                 </div>
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
