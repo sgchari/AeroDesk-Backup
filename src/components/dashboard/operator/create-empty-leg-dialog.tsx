@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -36,6 +35,93 @@ import { useCollection, useFirestore, addDocumentNonBlocking } from '@/firebase'
 import { collection, query } from 'firebase/firestore';
 import type { Aircraft } from '@/lib/types';
 import { SystemAdvisory } from './system-advisory';
+import { cn } from '@/lib/utils';
+
+const primeDestinations = [
+    "Agra (AGR)", "Ahmedabad (AMD)", "Amritsar (ATQ)", "Aurangabad (IXU)", "Bagdogra (IXB)",
+    "Bengaluru (BLR)", "Bhopal (BHO)", "Bhubaneswar (BBI)", "Chandigarh (IXC)", "Chennai (MAA)",
+    "Cochin (COK)", "Coimbatore (CJB)", "Dehradun (DED)", "Delhi (DEL)", "Goa (GOI)",
+    "Guwahati (GAU)", "Hyderabad (HYD)", "Imphal (IMF)", "Indore (IDR)", "Jaipur (JAI)",
+    "Jammu (IXJ)", "Jodhpur (JDH)", "Khajuraho (HJR)", "Kolkata (CCU)", "Leh (IXL)",
+    "Lucknow (LKO)", "Madurai (IXM)", "Mangalore (IXE)", "Mumbai (BOM)", "Nagpur (NAG)",
+    "Patna (PAT)", "Port Blair (IXZ)", "Pune (PNQ)", "Raipur (RPR)", "Ranchi (IXR)",
+    "Srinagar (SXR)", "Thiruvananthapuram (TRV)", "Tiruchirappalli (TRZ)", "Udaipur (UDR)", "Varanasi (VNS)",
+    "Visakhapatnam (VTZ)", "Dubai (DXB)", "London (LHR)", "New York (JFK)", "Singapore (SIN)",
+    "Bangkok (BKK)", "Male (MLE)"
+];
+
+const AutocompleteInput = ({ value, onChange, placeholder, className }: { value: string; onChange: (value: string) => void; placeholder: string; className?: string }) => {
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        onChange(inputValue);
+
+        if (inputValue.length >= 1) {
+            const filtered = primeDestinations.filter(dest =>
+                dest.toLowerCase().includes(inputValue.toLowerCase())
+            );
+            setSuggestions(filtered);
+            setShowSuggestions(filtered.length > 0);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleSelectSuggestion = (suggestion: string) => {
+        onChange(suggestion);
+        setSuggestions([]);
+        setShowSuggestions(false);
+    };
+
+    return (
+        <div className="relative w-full" ref={containerRef}>
+            <Input
+                type="text"
+                placeholder={placeholder}
+                value={value}
+                onChange={handleInputChange}
+                onFocus={() => {
+                    if (value.length >= 1) {
+                        const filtered = primeDestinations.filter(dest =>
+                            dest.toLowerCase().includes(value.toLowerCase())
+                        );
+                        setSuggestions(filtered);
+                        setShowSuggestions(filtered.length > 0);
+                    }
+                }}
+                className={className}
+                autoComplete="off"
+            />
+            {showSuggestions && (
+                <div className="absolute z-[100] w-full bg-popover border border-border rounded-md mt-1 shadow-lg max-h-60 overflow-y-auto">
+                    {suggestions.map((suggestion, index) => (
+                        <div
+                            key={index}
+                            className="p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm"
+                            onClick={() => handleSelectSuggestion(suggestion)}
+                        >
+                            {suggestion}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const emptyLegSchema = z.object({
   departure: z.string().min(3, 'Required'),
@@ -124,10 +210,30 @@ export function CreateEmptyLegDialog() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-4">
                 <FormField control={form.control} name="departure" render={({ field }) => (
-                    <FormItem><FormLabel>Departure</FormLabel><FormControl><Input placeholder="ICAO/IATA" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem>
+                        <FormLabel>Departure</FormLabel>
+                        <FormControl>
+                            <AutocompleteInput 
+                                placeholder="ICAO/IATA" 
+                                value={field.value} 
+                                onChange={field.onChange} 
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
                 )} />
                 <FormField control={form.control} name="arrival" render={({ field }) => (
-                    <FormItem><FormLabel>Arrival</FormLabel><FormControl><Input placeholder="ICAO/IATA" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem>
+                        <FormLabel>Arrival</FormLabel>
+                        <FormControl>
+                            <AutocompleteInput 
+                                placeholder="ICAO/IATA" 
+                                value={field.value} 
+                                onChange={field.onChange} 
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
                 )} />
             </div>
 
