@@ -20,8 +20,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
 
   const fetchUser = useCallback(() => {
-    if (!user) setLoading(true);
-    
+    // We remove the 'user' dependency to prevent infinite re-render loops
+    // since this function calls setUser.
+    setLoading(true);
     setError(null);
     try {
         const demoUserId = typeof window !== 'undefined' ? localStorage.getItem('demoUserId') : null;
@@ -62,7 +63,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } finally {
         setLoading(false);
     }
-  }, [user]);
+  }, []); // Empty dependency array ensures stable reference and stops recursion
 
   useEffect(() => {
     fetchUser();
