@@ -1,4 +1,4 @@
-export type PlatformRole = 'admin' | 'operator' | 'agency' | 'corporate' | 'individual';
+export type PlatformRole = 'admin' | 'operator' | 'agency' | 'corporate' | 'individual' | 'hotel';
 export type FirmRole = 'admin' | 'manager' | 'finance' | 'operations' | 'approver' | 'viewer';
 
 export type BookingChannel = 'agency' | 'direct' | 'corporate';
@@ -31,6 +31,7 @@ export type User = {
   operatorId?: string | null;
   agencyId?: string | null;
   corporateId?: string | null;
+  hotelPartnerId?: string | null;
   company?: string; // Display name of firm
   createdAt: string;
   updatedAt: string;
@@ -76,6 +77,16 @@ export type CorporateTravelDesk = {
   updatedAt: string;
 } & Partial<GSTProfile>;
 
+export type HotelPartner = {
+  id: string;
+  companyName: string;
+  officialEmail: string;
+  address: string;
+  status: 'Approved' | 'Pending' | 'Suspended';
+  createdAt: string;
+  updatedAt: string;
+} & Partial<GSTProfile>;
+
 export type AuditLog = {
   id: string;
   actionType: string;
@@ -92,7 +103,6 @@ export type AuditLog = {
   targetId?: string; // Legacy
 };
 
-// ... keep other existing types like CharterRFQ, Aircraft, etc.
 export type RfqStatus =
   | 'rfqSubmitted' | 'quoteReceived' | 'quoteAccepted' | 'awaitingManifest'
   | 'manifestSubmitted' | 'manifestApproved' | 'invoiceIssued' | 'paymentSubmitted'
@@ -136,6 +146,9 @@ export type Aircraft = {
   homeBase: string;
   status: 'Available' | 'Under Maintenance' | 'AOG' | 'Restricted';
   exteriorImageUrl?: string;
+  interiorImageUrl?: string;
+  updatedAt?: string;
+  createdAt?: string;
 };
 
 export type CrewMember = {
@@ -144,29 +157,47 @@ export type CrewMember = {
   firstName: string;
   lastName: string;
   role: string;
-  status: string;
+  status: 'Available' | 'On Duty' | 'Training' | 'Medical Leave';
   licenseNumber?: string;
   assignedAircraftRegistration?: string;
   createdAt: string;
+  updatedAt?: string;
 };
 
 export type EmptyLeg = {
   id: string;
   operatorId: string;
   operatorName?: string;
+  aircraftId: string;
+  aircraftName?: string;
   departure: string;
   arrival: string;
   departureTime: string;
   availableSeats: number;
+  seatsAllocated?: number;
   status: string;
+  seatPricingStrategy?: string;
+  estimatedPricePerSeat?: number;
+  createdAt: string;
+};
+
+export type Passenger = {
+  fullName: string;
+  dob?: string;
+  gender?: string;
+  nationality: string;
+  idType: string;
+  idNumber: string;
 };
 
 export type PassengerManifest = {
   id: string;
   charterId: string;
   status: string;
-  passengers: any[];
+  passengers: Passenger[];
   createdAt: string;
+  updatedAt?: string;
+  submittedBy?: string;
 };
 
 export type Invoice = {
@@ -176,14 +207,21 @@ export type Invoice = {
   totalAmount: number;
   status: string;
   bankDetails: string;
+  operatorId?: string;
+  createdAt?: string;
+  relatedEntityId?: string;
 };
 
 export type Payment = {
   id: string;
   charterId: string;
+  invoiceId?: string;
   utrReference: string;
   status: string;
   createdAt: string;
+  submittedBy?: string;
+  verifiedAt?: string;
+  relatedEntityId?: string;
 };
 
 export type ActivityLog = {
@@ -193,6 +231,10 @@ export type ActivityLog = {
   performedBy: string;
   role: string;
   timestamp: string;
+  entityId?: string;
+  previousStatus?: string;
+  newStatus?: string;
+  metadata?: any;
 };
 
 export type FeatureFlag = {
@@ -262,14 +304,19 @@ export type EntityBillingLedger = {
   ledgerStatus: string;
 };
 
+export type ChargeType = 'percentage' | 'fixed' | 'hybrid';
+export type BillingServiceType = 'charter' | 'seat' | 'accommodation' | 'subscription';
+
 export type PlatformChargeRule = {
   id: string;
-  entityType: string;
-  serviceType: string;
-  chargeType: string;
+  entityType: UserRole | string;
+  serviceType: BillingServiceType;
+  chargeType: ChargeType;
   percentageRate: number;
   fixedAmount: number;
   isActive: boolean;
+  createdBy?: string;
+  createdAt?: string;
 };
 
 export type TaxConfig = {
@@ -287,38 +334,46 @@ export type CommissionRule = {
   commissionRatePercent: number;
   effectiveFrom: string;
   isActive: boolean;
+  createdBy?: string;
+  createdAt?: string;
 };
 
 export type RevenueShareConfig = {
   id: string;
-  scopeType: string;
+  scopeType: 'global' | 'entity' | 'serviceType';
   serviceType?: string | null;
   agencySharePercent: number;
   aerodeskSharePercent: number;
   isActive: boolean;
+  createdBy?: string;
+  createdAt?: string;
+  effectiveFrom?: string;
 };
 
 export type CommissionLedgerEntry = {
   id: string;
   transactionId: string;
-  bookingChannel: string;
+  bookingChannel: BookingChannel | string;
   grossAmount: number;
   agencyCommissionAmount: number;
   aerodeskCommissionAmount: number;
   agencySharePercent: number;
-  status: string;
+  status: 'pending' | 'settled';
   createdAt: string;
   serviceType: string;
+  entityId?: string;
 };
 
 export type SettlementRecord = {
   id: string;
   entityName?: string;
+  entityId?: string;
   settlementPeriodStart: string;
   settlementPeriodEnd: string;
   totalAgencyCommission: number;
-  status: string;
+  status: 'processed' | 'paid';
   paymentReference?: string;
+  createdAt?: string;
 };
 
 export type RoomCategory = {
@@ -337,7 +392,7 @@ export type Property = {
   hotelPartnerId: string;
   name: string;
   city: string;
-  status: string;
+  status: 'Active' | 'Inactive' | 'Under Renovation';
   imageUrl?: string;
   propertyType?: string;
   address: string;
@@ -351,6 +406,24 @@ export type AccommodationRequest = {
   checkIn: string;
   checkOut: string;
   rooms: number;
-  status: string;
+  status: 'Pending' | 'Confirmed' | 'Declined' | 'Awaiting Clarification' | 'stayConfirmed';
   requesterId?: string;
 };
+
+export type Quotation = {
+  id: string;
+  rfqId: string;
+  operatorId: string;
+  operatorName: string;
+  aircraftId: string;
+  aircraftName: string;
+  price: number;
+  status: 'Submitted' | 'Selected' | 'Withdrawn' | 'Expired';
+  submittedAt: string;
+  validUntil: string;
+  operatorRemarks?: string;
+};
+
+export type UserRole = 'Admin' | 'Operator' | 'Travel Agency' | 'Hotel Partner' | 'CTD Admin' | 'Corporate Admin' | 'Requester' | 'Customer';
+export type CrewRole = 'Captain' | 'First Officer' | 'Cabin Crew' | 'Maintenance' | 'Operations';
+export type CrewStatus = 'Available' | 'On Duty' | 'Training' | 'Medical Leave';

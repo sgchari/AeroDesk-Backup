@@ -15,7 +15,10 @@ import {
   Coins,
   Zap,
   LogOut,
-  Scale
+  Scale,
+  BedDouble,
+  Calendar,
+  Clock
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -69,6 +72,15 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/ctd/requests', label: 'Demand Queue', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/ctd/approvals', label: 'Workflows', icon: ShieldCheck, color: 'text-amber-400' },
     { href: '/dashboard/ctd/team', label: 'Personnel', icon: Users, color: 'text-violet-400' },
+  ],
+  hotel: [
+    { href: '/dashboard', label: 'Console', icon: Home, color: 'text-sky-400' },
+    { href: '/dashboard/hotel/properties', label: 'Properties', icon: Building, color: 'text-amber-400' },
+    { href: '/dashboard/hotel/room-categories', label: 'Room Types', icon: BedDouble, color: 'text-violet-400' },
+    { href: '/dashboard/hotel/availability', label: 'Availability', icon: Calendar, color: 'text-emerald-400' },
+    { href: '/dashboard/hotel/requests', label: 'Stay Requests', icon: Clock, color: 'text-blue-400' },
+    { href: '/dashboard/hotel/reports', label: 'Yield Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
+    { href: '/dashboard/hotel/team', label: 'Staff Management', icon: Users, color: 'text-slate-400' },
   ],
   individual: [
     { href: '/dashboard', label: 'Dashboard', icon: Home, color: 'text-sky-400' },
