@@ -69,12 +69,14 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/travel-agency/available-seats', label: 'Jet Seats', icon: Armchair, color: 'text-emerald-400' },
     { href: '/dashboard/travel-agency/charter-requests', label: 'Requests', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/travel-agency/revenue-share', label: 'Earnings', icon: Coins, color: 'text-accent' },
+    { href: '/dashboard/travel-agency/reports', label: 'Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
   ],
   corporate: [
     { href: '/dashboard', label: 'Governance', icon: Home, color: 'text-sky-400' },
     { href: '/dashboard/ctd/requests', label: 'Demand Queue', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/ctd/approvals', label: 'Workflows', icon: ShieldCheck, color: 'text-amber-400' },
     { href: '/dashboard/ctd/team', label: 'Personnel', icon: Users, color: 'text-violet-400' },
+    { href: '/dashboard/ctd/analytics', label: 'Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
   ],
   hotel: [
     { href: '/dashboard', label: 'Console', icon: Home, color: 'text-sky-400' },
