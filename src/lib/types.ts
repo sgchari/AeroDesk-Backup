@@ -108,7 +108,7 @@ export type RfqStatus =
   | 'manifestSubmitted' | 'manifestApproved' | 'invoiceIssued' | 'paymentSubmitted'
   | 'paymentConfirmed' | 'charterConfirmed' | 'operationalPreparation' | 'preFlightReady'
   | 'boarding' | 'departed' | 'arrived' | 'flightCompleted' | 'tripClosed'
-  | 'cancelled' | 'refunded' | 'Draft' | 'New' | 'Submitted' | 'Bidding Open';
+  | 'cancelled' | 'refunded' | 'Draft' | 'New' | 'Submitted' | 'Bidding Open' | 'Pending Approval' | 'Reviewing' | 'Closed' | 'Confirmed';
 
 export type TripType = 'Onward' | 'Return' | 'Multi-City';
 
@@ -134,6 +134,10 @@ export type CharterRFQ = {
   totalAmount?: number;
   costCenter?: string;
   businessPurpose?: string;
+  specialRequirements?: string;
+  catering?: string;
+  hotelRequired?: boolean;
+  hotelPreferences?: string;
 };
 
 export type Aircraft = {
@@ -423,6 +427,19 @@ export type Quotation = {
   submittedAt: string;
   validUntil: string;
   operatorRemarks?: string;
+};
+
+export type EmptyLegSeatAllocationRequest = {
+  id: string;
+  emptyLegId: string;
+  distributorId: string;
+  requesterExternalAuthId: string;
+  numberOfSeats: number;
+  status: 'Requested' | 'Approved' | 'Rejected' | 'Confirmed' | 'Cancelled';
+  requestDateTime: string;
+  passengerName?: string;
+  clientReference?: string;
+  passengerNotes?: string;
 };
 
 export type UserRole = 'Admin' | 'Operator' | 'Travel Agency' | 'Hotel Partner' | 'CTD Admin' | 'Corporate Admin' | 'Requester' | 'Customer';

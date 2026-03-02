@@ -7,25 +7,21 @@ import {
   mockAircrafts,
   mockQuotations,
   mockEmptyLegs,
+  mockSeatRequests,
   mockAuditLogs,
   mockAccommodationRequests,
   mockFeatureFlags,
-  mockCrew,
-  mockManifests,
-  mockInvoices,
-  mockPayments,
-  mockActivityLogs,
-  mockCommissionRules,
-  mockRevenueShareConfigs,
-  mockCommissionLedger,
-  mockSettlementRecords,
   mockPolicyFlags,
   mockProperties,
   mockRoomCategories,
   mockTaxConfig,
   mockPlatformInvoices,
   mockPlatformChargeRules,
-  mockBillingLedger
+  mockBillingLedger,
+  mockCommissionRules,
+  mockRevenueShareConfigs,
+  mockCommissionLedger,
+  mockSettlementRecords
 } from './data';
 import { User } from './types';
 
@@ -42,26 +38,22 @@ let db = {
   aircrafts: deepCopy(mockAircrafts),
   quotations: deepCopy(mockQuotations),
   emptyLegs: deepCopy(mockEmptyLegs),
-  auditTrails: deepCopy(mockAuditLogs), // Normalized naming
+  seatAllocationRequests: deepCopy(mockSeatRequests),
+  auditTrails: deepCopy(mockAuditLogs),
   auditLogs: deepCopy(mockAuditLogs),
   accommodationRequests: deepCopy(mockAccommodationRequests),
   featureFlags: deepCopy(mockFeatureFlags),
   policyFlags: deepCopy(mockPolicyFlags),
-  crew: deepCopy(mockCrew),
-  passengerManifests: deepCopy(mockManifests),
-  invoices: deepCopy(mockInvoices),
-  payments: deepCopy(mockPayments),
-  activityLogs: deepCopy(mockActivityLogs),
-  commissionRules: deepCopy(mockCommissionRules),
-  revenueShareConfigs: deepCopy(mockRevenueShareConfigs),
-  commissionLedger: deepCopy(mockCommissionLedger),
-  settlementRecords: deepCopy(mockSettlementRecords),
   properties: deepCopy(mockProperties),
   roomCategories: deepCopy(mockRoomCategories),
   taxConfig: deepCopy(mockTaxConfig),
   platformInvoices: deepCopy(mockPlatformInvoices),
   platformChargeRules: deepCopy(mockPlatformChargeRules),
-  entityBillingLedger: deepCopy(mockBillingLedger)
+  entityBillingLedger: deepCopy(mockBillingLedger),
+  commissionRules: deepCopy(mockCommissionRules),
+  revenueShareConfigs: deepCopy(mockRevenueShareConfigs),
+  commissionLedger: deepCopy(mockCommissionLedger),
+  settlementRecords: deepCopy(mockSettlementRecords)
 };
 
 type Listener = () => void;
@@ -82,8 +74,9 @@ const resolveCollectionKey = (path: string): string => {
         'charterRequests': 'charterRFQs',
         'auditTrails': 'auditLogs',
         'distributors': 'travelAgencies',
-        'platformAdmins': 'users' // Admins are in the users collection in the data registry
+        'platformAdmins': 'users'
     };
+    if (path.includes('seatAllocationRequests')) return 'seatAllocationRequests';
     return mappings[key] || key;
 };
 
@@ -94,7 +87,7 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
     if (!currentUser) return dataSet;
     if (currentUser.platformRole === 'admin') return dataSet;
 
-    // Firm-based isolation logic
+    // Institutional isolation logic
     switch(collectionName) {
         case 'users':
             if (currentUser.operatorId) return dataSet.filter((u: any) => u.operatorId === currentUser.operatorId);
@@ -104,10 +97,6 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             return [currentUser];
         case 'operators':
             return currentUser.operatorId ? dataSet.filter((o: any) => o.id === currentUser.operatorId) : [];
-        case 'travelAgencies':
-            return currentUser.agencyId ? dataSet.filter((a: any) => a.id === currentUser.agencyId) : [];
-        case 'corporateTravelDesks':
-            return currentUser.corporateId ? dataSet.filter((c: any) => c.id === currentUser.corporateId) : [];
         case 'charterRFQs':
             if (currentUser.operatorId) return dataSet.filter((r: any) => r.operatorId === currentUser.id || r.status === 'Bidding Open');
             if (currentUser.agencyId) return dataSet.filter((r: any) => r.requesterExternalAuthId === currentUser.id);
@@ -115,6 +104,16 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             return dataSet.filter((r: any) => r.customerId === currentUser.id || r.requesterExternalAuthId === currentUser.id);
         case 'aircrafts':
             return currentUser.operatorId ? dataSet.filter((a: any) => a.operatorId === currentUser.operatorId) : [];
+        case 'seatAllocationRequests':
+            if (currentUser.operatorId) {
+                // Operator sees requests for their legs
+                const myLegIds = (db.emptyLegs as any[]).filter(l => l.operatorId === currentUser.operatorId).map(l => l.id);
+                return dataSet.filter((r: any) => myLegIds.includes(r.emptyLegId));
+            }
+            if (currentUser.agencyId) {
+                return dataSet.filter((r: any) => r.distributorId === currentUser.agencyId);
+            }
+            return dataSet.filter((r: any) => r.requesterExternalAuthId === currentUser.id);
         default:
             return dataSet;
     }
@@ -135,7 +134,6 @@ const addDoc = (path: string, data: any) => {
     const newDoc = { ...data, id: `demo-${Date.now()}` };
     if ((db as any)[collectionName]) {
         (db as any)[collectionName].unshift(newDoc);
-        logAudit('CREATE', collectionName, newDoc.id, 'System', null, newDoc);
     }
     notify();
 };
@@ -146,9 +144,7 @@ const updateDoc = (collectionPath: string, docId: string, data: any) => {
     if (!dataSet) return;
     const index = dataSet.findIndex((d: any) => d.id === docId);
     if (index > -1) {
-        const prev = { ...dataSet[index] };
         dataSet[index] = { ...dataSet[index], ...data, updatedAt: new Date().toISOString() };
-        logAudit('UPDATE', collectionName, docId, 'System', prev, dataSet[index]);
         notify();
     }
 };
@@ -157,30 +153,8 @@ const deleteDoc = (collectionPath: string, docId: string) => {
     const collectionName = resolveCollectionKey(collectionPath);
     const dataSet = (db as any)[collectionName];
     if (!dataSet) return;
-    const prev = dataSet.find((d: any) => d.id === docId);
     (db as any)[collectionName] = dataSet.filter((d: any) => d.id !== docId);
-    logAudit('DELETE', collectionName, docId, 'System', prev, null);
     notify();
-};
-
-const logAudit = (action: string, entity: string, id: string, user: string, prev: any, next: any) => {
-    const logEntry = {
-        id: `audit-${Date.now()}`,
-        actionType: action,
-        entityType: entity,
-        entityId: id,
-        changedBy: user,
-        previousData: prev,
-        newData: next,
-        timestamp: new Date().toISOString(),
-        user: user,
-        role: 'System',
-        action: `${action} on ${entity}`,
-        details: `Automated simulation event for ${id}`,
-        targetId: id
-    };
-    db.auditLogs.unshift(logEntry);
-    db.auditTrails.unshift(logEntry);
 };
 
 export const mockStore = {

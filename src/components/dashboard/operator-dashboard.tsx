@@ -58,7 +58,7 @@ export function OperatorDashboard() {
   }, [firestore, user]);
   const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
-  const { data: allSeatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(null, 'emptyLegs/all/seatAllocationRequests');
+  const { data: allSeatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(null, 'seatAllocationRequests');
 
   const isLoading = isUserLoading || rfqsLoading || aircraftsLoading || emptyLegsLoading || seatRequestsLoading || missionsLoading;
 
@@ -81,7 +81,6 @@ export function OperatorDashboard() {
       </StatsGrid>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* New Execution Queue Section */}
         <Card className="bg-card border-l-4 border-l-accent">
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
@@ -130,7 +129,6 @@ export function OperatorDashboard() {
             </CardContent>
         </Card>
 
-        {/* Existing Demand Stream */}
         <Card className="bg-card">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
@@ -199,7 +197,6 @@ export function OperatorDashboard() {
             </CardContent>
         </Card>
 
-        {/* Dynamic Analytics Mini-Card */}
         <Card className="lg:col-span-2 bg-card relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                 <Activity className="h-24 w-24" />
