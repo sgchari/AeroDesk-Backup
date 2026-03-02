@@ -9,10 +9,11 @@ import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking
 import { useUser } from "@/hooks/use-user";
 import type { User, FirmRole } from "@/lib/types";
 import { collection, query, where, doc } from "firebase/firestore";
-import { UserPlus, MoreHorizontal, Shield, Mail, CheckCircle2, XCircle } from "lucide-react";
+import { MoreHorizontal, Shield, Mail } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { InvitePersonnelDialog } from "@/components/dashboard/operator/invite-personnel-dialog";
 
 export default function OperatorUserManagementPage() {
     const { user: currentUser } = useUser();
@@ -20,9 +21,9 @@ export default function OperatorUserManagementPage() {
     const { toast } = useToast();
 
     const usersQuery = useMemoFirebase(() => {
-        if (!firestore || !currentUser?.operatorId) return null;
+        if (!firestore || (firestore as any)._isMock || !currentUser?.operatorId) return null;
         return query(collection(firestore, 'users'), where('operatorId', '==', currentUser.operatorId));
-    }, [firestore, currentUser]);
+    }, [firestore, currentUser?.operatorId]);
 
     const { data: team, isLoading } = useCollection<User>(usersQuery, 'users');
 
@@ -50,10 +51,7 @@ export default function OperatorUserManagementPage() {
                 description={`Manage operational personnel and access levels for ${currentUser?.company}.`} 
             >
                 {isAdmin && (
-                    <Button className="bg-accent text-accent-foreground hover:bg-accent/90">
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Invite Personnel
-                    </Button>
+                    <InvitePersonnelDialog />
                 )}
             </PageHeader>
 
