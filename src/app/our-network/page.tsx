@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -35,11 +34,8 @@ const hubCoordinates: Record<string, { x: number; y: number; zone: string; airpo
     'Guwahati': { x: 920, y: 350, zone: 'North East', airport: 'VEGT' },
 };
 
-const zones = ['All', 'North', 'South', 'West', 'East', 'Central'];
-
 export default function OurNetworkPage() {
     const firestore = useFirestore();
-    const [selectedZone, setSelectedZone] = useState('All');
     const [hoveredOperator, setHoveredOperator] = useState<string | null>(null);
 
     // Data Queries
@@ -55,7 +51,7 @@ export default function OurNetworkPage() {
 
     const elQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        return query(collection(firestore, 'emptyLegs'), where('status', 'in', ['Published', 'Approved']));
+        return query(collection(firestore, 'emptyLegs'), where('status', 'in', ['Published', 'Approved', 'live']));
     }, [firestore]);
 
     const { data: operators, isLoading: opsLoading } = useCollection<Operator>(operatorsQuery, 'operators');
@@ -73,11 +69,6 @@ export default function OurNetworkPage() {
             activeMissions: inProgress.length
         };
     }, [operators, rfqs, emptyLegs]);
-
-    const filteredOperators = useMemo(() => {
-        if (selectedZone === 'All') return operators || [];
-        return operators?.filter(o => o.zone === selectedZone || (o.city && hubCoordinates[o.city]?.zone === selectedZone)) || [];
-    }, [operators, selectedZone]);
 
     return (
         <div className="w-full relative min-h-screen text-[#EAEAEA]">
@@ -103,9 +94,9 @@ export default function OurNetworkPage() {
                     <div className="w-full lg:w-[30%] p-6 lg:p-10 z-20 flex flex-col gap-8 bg-black/30 backdrop-blur-3xl border-r border-white/5">
                         <div className="space-y-2">
                             <h1 className="text-4xl font-bold tracking-tight font-headline">Our Network</h1>
-                            <p className="text-accent font-bold text-xs uppercase tracking-widest">Network of DGCA-Licensed Charter Operators</p>
+                            <p className="text-accent font-bold text-xs uppercase tracking-widest">Nationwide Network of Licensed Operators</p>
                             <p className="text-muted-foreground text-sm leading-relaxed pt-2">
-                                Nationwide Coverage. Structured Coordination. Real-Time Visibility.
+                                Integrated Infrastructure. Structured Coordination. Real-Time Fleet Visibility.
                             </p>
                         </div>
 
@@ -122,8 +113,8 @@ export default function OurNetworkPage() {
                             </div>
                             <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-primary/30 transition-all">
                                 <Globe className="h-4 w-4 text-primary mb-2" />
-                                <p className="text-2xl font-black text-white">5</p>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Operational Zones</p>
+                                <p className="text-2xl font-black text-white">Pan-India</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Service Coverage</p>
                             </div>
                             <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-emerald-400/30 transition-all">
                                 <Zap className="h-4 w-4 text-emerald-400 mb-2" />
@@ -136,24 +127,8 @@ export default function OurNetworkPage() {
                             <div className="p-4 rounded-xl bg-accent/5 border border-accent/10">
                                 <p className="text-[10px] font-black uppercase text-accent tracking-[0.2em] mb-1">Institutional Standard</p>
                                 <p className="text-xs text-muted-foreground italic">
-                                    "Licensed Operators. Real-Time Operational Visibility. Guaranteed Coordination."
+                                    "Licensed Operators. Pan-India Operational Visibility. Guaranteed Institutional Coordination."
                                 </p>
-                            </div>
-                            <div className="flex gap-2">
-                                {zones.map(zone => (
-                                    <button
-                                        key={zone}
-                                        onClick={() => setSelectedZone(zone)}
-                                        className={cn(
-                                            "px-3 py-1 rounded-full text-[10px] font-black uppercase transition-all",
-                                            selectedZone === zone 
-                                                ? "bg-accent text-accent-foreground" 
-                                                : "bg-white/5 text-muted-foreground hover:bg-white/10"
-                                        )}
-                                    >
-                                        {zone}
-                                    </button>
-                                ))}
                             </div>
                         </div>
                     </div>
@@ -182,32 +157,19 @@ export default function OurNetworkPage() {
                         {/* SVG Map of India */}
                         <div className="relative w-full h-full max-w-[900px] max-h-[700px] flex items-center justify-center transition-transform duration-700">
                             <svg viewBox="0 0 1000 800" className="w-full h-full filter drop-shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-                                {/* Zonal Boundaries (Abstract) */}
-                                <g className="zones opacity-20">
-                                    {/* North */}
-                                    <path d="M250 50 L550 50 L650 350 L350 350 Z" fill={selectedZone === 'North' || selectedZone === 'All' ? 'rgba(59, 130, 246, 0.4)' : 'transparent'} stroke="white" strokeWidth="1" />
-                                    {/* West */}
-                                    <path d="M50 350 L350 350 L400 650 L50 750 Z" fill={selectedZone === 'West' || selectedZone === 'All' ? 'rgba(139, 92, 246, 0.4)' : 'transparent'} stroke="white" strokeWidth="1" />
-                                    {/* East */}
-                                    <path d="M650 350 L950 350 L900 550 L650 550 Z" fill={selectedZone === 'East' || selectedZone === 'All' ? 'rgba(244, 63, 94, 0.4)' : 'transparent'} stroke="white" strokeWidth="1" />
-                                    {/* Central */}
-                                    <path d="M350 350 L650 350 L650 550 L400 550 Z" fill={selectedZone === 'Central' || selectedZone === 'All' ? 'rgba(245, 158, 11, 0.4)' : 'transparent'} stroke="white" strokeWidth="1" />
-                                    {/* South */}
-                                    <path d="M400 550 L650 550 L600 780 L450 780 Z" fill={selectedZone === 'South' || selectedZone === 'All' ? 'rgba(16, 185, 129, 0.4)' : 'transparent'} stroke="white" strokeWidth="1" />
-                                </g>
+                                {/* Zonal Boundaries removed for unified view */}
 
                                 {/* Operator Hub Markers */}
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
                                         const hubOps = operators?.filter(o => o.city === city) || [];
-                                        const isZoneActive = selectedZone === 'All' || coords.zone === selectedZone;
                                         if (hubOps.length === 0) return null;
 
                                         return (
                                             <Tooltip key={city}>
                                                 <TooltipTrigger asChild>
                                                     <g 
-                                                        className={cn("cursor-pointer transition-opacity duration-500", !isZoneActive && "opacity-30")}
+                                                        className="cursor-pointer transition-opacity duration-500"
                                                         onMouseEnter={() => setHoveredOperator(city)}
                                                         onMouseLeave={() => setHoveredOperator(null)}
                                                     >
@@ -226,7 +188,7 @@ export default function OurNetworkPage() {
                                                             {hubOps.map(op => (
                                                                 <div key={op.id} className="flex items-center justify-between gap-6 text-[10px]">
                                                                     <span className="font-bold">{op.companyName}</span>
-                                                                    <span className="text-muted-foreground">Fleet: 12 Assets</span>
+                                                                    <span className="text-muted-foreground">Fleet Active</span>
                                                                 </div>
                                                             ))}
                                                         </div>
@@ -244,29 +206,6 @@ export default function OurNetworkPage() {
                                 <path d="M480 220 Q 400 400, 320 580" fill="none" stroke="rgba(255, 255, 189, 0.15)" strokeWidth="1" strokeDasharray="5,5" className="animate-pulse" />
                                 <path d="M480 220 Q 650 500, 480 780" fill="none" stroke="rgba(255, 255, 189, 0.15)" strokeWidth="1" strokeDasharray="5,5" className="animate-pulse" />
                             </svg>
-                        </div>
-
-                        {/* Zone Interaction Overlay (Bottom Left of Map) */}
-                        <div className="absolute bottom-10 left-10 z-30">
-                            <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-5 rounded-2xl max-w-xs animate-in slide-in-from-bottom-4 duration-700">
-                                <h3 className="text-sm font-black uppercase tracking-widest text-accent mb-3 flex items-center gap-2">
-                                    <ShieldCheck className="h-4 w-4" />
-                                    Zonal Governance: {selectedZone}
-                                </h3>
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-[10px]">
-                                        <span className="text-muted-foreground uppercase font-bold">Operators in Zone</span>
-                                        <span className="text-white font-black">{filteredOperators.length}</span>
-                                    </div>
-                                    <div className="flex justify-between text-[10px]">
-                                        <span className="text-muted-foreground uppercase font-bold">Asset Readiness</span>
-                                        <span className="text-emerald-500 font-black">98.2%</span>
-                                    </div>
-                                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-3">
-                                        <div className="h-full bg-accent" style={{ width: '85%' }} />
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </main>
