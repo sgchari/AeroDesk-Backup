@@ -14,24 +14,24 @@ import { LandingHeader } from '@/components/landing-header';
 import { Info, ShieldCheck, Zap, Plane, Users, Globe, Activity, MapPin } from 'lucide-react';
 
 // Institutional Hub Mapping (SVG Coordinate System 1000x800)
-const hubCoordinates: Record<string, { x: number; y: number; zone: string; airport: string }> = {
-    'Delhi': { x: 480, y: 220, zone: 'North', airport: 'VIDP' },
-    'Chandigarh': { x: 460, y: 160, zone: 'North', airport: 'VICG' },
-    'Lucknow': { x: 580, y: 280, zone: 'North', airport: 'VILK' },
-    'Jaipur': { x: 420, y: 300, zone: 'North', airport: 'VIJP' },
-    'Mumbai': { x: 320, y: 580, zone: 'West', airport: 'VABB' },
-    'Ahmedabad': { x: 300, y: 450, zone: 'West', airport: 'VAAH' },
-    'Pune': { x: 360, y: 620, zone: 'West', airport: 'VAPO' },
-    'Goa': { x: 380, y: 720, zone: 'West', airport: 'VOGO' },
-    'Bengaluru': { x: 480, y: 780, zone: 'South', airport: 'VOBL' },
-    'Hyderabad': { x: 520, y: 650, zone: 'South', airport: 'VOHS' },
-    'Chennai': { x: 580, y: 820, zone: 'South', airport: 'VOMM' },
-    'Cochin': { x: 450, y: 880, zone: 'South', airport: 'VOCI' },
-    'Kolkata': { x: 820, y: 480, zone: 'East', airport: 'VECC' },
-    'Bhubaneswar': { x: 750, y: 580, zone: 'East', airport: 'VEBS' },
-    'Bhopal': { x: 500, y: 460, zone: 'Central', airport: 'VABP' },
-    'Nagpur': { x: 550, y: 550, zone: 'Central', airport: 'VANP' },
-    'Guwahati': { x: 920, y: 350, zone: 'North East', airport: 'VEGT' },
+const hubCoordinates: Record<string, { x: number; y: number; airport: string }> = {
+    'Delhi': { x: 480, y: 220, airport: 'VIDP' },
+    'Chandigarh': { x: 460, y: 160, airport: 'VICG' },
+    'Lucknow': { x: 580, y: 280, airport: 'VILK' },
+    'Jaipur': { x: 420, y: 300, airport: 'VIJP' },
+    'Mumbai': { x: 320, y: 580, airport: 'VABB' },
+    'Ahmedabad': { x: 300, y: 450, airport: 'VAAH' },
+    'Pune': { x: 360, y: 620, airport: 'VAPO' },
+    'Goa': { x: 380, y: 720, airport: 'VOGO' },
+    'Bengaluru': { x: 480, y: 780, airport: 'VOBL' },
+    'Hyderabad': { x: 520, y: 650, airport: 'VOHS' },
+    'Chennai': { x: 580, y: 820, airport: 'VOMM' },
+    'Cochin': { x: 450, y: 880, airport: 'VOCI' },
+    'Kolkata': { x: 820, y: 480, airport: 'VECC' },
+    'Bhubaneswar': { x: 750, y: 580, airport: 'VEBS' },
+    'Bhopal': { x: 500, y: 460, airport: 'VABP' },
+    'Nagpur': { x: 550, y: 550, airport: 'VANP' },
+    'Guwahati': { x: 920, y: 350, airport: 'VEGT' },
 };
 
 export default function OurNetworkPage() {
@@ -64,7 +64,7 @@ export default function OurNetworkPage() {
         const inProgress = rfqs?.filter(r => ['operationalPreparation', 'boarding', 'departed', 'arrived'].includes(r.status)) || [];
         return {
             activeOperators: approved.length,
-            totalFleet: 124, // In a real app, sum(operator.fleetCount)
+            totalFleet: 124, 
             emptyLegs: emptyLegs?.length || 0,
             activeMissions: inProgress.length
         };
@@ -72,17 +72,17 @@ export default function OurNetworkPage() {
 
     return (
         <div className="w-full relative min-h-screen text-[#EAEAEA]">
-            {/* Background Layer with Frosted Effect: Optimized with next/image */}
+            {/* Background Layer with Frosted Effect: Synchronized with Homepage */}
             <div className="fixed inset-0 z-0">
                 <Image
-                    src="https://images.unsplash.com/photo-1627440474139-65a5d1656f7e?q=80&w=2070&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
                     alt="Aviation Background"
                     fill
                     priority
                     className="object-cover"
                     data-ai-hint="airplane beach"
                 />
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-md" />
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-md" />
             </div>
 
             <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
@@ -157,8 +157,6 @@ export default function OurNetworkPage() {
                         {/* SVG Map of India */}
                         <div className="relative w-full h-full max-w-[900px] max-h-[700px] flex items-center justify-center transition-transform duration-700">
                             <svg viewBox="0 0 1000 800" className="w-full h-full filter drop-shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-                                {/* Zonal Boundaries removed for unified view */}
-
                                 {/* Operator Hub Markers */}
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
