@@ -74,7 +74,7 @@ export default function SeatRequestsPage() {
                             <TableCell className="text-[10px] text-muted-foreground whitespace-nowrap">
                                 <div className="flex items-center gap-1">
                                     <Clock className="h-3 w-3" />
-                                    {new Date(req.requestDateTime).toLocaleString('en-IN', { day: 'short', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                    {new Date(req.requestDateTime).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                                 </div>
                             </TableCell>
                             <TableCell>
