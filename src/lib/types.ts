@@ -1,7 +1,7 @@
 export type PlatformRole = 'admin' | 'operator' | 'agency' | 'corporate' | 'individual' | 'hotel';
 export type FirmRole = 'admin' | 'manager' | 'finance' | 'operations' | 'approver' | 'viewer';
 
-export type BookingChannel = 'agency' | 'direct' | 'corporate';
+export type BookingChannel = 'agency' | 'direct' | 'both' | 'corporate';
 
 export type GSTVerificationStatus = 'pending' | 'verified' | 'rejected';
 
@@ -168,21 +168,70 @@ export type CrewMember = {
   updatedAt?: string;
 };
 
+export type EmptyLegStatus = 'draft' | 'live' | 'closed';
+export type PricingModel = 'fixed' | 'tiered';
+
 export type EmptyLeg = {
   id: string;
   operatorId: string;
   operatorName?: string;
   aircraftId: string;
   aircraftName?: string;
+  aircraftType?: string; // Required for seat cards
   departure: string;
   arrival: string;
   departureTime: string;
+  totalCapacity: number;
   availableSeats: number;
   seatsAllocated?: number;
-  status: string;
-  seatPricingStrategy?: string;
-  estimatedPricePerSeat?: number;
+  minSeatsPerRequest?: number;
+  seatAllocationEnabled: boolean;
+  pricingModel?: PricingModel;
+  pricePerSeat?: number;
+  bookingChannelAllowed?: BookingChannel;
+  status: EmptyLegStatus | string;
   createdAt: string;
+};
+
+export type SeatAllocationStatus = 
+  | 'pendingApproval' 
+  | 'approved' 
+  | 'rejected' 
+  | 'paymentPending' 
+  | 'confirmed' 
+  | 'cancelled';
+
+export type SeatAllocation = {
+  id: string;
+  flightId: string;
+  operatorId: string;
+  customerId: string;
+  customerName?: string;
+  agencyId?: string | null;
+  bookingChannel: 'agency' | 'direct' | 'corporate';
+  seatsRequested: number;
+  pricePerSeat: number;
+  totalAmount: number;
+  status: SeatAllocationStatus | string;
+  paymentStatus: 'pending' | 'paid' | 'verified';
+  passengerName?: string;
+  clientReference?: string;
+  passengerNotes?: string;
+  passengers?: Passenger[];
+  createdAt: string;
+  updatedAt?: string;
+};
+
+export type InventoryLogAction = 'hold' | 'confirm' | 'release';
+
+export type SeatInventoryLog = {
+  id: string;
+  flightId: string;
+  seatsBefore: number;
+  seatsAfter: number;
+  actionType: InventoryLogAction;
+  changedBy: string;
+  timestamp: string;
 };
 
 export type Passenger = {
@@ -206,36 +255,36 @@ export type PassengerManifest = {
 
 export type Invoice = {
   id: string;
-  charterId: string;
+  charterId?: string;
+  relatedEntityId?: string; // used for seat allocations or stays
   invoiceNumber: string;
   totalAmount: number;
   status: string;
   bankDetails: string;
   operatorId?: string;
   createdAt?: string;
-  relatedEntityId?: string;
 };
 
 export type Payment = {
   id: string;
-  charterId: string;
+  charterId?: string;
+  relatedEntityId?: string;
   invoiceId?: string;
   utrReference: string;
   status: string;
   createdAt: string;
   submittedBy?: string;
   verifiedAt?: string;
-  relatedEntityId?: string;
 };
 
 export type ActivityLog = {
   id: string;
-  charterId: string;
+  charterId?: string;
+  entityId?: string;
   actionType: string;
   performedBy: string;
   role: string;
   timestamp: string;
-  entityId?: string;
   previousStatus?: string;
   newStatus?: string;
   metadata?: any;
@@ -429,18 +478,7 @@ export type Quotation = {
   operatorRemarks?: string;
 };
 
-export type EmptyLegSeatAllocationRequest = {
-  id: string;
-  emptyLegId: string;
-  distributorId: string;
-  requesterExternalAuthId: string;
-  numberOfSeats: number;
-  status: 'Requested' | 'Approved' | 'Rejected' | 'Confirmed' | 'Cancelled';
-  requestDateTime: string;
-  passengerName?: string;
-  clientReference?: string;
-  passengerNotes?: string;
-};
+export type EmptyLegSeatAllocationRequest = SeatAllocation; // Type alias for legacy compatibility
 
 export type UserRole = 'Admin' | 'Operator' | 'Travel Agency' | 'Hotel Partner' | 'CTD Admin' | 'Corporate Admin' | 'Requester' | 'Customer';
 export type CrewRole = 'Captain' | 'First Officer' | 'Cabin Crew' | 'Maintenance' | 'Operations';

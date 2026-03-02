@@ -7,7 +7,8 @@ import {
   mockAircrafts,
   mockQuotations,
   mockEmptyLegs,
-  mockSeatRequests,
+  mockSeatAllocations,
+  mockSeatInventoryLogs,
   mockAuditLogs,
   mockAccommodationRequests,
   mockFeatureFlags,
@@ -23,7 +24,7 @@ import {
   mockCommissionLedger,
   mockSettlementRecords
 } from './data';
-import { User } from './types';
+import { User, EmptyLeg, SeatAllocation, InventoryLogAction } from './types';
 
 const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
@@ -38,7 +39,10 @@ let db = {
   aircrafts: deepCopy(mockAircrafts),
   quotations: deepCopy(mockQuotations),
   emptyLegs: deepCopy(mockEmptyLegs),
-  seatAllocationRequests: deepCopy(mockSeatRequests),
+  emptyLegFlights: deepCopy(mockEmptyLegs), // Target collection for module
+  seatAllocations: deepCopy(mockSeatAllocations),
+  seatAllocationRequests: deepCopy(mockSeatAllocations), // Alias
+  seatInventoryLogs: deepCopy(mockSeatInventoryLogs),
   auditTrails: deepCopy(mockAuditLogs),
   auditLogs: deepCopy(mockAuditLogs),
   accommodationRequests: deepCopy(mockAccommodationRequests),
@@ -74,9 +78,11 @@ const resolveCollectionKey = (path: string): string => {
         'charterRequests': 'charterRFQs',
         'auditTrails': 'auditLogs',
         'distributors': 'travelAgencies',
-        'platformAdmins': 'users'
+        'platformAdmins': 'users',
+        'emptyLegFlights': 'emptyLegs'
     };
-    if (path.includes('seatAllocationRequests')) return 'seatAllocationRequests';
+    if (path.includes('seatAllocationRequests')) return 'seatAllocations';
+    if (path.includes('seatAllocations')) return 'seatAllocations';
     return mappings[key] || key;
 };
 
@@ -104,16 +110,17 @@ const getCollection = (path: string, currentUser?: User | null): any[] => {
             return dataSet.filter((r: any) => r.customerId === currentUser.id || r.requesterExternalAuthId === currentUser.id);
         case 'aircrafts':
             return currentUser.operatorId ? dataSet.filter((a: any) => a.operatorId === currentUser.operatorId) : [];
-        case 'seatAllocationRequests':
+        case 'seatAllocations':
             if (currentUser.operatorId) {
-                // Operator sees requests for their legs
-                const myLegIds = (db.emptyLegs as any[]).filter(l => l.operatorId === currentUser.operatorId).map(l => l.id);
-                return dataSet.filter((r: any) => myLegIds.includes(r.emptyLegId));
+                return dataSet.filter((r: any) => r.operatorId === currentUser.operatorId);
             }
             if (currentUser.agencyId) {
-                return dataSet.filter((r: any) => r.distributorId === currentUser.agencyId);
+                return dataSet.filter((r: any) => r.agencyId === currentUser.agencyId);
             }
-            return dataSet.filter((r: any) => r.requesterExternalAuthId === currentUser.id);
+            return dataSet.filter((r: any) => r.customerId === currentUser.id);
+        case 'emptyLegs':
+            if (currentUser.operatorId) return dataSet.filter((l: any) => l.operatorId === currentUser.operatorId);
+            return dataSet.filter((l: any) => l.status === 'live' || l.status === 'Published' || l.status === 'Approved');
         default:
             return dataSet;
     }
@@ -129,9 +136,33 @@ const getDoc = (path: string): any | null => {
     return dataSet.find((d: any) => d.id === docId) || null;
 }
 
+const logInventoryChange = (flightId: string, seatsBefore: number, seatsAfter: number, action: InventoryLogAction, actor: string) => {
+    const newLog = {
+        id: `LOG-${Date.now()}`,
+        flightId,
+        seatsBefore,
+        seatsAfter,
+        actionType: action,
+        changedBy: actor,
+        timestamp: new Date().toISOString()
+    };
+    db.seatInventoryLogs.unshift(newLog);
+};
+
 const addDoc = (path: string, data: any) => {
     const collectionName = resolveCollectionKey(path);
     const newDoc = { ...data, id: `demo-${Date.now()}` };
+    
+    // Inventory Logic for Seat Allocations
+    if (collectionName === 'seatAllocations' && data.status === 'pendingApproval') {
+        const flight = db.emptyLegs.find((l: any) => l.id === data.flightId);
+        if (flight) {
+            const seatsBefore = flight.availableSeats;
+            flight.availableSeats -= data.seatsRequested;
+            logInventoryChange(flight.id, seatsBefore, flight.availableSeats, 'hold', `Request: ${newDoc.id}`);
+        }
+    }
+
     if ((db as any)[collectionName]) {
         (db as any)[collectionName].unshift(newDoc);
     }
@@ -142,8 +173,32 @@ const updateDoc = (collectionPath: string, docId: string, data: any) => {
     const collectionName = resolveCollectionKey(collectionPath);
     const dataSet = (db as any)[collectionName];
     if (!dataSet) return;
+    
     const index = dataSet.findIndex((d: any) => d.id === docId);
     if (index > -1) {
+        const oldDoc = dataSet[index];
+        
+        // Handle Inventory Release on Rejection/Cancellation
+        if (collectionName === 'seatAllocations') {
+            const isReleasing = (data.status === 'rejected' || data.status === 'cancelled') && oldDoc.status !== 'rejected' && oldDoc.status !== 'cancelled';
+            if (isReleasing) {
+                const flight = db.emptyLegs.find((l: any) => l.id === oldDoc.flightId);
+                if (flight) {
+                    const seatsBefore = flight.availableSeats;
+                    flight.availableSeats += oldDoc.seatsRequested;
+                    logInventoryChange(flight.id, seatsBefore, flight.availableSeats, 'release', `Action: ${data.status} (${docId})`);
+                }
+            }
+            
+            // Handle Inventory Confirmation
+            if (data.status === 'confirmed' && oldDoc.status !== 'confirmed') {
+                const flight = db.emptyLegs.find((l: any) => l.id === oldDoc.flightId);
+                if (flight) {
+                    logInventoryChange(flight.id, flight.availableSeats, flight.availableSeats, 'confirm', `Action: confirmed (${docId})`);
+                }
+            }
+        }
+
         dataSet[index] = { ...dataSet[index], ...data, updatedAt: new Date().toISOString() };
         notify();
     }
