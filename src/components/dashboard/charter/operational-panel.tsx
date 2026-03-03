@@ -1,15 +1,15 @@
-
 'use client';
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plane, MapPin, CheckCircle2, ChevronRight, AlertCircle, Clock } from 'lucide-react';
+import { Plane, MapPin, CheckCircle2, ChevronRight, AlertCircle, Clock, Zap } from 'lucide-react';
 import { useFirestore, updateDocumentNonBlocking, addDocumentNonBlocking } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import type { CharterRFQ } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { LiveTrackingMap } from './live-tracking-map';
 
 const opSteps = [
     { id: 'operationalPreparation', label: 'Prep Ops' },
@@ -26,6 +26,7 @@ export function OperationalPanel({ charter, userRole }: { charter: CharterRFQ, u
     const { toast } = useToast();
 
     const isOperator = userRole === 'Operator';
+    const isLive = ['departed', 'arrived'].includes(charter.status);
     const isConfirmed = [
         'charterConfirmed', 
         'operationalPreparation', 
@@ -57,73 +58,89 @@ export function OperationalPanel({ charter, userRole }: { charter: CharterRFQ, u
     if (!isConfirmed && !isOperator) return null;
 
     return (
-        <Card className="bg-card">
-            <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                    <Plane className="h-4 w-4 text-accent" />
-                    Operational Control
-                </CardTitle>
-                <CardDescription>Live execution tracking and mission logistics.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                {!isConfirmed ? (
-                    <div className="p-8 text-center rounded-lg border-2 border-dashed border-white/5 bg-muted/5 opacity-50">
-                        <Clock className="h-10 w-10 mx-auto text-muted-foreground/20 mb-4" />
-                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Awaiting Confirmation Protocol</p>
+        <div className="space-y-6">
+            {/* Live Radar View - Only visible when in flight */}
+            {isLive && (
+                <div className="animate-in fade-in slide-in-from-top-4 duration-700">
+                    <div className="flex items-center gap-2 mb-3">
+                        <Zap className="h-4 w-4 text-accent fill-accent animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">Live Mission Signal</span>
                     </div>
-                ) : (
-                    <div className="space-y-6">
-                        {isOperator && charter.status !== 'tripClosed' && (
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                                {opSteps.map(step => {
-                                    const isNext = opSteps.findIndex(s => s.id === step.id) === opSteps.findIndex(s => s.id === charter.status) + 1 || (charter.status === 'charterConfirmed' && step.id === 'operationalPreparation');
-                                    const isCurrent = charter.status === step.id;
+                    <LiveTrackingMap 
+                        origin={charter.departure} 
+                        destination={charter.arrival} 
+                    />
+                </div>
+            )}
 
-                                    return (
-                                        <Button 
-                                            key={step.id} 
-                                            variant={isCurrent ? "accent" : "outline"} 
-                                            size="sm"
-                                            disabled={!isNext && !isCurrent}
-                                            onClick={() => handleStatusUpdate(step.id)}
-                                            className={cn(
-                                                "text-[9px] font-black uppercase tracking-widest h-8 px-1",
-                                                isNext && "border-accent/40 text-accent animate-pulse"
-                                            )}
-                                        >
-                                            {step.label}
-                                        </Button>
-                                    );
-                                })}
-                            </div>
-                        )}
+            <Card className="bg-card">
+                <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                        <Plane className="h-4 w-4 text-accent" />
+                        Operational Control
+                    </CardTitle>
+                    <CardDescription>Live execution tracking and mission logistics.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    {!isConfirmed ? (
+                        <div className="p-8 text-center rounded-lg border-2 border-dashed border-white/5 bg-muted/5 opacity-50">
+                            <Clock className="h-10 w-10 mx-auto text-muted-foreground/20 mb-4" />
+                            <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Awaiting Confirmation Protocol</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-6">
+                            {isOperator && charter.status !== 'tripClosed' && (
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                    {opSteps.map(step => {
+                                        const isNext = opSteps.findIndex(s => s.id === step.id) === opSteps.findIndex(s => s.id === charter.status) + 1 || (charter.status === 'charterConfirmed' && step.id === 'operationalPreparation');
+                                        const isCurrent = charter.status === step.id;
 
-                        <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <MapPin className="h-4 w-4 text-accent" />
-                                    <span className="text-xs font-bold uppercase tracking-widest">{charter.departure}</span>
+                                        return (
+                                            <Button 
+                                                key={step.id} 
+                                                variant={isCurrent ? "accent" : "outline"} 
+                                                size="sm"
+                                                disabled={!isNext && !isCurrent}
+                                                onClick={() => handleStatusUpdate(step.id)}
+                                                className={cn(
+                                                    "text-[9px] font-black uppercase tracking-widest h-8 px-1",
+                                                    isNext && "border-accent/40 text-accent animate-pulse"
+                                                )}
+                                            >
+                                                {step.label}
+                                            </Button>
+                                        );
+                                    })}
                                 </div>
-                                <div className="flex-1 border-t-2 border-dotted border-accent/20 mx-4" />
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs font-bold uppercase tracking-widest">{charter.arrival}</span>
-                                    <MapPin className="h-4 w-4 text-accent" />
+                            )}
+
+                            <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="h-4 w-4 text-accent" />
+                                        <span className="text-xs font-bold uppercase tracking-widest">{charter.departure}</span>
+                                    </div>
+                                    <div className="flex-1 border-t-2 border-dotted border-accent/20 mx-4" />
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-bold uppercase tracking-widest">{charter.arrival}</span>
+                                        <MapPin className="h-4 w-4 text-accent" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 pt-2">
-                                <div className="p-3 bg-black/20 rounded-lg border border-white/5 space-y-1">
-                                    <p className="text-[8px] uppercase text-muted-foreground font-black">Asset Status</p>
-                                    <p className="text-[10px] font-bold text-accent uppercase">{charter.status}</p>
-                                </div>
-                                <div className="p-3 bg-black/20 rounded-lg border border-white/5 space-y-1 text-right">
-                                    <p className="text-[8px] uppercase text-muted-foreground font-black">ETA Destination</p>
-                                    <p className="text-[10px] font-bold text-foreground">ON SCHEDULE</p>
+                                <div className="grid grid-cols-2 gap-4 pt-2">
+                                    <div className="p-3 bg-black/20 rounded-lg border border-white/5 space-y-1">
+                                        <p className="text-[8px] uppercase text-muted-foreground font-black">Asset Status</p>
+                                        <p className="text-[10px] font-bold text-accent uppercase">{charter.status}</p>
+                                    </div>
+                                    <div className="p-3 bg-black/20 rounded-lg border border-white/5 space-y-1 text-right">
+                                        <p className="text-[8px] uppercase text-muted-foreground font-black">ETA Destination</p>
+                                        <p className="text-[10px] font-bold text-foreground">ON SCHEDULE</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
     );
 }
