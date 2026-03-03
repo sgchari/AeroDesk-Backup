@@ -21,12 +21,12 @@ const HUB_DETAILS = {
 
 const HubCallout = ({ city, data, active }: { city: string; data: any; active: boolean }) => {
     const posClasses = {
-        'top-right': 'top-4 right-4 md:top-10 md:right-10',
-        'mid-left': 'top-[25%] left-4 md:left-10',
-        'mid-right': 'top-[35%] right-4 md:right-10',
-        'bottom-left': 'bottom-[15%] left-4 md:left-10',
-        'bottom-right': 'bottom-[15%] right-4 md:right-10',
-        'bottom-center': 'bottom-5 left-1/2 -translate-x-1/2',
+        'top-right': 'top-[10%] right-[10%] md:top-[12%] md:right-[15%]',
+        'mid-left': 'top-[35%] left-[5%] md:left-[10%]',
+        'mid-right': 'top-[35%] right-[5%] md:right-[10%]',
+        'bottom-left': 'bottom-[15%] left-[10%] md:left-[15%]',
+        'bottom-right': 'bottom-[15%] right-[10%] md:right-[15%]',
+        'bottom-center': 'bottom-10 left-1/2 -translate-x-1/2',
     }[data.position as string];
 
     return (
@@ -36,41 +36,41 @@ const HubCallout = ({ city, data, active }: { city: string; data: any; active: b
             active ? "opacity-100 translate-y-0 scale-100" : "opacity-60 translate-y-2 scale-95"
         )}>
             <div className="relative group">
-                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-full p-4 md:p-6 w-32 h-32 md:w-40 md:h-40 flex flex-col items-center justify-center text-center shadow-2xl group-hover:border-accent/40 transition-colors">
-                    <div className="absolute -top-2 bg-accent text-black text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest">
+                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-full p-4 md:p-6 w-28 h-28 md:w-36 md:h-36 flex flex-col items-center justify-center text-center shadow-2xl group-hover:border-accent/40 transition-colors">
+                    <div className="absolute -top-2 bg-accent text-black text-[7px] md:text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest">
                         NETWORK NODE
                     </div>
                     
                     <div className="grid grid-cols-2 gap-2 mb-1">
-                        <div className="w-6 h-6 md:w-8 md:h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center">
+                        <div className="w-5 h-5 md:w-7 md:h-7 rounded bg-white/5 border border-white/10 flex items-center justify-center">
                             <Plane className="h-3 w-3 md:h-4 md:w-4 text-accent" />
                         </div>
-                        <div className="w-6 h-6 md:w-8 md:h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center">
+                        <div className="w-5 h-5 md:w-7 md:h-7 rounded bg-white/5 border border-white/10 flex items-center justify-center">
                             <Building2 className="h-3 w-3 md:h-4 md:w-4 text-primary" />
                         </div>
                     </div>
                     
-                    <p className="text-[10px] md:text-xs font-black text-white uppercase tracking-tighter mt-1">{data.label}</p>
+                    <p className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-tighter mt-1">{data.label}</p>
                     <div className="flex gap-1 mt-2">
                         {data.operators.slice(0, 2).map((op: string) => (
-                            <div key={op} className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <div key={op} className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         ))}
                     </div>
                 </div>
 
-                <div className="absolute -right-12 top-0 space-y-1 hidden md:block">
-                    {data.partners.map((p: string) => (
+                <div className="absolute -right-8 top-0 space-y-1 hidden md:block">
+                    {data.partners.slice(0, 2).map((p: string) => (
                         <div key={p} className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                            <span className="text-[8px] font-bold text-white/60 uppercase">{p}</span>
+                            <div className="w-1 h-1 rounded-full bg-rose-500" />
+                            <span className="text-[7px] font-bold text-white/60 uppercase">{p}</span>
                         </div>
                     ))}
                 </div>
-                <div className="absolute -left-12 bottom-0 space-y-1 hidden md:block text-right">
-                    {data.operators.map((o: string) => (
+                <div className="absolute -left-8 bottom-0 space-y-1 hidden md:block text-right">
+                    {data.operators.slice(0, 2).map((o: string) => (
                         <div key={o} className="flex items-center gap-2 justify-end">
-                            <span className="text-[8px] font-bold text-sky-400 uppercase">{o}</span>
-                            <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                            <span className="text-[7px] font-bold text-sky-400 uppercase">{o}</span>
+                            <div className="w-1 h-1 rounded-full bg-sky-400" />
                         </div>
                     ))}
                 </div>
@@ -116,8 +116,8 @@ export default function OurNetworkPage() {
                 <main className="relative flex-1 flex flex-col p-4 md:p-8">
                     
                     <div className="absolute top-8 left-8 z-20 space-y-1">
-                        <h1 className="text-3xl md:text-4xl font-bold tracking-tighter font-headline text-white/90 uppercase">National Infrastructure Grid</h1>
-                        <p className="text-accent font-black text-[10px] uppercase tracking-[0.3em] opacity-60">Aviation Network Registry v1.0.6</p>
+                        <h1 className="text-2xl md:text-4xl font-bold tracking-tighter font-headline text-white/90 uppercase">National Infrastructure Grid</h1>
+                        <p className="text-accent font-black text-[9px] md:text-[10px] uppercase tracking-[0.3em] opacity-60">Aviation Network Registry v1.0.6</p>
                     </div>
 
                     <div className="absolute bottom-8 right-8 z-20 bg-black/40 backdrop-blur-xl border border-white/10 p-4 rounded-xl hidden lg:block">
@@ -142,7 +142,7 @@ export default function OurNetworkPage() {
                     ))}
 
                     <div className="relative flex-1 flex items-center justify-center">
-                        <div className="w-full h-full max-w-[900px] max-h-[900px] animate-in fade-in zoom-in duration-1000">
+                        <div className="w-full h-full max-w-[850px] max-h-[850px] animate-in fade-in zoom-in duration-1000">
                             <svg viewBox="0 0 1000 1000" className="w-full h-full overflow-visible drop-shadow-[0_0_30px_rgba(14,165,233,0.1)]">
                                 <defs>
                                     <pattern id="dotPatternActual" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
@@ -176,17 +176,17 @@ export default function OurNetworkPage() {
                                             {hasCallout ? (
                                                 <g filter={isActive ? "url(#glowActual)" : "none"}>
                                                     <path 
-                                                        d={`M${coords.x},${coords.y-10} L${coords.x+8},${coords.y+6} L${coords.x-8},${coords.y+6} Z`} 
+                                                        d={`M${coords.x},${coords.y-8} L${coords.x+6},${coords.y+4} L${coords.x-6},${coords.y+4} Z`} 
                                                         fill={isActive ? "#FFFFBD" : "rgba(255,255,189,0.6)"} 
                                                         className={cn("transition-all duration-300", isActive ? "scale-125" : "scale-100")}
                                                     />
-                                                    <circle cx={coords.x} cy={coords.y} r="15" fill="transparent" stroke={isActive ? "rgba(255,255,189,0.2)" : "transparent"} strokeWidth="1" className="animate-ping" />
+                                                    <circle cx={coords.x} cy={coords.y} r="12" fill="transparent" stroke={isActive ? "rgba(255,255,189,0.2)" : "transparent"} strokeWidth="1" className="animate-ping" />
                                                 </g>
                                             ) : (
-                                                <circle cx={coords.x} cy={coords.y} r="3" fill="#1DBF73" className="opacity-40" />
+                                                <circle cx={coords.x} cy={coords.y} r="2.5" fill="#1DBF73" className="opacity-40" />
                                             )}
 
-                                            <text x={coords.x + 12} y={coords.y + 4} fill="white" className={cn("text-[9px] font-black uppercase tracking-tighter pointer-events-none transition-opacity", isActive ? "opacity-100" : "opacity-30")}>
+                                            <text x={coords.x + 10} y={coords.y + 3} fill="white" className={cn("text-[8px] font-black uppercase tracking-tighter pointer-events-none transition-opacity", isActive ? "opacity-100" : "opacity-30")}>
                                                 {city}
                                             </text>
                                         </g>
@@ -206,9 +206,9 @@ export default function OurNetworkPage() {
                                     return (
                                         <g key={mission.id}>
                                             <path d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} 
-                                                  fill="none" stroke="#FFFFBD" strokeWidth="1.5" strokeDasharray="4,4" className="opacity-40 animate-pulse" />
-                                            <circle cx={from.x} cy={from.y} r="2" fill="white" />
-                                            <circle cx={to.x} cy={to.y} r="2" fill="white" />
+                                                  fill="none" stroke="#FFFFBD" strokeWidth="1.2" strokeDasharray="4,4" className="opacity-40 animate-pulse" />
+                                            <circle cx={from.x} cy={from.y} r="1.5" fill="white" />
+                                            <circle cx={to.x} cy={to.y} r="1.5" fill="white" />
                                         </g>
                                     );
                                 })}
