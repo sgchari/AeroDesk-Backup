@@ -7,9 +7,11 @@ import type { CharterRFQ } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
+import { Badge } from '@/components/ui/badge';
 import { Plane, Building2, ShieldCheck, Zap } from 'lucide-react';
 import { hubGeographics, indiaGeoJson } from '@/lib/geo-utils';
 import * as d3Geo from 'd3-geo';
+import { collection } from 'firebase/firestore';
 
 const VIEWBOX_SIZE = 1000;
 
@@ -18,8 +20,8 @@ export default function OurNetworkPage() {
     const [hoveredHub, setHoveredHub] = useState<string | null>(null);
 
     // --- GEOGRAPHIC PROJECTION ENGINE (D3-GEO) ---
+    // STRICT ALIGNMENT: Using fitSize to automatically center and scale based on GeoJSON bounds
     const projection = useMemo(() => {
-        // Strict Mercator Projection calibrated to India's Mainland
         return d3Geo.geoMercator().fitSize([VIEWBOX_SIZE, VIEWBOX_SIZE], indiaGeoJson);
     }, []);
 
@@ -31,7 +33,16 @@ export default function OurNetworkPage() {
         return pathGenerator(indiaGeoJson);
     }, [pathGenerator]);
 
-    // Data Fetching
+    // Hub positions using strict projection
+    const hubs = useMemo(() => {
+        return Object.entries(hubGeographics).map(([city, data]) => {
+            const projected = projection([data.lng, data.lat]);
+            const [x, y] = projected || [0, 0];
+            return { city, x, y, ...data };
+        });
+    }, [projection]);
+
+    // Data Fetching for Live Missions
     const rfqsQuery = useMemoFirebase(() => {
         if (!firestore || (firestore as any)._isMock) return null;
         return collection(firestore, 'charterRequests');
@@ -42,13 +53,6 @@ export default function OurNetworkPage() {
     const liveMissionsList = useMemo(() => {
         return rfqs?.filter(r => ['departed', 'live', 'enroute', 'arrived'].includes(r.status)) || [];
     }, [rfqs]);
-
-    const hubs = useMemo(() => {
-        return Object.entries(hubGeographics).map(([city, data]) => {
-            const [x, y] = projection([data.lng, data.lat]) || [0, 0];
-            return { city, x, y, ...data };
-        });
-    }, [projection]);
 
     return (
         <div className="w-full relative h-screen max-h-screen bg-[#0B1220] flex flex-col overflow-hidden">
