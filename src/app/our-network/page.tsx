@@ -18,9 +18,11 @@ export default function OurNetworkPage() {
     const firestore = useFirestore();
     const [hoveredHub, setHoveredHub] = useState<string | null>(null);
 
+    // Optimized Queries for Network Visibility
     const operatorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        return query(collection(firestore, 'operators'), where('status', '==', 'Approved'));
+        // In demo mode, status filtering is handled client-side or mocked
+        return collection(firestore, 'operators');
     }, [firestore]);
     
     const rfqsQuery = useMemoFirebase(() => {
@@ -30,7 +32,7 @@ export default function OurNetworkPage() {
 
     const elQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        return query(collection(firestore, 'emptyLegs'), where('status', 'in', ['Published', 'Approved', 'live']));
+        return collection(firestore, 'emptyLegs');
     }, [firestore]);
 
     const { data: operators, isLoading: opsLoading } = useCollection<Operator>(operatorsQuery, 'operators');
@@ -45,9 +47,9 @@ export default function OurNetworkPage() {
 
     const metrics = useMemo(() => {
         return {
-            activeOperators: operators?.length || 0,
+            activeOperators: operators?.filter(o => o.status === 'Approved').length || 0,
             totalFleet: 124, 
-            emptyLegs: emptyLegs?.length || 0,
+            emptyLegs: emptyLegs?.filter(e => ['Published', 'Approved', 'live'].includes(e.status)).length || 0,
             activeMissions: activeMissionsList.length
         };
     }, [operators, emptyLegs, activeMissionsList]);
@@ -71,7 +73,7 @@ export default function OurNetworkPage() {
                 
                 <main className="relative flex flex-col lg:flex-row flex-1 min-h-0">
                     
-                    {/* Metrics Sidebar - Adaptive Grid on Mobile */}
+                    {/* Metrics Sidebar */}
                     <div className="w-full lg:w-64 p-4 md:p-6 z-20 flex flex-col gap-4 md:gap-6 bg-black/40 backdrop-blur-3xl border-b lg:border-b-0 lg:border-r border-white/10 text-[11px]">
                         <div className="space-y-1">
                             <h1 className="text-xl md:text-2xl font-bold tracking-tight font-headline">Intelligence</h1>
@@ -125,7 +127,7 @@ export default function OurNetworkPage() {
                         </div>
                     </div>
 
-                    {/* Spatial Map Viewport - Relative scaling for mobile */}
+                    {/* Spatial Map Viewport */}
                     <div className="relative flex-1 bg-black/20 overflow-hidden flex items-center justify-center min-h-[400px] md:min-h-[600px] p-4">
                         <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
                              style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
@@ -165,7 +167,7 @@ export default function OurNetworkPage() {
 
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
-                                        const hubOps = operators?.filter(o => o.city === city) || [];
+                                        const hubOps = operators?.filter(o => o.city === city && o.status === 'Approved') || [];
                                         const isVisibleHub = hubOps.length > 0 || ['Mumbai', 'Delhi', 'Bengaluru', 'Kolkata'].includes(city);
 
                                         if (!isVisibleHub) return null;
@@ -174,7 +176,7 @@ export default function OurNetworkPage() {
                                             <Tooltip key={city}>
                                                 <TooltipTrigger asChild>
                                                     <g className="cursor-pointer group/marker" onMouseEnter={() => setHoveredHub(city)} onMouseLeave={() => setHoveredHub(null)}>
-                                                        <circle cx={coords.x} cy={coords.y} r="4" fill="#1DBF73" className="filter drop-shadow-[0_0_10px_#1DBF73]" />
+                                                        <circle cx={coords.x} cy={coords.y} r={hubOps.length > 0 ? "5" : "3"} fill="#1DBF73" className={cn("filter transition-all", hubOps.length > 0 ? "drop-shadow-[0_0_10px_#1DBF73]" : "opacity-40")} />
                                                         <text x={coords.x + 12} y={coords.y + 4} fill="white" className="text-[10px] font-black pointer-events-none opacity-40 group-hover/marker:opacity-100 transition-opacity uppercase tracking-tighter hidden sm:block">
                                                             {city}
                                                         </text>
@@ -212,7 +214,11 @@ export default function OurNetworkPage() {
                                     const cx = (from.x + to.x) / 2 + (from.y - to.y) * 0.15;
                                     const cy = (from.y + to.y) / 2 + (to.x - from.x) * 0.15;
                                     return (
-                                        <path key={mission.id} d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} fill="none" stroke="rgba(255, 255, 189, 0.15)" strokeWidth="1.5" strokeDasharray="4,4" />
+                                        <g key={mission.id} className="animate-in fade-in duration-1000">
+                                            <path d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} fill="none" stroke="rgba(255, 255, 189, 0.2)" strokeWidth="1.5" strokeDasharray="4,4" className="animate-pulse" />
+                                            <circle cx={from.x} cy={from.y} r="2" fill="white" />
+                                            <circle cx={to.x} cy={to.y} r="2" fill="white" />
+                                        </g>
                                     );
                                 })}
                             </svg>

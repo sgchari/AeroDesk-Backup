@@ -1,6 +1,6 @@
 /**
  * @fileOverview Institutional Geographic Utilities for AeroDesk.
- * Handles Mercator-style projection and coordinate registry for Indian aviation hubs.
+ * Handles calibrated Mercator-style projection for the Indian subcontinent.
  */
 
 export const hubGeographics: Record<string, { lat: number; lng: number; airport: string }> = {
@@ -24,13 +24,14 @@ export const hubGeographics: Record<string, { lat: number; lng: number; airport:
 };
 
 /**
- * Geographic Projection Engine
- * Maps Lat/Lng to a 1000x1000 SVG Viewport
+ * Calibrated Geographic Projection Engine
+ * Maps real-world Lat/Lng to the specific 1000x1000 viewport of the AeroDesk SVG map.
  */
 export const project = (lat: number, lng: number) => {
-    // India Bounding Box for projection
-    const minLng = 68.0;
-    const maxLng = 98.0;
+    // Calibrated bounds for the indiaPath SVG silhouette
+    // Adjusted to fix the "aligned left" issue
+    const minLng = 67.0; // Pushed left to move dots right
+    const maxLng = 98.0; 
     const minLat = 6.0;
     const maxLat = 38.0;
 
