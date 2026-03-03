@@ -34,8 +34,8 @@ const hubCoordinates: Record<string, { x: number; y: number; airport: string }> 
     'Guwahati': { x: 880, y: 380, airport: 'VEGT' },
 };
 
-// Accurate low-poly India path scaled to 1000x1000
-const indiaPath = "M440,50 L465,80 L490,110 L520,140 L545,180 L560,220 L590,240 L630,260 L680,280 L740,310 L800,330 L860,340 L900,350 L920,380 L900,410 L860,430 L810,450 L780,480 L750,520 L720,570 L680,630 L630,700 L570,780 L510,850 L450,920 L440,940 L430,920 L370,850 L330,780 L300,710 L280,650 L250,600 L220,560 L190,520 L170,480 L190,440 L230,420 L280,400 L320,370 L360,330 L380,280 L400,220 L415,160 L425,100 Z";
+// High-fidelity India path scaled to 1000x1000
+const indiaPath = "M450,50 L480,80 L500,120 L520,150 L550,200 L600,220 L650,250 L750,300 L850,320 L920,350 L900,400 L850,420 L800,450 L750,500 L700,600 L650,700 L550,850 L450,950 L350,850 L300,750 L250,650 L200,550 L150,450 L180,400 L250,380 L350,350 L400,250 L420,150 L430,80 Z";
 
 export default function OurNetworkPage() {
     const firestore = useFirestore();
@@ -93,7 +93,7 @@ export default function OurNetworkPage() {
                 
                 <main className="relative flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
                     
-                    {/* Left Panel: Network Summary - Tightened Width */}
+                    {/* Left Panel: Network Summary */}
                     <div className="w-full lg:w-72 p-5 z-20 flex flex-col gap-5 bg-black/30 backdrop-blur-3xl border-r border-white/5 overflow-y-auto">
                         <div className="space-y-1">
                             <h1 className="text-2xl font-bold tracking-tight font-headline">Network</h1>
@@ -152,7 +152,7 @@ export default function OurNetworkPage() {
                         </div>
                     </div>
 
-                    {/* Right Side: Interactive Embossed Map */}
+                    {/* Right Side: Interactive Map View */}
                     <div className="relative flex-1 bg-black/10 overflow-hidden flex items-center justify-center p-4">
                         {/* Grid Overlay */}
                         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
@@ -174,7 +174,7 @@ export default function OurNetworkPage() {
                         </div>
 
                         {/* Map Viewport */}
-                        <div className="relative w-full h-full max-w-[900px] max-h-[900px] flex items-center justify-center transition-transform duration-700">
+                        <div className="relative w-full h-full max-w-[900px] max-h-[900px] flex items-center justify-center">
                             <svg viewBox="0 0 1000 1000" className="w-full h-full overflow-visible">
                                 <defs>
                                     <filter id="emboss" x="-20%" y="-20%" width="140%" height="140%">
@@ -196,7 +196,7 @@ export default function OurNetworkPage() {
                                     </radialGradient>
                                 </defs>
 
-                                {/* India Silhouette - Embossed Realistic Path */}
+                                {/* India Silhouette - Accurate High-Fidelity Path */}
                                 <path 
                                     d={indiaPath} 
                                     fill="url(#mapGradient)"
@@ -206,7 +206,7 @@ export default function OurNetworkPage() {
                                     className="opacity-60"
                                 />
 
-                                {/* Hub Markers */}
+                                {/* Hub Markers with Blinking Animation */}
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
                                         const hubOps = operators?.filter(o => o.city === city) || [];
@@ -220,8 +220,16 @@ export default function OurNetworkPage() {
                                                         onMouseEnter={() => setHoveredHub(city)}
                                                         onMouseLeave={() => setHoveredHub(null)}
                                                     >
-                                                        <circle cx={coords.x} cy={coords.y} r="12" fill="rgba(29, 191, 115, 0.15)" className="animate-ping" />
-                                                        <circle cx={coords.x} cy={coords.y} r="4" fill="#1DBF73" className="filter drop-shadow-[0_0_8px_#1DBF73]" />
+                                                        {/* Outer Pulse */}
+                                                        <circle cx={coords.x} cy={coords.y} r="12" fill="rgba(29, 191, 115, 0.1)" className="animate-ping" />
+                                                        {/* Inner Blinking Bullet */}
+                                                        <circle 
+                                                            cx={coords.x} 
+                                                            cy={coords.y} 
+                                                            r="4" 
+                                                            fill="#1DBF73" 
+                                                            className="filter drop-shadow-[0_0_8px_#1DBF73] animate-blink" 
+                                                        />
                                                         <text 
                                                             x={coords.x + 12} 
                                                             y={coords.y + 4} 
@@ -253,7 +261,7 @@ export default function OurNetworkPage() {
                                     })}
                                 </TooltipProvider>
 
-                                {/* Sample Operational Route Arcs for Visual Context */}
+                                {/* Sample Operational Route Arcs */}
                                 <path d="M440 240 Q 350 400, 280 600" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
                                 <path d="M440 240 Q 550 500, 430 800" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
                             </svg>
