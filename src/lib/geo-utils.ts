@@ -1,6 +1,6 @@
 /**
  * @fileOverview Institutional Geographic Utilities for AeroDesk.
- * Handles calibrated projection for the abstract "Infrastructure Grid" SVG.
+ * Handles calibrated projection for the actual India Map silhouette.
  */
 
 export const hubGeographics: Record<string, { lat: number; lng: number; airport: string }> = {
@@ -24,27 +24,27 @@ export const hubGeographics: Record<string, { lat: number; lng: number; airport:
 };
 
 /**
- * Manual Alignment Engine
- * Maps hubs to specific visual nodes on the diamond-ray SVG silhouette.
+ * Manual Alignment Engine for High-Fidelity India Map
+ * Coordinates calibrated for a 1000x1000 SVG viewbox
  */
 export const manualHubCoordinates: Record<string, { x: number; y: number }> = {
-    'Delhi': { x: 505, y: 280 },
-    'Mumbai': { x: 445, y: 520 },
-    'Kolkata': { x: 685, y: 450 },
-    'Bengaluru': { x: 555, y: 730 },
-    'Chennai': { x: 625, y: 730 },
-    'Hyderabad': { x: 585, y: 560 },
-    'Ahmedabad': { x: 425, y: 420 },
-    'Jaipur': { x: 485, y: 350 },
-    'Lucknow': { x: 585, y: 350 },
-    'Chandigarh': { x: 505, y: 230 },
-    'Bhopal': { x: 525, y: 450 },
-    'Pune': { x: 465, y: 560 },
-    'Nagpur': { x: 585, y: 450 },
-    'Guwahati': { x: 785, y: 350 },
-    'Bhubaneswar': { x: 685, y: 520 },
-    'Goa': { x: 465, y: 660 },
-    'Cochin': { x: 525, y: 830 },
+    'Delhi': { x: 485, y: 260 },
+    'Mumbai': { x: 385, y: 580 },
+    'Kolkata': { x: 785, y: 480 },
+    'Bengaluru': { x: 485, y: 800 },
+    'Chennai': { x: 565, y: 800 },
+    'Hyderabad': { x: 525, y: 620 },
+    'Ahmedabad': { x: 385, y: 450 },
+    'Jaipur': { x: 445, y: 350 },
+    'Lucknow': { x: 565, y: 350 },
+    'Chandigarh': { x: 485, y: 200 },
+    'Bhopal': { x: 505, y: 480 },
+    'Pune': { x: 415, y: 620 },
+    'Nagpur': { x: 565, y: 500 },
+    'Guwahati': { x: 885, y: 350 },
+    'Bhubaneswar': { x: 725, y: 550 },
+    'Goa': { x: 415, y: 720 },
+    'Cochin': { x: 485, y: 900 },
 };
 
 export const hubCoordinates = Object.entries(hubGeographics).reduce((acc, [city, data]) => {
