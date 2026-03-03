@@ -62,16 +62,19 @@ export default function OurNetworkPage() {
     const { data: emptyLegs } = useCollection<EmptyLeg>(elQuery, 'emptyLegs');
 
     // Derived Metrics
+    const activeMissionsList = useMemo(() => {
+        return rfqs?.filter(r => ['operationalPreparation', 'boarding', 'departed', 'arrived'].includes(r.status)) || [];
+    }, [rfqs]);
+
     const metrics = useMemo(() => {
         const approved = operators || [];
-        const inProgress = rfqs?.filter(r => ['operationalPreparation', 'boarding', 'departed', 'arrived'].includes(r.status)) || [];
         return {
             activeOperators: approved.length,
             totalFleet: 124, 
             emptyLegs: emptyLegs?.length || 0,
-            activeMissions: inProgress.length
+            activeMissions: activeMissionsList.length
         };
-    }, [operators, rfqs, emptyLegs]);
+    }, [operators, emptyLegs, activeMissionsList]);
 
     return (
         <div className="w-full relative min-h-screen text-[#EAEAEA] overflow-hidden flex flex-col">
@@ -267,9 +270,31 @@ export default function OurNetworkPage() {
                                     })}
                                 </TooltipProvider>
 
-                                {/* Spatial Connectivity Arcs - Updated to precisely align with new coordinates */}
-                                <path d="M442 245 Q 350 400, 285 605" fill="none" stroke="rgba(255, 255, 189, 0.08)" strokeWidth="1" strokeDasharray="3,3" />
-                                <path d="M442 245 Q 550 500, 435 805" fill="none" stroke="rgba(255, 255, 189, 0.08)" strokeWidth="1" strokeDasharray="3,3" />
+                                {/* Dynamic Mission Arcs */}
+                                {activeMissionsList.map(mission => {
+                                    const depCity = mission.departure.split(' (')[0];
+                                    const arrCity = mission.arrival.split(' (')[0];
+                                    const from = hubCoordinates[depCity];
+                                    const to = hubCoordinates[arrCity];
+                                    
+                                    if (!from || !to) return null;
+
+                                    // Institutional routing curves
+                                    const cx = (from.x + to.x) / 2 + (from.y - to.y) * 0.15;
+                                    const cy = (from.y + to.y) / 2 + (to.x - from.x) * 0.15;
+                                    
+                                    return (
+                                        <path 
+                                            key={mission.id}
+                                            d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} 
+                                            fill="none" 
+                                            stroke="rgba(255, 255, 189, 0.12)" 
+                                            strokeWidth="1.5" 
+                                            strokeDasharray="4,4"
+                                            className="animate-pulse"
+                                        />
+                                    );
+                                })}
                             </svg>
                         </div>
                     </div>

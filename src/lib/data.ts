@@ -112,6 +112,9 @@ export const mockAircrafts: Aircraft[] = [
 
 export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-CORP-001', customerId: 'corp-west-01', requesterExternalAuthId: 'corp-west-01', customerName: 'Priya Sharma', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', pax: 5, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', costCenter: 'STRK-EXEC-25' },
+    { id: 'RFQ-LIVE-001', customerId: 'cust-01', requesterExternalAuthId: 'cust-01', customerName: 'Rahul Malhotra', tripType: 'Onward', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureDate: '2025-02-20', pax: 2, aircraftType: 'Mid-size Jet', status: 'departed', createdAt: '2025-02-18T10:00:00Z', updatedAt: '2025-02-20T12:00:00Z', totalAmount: 1250000, operatorId: 'op-north-01' },
+    { id: 'RFQ-LIVE-002', customerId: 'corp-north-01', requesterExternalAuthId: 'corp-north-01', customerName: 'Neha Kapoor', company: 'Airtel Enterprise', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Delhi (VIDP)', departureDate: '2025-02-20', pax: 4, aircraftType: 'Light Jet', status: 'boarding', createdAt: '2025-02-19T09:00:00Z', updatedAt: '2025-02-20T14:00:00Z', totalAmount: 950000, operatorId: 'op-south-01' },
+    { id: 'RFQ-LIVE-003', customerId: 'ag-east-01', requesterExternalAuthId: 'ag-east-01', customerName: 'Joydeep Sen', tripType: 'Onward', departure: 'Kolkata (VECC)', arrival: 'Guwahati (VEGT)', departureDate: '2025-02-20', pax: 3, aircraftType: 'Turboprop', status: 'operationalPreparation', createdAt: '2025-02-19T15:00:00Z', updatedAt: '2025-02-20T10:00:00Z', totalAmount: 450000, operatorId: 'op-east-01' },
 ];
 
 export const mockQuotations: Quotation[] = [
