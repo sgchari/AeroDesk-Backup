@@ -40,6 +40,7 @@ import {
     Line
 } from 'recharts';
 import { useMemo } from "react";
+import { LiveRadarDashboardCard } from "@/components/dashboard/shared/live-radar-dashboard-card";
 
 const MOCK_CHART_DATA = [
     { name: 'Mon', spend: 4.2, requests: 12 },
@@ -66,10 +67,10 @@ export function CTDDashboard() {
 
   const rfqsQuery = useMemoFirebase(() => {
     if (!firestore || !user || !user.company) return null;
-    return query(collection(firestore, 'charterRFQs'), where('company', '==', user.company));
+    return query(collection(firestore, 'charterRequests'), where('company', '==', user.company));
   }, [firestore, user]);
   
-  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
+  const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
   const policiesQuery = useMemoFirebase(() => {
     if (!firestore || !user?.ctdId) return null;
@@ -84,6 +85,10 @@ export function CTDDashboard() {
   const { data: allUsers } = useCollection<AppUser>(teamQuery, 'users');
 
   const isLoading = isUserLoading || rfqsLoading;
+
+  const liveMissions = useMemo(() => {
+    return rfqs?.filter(m => ['departed', 'live', 'enroute', 'arrived'].includes(m.status)) || [];
+  }, [rfqs]);
 
   const stats = useMemo(() => {
     const totalSpendVal = rfqs?.reduce((acc, r) => acc + (r.totalAmount || 0), 0) || 0;
@@ -112,6 +117,10 @@ export function CTDDashboard() {
         <StatsCard title="Authorized Travelers" href="/dashboard/ctd/team" value={isLoading ? <Skeleton className="h-6 w-8" /> : stats.activeTravelers} icon={Users} description="Personnel eligibility count" />
         <StatsCard title="Policy Deviations" href="/dashboard/ctd/policies" value={isLoading ? <Skeleton className="h-6 w-8" /> : stats.policyFlags} icon={AlertCircle} description="Workflow exceptions flagged" />
       </StatsGrid>
+
+      {liveMissions.length > 0 && (
+          <LiveRadarDashboardCard missions={liveMissions} />
+      )}
 
       <CTDAIGovernance />
 

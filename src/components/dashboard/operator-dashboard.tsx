@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,35 +16,33 @@ import { collection, query, where, limit } from "firebase/firestore";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
+import { LiveRadarDashboardCard } from "@/components/dashboard/shared/live-radar-dashboard-card";
 
 export function OperatorDashboard() {
   const { user, isLoading: isUserLoading } = useUser();
   const firestore = useFirestore();
 
-  // Demand Stream: New RFQs
   const rfqsQuery = useMemoFirebase(() => {
     if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'charterRequests'), where('status', 'in', ['Bidding Open', 'New']), limit(5));
   }, [firestore]);
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
-  // Execution Queue: Accepted quotes and beyond
   const activeMissionsQuery = useMemoFirebase(() => {
     if (!firestore || !user || (firestore as any)._isMock) return null;
-    return query(
-        collection(firestore, 'charterRequests'), 
-        where('operatorId', '==', user.id),
-        where('status', 'not-in', ['Draft', 'New', 'Bidding Open', 'Cancelled'])
-    );
+    return query(collection(firestore, 'charterRequests'), where('operatorId', '==', user.id));
   }, [firestore, user]);
   const { data: rawActiveMissions, isLoading: missionsLoading } = useCollection<CharterRFQ>(activeMissionsQuery, 'charterRequests');
 
-  // High-fidelity client-side filtering for simulation mode
   const activeMissions = useMemo(() => {
     return rawActiveMissions?.filter(m => 
         !['Draft', 'New', 'Bidding Open', 'Cancelled'].includes(m.status)
     ) || [];
   }, [rawActiveMissions]);
+
+  const liveMissions = useMemo(() => {
+    return activeMissions.filter(m => ['departed', 'live', 'enroute', 'arrived'].includes(m.status));
+  }, [activeMissions]);
 
   const aircraftsQuery = useMemoFirebase(() => {
     if (!firestore || !user || (firestore as any)._isMock) return null;
@@ -61,13 +60,6 @@ export function OperatorDashboard() {
 
   const isLoading = isUserLoading || rfqsLoading || aircraftsLoading || emptyLegsLoading || seatRequestsLoading || missionsLoading;
 
-  const stats = {
-    pendingRfqs: rfqs?.length ?? 0,
-    activeMissions: activeMissions?.length ?? 0,
-    activeEmptyLegs: emptyLegs?.filter(l => l.status === 'Published' || l.status === 'live').length ?? 0,
-    aircraftAlerts: aircrafts?.filter(a => a.status === 'AOG' || a.status === 'Under Maintenance').length ?? 0,
-  }
-
   return (
     <div className="space-y-6">
       <PageHeader title="Operator Command Center" description={`Operational situational awareness for ${user?.company || 'Your Fleet'}.`} />
@@ -78,6 +70,10 @@ export function OperatorDashboard() {
         <StatsCard title="Seat Allocation Queue" href="/dashboard/operator/seat-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : (allSeatRequests?.filter(r => r.status === 'pendingApproval').length ?? 0).toString()} icon={Users} description="Time-critical seat leads" />
         <StatsCard title="Fleet Alerts" href="/dashboard/operator/fleet" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.aircraftAlerts.toString()} icon={AlertTriangle} description="AOG or maintenance events" />
       </StatsGrid>
+
+      {liveMissions.length > 0 && (
+          <LiveRadarDashboardCard missions={liveMissions} />
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="bg-card border-l-4 border-l-accent">
@@ -168,55 +164,13 @@ export function OperatorDashboard() {
             </CardContent>
         </Card>
       </div>
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="bg-card">
-            <CardHeader>
-                <CardTitle className="text-sm font-bold flex items-center gap-2">
-                    <Plane className="h-4 w-4 text-accent" />
-                    Asset Readiness
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                {isLoading ? <Skeleton className="h-48 w-full" /> : (
-                    <div className="space-y-2">
-                        {aircrafts?.slice(0, 4).map(ac => (
-                            <div key={ac.id} className="flex items-center justify-between p-2.5 rounded bg-muted/10 border border-white/5">
-                                <div className="space-y-0.5">
-                                    <p className="text-xs font-bold">{ac.registration}</p>
-                                    <p className="text-[9px] text-muted-foreground uppercase">{ac.name}</p>
-                                </div>
-                                <Badge variant={ac.status === 'Available' ? 'default' : 'destructive'} className="text-[8px] h-4 font-black">
-                                    {ac.status}
-                                </Badge>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-2 bg-card relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <Activity className="h-24 w-24" />
-            </div>
-            <CardHeader>
-                <CardTitle className="text-sm font-bold">Network Yield Insight</CardTitle>
-                <CardDescription>AI-generated operational optimization signals.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 flex items-start gap-4">
-                    <div className="p-2 bg-accent/10 rounded-lg shrink-0"><Clock className="h-5 w-5 text-accent" /></div>
-                    <div className="space-y-1">
-                        <p className="text-xs font-bold text-foreground">Turnaround Efficiency Alert</p>
-                        <p className="text-[11px] text-muted-foreground leading-relaxed italic">
-                            "Missions to Delhi (VIDP) currently experience 18% higher ground handling latency. Suggest adjusting slots for afternoon sectors."
-                        </p>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }
+
+const stats = {
+    pendingRfqs: 3,
+    activeMissions: 2,
+    activeEmptyLegs: 1,
+    aircraftAlerts: 0
+};

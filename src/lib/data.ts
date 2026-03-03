@@ -1,3 +1,4 @@
+
 import type { 
   User, 
   CharterRFQ, 
@@ -69,14 +70,6 @@ export const mockUsers: User[] = [
     { id: 'op-south-01', email: 'karthik@deccan.aero', firstName: 'Karthik', lastName: 'Reddy', role: 'Operator', platformRole: 'operator', firmRole: 'admin', operatorId: 'op-south-01', status: 'active', avatar: 'https://picsum.photos/seed/ops1/200/200', createdAt: "2025-01-20T09:00:00Z", updatedAt: "2025-01-20T09:00:00Z" },
     { id: 'ag-south-01', email: 'south@travel.aero', firstName: 'Vijay', lastName: 'Naidu', role: 'Travel Agency', platformRole: 'agency', firmRole: 'admin', agencyId: 'ag-south-01', status: 'active', avatar: 'https://picsum.photos/seed/ags1/200/200', createdAt: "2025-01-20T09:00:00Z", updatedAt: "2025-01-20T09:00:00Z" },
     { id: 'corp-south-01', email: 'south@infosys.corp', firstName: 'Lakshmi', lastName: 'Menon', role: 'CTD Admin', platformRole: 'corporate', firmRole: 'admin', corporateId: 'corp-south-01', status: 'active', avatar: 'https://picsum.photos/seed/corps1/200/200', createdAt: "2025-01-20T09:00:00Z", updatedAt: "2025-01-20T09:00:00Z" },
-    // EAST ZONE
-    { id: 'op-east-01', email: 'east@wings.aero', firstName: 'Subhash', lastName: 'Das', role: 'Operator', platformRole: 'operator', firmRole: 'admin', operatorId: 'op-east-01', status: 'active', avatar: 'https://picsum.photos/seed/ope1/200/200', createdAt: "2025-01-25T10:00:00Z", updatedAt: "2025-01-25T10:00:00Z" },
-    { id: 'ag-east-01', email: 'east@travel.aero', firstName: 'Joydeep', lastName: 'Sen', role: 'Travel Agency', platformRole: 'agency', firmRole: 'admin', agencyId: 'ag-east-01', status: 'active', avatar: 'https://picsum.photos/seed/age1/200/200', createdAt: "2025-01-25T10:00:00Z", updatedAt: "2025-01-25T10:00:00Z" },
-    { id: 'corp-east-01', email: 'east@tata.corp', firstName: 'Anirban', lastName: 'Roy', role: 'CTD Admin', platformRole: 'corporate', firmRole: 'admin', corporateId: 'corp-east-01', status: 'active', avatar: 'https://picsum.photos/seed/corpe1/200/200', createdAt: "2025-01-25T10:00:00Z", updatedAt: "2025-01-25T10:00:00Z" },
-    // CENTRAL ZONE
-    { id: 'op-central-01', email: 'central@air.aero', firstName: 'Amitabh', lastName: 'Pandey', role: 'Operator', platformRole: 'operator', firmRole: 'admin', operatorId: 'op-central-01', status: 'active', avatar: 'https://picsum.photos/seed/opc1/200/200', createdAt: "2025-01-28T10:00:00Z", updatedAt: "2025-01-28T10:00:00Z" },
-    { id: 'ag-central-01', email: 'central@travel.aero', firstName: 'Preeti', lastName: 'Gupta', role: 'Travel Agency', platformRole: 'agency', firmRole: 'admin', agencyId: 'ag-central-01', status: 'active', avatar: 'https://picsum.photos/seed/agc1/200/200', createdAt: "2025-01-28T10:00:00Z", updatedAt: "2025-01-28T10:00:00Z" },
-    { id: 'corp-central-01', email: 'central@reliance.corp', firstName: 'Vikram', lastName: 'Bajpai', role: 'CTD Admin', platformRole: 'corporate', firmRole: 'admin', corporateId: 'corp-central-01', status: 'active', avatar: 'https://picsum.photos/seed/corpc1/200/200', createdAt: "2025-01-28T10:00:00Z", updatedAt: "2025-01-28T10:00:00Z" },
     // HOTEL PARTNER
     { id: 'hotel-admin-01', email: 'concierge@grandhotels.com', firstName: 'Ananya', lastName: 'Iyer', role: 'Hotel Partner', platformRole: 'hotel', firmRole: 'admin', hotelPartnerId: 'hotel-01', status: 'active', avatar: 'https://picsum.photos/seed/hotel1/200/200', createdAt: "2025-01-05T10:00:00Z", updatedAt: "2025-01-05T10:00:00Z" },
     // INDIVIDUAL CUSTOMER
@@ -98,7 +91,7 @@ export const mockAgencies: TravelAgency[] = [
 
 export const mockCorporates: CorporateTravelDesk[] = [
     { id: 'corp-west-01', companyName: 'Stark Industries', officialEmail: 'travel@stark.corp', address: 'Stark Tower, Mumbai', adminUserId: 'corp-west-01', status: 'Active', gstin: '27DDDDD3333D1Z4', stateCode: '27', legalEntityName: 'Stark Industries West India', createdAt: '2025-01-01T14:00:00Z', updatedAt: '2025-01-01T14:00:00Z' },
-    { id: 'corp-north-01', companyName: 'Airtel Enterprise', officialEmail: 'travel@airtel.corp', address: 'Airtel Center, Gurgaon', adminUserId: 'corp-north-01', status: 'Active', gstin: '06AAAAA5555A1Z1', stateCode: '06', legalEntityName: 'Bharti Airtel Limited', createdAt: '2025-01-05T11:00:00Z', updatedAt: '2025-01-05T11:00:00Z' }
+    { id: 'corp-north-01', companyName: 'Bharti Airtel', officialEmail: 'travel@airtel.corp', address: 'Airtel Center, Gurgaon', adminUserId: 'corp-north-01', status: 'Active', gstin: '06AAAAA5555A1Z1', stateCode: '06', legalEntityName: 'Bharti Airtel Limited', createdAt: '2025-01-05T11:00:00Z', updatedAt: '2025-01-05T11:00:00Z' }
 ];
 
 export const mockHotelPartners: HotelPartner[] = [
@@ -112,9 +105,9 @@ export const mockAircrafts: Aircraft[] = [
 
 export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-CORP-001', customerId: 'corp-west-01', requesterExternalAuthId: 'corp-west-01', customerName: 'Priya Sharma', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', pax: 5, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', costCenter: 'STRK-EXEC-25' },
-    { id: 'RFQ-LIVE-001', customerId: 'cust-01', requesterExternalAuthId: 'cust-01', customerName: 'Rahul Malhotra', tripType: 'Onward', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureDate: '2025-02-20', pax: 2, aircraftType: 'Mid-size Jet', status: 'departed', createdAt: '2025-02-18T10:00:00Z', updatedAt: '2025-02-20T12:00:00Z', totalAmount: 1250000, operatorId: 'op-north-01' },
-    { id: 'RFQ-LIVE-002', customerId: 'corp-north-01', requesterExternalAuthId: 'corp-north-01', customerName: 'Neha Kapoor', company: 'Airtel Enterprise', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Delhi (VIDP)', departureDate: '2025-02-20', pax: 4, aircraftType: 'Light Jet', status: 'boarding', createdAt: '2025-02-19T09:00:00Z', updatedAt: '2025-02-20T14:00:00Z', totalAmount: 950000, operatorId: 'op-south-01' },
-    { id: 'RFQ-LIVE-003', customerId: 'ag-east-01', requesterExternalAuthId: 'ag-east-01', customerName: 'Joydeep Sen', tripType: 'Onward', departure: 'Kolkata (VECC)', arrival: 'Guwahati (VEGT)', departureDate: '2025-02-20', pax: 3, aircraftType: 'Turboprop', status: 'operationalPreparation', createdAt: '2025-02-19T15:00:00Z', updatedAt: '2025-02-20T10:00:00Z', totalAmount: 450000, operatorId: 'op-east-01' },
+    { id: 'RFQ-LIVE-001', customerId: 'cust-01', requesterExternalAuthId: 'cust-01', customerName: 'Rahul Malhotra', tripType: 'Onward', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureDate: '2025-02-20', pax: 2, aircraftType: 'Mid-size Jet', status: 'enroute', createdAt: '2025-02-18T10:00:00Z', updatedAt: '2025-02-20T12:00:00Z', totalAmount: 1250000, operatorId: 'op-north-01' },
+    { id: 'RFQ-LIVE-002', customerId: 'corp-north-01', requesterExternalAuthId: 'corp-north-01', customerName: 'Neha Kapoor', company: 'Bharti Airtel', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Delhi (VIDP)', departureDate: '2025-02-20', pax: 4, aircraftType: 'Light Jet', status: 'live', createdAt: '2025-02-19T09:00:00Z', updatedAt: '2025-02-20T14:00:00Z', totalAmount: 950000, operatorId: 'op-south-01' },
+    { id: 'RFQ-LIVE-003', customerId: 'ag-west-01', requesterExternalAuthId: 'ag-west-01', customerName: 'Joydeep Sen', tripType: 'Onward', departure: 'Kolkata (VECC)', arrival: 'Guwahati (VEGT)', departureDate: '2025-02-20', pax: 3, aircraftType: 'Turboprop', status: 'operationalPreparation', createdAt: '2025-02-19T15:00:00Z', updatedAt: '2025-02-20T10:00:00Z', totalAmount: 450000, operatorId: 'op-east-01' },
 ];
 
 export const mockQuotations: Quotation[] = [

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -26,7 +27,7 @@ export function OperationalPanel({ charter, userRole }: { charter: CharterRFQ, u
     const { toast } = useToast();
 
     const isOperator = userRole === 'Operator';
-    const isLive = ['departed', 'arrived'].includes(charter.status);
+    const isLive = ['departed', 'arrived', 'live', 'enroute'].includes(charter.status);
     const isConfirmed = [
         'charterConfirmed', 
         'operationalPreparation', 
@@ -34,13 +35,16 @@ export function OperationalPanel({ charter, userRole }: { charter: CharterRFQ, u
         'boarding', 
         'departed', 
         'arrived', 
-        'flightCompleted'
+        'flightCompleted',
+        'live',
+        'enroute'
     ].includes(charter.status);
 
     const handleStatusUpdate = (status: string) => {
         if (!firestore) return;
 
-        updateDocumentNonBlocking({ path: `charterRequests/${charter.id}` } as any, { status });
+        const path = `charterRequests/${charter.id}`;
+        updateDocumentNonBlocking({ path } as any, { status });
 
         addDocumentNonBlocking({ path: 'activityLogs' } as any, {
             charterId: charter.id,
@@ -59,7 +63,7 @@ export function OperationalPanel({ charter, userRole }: { charter: CharterRFQ, u
 
     return (
         <div className="space-y-6">
-            {/* Live Radar View - Only visible when in flight */}
+            {/* Live Radar View - Automatically triggers for enroute/live/arrived states */}
             {isLive && (
                 <div className="animate-in fade-in slide-in-from-top-4 duration-700">
                     <div className="flex items-center gap-2 mb-3">

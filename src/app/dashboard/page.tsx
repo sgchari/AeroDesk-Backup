@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useUser } from '@/hooks/use-user';
@@ -8,7 +9,7 @@ import { TravelAgencyDashboard } from '@/components/dashboard/travel-agency-dash
 import { HotelDashboard } from '@/components/dashboard/hotel-dashboard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
@@ -16,6 +17,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ArrowRight, Plane, Armchair, Calendar, LifeBuoy, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
+import type { CharterRFQ } from '@/lib/types';
+import { LiveRadarDashboardCard } from '@/components/dashboard/shared/live-radar-dashboard-card';
 
 const quickLinks = [
     {
@@ -49,6 +54,19 @@ const quickLinks = [
 ];
 
 function CustomerGateway() {
+    const { user } = useUser();
+    const firestore = useFirestore();
+
+    const rfqsQuery = useMemoFirebase(() => {
+        if (!firestore || !user) return null;
+        return query(collection(firestore, 'charterRequests'), where('customerId', '==', user.id));
+    }, [firestore, user]);
+    const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
+
+    const liveMissions = useMemo(() => {
+        return rfqs?.filter(m => ['departed', 'live', 'enroute', 'arrived'].includes(m.status)) || [];
+    }, [rfqs]);
+
     return (
         <div className="space-y-6">
             <PageHeader 
@@ -57,6 +75,11 @@ function CustomerGateway() {
             >
                 <CreateRfqDialog />
             </PageHeader>
+
+            {liveMissions.length > 0 && (
+                <LiveRadarDashboardCard missions={liveMissions} />
+            )}
+
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {quickLinks.map(link => (
                     <Card key={link.title} className="bg-card group hover:border-primary transition-colors">

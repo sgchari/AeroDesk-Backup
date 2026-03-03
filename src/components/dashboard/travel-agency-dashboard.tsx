@@ -16,6 +16,7 @@ import { useUser } from "@/hooks/use-user";
 import { Badge } from "@/components/ui/badge";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
 import { useMemo } from "react";
+import { LiveRadarDashboardCard } from "@/components/dashboard/shared/live-radar-dashboard-card";
 
 export function TravelAgencyDashboard() {
   const firestore = useFirestore();
@@ -23,15 +24,15 @@ export function TravelAgencyDashboard() {
 
   const emptyLegsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'emptyLegs'), where('status', 'in', ['Approved', 'Published']));
+    return query(collection(firestore, 'emptyLegs'), where('status', 'in', ['Approved', 'Published', 'live']));
   }, [firestore]);
   const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
   const seatRequestsQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
-    return query(collectionGroup(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
+    return query(collection(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
   }, [firestore, user]);
-  const { data: seatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(seatRequestsQuery, 'emptyLegs/all/seatAllocationRequests');
+  const { data: seatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(seatRequestsQuery, 'seatAllocationRequests');
   
   const charterRequestsQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
@@ -46,6 +47,10 @@ export function TravelAgencyDashboard() {
   const { data: ledger } = useCollection<CommissionLedgerEntry>(ledgerQuery, 'commissionLedger');
 
   const isLoading = isUserLoading || emptyLegsLoading || seatRequestsLoading || charterRequestsLoading;
+
+  const liveMissions = useMemo(() => {
+    return charterRequests?.filter(m => ['departed', 'live', 'enroute', 'arrived'].includes(m.status)) || [];
+  }, [charterRequests]);
 
   const stats = useMemo(() => {
     const accrued = ledger?.filter(l => l.status === 'pending').reduce((acc, l) => acc + l.agencyCommissionAmount, 0) || 0;
@@ -74,6 +79,10 @@ export function TravelAgencyDashboard() {
         <StatsCard title="Accrued Earnings" href="/dashboard/travel-agency/revenue-share" value={isLoading ? <Skeleton className="h-6 w-20" /> : stats.accruedEarnings} icon={Coins} description="Pending settlement" />
         <StatsCard title="Confirmed Itineraries" href="/dashboard/travel-agency/charter-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeClientMovements.toString()} icon={GanttChartSquare} description="Upcoming movements" />
       </StatsGrid>
+
+      {liveMissions.length > 0 && (
+          <LiveRadarDashboardCard missions={liveMissions} />
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2 mt-6">
         <Card className="bg-card">

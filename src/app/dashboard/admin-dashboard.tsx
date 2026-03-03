@@ -6,68 +6,72 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ShieldCheck, Users, Plane, Briefcase, GanttChartSquare, Bell, Package, AlertCircle } from "lucide-react";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
-import { AuditLog, Operator } from "@/lib/types";
+import { AuditLog, Operator, CharterRFQ } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where, orderBy, limit } from "firebase/firestore";
+import { LiveRadarDashboardCard } from "@/components/dashboard/shared/live-radar-dashboard-card";
+import { useMemo } from "react";
 
 export function AdminDashboard() {
   const firestore = useFirestore();
 
   const pendingLegsQuery = useMemoFirebase(() => {
-    if (!firestore || firestore._isMock) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval'));
   }, [firestore]);
   const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery, 'emptyLegs');
   
   const pendingOperatorsQuery = useMemoFirebase(() => {
-    if (!firestore || firestore._isMock) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'operators'), where('status', '==', 'Pending Approval'));
   }, [firestore]);
   const { data: pendingOperators, isLoading: pendingOperatorsLoading } = useCollection<Operator>(pendingOperatorsQuery, 'operators');
   
   const allUsersQuery = useMemoFirebase(() => {
-    if (!firestore || firestore._isMock) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return collection(firestore, 'users');
   }, [firestore]);
   const { data: allUsers, isLoading: usersLoading } = useCollection(allUsersQuery, 'users');
 
   const allEmptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore || firestore._isMock) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return collection(firestore, 'emptyLegs');
   }, [firestore]);
   const { data: allEmptyLegs, isLoading: emptyLegsLoading } = useCollection(allEmptyLegsQuery, 'emptyLegs');
 
   const auditLogsQuery = useMemoFirebase(() => {
-    if (!firestore || firestore._isMock) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5));
   }, [firestore]);
   const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery, 'auditTrails');
 
   const activeRfqsQuery = useMemoFirebase(() => {
-    if (!firestore || firestore._isMock) return null;
-    return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
+    if (!firestore || (firestore as any)._isMock) return null;
+    return query(collection(firestore, 'charterRequests'));
   }, [firestore]);
-  const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery, 'charterRFQs');
+  const { data: allRfqs, isLoading: activeRfqsLoading } = useCollection<CharterRFQ>(activeRfqsQuery, 'charterRequests');
   
+  const liveMissions = useMemo(() => {
+    return allRfqs?.filter(m => ['departed', 'live', 'enroute', 'arrived'].includes(m.status)) || [];
+  }, [allRfqs]);
+
   const isLoading = pendingLegsLoading || pendingOperatorsLoading || usersLoading || emptyLegsLoading || auditLogsLoading || activeRfqsLoading;
 
-  const totalPendingApprovals = (pendingLegs?.length ?? 0) + (pendingOperators?.length ?? 0);
-  
   const stats = {
-    pendingApprovals: totalPendingApprovals,
+    pendingApprovals: (pendingLegs?.length ?? 0) + (pendingOperators?.length ?? 0),
     activeEntities: allUsers?.length ?? 0,
-    openCharterActivity: activeRfqs?.length ?? 0,
+    openCharterActivity: allRfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
     emptyLegActivity: allEmptyLegs?.length ?? 0,
-    complianceFlags: 0, // Mocked
-    billingAlerts: 0, // Mocked
+    complianceFlags: 0,
+    billingAlerts: 0,
   }
 
   return (
-    <>
+    <div className="space-y-6">
       <PageHeader title="Governance Command Center" description="Instant platform situational awareness and compliance oversight." />
       
       <div className="grid gap-6">
@@ -79,6 +83,11 @@ export function AdminDashboard() {
             <StatsCard title="Compliance Flags" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.complianceFlags.toString()} icon={AlertCircle} description="Workflows needing review" />
             <StatsCard title="Billing Alerts" href="/dashboard/admin/billing" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.billingAlerts.toString()} icon={Bell} description="Overdue & pending items" />
         </StatsGrid>
+
+        {liveMissions.length > 0 && (
+            <LiveRadarDashboardCard missions={liveMissions} />
+        )}
+
         <Card className="bg-card">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
@@ -120,6 +129,6 @@ export function AdminDashboard() {
             </CardContent>
         </Card>
       </div>
-    </>
+    </div>
   );
 }

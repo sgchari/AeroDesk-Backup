@@ -8,6 +8,7 @@ const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 let db: any = {
   users: deepCopy(mockUsers),
   emptyLegFlights: deepCopy(mockEmptyLegs),
+  charterRequests: deepCopy(mockRfqs),
   reports: [],
   readCount: 0 // Billing Protection: Monitoring reads per session
 };
@@ -65,7 +66,29 @@ export const mockStore = {
   getCollection,
   getDoc,
   getReadCount: () => db.readCount,
-  addDoc: (path: string, data: any) => { /* logic */ notify(); },
-  updateDoc: (path: string, id: string, data: any) => { /* logic */ notify(); },
-  deleteDoc: (path: string, id: string) => { /* logic */ notify(); }
+  addDoc: (path: string, data: any) => { 
+    const segments = path.split('/');
+    const rootCol = segments[0];
+    if (!db[rootCol]) db[rootCol] = [];
+    const newDoc = { id: `id-${Date.now()}`, ...data };
+    db[rootCol].push(newDoc);
+    notify(); 
+  },
+  updateDoc: (path: string, id: string, data: any) => { 
+    const segments = path.split('/');
+    const rootCol = segments[0];
+    if (db[rootCol]) {
+        const idx = db[rootCol].findIndex((d: any) => d.id === id);
+        if (idx !== -1) db[rootCol][idx] = { ...db[rootCol][idx], ...data };
+    }
+    notify(); 
+  },
+  deleteDoc: (path: string, id: string) => { 
+    const segments = path.split('/');
+    const rootCol = segments[0];
+    if (db[rootCol]) {
+        db[rootCol] = db[rootCol].filter((d: any) => d.id !== id);
+    }
+    notify(); 
+  }
 };
