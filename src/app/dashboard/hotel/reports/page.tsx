@@ -13,14 +13,14 @@ import {
     CartesianGrid, 
     Tooltip, 
     ResponsiveContainer, 
-    LineChart, 
-    Line, 
     PieChart as RePieChart, 
     Pie, 
     Cell,
     AreaChart,
     Area,
-    Legend
+    Legend,
+    LineChart,
+    Line
 } from 'recharts';
 import { 
     DollarSign, 
@@ -28,54 +28,40 @@ import {
     BedDouble, 
     Clock, 
     Users, 
-    Calendar, 
     Download, 
     Filter,
     Activity,
     Target,
-    History,
     Hotel,
     Briefcase,
     ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/use-user";
 import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { HotelAIInsights } from "@/components/dashboard/hotel/reports/hotel-ai-insights";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
-import { Skeleton } from "@/components/ui/skeleton";
-import type { AccommodationRequest } from "@/lib/types";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-// --- MOCK DATA FOR SCALING ---
-const BASE_REVENUE_DATA = [
+// --- MOCK HOSPITALITY DATA ---
+const REVENUE_BY_ROOM = [
     { name: 'Deluxe King', value: 45, color: '#0EA5E9' },
     { name: 'Executive Suite', value: 35, color: '#FFFFBD' },
     { name: 'Presidential', value: 20, color: '#10B981' },
 ];
 
-const BASE_DAILY_OCCUPANCY = [
-    { day: 'Mon', occupancy: 42 },
-    { day: 'Tue', occupancy: 38 },
-    { day: 'Wed', occupancy: 55 },
-    { day: 'Thu', occupancy: 72 },
-    { day: 'Fri', occupancy: 88 },
-    { day: 'Sat', occupancy: 94 },
-    { day: 'Sun', occupancy: 65 },
+const DAILY_OCCUPANCY = [
+    { day: 'Mon', occupancy: 42, revenue: 125000 },
+    { day: 'Tue', occupancy: 38, revenue: 98000 },
+    { day: 'Wed', occupancy: 55, revenue: 165000 },
+    { day: 'Thu', occupancy: 72, revenue: 210000 },
+    { day: 'Fri', occupancy: 88, revenue: 285000 },
+    { day: 'Sat', occupancy: 94, revenue: 320000 },
+    { day: 'Sun', occupancy: 65, revenue: 180000 },
 ];
 
-const BASE_LIFECYCLE_DATA = [
-    { month: 'May', received: 45, confirmed: 38, rejected: 7 },
-    { month: 'Jun', received: 52, confirmed: 44, rejected: 8 },
-    { month: 'Jul', received: 68, confirmed: 55, rejected: 13 },
-];
-
-const STAKEHOLDER_DATA = [
+const CLIENT_MIX = [
     { name: 'Corporate Desk', value: 55, color: '#0EA5E9' },
     { name: 'HNWI Direct', value: 25, color: '#FFFFBD' },
     { name: 'Travel Agency', value: 20, color: '#8B5CF6' },
@@ -83,11 +69,9 @@ const STAKEHOLDER_DATA = [
 
 export default function HotelReportsPage() {
     const { user } = useUser();
-    const firestore = useFirestore();
     const { toast } = useToast();
     const [period, setPeriod] = useState("30d");
 
-    // Dynamic scale factors
     const scaleFactor = useMemo(() => {
         switch (period) {
             case '7d': return 0.25;
@@ -98,48 +82,32 @@ export default function HotelReportsPage() {
         }
     }, [period]);
 
-    // Data Fetching for history table
-    const requestsQuery = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
-        return query(collection(firestore, 'accommodationRequests'), where('hotelPartnerId', '==', user.id));
-    }, [firestore, user]);
-
-    const { data: requests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(
-        requestsQuery, 
-        'accommodationRequests'
-    );
-
     const stats = useMemo(() => ({
-        totalRevenue: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(825000 * scaleFactor).replace('INR', '₹'),
-        avgBookingValue: '₹ 42,500',
-        occupancyRate: '78%',
-        responseEfficiency: '1.2 Hours'
+        totalRevenue: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(1250000 * scaleFactor).replace('INR', '₹'),
+        occupancyRate: "78%",
+        avgBookingValue: "₹ 42,500",
+        responseEfficiency: "1.2 Hours"
     }), [scaleFactor]);
-
-    const dailyOccupancy = useMemo(() => BASE_DAILY_OCCUPANCY.map(d => ({
-        ...d,
-        occupancy: Math.min(100, Math.round(d.occupancy * (scaleFactor < 1 ? 0.8 : 1)))
-    })), [scaleFactor]);
 
     const handlePeriodChange = (value: string) => {
         setPeriod(value);
         toast({
             title: "Performance Scope Updated",
-            description: `Now analyzing institutional property metrics for the ${value === '7d' ? 'last 7 days' : value === '30d' ? 'last 30 days' : value === '90d' ? 'last quarter' : 'current year'}.`,
+            description: "Synchronizing property yield and occupancy data.",
         });
     };
 
     return (
-        <>
+        <div className="space-y-6">
             <PageHeader 
-                title="Property Performance & Yield Intelligence" 
-                description="Consolidated visibility into revenue contribution, operational efficiency, and network demand patterns."
+                title="Property Yield Intelligence" 
+                description={`Consolidated visibility into network revenue and occupancy patterns for ${user?.company}.`}
             >
                 <div className="flex gap-2">
                     <Select value={period} onValueChange={handlePeriodChange}>
-                        <SelectTrigger className="h-9 w-[160px] bg-muted/20 border-white/10 text-xs gap-2 text-white">
-                            <Filter className="h-3.5 w-3.5 text-accent" />
-                            <SelectValue placeholder="Period Scope" />
+                        <SelectTrigger className="h-9 w-[140px] bg-muted/20 border-white/10 text-xs">
+                            <Filter className="h-3.5 w-3.5 mr-2 text-accent" />
+                            <SelectValue placeholder="Period" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="7d">Last 7 Days</SelectItem>
@@ -148,294 +116,188 @@ export default function HotelReportsPage() {
                             <SelectItem value="ytd">Year to Date</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[10px] tracking-widest">
+                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[9px] tracking-widest">
                         <Download className="h-3.5 w-3.5" /> Export Audit
                     </Button>
                 </div>
             </PageHeader>
 
             <StatsGrid>
-                <StatsCard title="Total Revenue" value={stats.totalRevenue} icon={DollarSign} description="Revenue via AeroDesk network" />
-                <StatsCard title="AeroDesk Occupancy" value={stats.occupancyRate} icon={BedDouble} description="Room nights confirmed" />
+                <StatsCard title="Platform Revenue" value={stats.totalRevenue} icon={DollarSign} description="Yield via AeroDesk network" />
+                <StatsCard title="Network Occupancy" value={stats.occupancyRate} icon={BedDouble} description="Room nights confirmed" />
                 <StatsCard title="Avg. Booking Value" value={stats.avgBookingValue} icon={TrendingUp} description="Per confirmed stay" />
-                <StatsCard title="Response Latency" value={stats.responseEfficiency} icon={Clock} description="Avg. request processing time" />
+                <StatsCard title="Response Latency" value={stats.responseEfficiency} icon={Clock} description="Avg. processing time" />
             </StatsGrid>
 
-            <div className="mt-6 space-y-6">
-                <HotelAIInsights />
+            <HotelAIInsights />
 
-                <Tabs defaultValue="revenue" className="w-full">
-                    <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1">
-                        <TabsTrigger value="revenue" className="gap-2">
-                            <DollarSign className="h-3.5 w-3.5" /> Revenue & Yield
-                        </TabsTrigger>
-                        <TabsTrigger value="ops" className="gap-2">
-                            <Activity className="h-3.5 w-3.5" /> Operations Efficiency
-                        </TabsTrigger>
-                        <TabsTrigger value="occupancy" className="gap-2">
-                            <BedDouble className="h-3.5 w-3.5" /> Demand Patterns
-                        </TabsTrigger>
-                        <TabsTrigger value="clients" className="gap-2">
-                            <Users className="h-3.5 w-3.5" /> Client Insights
-                        </TabsTrigger>
-                        <TabsTrigger value="history" className="gap-2">
-                            <History className="h-3.5 w-3.5" /> Archive
-                        </TabsTrigger>
-                    </TabsList>
+            <Tabs defaultValue="revenue" className="w-full">
+                <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1 h-auto flex flex-wrap">
+                    <TabsTrigger value="revenue" className="gap-2 flex-1 min-w-[120px]">
+                        <DollarSign className="h-3.5 w-3.5" /> Revenue & Yield
+                    </TabsTrigger>
+                    <TabsTrigger value="occupancy" className="gap-2 flex-1 min-w-[120px]">
+                        <BedDouble className="h-3.5 w-3.5" /> Occupancy Patterns
+                    </TabsTrigger>
+                    <TabsTrigger value="clients" className="gap-2 flex-1 min-w-[120px]">
+                        <Users className="h-3.5 w-3.5" /> Client Profiling
+                    </TabsTrigger>
+                </TabsList>
 
-                    <TabsContent value="revenue" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 md:grid-cols-3">
-                            <Card className="md:col-span-2 bg-card">
-                                <CardHeader>
-                                    <CardTitle>Revenue Yield Direction</CardTitle>
-                                    <CardDescription>Daily revenue flows generated through charter-linked stays.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[350px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <AreaChart data={dailyOccupancy}>
-                                            <defs>
-                                                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3}/>
-                                                    <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
-                                                </linearGradient>
-                                            </defs>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                                            <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
-                                            <YAxis stroke="#94a3b8" fontSize={10} />
-                                            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                            <Area type="monotone" dataKey="occupancy" stroke="#0EA5E9" fillOpacity={1} fill="url(#colorRev)" name="Revenue Flow Index" />
-                                        </AreaChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Contribution by Category</CardTitle>
-                                    <CardDescription>Revenue share per room type.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="flex flex-col items-center justify-center space-y-6 py-6">
-                                    <div className="h-[180px] w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <RePieChart>
-                                                <Pie
-                                                    data={BASE_REVENUE_DATA}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={60}
-                                                    outerRadius={80}
-                                                    paddingAngle={5}
-                                                    dataKey="value"
-                                                    stroke="none"
-                                                >
-                                                    {BASE_REVENUE_DATA.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip />
-                                            </RePieChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                    <div className="w-full space-y-2.5">
-                                        {BASE_REVENUE_DATA.map((item) => (
-                                            <div key={item.name} className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                                                    <span className="text-muted-foreground">{item.name}</span>
-                                                </div>
-                                                <span className="text-white">{item.value}%</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="ops" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 md:grid-cols-2">
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Booking Lifecycle Funnel</CardTitle>
-                                    <CardDescription>Requested vs. Confirmed status ratio.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[300px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={BASE_LIFECYCLE_DATA}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                                            <XAxis dataKey="month" stroke="#94a3b8" fontSize={10} />
-                                            <YAxis stroke="#94a3b8" fontSize={10} />
-                                            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                            <Legend />
-                                            <Bar dataKey="received" name="Inquiries" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
-                                            <Bar dataKey="confirmed" name="Confirmed" fill="#10B981" radius={[4, 4, 0, 0]} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-card flex flex-col justify-center">
-                                <CardHeader>
-                                    <CardTitle>Performance Indicators</CardTitle>
-                                    <CardDescription>Coordination efficiency metrics.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
-                                            <span>Request Conversion Ratio</span>
-                                            <span className="text-emerald-500">82.4%</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-emerald-500 w-[82%]" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
-                                            <span>Lead Response Efficiency</span>
-                                            <span className="text-primary">92% Optimal</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-primary w-[92%]" />
-                                        </div>
-                                    </div>
-                                    <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 flex items-center gap-4">
-                                        <div className="p-2 bg-accent/10 rounded-full"><Clock className="h-5 w-5 text-accent" /></div>
-                                        <div>
-                                            <p className="text-[10px] font-bold text-muted-foreground uppercase">Average Approval Time</p>
-                                            <p className="text-lg font-black text-foreground tracking-tighter">72 Minutes</p>
-                                        </div>
-                                        <Badge className="ml-auto bg-green-500/20 text-green-500 border-none h-5">Top Tier</Badge>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="occupancy" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <Card className="bg-card">
+                <TabsContent value="revenue" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <div className="grid gap-6 md:grid-cols-3">
+                        <Card className="md:col-span-2 bg-card">
                             <CardHeader>
-                                <CardTitle>Marketplace Occupancy Trends</CardTitle>
-                                <CardDescription>Tracking seasonal and weekly peaks driven by charter arrivals.</CardDescription>
+                                <CardTitle>Revenue Flow (Daily)</CardTitle>
+                                <CardDescription>Yield generated specifically from charter-linked stay arrivals.</CardDescription>
                             </CardHeader>
-                            <CardContent className="h-[400px]">
+                            <CardContent className="h-[350px]">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={dailyOccupancy}>
+                                    <AreaChart data={DAILY_OCCUPANCY}>
+                                        <defs>
+                                            <linearGradient id="colorHotel" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+                                                <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                                            </linearGradient>
+                                        </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                                         <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
-                                        <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `${val}%`} />
+                                        <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `₹${val/1000}K`} />
                                         <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                        <Line type="monotone" dataKey="occupancy" stroke="#FFFFBD" strokeWidth={3} dot={{ fill: '#FFFFBD', r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} name="Occupancy %" />
-                                    </LineChart>
+                                        <Area type="monotone" dataKey="revenue" stroke="#10B981" fillOpacity={1} fill="url(#colorHotel)" name="Yield" />
+                                    </AreaChart>
                                 </ResponsiveContainer>
                             </CardContent>
                         </Card>
-                    </TabsContent>
 
-                    <TabsContent value="clients" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 md:grid-cols-2">
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Stakeholder Mix</CardTitle>
-                                    <CardDescription>Source of bookings via the platform.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="flex flex-col items-center justify-center space-y-6 py-6">
-                                    <div className="h-[200px] w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <RePieChart>
-                                                <Pie
-                                                    data={STAKEHOLDER_DATA}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={60}
-                                                    outerRadius={80}
-                                                    paddingAngle={5}
-                                                    dataKey="value"
-                                                    stroke="none"
-                                                >
-                                                    {STAKEHOLDER_DATA.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip />
-                                            </RePieChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                    <div className="flex justify-center gap-6 w-full">
-                                        {STAKEHOLDER_DATA.map((item) => (
-                                            <div key={item.name} className="flex items-center gap-2">
-                                                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                                                <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{item.name}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Repeat Guest Signals</CardTitle>
-                                    <CardDescription>Loyalty patterns from network users.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-6 pt-4">
-                                    <div className="flex items-center justify-between p-4 border border-white/5 rounded-xl bg-white/[0.02]">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-primary/10 rounded-lg"><Target className="h-4 w-4 text-primary" /></div>
-                                            <span className="text-xs font-medium">Corporate Repeat Rate</span>
-                                        </div>
-                                        <span className="text-lg font-black text-white">42%</span>
-                                    </div>
-                                    <div className="flex items-center justify-between p-4 border border-white/5 rounded-xl bg-white/[0.02]">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-accent/10 rounded-lg"><Users className="h-4 w-4 text-accent" /></div>
-                                            <span className="text-xs font-medium">Agency Loyalty Factor</span>
-                                        </div>
-                                        <span className="text-lg font-black text-white">High (1.8x)</span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="history" className="space-y-6 animate-in fade-in slide-in-from-top-2">
                         <Card className="bg-card">
                             <CardHeader>
-                                <CardTitle>Historical Stay Coordination</CardTitle>
-                                <CardDescription>Archive of all accommodation requests linked to platform activity.</CardDescription>
+                                <CardTitle>Category Yield</CardTitle>
+                                <CardDescription>Revenue contribution by room type.</CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                {requestsLoading ? <Skeleton className="h-64 w-full" /> : (
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Request ID</TableHead>
-                                                <TableHead>Guest / Client</TableHead>
-                                                <TableHead>Execution Date</TableHead>
-                                                <TableHead>Rooms</TableHead>
-                                                <TableHead>Outcome</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {requests?.map((req) => (
-                                                <TableRow key={req.id}>
-                                                    <TableCell className="font-code text-xs font-bold">{req.id}</TableCell>
-                                                    <TableCell className="text-sm">{req.guestName || 'VIP Client'}</TableCell>
-                                                    <TableCell className="text-xs text-muted-foreground">{new Date(req.checkIn).toLocaleDateString()}</TableCell>
-                                                    <TableCell className="text-xs">{req.rooms} Room(s)</TableCell>
-                                                    <TableCell>
-                                                        <Badge variant={req.status === 'Confirmed' ? 'success' : req.status === 'Declined' ? 'destructive' : 'secondary'} className="text-[10px] uppercase font-bold tracking-wider">
-                                                            {req.status}
-                                                        </Badge>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                )}
+                            <CardContent className="flex flex-col items-center justify-center h-[300px]">
+                                <div className="h-[180px] w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RePieChart>
+                                            <Pie
+                                                data={REVENUE_BY_ROOM}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                                stroke="none"
+                                            >
+                                                {REVENUE_BY_ROOM.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                        </RePieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className="w-full space-y-2 mt-4">
+                                    {REVENUE_BY_ROOM.map((item) => (
+                                        <div key={item.name} className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                                                <span className="text-muted-foreground">{item.name}</span>
+                                            </div>
+                                            <span className="text-white">{item.value}%</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </CardContent>
                         </Card>
-                    </TabsContent>
-                </Tabs>
-            </div>
-        </>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="occupancy" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <Card className="bg-card">
+                        <CardHeader>
+                            <CardTitle>Institutional Occupancy Trend</CardTitle>
+                            <CardDescription>Tracking seasonal and weekly peaks driven by network mission arrivals.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[400px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={DAILY_OCCUPANCY}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                    <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
+                                    <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `${val}%`} />
+                                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
+                                    <Line type="monotone" dataKey="occupancy" stroke="#FFFFBD" strokeWidth={3} dot={{ fill: '#FFFFBD', r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} name="Occupancy %" />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="clients" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <Card className="bg-card">
+                            <CardHeader>
+                                <CardTitle>Stakeholder Profiling</CardTitle>
+                                <CardDescription>Source of bookings facilitated via the AeroDesk platform.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col items-center justify-center h-[300px]">
+                                <div className="h-[200px] w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RePieChart>
+                                            <Pie
+                                                data={CLIENT_MIX}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                                stroke="none"
+                                            >
+                                                {CLIENT_MIX.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                        </RePieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className="flex justify-center gap-6 w-full mt-4">
+                                    {CLIENT_MIX.map((item) => (
+                                        <div key={item.name} className="flex items-center gap-2">
+                                            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                                            <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{item.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="bg-card">
+                            <CardHeader>
+                                <CardTitle>Repeat Guest Signals</CardTitle>
+                                <CardDescription>Loyalty patterns from the institutional network.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6 pt-4 h-[300px] flex flex-col justify-center">
+                                <div className="flex items-center justify-between p-4 border border-white/5 rounded-xl bg-white/[0.02]">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-primary/10 rounded-lg"><Target className="h-4 w-4 text-primary" /></div>
+                                        <span className="text-xs font-medium">Corporate Repeat Rate</span>
+                                    </div>
+                                    <span className="text-lg font-black text-white">42%</span>
+                                </div>
+                                <div className="flex items-center justify-between p-4 border border-white/5 rounded-xl bg-white/[0.02]">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-accent/10 rounded-lg"><Users className="h-4 w-4 text-accent" /></div>
+                                        <span className="text-xs font-medium">Agency Loyalty Factor</span>
+                                    </div>
+                                    <span className="text-lg font-black text-white">High (1.8x)</span>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </TabsContent>
+            </Tabs>
+        </div>
     );
 }

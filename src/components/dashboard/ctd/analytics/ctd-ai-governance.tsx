@@ -25,7 +25,7 @@ const insights = [
     {
         type: 'OPTIMIZATION',
         title: 'Yield Opportunity',
-        description: 'Regular travel on BOM-DEL sectors. Switching to long-term operator block contracts could reduce annual spend by 12%.',
+        description: 'Regular travel on BOM-DEL sectors detected. Switching to long-term operator block contracts could reduce annual spend by 12%.',
         impact: 'High',
         trend: 'up',
         color: 'text-sky-400'
@@ -54,7 +54,7 @@ export function CTDAIGovernance() {
 
                 <div className="grid gap-4 md:grid-cols-3">
                     {insights.map((insight, idx) => (
-                        <div key={insight.title} className="p-4 rounded-xl bg-black/20 border border-white/5 hover:border-white/10 transition-all flex flex-col gap-3 group/item">
+                        <div key={idx} className="p-4 rounded-xl bg-black/20 border border-white/5 hover:border-white/10 transition-all flex flex-col gap-3 group/item">
                             <div className="flex items-center justify-between">
                                 <Badge variant="outline" className={cn("text-[8px] uppercase font-bold tracking-widest border-white/10", insight.color)}>
                                     {insight.type}

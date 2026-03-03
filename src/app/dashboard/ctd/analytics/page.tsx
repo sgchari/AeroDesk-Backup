@@ -25,7 +25,6 @@ import {
 } from 'recharts';
 import { 
     Activity, 
-    TrendingUp, 
     DollarSign, 
     Users, 
     Filter, 
@@ -33,16 +32,10 @@ import {
     ShieldCheck, 
     Zap, 
     Target, 
-    BarChart2, 
-    Globe,
-    Briefcase,
     Clock,
-    Scale,
     FileText,
-    History,
     CheckCircle2,
-    AlertCircle,
-    PieChart
+    AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -76,13 +69,6 @@ const BASE_COST_CENTER_DATA = [
     { name: 'HR/Logistics', budget: 40, consumed: 35, variance: 5 },
 ];
 
-const ROUTE_INSIGHTS = [
-    { route: 'BOM-DEL', frequency: 24, avgCost: 8.5 },
-    { route: 'DEL-LHR', frequency: 8, avgCost: 42.0 },
-    { route: 'BLR-GOI', frequency: 12, avgCost: 4.2 },
-    { route: 'MAA-SIN', frequency: 5, avgCost: 18.5 },
-];
-
 export default function CTDAnalyticsPage() {
     const { user } = useUser();
     const { toast } = useToast();
@@ -98,19 +84,6 @@ export default function CTDAnalyticsPage() {
         }
     }, [period]);
 
-    const requestLifecycle = useMemo(() => BASE_REQUEST_LIFECYCLE.map(d => ({
-        ...d,
-        received: Math.round(d.received * (scaleFactor < 1 ? 1.2 : scaleFactor * 0.8)),
-        approved: Math.round(d.approved * (scaleFactor < 1 ? 1.2 : scaleFactor * 0.8))
-    })), [scaleFactor]);
-
-    const costCenterData = useMemo(() => BASE_COST_CENTER_DATA.map(d => ({
-        ...d,
-        budget: Math.round(d.budget * scaleFactor),
-        consumed: Math.round(d.consumed * scaleFactor),
-        variance: Math.round(d.variance * scaleFactor)
-    })), [scaleFactor]);
-
     const stats = useMemo(() => ({
         totalSpend: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(4250000 * scaleFactor).replace('INR', '₹'),
         avgApprovalTime: "1.8 Hours",
@@ -122,21 +95,21 @@ export default function CTDAnalyticsPage() {
         setPeriod(value);
         toast({
             title: "Governance Period Updated",
-            description: `Now analyzing institutional travel data for the selected window.`,
+            description: "Now analyzing institutional travel data for the selected window.",
         });
     };
 
     return (
-        <>
+        <div className="space-y-6">
             <PageHeader 
                 title="Enterprise Travel Intelligence" 
                 description={`Strategic demand, spend control, and governance metrics for ${user?.company}.`}
             >
                 <div className="flex gap-2">
                     <Select value={period} onValueChange={handlePeriodChange}>
-                        <SelectTrigger className="h-9 w-[160px] bg-muted/20 border-white/10 text-xs gap-2 text-white">
-                            <Filter className="h-3.5 w-3.5 text-accent" />
-                            <SelectValue placeholder="Period Scope" />
+                        <SelectTrigger className="h-9 w-[160px] bg-muted/20 border-white/10 text-xs">
+                            <Filter className="h-3.5 w-3.5 mr-2 text-accent" />
+                            <SelectValue placeholder="Period" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="7d">Last 7 Days</SelectItem>
@@ -145,7 +118,7 @@ export default function CTDAnalyticsPage() {
                             <SelectItem value="ytd">Year to Date</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[10px] tracking-widest">
+                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[9px] tracking-widest">
                         <Download className="h-3.5 w-3.5" /> Export Governance CSV
                     </Button>
                 </div>
@@ -158,201 +131,160 @@ export default function CTDAnalyticsPage() {
                 <StatsCard title="Authorized Personnel" value={stats.activePersonnel.toString()} icon={Users} description="Active movement profiles" />
             </StatsGrid>
 
-            <div className="mt-6 space-y-6">
-                <CTDAIGovernance />
+            <CTDAIGovernance />
 
-                <Tabs defaultValue="ops" className="w-full">
-                    <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1">
-                        <TabsTrigger value="ops" className="gap-2">
-                            <Activity className="h-3.5 w-3.5" /> Operations & Lifecycle
-                        </TabsTrigger>
-                        <TabsTrigger value="strategic" className="gap-2">
-                            <Target className="h-3.5 w-3.5" /> Strategic Intelligence
-                        </TabsTrigger>
-                        <TabsTrigger value="accounting" className="gap-2">
-                            <FileText className="h-3.5 w-3.5" /> Accounting & Spend
-                        </TabsTrigger>
-                    </TabsList>
+            <Tabs defaultValue="ops" className="w-full">
+                <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1 h-auto flex flex-wrap">
+                    <TabsTrigger value="ops" className="gap-2 flex-1 min-w-[120px]">
+                        <Activity className="h-3.5 w-3.5" /> Operations & Lifecycle
+                    </TabsTrigger>
+                    <TabsTrigger value="strategic" className="gap-2 flex-1 min-w-[120px]">
+                        <Target className="h-3.5 w-3.5" /> Strategic Intelligence
+                    </TabsTrigger>
+                    <TabsTrigger value="accounting" className="gap-2 flex-1 min-w-[120px]">
+                        <FileText className="h-3.5 w-3.5" /> Accounting & Spend
+                    </TabsTrigger>
+                </TabsList>
 
-                    <TabsContent value="ops" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 md:grid-cols-3">
-                            <Card className="md:col-span-2 bg-card">
-                                <CardHeader>
-                                    <CardTitle>Request Flow Intensity</CardTitle>
-                                    <CardDescription>Daily volume of received vs. approved corporate travel requests.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[350px]">
+                <TabsContent value="ops" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <div className="grid gap-6 md:grid-cols-3">
+                        <Card className="md:col-span-2 bg-card">
+                            <CardHeader>
+                                <CardTitle>Request Flow Intensity</CardTitle>
+                                <CardDescription>Daily volume of received vs. approved corporate travel requests.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="h-[350px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={BASE_REQUEST_LIFECYCLE}>
+                                        <defs>
+                                            <linearGradient id="colorRec" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3}/>
+                                                <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                                            </linearGradient>
+                                            <linearGradient id="colorApp" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+                                                <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                        <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
+                                        <YAxis stroke="#94a3b8" fontSize={10} />
+                                        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
+                                        <Area type="monotone" dataKey="received" stroke="#0EA5E9" fillOpacity={1} fill="url(#colorRec)" name="Inquiries" />
+                                        <Area type="monotone" dataKey="approved" stroke="#10B981" fillOpacity={1} fill="url(#colorApp)" name="Approved" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="bg-card">
+                            <CardHeader>
+                                <CardTitle>Fulfillment Signals</CardTitle>
+                                <CardDescription>Efficiency indicators for request lifecycle.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6 py-4">
+                                <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 space-y-1">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-[10px] font-bold text-accent uppercase tracking-widest">Completion Rate</p>
+                                        <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+                                    </div>
+                                    <p className="text-2xl font-black text-foreground">92.4%</p>
+                                    <p className="text-[10px] text-muted-foreground">Successful movement completion</p>
+                                </div>
+                                <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 space-y-1">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Rejection Ratio</p>
+                                        <AlertCircle className="h-3.5 w-3.5 text-primary" />
+                                    </div>
+                                    <p className="text-2xl font-black text-foreground">4.2%</p>
+                                    <p className="text-[10px] text-muted-foreground">Requests outside policy guidelines</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="strategic" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <Card className="bg-card">
+                            <CardHeader>
+                                <CardTitle>Travel Mode Mix</CardTitle>
+                                <CardDescription>Organizational preference between full charter and seat allocations.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col items-center justify-center space-y-6 py-6 h-[300px]">
+                                <div className="h-[200px] w-full">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <AreaChart data={requestLifecycle}>
-                                            <defs>
-                                                <linearGradient id="colorRec" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3}/>
-                                                    <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
-                                                </linearGradient>
-                                                <linearGradient id="colorApp" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
-                                                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
-                                                </linearGradient>
-                                            </defs>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                                            <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
-                                            <YAxis stroke="#94a3b8" fontSize={10} />
-                                            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                            <Area type="monotone" dataKey="received" stroke="#0EA5E9" fillOpacity={1} fill="url(#colorRec)" name="Inquiries" />
-                                            <Area type="monotone" dataKey="approved" stroke="#10B981" fillOpacity={1} fill="url(#colorApp)" name="Approved" />
-                                        </AreaChart>
+                                        <RePieChart>
+                                            <Pie
+                                                data={BASE_MODE_MIX}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                                stroke="none"
+                                            >
+                                                {BASE_MODE_MIX.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                        </RePieChart>
                                     </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
+                                </div>
+                                <div className="flex justify-center gap-6 w-full mt-4">
+                                    {BASE_MODE_MIX.map(item => (
+                                        <div key={item.name} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+                                            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                                            <span className="text-muted-foreground">{item.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
 
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Fulfillment Signals</CardTitle>
-                                    <CardDescription>Efficiency indicators for request lifecycle.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-6 py-4">
-                                    <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <p className="text-[10px] font-bold text-accent uppercase tracking-widest">Completion Rate</p>
-                                            <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
-                                        </div>
-                                        <p className="text-2xl font-black text-foreground">92.4%</p>
-                                        <p className="text-[10px] text-muted-foreground">Successful movement completion</p>
+                        <Card className="bg-card">
+                            <CardHeader>
+                                <CardTitle>Institutional Policy Adherence</CardTitle>
+                                <CardDescription>Compliance monitoring across active coordination.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex items-center justify-center h-[300px]">
+                                <div className="text-center space-y-2">
+                                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full border-4 border-emerald-500/20 bg-emerald-500/10">
+                                        <ShieldCheck className="h-10 w-10 text-emerald-500" />
                                     </div>
-                                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Rejection Ratio</p>
-                                            <AlertCircle className="h-3.5 w-3.5 text-primary" />
-                                        </div>
-                                        <p className="text-2xl font-black text-foreground">4.2%</p>
-                                        <p className="text-[10px] text-muted-foreground">Requests outside policy guidelines</p>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
+                                    <p className="text-2xl font-black text-white">94%</p>
+                                    <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Optimal Governance</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </TabsContent>
 
-                    <TabsContent value="strategic" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 md:grid-cols-2">
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Travel Mode Mix</CardTitle>
-                                    <CardDescription>Organizational preference between full charter and seat allocations.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="flex flex-col items-center justify-center space-y-6 py-6">
-                                    <div className="h-[200px] w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <RePieChart>
-                                                <Pie
-                                                    data={BASE_MODE_MIX}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={60}
-                                                    outerRadius={80}
-                                                    paddingAngle={5}
-                                                    dataKey="value"
-                                                    stroke="none"
-                                                >
-                                                    {BASE_MODE_MIX.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip />
-                                            </RePieChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                    <div className="flex justify-center gap-6 w-full">
-                                        {BASE_MODE_MIX.map(item => (
-                                            <div key={item.name} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
-                                                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                                                <span className="text-muted-foreground">{item.name}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>High-Frequency Sectors</CardTitle>
-                                    <CardDescription>Top routes identified for travel consolidation.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[300px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={ROUTE_INSIGHTS} layout="vertical">
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
-                                            <XAxis type="number" hide />
-                                            <YAxis dataKey="route" type="category" stroke="#94a3b8" fontSize={10} width={80} />
-                                            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                            <Bar dataKey="frequency" fill="#0EA5E9" name="Movement Frequency" radius={[0, 4, 4, 0]} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="accounting" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 md:grid-cols-3">
-                            <Card className="md:col-span-2 bg-card">
-                                <CardHeader>
-                                    <CardTitle>Budget vs. Actual Consumption</CardTitle>
-                                    <CardDescription>Quarterly budget performance across primary cost centers (₹ Lakhs).</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[350px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <ComposedChart data={costCenterData}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                                            <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} />
-                                            <YAxis stroke="#94a3b8" fontSize={10} />
-                                            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                            <Legend />
-                                            <Bar dataKey="budget" name="Allocated Budget" fill="#1e293b" radius={[4, 4, 0, 0]} />
-                                            <Bar dataKey="consumed" name="Consumed Amount" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
-                                            <Line type="monotone" dataKey="variance" name="Variance Threshold" stroke="#FFFFBD" strokeWidth={2} dot={{ fill: '#FFFFBD' }} />
-                                        </ComposedChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Financial Governance</CardTitle>
-                                    <CardDescription>Institutional settlement indicators.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-6 py-4">
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-xs font-bold uppercase">
-                                            <span className="text-muted-foreground">Pending Invoices</span>
-                                            <span className="text-amber-500">₹ 8.2 L</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-amber-500 w-[45%]" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-xs font-bold uppercase">
-                                            <span className="text-muted-foreground">Approved Payments</span>
-                                            <span className="text-green-500">₹ 34.3 L</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-green-500 w-[85%]" />
-                                        </div>
-                                    </div>
-                                    <Separator className="bg-white/5" />
-                                    <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <History className="h-3 w-3 text-primary" />
-                                            <span className="text-[10px] font-bold text-primary uppercase">Reconciliation Status</span>
-                                        </div>
-                                        <p className="text-[10px] text-muted-foreground">Current period reconciliation is <span className="text-green-500 font-bold">ON TRACK</span>. 98% of charter segments validated.</p>
-                                    </div>
-                                </CardContent>
-                            </div>
-                        </div>
-                    </TabsContent>
-                </Tabs>
-            </div>
-        </>
+                <TabsContent value="accounting" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <Card className="bg-card">
+                        <CardHeader>
+                            <CardTitle>Budget vs. Actual Consumption</CardTitle>
+                            <CardDescription>Quarterly budget performance across primary cost centers (₹ Lakhs).</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[350px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart data={BASE_COST_CENTER_DATA}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} />
+                                    <YAxis stroke="#94a3b8" fontSize={10} />
+                                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
+                                    <Legend />
+                                    <Bar dataKey="budget" name="Allocated Budget" fill="#1e293b" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="consumed" name="Consumed Amount" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
+                                    <Line type="monotone" dataKey="variance" name="Variance Threshold" stroke="#FFFFBD" strokeWidth={2} dot={{ fill: '#FFFFBD' }} />
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+            </Tabs>
+        </div>
     );
 }

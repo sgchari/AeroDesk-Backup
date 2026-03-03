@@ -17,7 +17,7 @@ const insights = [
     {
         type: 'REVENUE',
         title: 'Charter Deal Growth',
-        description: 'Avg. charter deal value for Stark Industries has increased by 22% this quarter. High-value pattern detected.',
+        description: 'Avg. charter deal value for key corporate accounts has increased by 22% this quarter. High-value pattern detected.',
         impact: 'High',
         trend: 'up',
         color: 'text-green-500'
@@ -54,7 +54,7 @@ export function AgencyAIInsights() {
 
                 <div className="grid gap-4 md:grid-cols-3">
                     {insights.map((insight, idx) => (
-                        <div key={insight.title} className="p-4 rounded-xl bg-black/20 border border-white/5 hover:border-white/10 transition-all flex flex-col gap-3 group/item">
+                        <div key={idx} className="p-4 rounded-xl bg-black/20 border border-white/5 hover:border-white/10 transition-all flex flex-col gap-3 group/item">
                             <div className="flex items-center justify-between">
                                 <Badge variant="outline" className={cn("text-[8px] uppercase font-bold tracking-widest border-white/10", insight.color)}>
                                     {insight.type}
@@ -66,7 +66,7 @@ export function AgencyAIInsights() {
                                 )}
                             </div>
                             <div>
-                                <h4 className="text-xs font-bold text-foreground mb-1 group-hover/item:text-accent transition-colors">
+                                <h4 className="text-xs font-bold text-foreground mb-1 group-hover/item:text-primary transition-colors">
                                     {insight.title}
                                 </h4>
                                 <p className="text-[10px] text-muted-foreground leading-relaxed italic">
