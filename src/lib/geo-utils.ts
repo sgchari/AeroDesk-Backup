@@ -1,9 +1,14 @@
 /**
  * @fileOverview Institutional Geographic Utilities for AeroDesk.
- * Handles calibrated projection for the actual India Map silhouette.
+ * Handles precision projection mapping for the India landmass.
  */
 
-export const hubGeographics: Record<string, { lat: number; lng: number; airport: string }> = {
+export interface GeoCoord {
+    lat: number;
+    lng: number;
+}
+
+export const hubGeographics: Record<string, GeoCoord & { airport: string }> = {
     'Delhi': { lat: 28.6139, lng: 77.2090, airport: 'VIDP' },
     'Mumbai': { lat: 19.0760, lng: 72.8777, airport: 'VABB' },
     'Bengaluru': { lat: 12.9716, lng: 77.5946, airport: 'VOBL' },
@@ -24,35 +29,33 @@ export const hubGeographics: Record<string, { lat: number; lng: number; airport:
 };
 
 /**
- * Manual Alignment Engine for High-Fidelity India Map
- * Coordinates calibrated for a 1000x1000 SVG viewbox
+ * Geographic Projection Engine
+ * Maps India's lat/long bounds to a 1000x1000 SVG viewbox
  */
-export const manualHubCoordinates: Record<string, { x: number; y: number }> = {
-    'Delhi': { x: 485, y: 230 },
-    'Mumbai': { x: 330, y: 590 },
-    'Kolkata': { x: 830, y: 490 },
-    'Bengaluru': { x: 460, y: 830 },
-    'Chennai': { x: 550, y: 830 },
-    'Hyderabad': { x: 510, y: 650 },
-    'Ahmedabad': { x: 320, y: 460 },
-    'Jaipur': { x: 420, y: 340 },
-    'Lucknow': { x: 580, y: 340 },
-    'Chandigarh': { x: 480, y: 160 },
-    'Bhopal': { x: 510, y: 490 },
-    'Pune': { x: 380, y: 620 },
-    'Nagpur': { x: 560, y: 520 },
-    'Guwahati': { x: 920, y: 340 },
-    'Bhubaneswar': { x: 760, y: 560 },
-    'Goa': { x: 380, y: 740 },
-    'Cochin': { x: 460, y: 920 },
+const MAP_BOUNDS = {
+    minLng: 68.0,
+    maxLng: 98.0,
+    minLat: 6.0,
+    maxLat: 38.0
 };
 
-export const hubCoordinates = Object.entries(hubGeographics).reduce((acc, [city, data]) => {
-    acc[city] = { 
-        ...(manualHubCoordinates[city] || { x: 500, y: 500 }), 
-        airport: data.airport 
+export function project(lat: number, lng: number): { x: number; y: number } {
+    const x = ((lng - MAP_BOUNDS.minLng) / (MAP_BOUNDS.maxLng - MAP_BOUNDS.minLng)) * 1000;
+    // Y is inverted in SVG
+    const y = 1000 - (((lat - MAP_BOUNDS.minLat) / (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat)) * 1000);
+    
+    // Calibration adjustment for visual alignment with the specific SVG path used
+    return { 
+        x: x * 0.95 + 25, 
+        y: y * 0.95 + 15 
     };
+}
+
+export const hubCoordinates = Object.entries(hubGeographics).reduce((acc, [city, coord]) => {
+    const { x, y } = project(coord.lat, coord.lng);
+    acc[city] = { x, y, airport: coord.airport };
     return acc;
 }, {} as Record<string, { x: number; y: number; airport: string }>);
 
-export const indiaPath = "M310,105 L330,85 L350,75 L370,65 L390,60 L410,65 L420,80 L425,100 L435,120 L445,140 L450,160 L460,180 L475,200 L490,215 L510,225 L535,230 L560,235 L590,245 L620,260 L650,275 L685,295 L720,315 L755,330 L790,340 L830,355 L870,375 L910,395 L940,420 L955,450 L950,485 L930,515 L900,535 L860,545 L820,555 L780,570 L745,595 L715,625 L695,665 L680,710 L660,760 L635,815 L600,875 L560,935 L515,985 L475,995 L435,985 L395,935 L355,875 L320,815 L290,760 L265,710 L245,665 L225,625 L200,595 L170,570 L135,555 L95,545 L60,535 L35,515 L15,485 L10,450 L25,420 L55,395 L95,375 L135,355 L175,340 L210,330 L245,315 L280,295 L315,275 L345,260 L375,245 L405,235 L430,230 L455,225 L475,215 L490,200 L505,180 L515,160 L520,140 L530,120 L540,100 L545,80 L555,65 L575,60 L595,65 L615,75 L635,85 L655,105 Z";
+// High-fidelity India boundary SVG path (Simplified for performance)
+export const indiaPath = "M435,45 L445,55 L460,50 L475,65 L485,85 L490,110 L505,120 L515,140 L520,165 L515,190 L530,210 L550,225 L580,235 L610,240 L640,250 L670,270 L700,290 L730,310 L760,330 L790,345 L820,355 L850,370 L880,390 L910,410 L935,435 L950,465 L945,495 L925,520 L895,540 L860,550 L825,560 L790,575 L755,600 L725,630 L705,670 L690,715 L670,765 L645,820 L610,880 L570,940 L525,990 L485,1000 L445,990 L405,940 L365,880 L330,820 L300,765 L275,715 L255,670 L235,630 L210,600 L180,575 L145,560 L105,550 L70,540 L45,520 L25,495 L20,465 L35,435 L65,410 L105,390 L145,370 L185,355 L220,345 L255,330 L290,310 L325,290 L355,270 L385,250 L415,240 L440,235 L465,225 L485,210 L500,190 L510,165 L515,140 L525,120 L535,100 L545,80 L555,65 L575,60 L595,65 L615,75 L635,85 L655,105 Z";
