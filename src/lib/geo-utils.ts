@@ -26,24 +26,25 @@ export const hubGeographics: Record<string, { lat: number; lng: number; airport:
 /**
  * Precision Calibrated Projection Engine
  * Maps real-world Lat/Lng to the specific 1000x1000 viewport of the AeroDesk SVG map.
- * Recalibrated to fix horizontal offset and ensure hubs align with the visual landmass center.
+ * Recalibrated based on visual extremities of the SVG path.
  */
 export const project = (lat: number, lng: number) => {
-    // Calibration Bounds: Squeezed longitude range to stretch the markers horizontally
-    const minLng = 66.0;
-    const maxLng = 94.0;
-    const minLat = 6.0;
-    const maxLat = 38.0;
+    // Geometric Anchor Points for the India SVG
+    // These align the geographic extremities with the SVG pixel bounds
+    const minLng = 68.0; 
+    const maxLng = 97.5;
+    const minLat = 8.0;
+    const maxLat = 37.5;
 
-    // Viewbox Mapping Constants
-    const xOffset = 150; // Increased to shift markers right towards the visual center
-    const xMax = 1050;   // Calibrated horizontal span
-    const yOffset = 40;  // Balanced vertical alignment
-    const yMax = 960;
+    // Viewbox Mapping Bounds (1000x1000)
+    const xMin = 10;
+    const xMax = 960;
+    const yMin = 60;
+    const yMax = 990;
 
-    const x = xOffset + ((lng - minLng) / (maxLng - minLng)) * (xMax - xOffset);
-    // Invert Y for screen coordinates (North is higher lat, lower y)
-    const y = yOffset + ((maxLat - lat) / (maxLat - minLat)) * (yMax - yOffset);
+    const x = xMin + ((lng - minLng) / (maxLng - minLng)) * (xMax - xMin);
+    // Invert Y for digital screen coordinates (North is higher lat, lower y pixel)
+    const y = yMin + ((maxLat - lat) / (maxLat - minLat)) * (yMax - yMin);
 
     return { x, y };
 };
