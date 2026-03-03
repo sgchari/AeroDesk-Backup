@@ -1,294 +1,50 @@
 
-/**
- * # Firestore Security Rules
- *
- * ## Core Philosophy
- * This ruleset enforces a multi-tenant security model with distinct user roles (Customers, Operators, Distributors, Hotel Partners, Corporate Travel Desk users, and Platform Admins). The primary authorization mechanism is document ownership, where a user's authenticated UID is matched against an `externalAuthId` field (or a similar role-specific ID like `operatorId` or `requesterExternalAuthId`) within the document they are trying to access. A global Platform Admin role grants overarching read/write access for administrative purposes.
- *
- * ## Data Structure
- * The data is organized into top-level collections representing major entities (e.g., /customers, /operators, /charterRFQs) and nested subcollections for tightly related data (e.g., /operators/{operatorId}/aircrafts). This structure allows for both direct access to primary records and logically grouped, owned data.
- *
- * ## Key Security Decisions
- * - **Strict Ownership**: By default, users can only read or write their own data. For example, an Operator can only manage aircraft under their own `/operators/{operatorId}` path.
- * - **Denormalization for Authorization**: To ensure performant and secure rules, authorization-critical data (like owner IDs) is denormalized and stored directly on the documents being secured. This avoids slow and costly `get()` calls to parent documents in most cases.
- * - **Role-Based Access**: A user's role is determined by their existence in a specific collection (e.g., a document in `/platformAdmins` makes a user an admin). This allows for powerful, context-aware rules.
- * - **Shared Data with Granular Control**: Collections like `/charterRFQs` are visible to a wider audience (e.g., all signed-in users can list them for bidding), but write access is strictly limited to the document's original creator.
- * - **Admin-Only and System-Only Collections**: Critical system collections like `/auditTrails` and `/systemJobLogs` are configured to be read-only for Platform Admins and completely immutable for all other users, preventing client-side tampering.
- * - **Prototyping Flexibility**: These rules focus on *who* can access *what*, but are intentionally flexible on the *shape* of the data being written. This allows for rapid application development without needing to update security rules for every schema change, while still maintaining strong authorization.
- */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    //-------------------------------------------------------------------------
-    // Collection Group Rules
-    //-------------------------------------------------------------------------
+    // Helper functions for optimized lookups
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isPlatformAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/platformAdmins/$(request.auth.uid)); }
 
-    match /{path=**}/quotations/{quotationId} {
-      allow get: if isPlatformAdmin() || isOwner(resource.data.operatorId);
-      allow list: if false;
+    // Scoped Data Access: Enforce ownership at the root of the path
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if isOwner(userId) || isPlatformAdmin();
     }
 
-    //-------------------------------------------------------------------------
-    // Helper Functions
-    //-------------------------------------------------------------------------
-
-    function isSignedIn() {
-      return request.auth != null;
+    match /operators/{operatorId}/{allPaths=**} {
+      allow read, write: if isOwner(operatorId) || isPlatformAdmin();
     }
 
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+    match /agencies/{agencyId}/{allPaths=**} {
+      allow read, write: if isOwner(agencyId) || isPlatformAdmin();
     }
 
-    function isExistingDoc() {
-      return resource != null;
+    match /corporates/{corporateId}/{allPaths=**} {
+      allow read, write: if isOwner(corporateId) || isPlatformAdmin();
     }
 
-    function isPlatformAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/platformAdmins/$(request.auth.uid));
-    }
-    
-    function isRfqOwner(rfqId) {
-        return isSignedIn() && get(/databases/$(database)/documents/charterRFQs/$(rfqId)).data.requesterExternalAuthId == request.auth.uid;
+    match /hotelPartners/{hotelPartnerId}/{allPaths=**} {
+      allow read, write: if isOwner(hotelPartnerId) || isPlatformAdmin();
     }
 
-    //-------------------------------------------------------------------------
-    // User & Organization Root Collections
-    //-------------------------------------------------------------------------
-    
-    match /users/{userId} {
-      // Allow any signed-in user to read the role mapping, which is essential for profile loading.
-      // The data here (role, ctdId) is not sensitive.
-      allow get: if isSignedIn();
-      allow list: if false;
-      // Only the user themselves can create or modify their own mapping document.
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId);
-      allow delete: if isOwner(userId);
+    // Reports: Pre-aggregated read access
+    match /reports/{reportId} {
+      allow read: if isSignedIn() && (reportId.startsWith(request.auth.uid) || isPlatformAdmin());
+      allow write: if false; // Only system-level updates
     }
 
-    match /customers/{customerId} {
-      allow get: if isOwner(customerId) || isPlatformAdmin();
-      allow list: if isPlatformAdmin();
-      allow create: if isOwner(customerId);
-      allow update: if (isOwner(customerId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(customerId) || isPlatformAdmin()) && isExistingDoc();
+    // Empty Legs: Marketplace visibility
+    match /emptyLegFlights/{flightId} {
+      allow read: if isSignedIn();
+      allow write: if isPlatformAdmin() || (isSignedIn() && request.resource.data.operatorId == request.auth.uid);
     }
 
-    match /operators/{operatorId} {
-      allow get: if isOwner(operatorId) || isPlatformAdmin();
-      allow list: if isPlatformAdmin();
-      allow create: if isOwner(operatorId);
-      allow update: if (isOwner(operatorId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(operatorId) || isPlatformAdmin()) && isExistingDoc();
-
-      match /aircrafts/{aircraftId} {
-        allow get, list: if isOwner(operatorId) || isPlatformAdmin();
-        allow create: if isOwner(operatorId) && request.resource.data.operatorId == operatorId;
-        allow update: if isOwner(operatorId) && isExistingDoc() && request.resource.data.operatorId == resource.data.operatorId;
-        allow delete: if (isOwner(operatorId) || isPlatformAdmin()) && isExistingDoc();
-
-        match /blackoutDates/{blackoutDateId} {
-          allow get, list: if isOwner(operatorId) || isPlatformAdmin();
-          allow create: if isOwner(operatorId) && request.resource.data.aircraftId == aircraftId;
-          allow update: if isOwner(operatorId) && isExistingDoc() && request.resource.data.aircraftId == resource.data.aircraftId;
-          allow delete: if (isOwner(operatorId) || isPlatformAdmin()) && isExistingDoc();
-        }
-      }
-
-      match /performanceMetrics/{metricId} {
-        allow get, list: if isOwner(operatorId) || isPlatformAdmin();
-        allow create: if false;
-        allow update: if false;
-        allow delete: if false;
-      }
-    }
-
-    match /distributors/{distributorId} {
-      allow get: if isOwner(distributorId) || isPlatformAdmin();
-      allow list: if isPlatformAdmin();
-      allow create: if isOwner(distributorId);
-      allow update: if (isOwner(distributorId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(distributorId) || isPlatformAdmin()) && isExistingDoc();
-    }
-    
-    match /hotelPartners/{hotelPartnerId} {
-      allow get: if isOwner(hotelPartnerId) || isPlatformAdmin();
-      allow list: if isPlatformAdmin();
-      allow create: if isOwner(hotelPartnerId);
-      allow update: if (isOwner(hotelPartnerId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(hotelPartnerId) || isPlatformAdmin()) && isExistingDoc();
-
-      match /properties/{propertyId} {
-        allow get, list: if isOwner(hotelPartnerId) || isPlatformAdmin();
-        allow create: if isOwner(hotelPartnerId) && request.resource.data.hotelPartnerId == hotelPartnerId;
-        allow update: if isOwner(hotelPartnerId) && isExistingDoc() && request.resource.data.hotelPartnerId == resource.data.hotelPartnerId;
-        allow delete: if (isOwner(hotelPartnerId) || isPlatformAdmin()) && isExistingDoc();
-
-        match /roomCategories/{roomCategoryId} {
-          allow get, list: if isOwner(hotelPartnerId) || isPlatformAdmin();
-          allow create: if isOwner(hotelPartnerId) && request.resource.data.propertyId == propertyId;
-          allow update: if isOwner(hotelPartnerId) && isExistingDoc() && request.resource.data.propertyId == resource.data.propertyId;
-          allow delete: if (isOwner(hotelPartnerId) || isPlatformAdmin()) && isExistingDoc();
-        }
-      }
-
-      match /responseTimeMetrics/{metricId} {
-        allow get, list: if isOwner(hotelPartnerId) || isPlatformAdmin();
-        allow create: if false;
-        allow update: if false;
-        allow delete: if false;
-      }
-    }
-
-    match /corporateTravelDesks/{ctdId} {
-      // The CTD admin is the owner of this document.
-      allow get: if isOwner(ctdId) || isPlatformAdmin();
-      allow list: if isPlatformAdmin();
-      allow create: if isOwner(ctdId);
-      allow update: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
-
-      match /users/{ctdUserId} {
-        // A CTD admin can read all users in their desk. A user can read their own profile.
-        allow get: if isOwner(ctdId) || isOwner(ctdUserId) || isPlatformAdmin();
-        allow list: if isOwner(ctdId) || isPlatformAdmin();
-        allow create: if isOwner(ctdId) && request.resource.data.ctdId == ctdId;
-        allow update: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
-        allow delete: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
-      }
-      
-      match /approvalRules/{ruleId} {
-        allow get, list: if isOwner(ctdId) || isPlatformAdmin();
-        allow create: if (isOwner(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
-        allow update: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
-        allow delete: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
-      }
-
-      match /approvalLogs/{logId} {
-        allow get, list: if isOwner(ctdId) || isPlatformAdmin();
-        allow create: if isOwner(request.resource.data.approverExternalAuthId) && request.resource.data.ctdId == ctdId;
-        allow update: if false;
-        allow delete: if false;
-      }
-      
-      match /policyFlags/{policyFlagId} {
-        allow get, list: if isOwner(ctdId) || isPlatformAdmin();
-        allow create: if (isOwner(ctdId) || isPlatformAdmin()) && request.resource.data.ctdId == ctdId;
-        allow update: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc() && request.resource.data.ctdId == resource.data.ctdId;
-        allow delete: if (isOwner(ctdId) || isPlatformAdmin()) && isExistingDoc();
-      }
-
-      match /approvalPerformanceMetrics/{metricId} {
-        allow get, list: if isOwner(ctdId) || isPlatformAdmin();
-        allow create: if false;
-        allow update: if false;
-        allow delete: if false;
-      }
-    }
-
-    //-------------------------------------------------------------------------
-    // Core Business Logic Collections
-    //-------------------------------------------------------------------------
-
-    match /charterRFQs/{rfqId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if isOwner(request.resource.data.requesterExternalAuthId);
-      allow update: if (isOwner(request.resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(request.resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
-
-      match /quotations/{quotationId} {
-        allow get: if isPlatformAdmin() || isRfqOwner(rfqId) || isOwner(resource.data.operatorId);
-        allow list: if isPlatformAdmin() || isRfqOwner(rfqId);
-        allow create: if isOwner(request.resource.data.operatorId) && request.resource.data.rfqId == rfqId;
-        allow update: if isOwner(resource.data.operatorId) && isExistingDoc() && request.resource.data.rfqId == resource.data.rfqId;
-        allow delete: if isOwner(resource.data.operatorId) && isExistingDoc() || isPlatformAdmin() && isExistingDoc();
-      }
-    }
-
-    match /emptyLegs/{emptyLegId} {
-      allow read: if true;
-      allow create: if isOwner(request.resource.data.operatorId);
-      allow update: if (isOwner(resource.data.operatorId) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(resource.data.operatorId) || isPlatformAdmin()) && isExistingDoc();
-
-      match /seatAllocationRequests/{requestId} {
-        allow get: if isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/emptyLegs/$(emptyLegId)).data.operatorId) || isPlatformAdmin();
-        allow list: if isOwner(get(/databases/$(database)/documents/emptyLegs/$(emptyLegId)).data.operatorId) || isPlatformAdmin();
-        allow create: if isOwner(request.resource.data.requesterExternalAuthId) && request.resource.data.emptyLegId == emptyLegId;
-        allow update: if (isOwner(resource.data.requesterExternalAuthId) || isOwner(get(/databases/$(database)/documents/emptyLegs/$(emptyLegId)).data.operatorId) || isPlatformAdmin()) && isExistingDoc();
-        allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
-      }
-    }
-
-    match /accommodationRequests/{accommodationRequestId} {
-      allow get: if isPlatformAdmin() || isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId));
-      allow list: if isPlatformAdmin() || (request.query.keys().hasAny(['requesterExternalAuthId']) && request.query.requesterExternalAuthId == request.auth.uid) || (request.query.keys().hasAny(['hotelPartnerId']) && request.query.hotelPartnerId == request.auth.uid);
-      allow create: if isOwner(request.resource.data.requesterExternalAuthId);
-      allow update: if (isOwner(resource.data.requesterExternalAuthId) || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId)) || isPlatformAdmin()) && isExistingDoc();
-      allow delete: if (isOwner(resource.data.requesterExternalAuthId) || isPlatformAdmin()) && isExistingDoc();
-    }
-    
-    match /crewAccommodationRequests/{crewAccommodationRequestId} {
-      allow get: if isPlatformAdmin()
-                    || (resource.data.operatorId != null && isOwner(resource.data.operatorId))
-                    || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId));
-
-      allow list: if isPlatformAdmin()
-                     || (request.query.keys().hasOnly(['operatorId']) && request.query.operatorId == request.auth.uid)
-                     || (request.query.keys().hasOnly(['hotelPartnerId']) && request.query.hotelPartnerId == request.auth.uid);
-
-      allow create: if isOwner(request.resource.data.operatorId);
-
-      allow update: if (isPlatformAdmin()
-                    || (resource.data.operatorId != null && isOwner(resource.data.operatorId))
-                    || (resource.data.hotelPartnerId != null && isOwner(resource.data.hotelPartnerId)))
-                    && isExistingDoc();
-
-      allow delete: if (isPlatformAdmin() || (resource.data.operatorId != null && isOwner(resource.data.operatorId))) && isExistingDoc();
-    }
-
-    //-------------------------------------------------------------------------
-    // System & Admin Collections
-    //-------------------------------------------------------------------------
-
+    // Platform Admins: Role mapping
     match /platformAdmins/{adminId} {
-      allow get: if isOwner(adminId);
-      allow list: if isPlatformAdmin();
-      allow create: if isOwner(adminId);
-      allow update: if isOwner(adminId) || isPlatformAdmin();
-      allow delete: if isPlatformAdmin() && request.auth.uid != adminId;
+      allow read: if isOwner(adminId) || isPlatformAdmin();
+      allow write: if isPlatformAdmin();
     }
-    
-    match /featureFlags/{flagId} {
-      allow get, list: if isSignedIn();
-      allow create: if isPlatformAdmin();
-      allow update: if isPlatformAdmin() && isExistingDoc();
-      allow delete: if isPlatformAdmin() && isExistingDoc();
-    }
-
-    match /complianceNotes/{noteId} {
-      allow get, list: if isPlatformAdmin();
-      allow create: if isPlatformAdmin() && isOwner(request.resource.data.adminExternalAuthId);
-      allow update: if isPlatformAdmin() && isOwner(resource.data.adminExternalAuthId) && isExistingDoc();
-      allow delete: if isPlatformAdmin() && isExistingDoc();
-    }
-    
-    match /systemJobLogs/{logId} {
-      allow get, list: if isPlatformAdmin();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
-    }
-
-    match /auditTrails/{trailId} {
-      allow get, list: if isPlatformAdmin();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
-    }
-
   }
 }

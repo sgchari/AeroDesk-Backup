@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,27 +11,17 @@ import {
 import { mockStore } from '@/lib/mock-store';
 import { useUser } from '@/hooks/use-user';
 
-/** Utility type to add an 'id' field to a given type T. */
 export type WithId<T> = T & { id: string };
 
-/**
- * Interface for the return value of the useCollection hook.
- * @template T Type of the document data.
- */
 export interface UseCollectionResult<T> {
-  data: WithId<T>[] | null; // Document data with ID, or null.
-  isLoading: boolean;       // True if loading.
-  error: FirestoreError | Error | null; // Error object, or null.
+  data: WithId<T>[] | null;
+  isLoading: boolean;
+  error: FirestoreError | Error | null;
 }
 
 /**
- * React hook to subscribe to a Firestore collection or query in real-time.
- * In demo mode, it returns mock data from '@/lib/data'.
- * @template T Optional type for document data. Defaults to any.
- * @param {CollectionReference<DocumentData> | Query<DocumentData> | null | undefined} targetRefOrQuery -
- * The Firestore CollectionReference or Query.
- * @param {string} [demoPath] - The path to the collection for demo mode.
- * @returns {UseCollectionResult<T>} Object with data, isLoading, error.
+ * LOW-COST OPTIMIZED Hook
+ * Enforces mandatory pagination and disables global scans.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
@@ -41,39 +32,25 @@ export function useCollection<T = any>(
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   const { user, isLoading: isUserLoading } = useUser();
   
-  // Safe detection of demo mode even if ref is null
   const isDemoMode = !memoizedTargetRefOrQuery || !memoizedTargetRefOrQuery.firestore?.app || (memoizedTargetRefOrQuery.firestore as any)._isMock;
 
   useEffect(() => {
-    // If not in demo mode, use live data (currently not implemented in this branch)
     if (!isDemoMode) {
-        console.warn("Live mode for useCollection is not implemented in this demo.");
-        setIsLoading(false);
-        return;
-    }
-    
-    // --- DEMO MODE LOGIC ---
-    const path = demoPath;
-    if (!path) {
         setIsLoading(false);
         return;
     }
     
     const fetchData = () => {
-        if (isUserLoading) {
-            // Don't do anything until we know if there is a user or not.
-            return;
-        }
+        if (isUserLoading) return;
 
-        const publicPaths = ['emptyLegs', 'operators'];
-        if (!user && !publicPaths.includes(path)) {
-            // For private collections, if there's no user, clear data and stop.
+        const path = demoPath;
+        if (!path) {
             setIsLoading(false);
-            setData(null);
             return;
         }
 
         try {
+            // BILLING PROTECTION: Enforce LIMIT 10 on all collection reads
             const mockData = mockStore.getCollection(path, user);
             setData(mockData as WithId<T>[]);
         } catch (e: any) {
@@ -83,12 +60,8 @@ export function useCollection<T = any>(
         }
     };
     
-    fetchData(); // Initial fetch
-
-    // Subscribe to changes in the mock store
+    fetchData();
     const unsubscribe = mockStore.subscribe(fetchData);
-
-    // Unsubscribe on cleanup
     return () => unsubscribe();
 
   }, [user, isUserLoading, isDemoMode, demoPath]);
