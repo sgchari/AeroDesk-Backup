@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -18,16 +19,14 @@ export default function OurNetworkPage() {
     const firestore = useFirestore();
     const [hoveredHub, setHoveredHub] = useState<string | null>(null);
 
-    // Optimized Queries for Network Visibility
     const operatorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        // In demo mode, status filtering is handled client-side or mocked
         return collection(firestore, 'operators');
     }, [firestore]);
     
     const rfqsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        return collection(firestore, 'charterRFQs');
+        return collection(firestore, 'charterRequests');
     }, [firestore]);
 
     const elQuery = useMemoFirebase(() => {
@@ -36,7 +35,7 @@ export default function OurNetworkPage() {
     }, [firestore]);
 
     const { data: operators, isLoading: opsLoading } = useCollection<Operator>(operatorsQuery, 'operators');
-    const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
+    const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
     const { data: emptyLegs } = useCollection<EmptyLeg>(elQuery, 'emptyLegs');
 
     const activeMissionsList = useMemo(() => {
@@ -49,7 +48,7 @@ export default function OurNetworkPage() {
         return {
             activeOperators: operators?.filter(o => o.status === 'Approved').length || 0,
             totalFleet: 124, 
-            emptyLegs: emptyLegs?.filter(e => ['Published', 'Approved', 'live'].includes(e.status)).length || 0,
+            emptyLegs: emptyLegs?.filter(e => ['Published', 'Approved', 'live', 'live'].includes(e.status)).length || 0,
             activeMissions: activeMissionsList.length
         };
     }, [operators, emptyLegs, activeMissionsList]);
@@ -59,7 +58,7 @@ export default function OurNetworkPage() {
             <div className="fixed inset-0 z-0">
                 <Image
                     src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
-                    alt="Aviation Background"
+                    alt="Background"
                     fill
                     priority
                     className="object-cover"
@@ -146,7 +145,7 @@ export default function OurNetworkPage() {
                             </div>
                         </div>
 
-                        <div className="relative w-full h-full max-w-[900px] max-h-[900px] flex items-center justify-center transition-transform duration-700">
+                        <div className="relative w-full h-full max-w-[900px] max-h-[900px] flex items-center justify-center">
                             <svg viewBox="0 0 1000 1000" className="w-full h-full overflow-visible">
                                 <defs>
                                     <pattern id="dotPattern" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
@@ -168,7 +167,7 @@ export default function OurNetworkPage() {
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
                                         const hubOps = operators?.filter(o => o.city === city && o.status === 'Approved') || [];
-                                        const isVisibleHub = hubOps.length > 0 || ['Mumbai', 'Delhi', 'Bengaluru', 'Kolkata'].includes(city);
+                                        const isVisibleHub = hubOps.length > 0 || ['Mumbai', 'Delhi', 'Bengaluru', 'Kolkata', 'Bhopal'].includes(city);
 
                                         if (!isVisibleHub) return null;
 
@@ -216,8 +215,8 @@ export default function OurNetworkPage() {
                                     return (
                                         <g key={mission.id} className="animate-in fade-in duration-1000">
                                             <path d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} fill="none" stroke="rgba(255, 255, 189, 0.2)" strokeWidth="1.5" strokeDasharray="4,4" className="animate-pulse" />
-                                            <circle cx={from.x} cy={from.y} r="2" fill="white" />
-                                            <circle cx={to.x} cy={to.y} r="2" fill="white" />
+                                            <circle cx={from.x} cy={from.y} r={2} fill="white" />
+                                            <circle cx={to.x} cy={to.y} r={2} fill="white" />
                                         </g>
                                     );
                                 })}

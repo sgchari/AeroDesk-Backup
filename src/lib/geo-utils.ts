@@ -26,17 +26,25 @@ export const hubGeographics: Record<string, { lat: number; lng: number; airport:
 /**
  * Calibrated Geographic Projection Engine
  * Maps real-world Lat/Lng to the specific 1000x1000 viewport of the AeroDesk SVG map.
+ * 
+ * Calibration Bounds:
+ * Longitude: 68.0 (West) to 98.0 (East) -> x: 10 to 955
+ * Latitude: 38.0 (North) to 8.0 (South) -> y: 60 to 995
  */
 export const project = (lat: number, lng: number) => {
-    // Calibrated bounds for the indiaPath SVG silhouette
-    // Adjusted to fix the "aligned left" issue
-    const minLng = 67.0; // Pushed left to move dots right
-    const maxLng = 98.0; 
-    const minLat = 6.0;
+    const minLng = 68.0;
+    const maxLng = 98.0;
+    const minLat = 8.0;
     const maxLat = 38.0;
 
-    const x = ((lng - minLng) / (maxLng - minLng)) * 1000;
-    const y = ((maxLat - lat) / (maxLat - minLat)) * 1000;
+    const xOffset = 10;
+    const xMax = 955;
+    const yOffset = 60;
+    const yMax = 995;
+
+    const x = xOffset + ((lng - minLng) / (maxLng - minLng)) * (xMax - xOffset);
+    // Invert Y for screen coordinates (North is higher lat, lower y)
+    const y = yOffset + ((maxLat - lat) / (maxLat - minLat)) * (yMax - yOffset);
 
     return { x, y };
 };
