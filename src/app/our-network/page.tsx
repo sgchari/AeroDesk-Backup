@@ -13,26 +13,29 @@ import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
 import { Info, ShieldCheck, Zap, Plane, Users, Globe, Activity, MapPin } from 'lucide-react';
 
-// Institutional Hub Mapping (SVG Coordinate System 1000x800)
+// Institutional Hub Mapping (SVG Coordinate System 1000x1000 for accurate India proportions)
 const hubCoordinates: Record<string, { x: number; y: number; airport: string }> = {
-    'Delhi': { x: 480, y: 220, airport: 'VIDP' },
-    'Chandigarh': { x: 460, y: 160, airport: 'VICG' },
-    'Lucknow': { x: 580, y: 280, airport: 'VILK' },
-    'Jaipur': { x: 420, y: 300, airport: 'VIJP' },
-    'Mumbai': { x: 320, y: 580, airport: 'VABB' },
-    'Ahmedabad': { x: 300, y: 450, airport: 'VAAH' },
-    'Pune': { x: 360, y: 620, airport: 'VAPO' },
-    'Goa': { x: 380, y: 720, airport: 'VOGO' },
-    'Bengaluru': { x: 480, y: 780, airport: 'VOBL' },
-    'Hyderabad': { x: 520, y: 650, airport: 'VOHS' },
-    'Chennai': { x: 580, y: 820, airport: 'VOMM' },
-    'Cochin': { x: 450, y: 880, airport: 'VOCI' },
-    'Kolkata': { x: 820, y: 480, airport: 'VECC' },
-    'Bhubaneswar': { x: 750, y: 580, airport: 'VEBS' },
-    'Bhopal': { x: 500, y: 460, airport: 'VABP' },
-    'Nagpur': { x: 550, y: 550, airport: 'VANP' },
-    'Guwahati': { x: 920, y: 350, airport: 'VEGT' },
+    'Delhi': { x: 440, y: 240, airport: 'VIDP' },
+    'Chandigarh': { x: 430, y: 180, airport: 'VICG' },
+    'Lucknow': { x: 540, y: 320, airport: 'VILK' },
+    'Jaipur': { x: 380, y: 330, airport: 'VIJP' },
+    'Mumbai': { x: 280, y: 600, airport: 'VABB' },
+    'Ahmedabad': { x: 260, y: 480, airport: 'VAAH' },
+    'Pune': { x: 310, y: 640, airport: 'VAPO' },
+    'Goa': { x: 320, y: 740, airport: 'VOGO' },
+    'Bengaluru': { x: 430, y: 800, airport: 'VOBL' },
+    'Hyderabad': { x: 470, y: 670, airport: 'VOHS' },
+    'Chennai': { x: 520, y: 830, airport: 'VOMM' },
+    'Cochin': { x: 410, y: 900, airport: 'VOCI' },
+    'Kolkata': { x: 780, y: 500, airport: 'VECC' },
+    'Bhubaneswar': { x: 710, y: 600, airport: 'VEBS' },
+    'Bhopal': { x: 460, y: 480, airport: 'VABP' },
+    'Nagpur': { x: 510, y: 560, airport: 'VANP' },
+    'Guwahati': { x: 880, y: 380, airport: 'VEGT' },
 };
+
+// Accurate low-poly India path scaled to 1000x1000
+const indiaPath = "M440,50 L465,80 L490,110 L520,140 L545,180 L560,220 L590,240 L630,260 L680,280 L740,310 L800,330 L860,340 L900,350 L920,380 L900,410 L860,430 L810,450 L780,480 L750,520 L720,570 L680,630 L630,700 L570,780 L510,850 L450,920 L440,940 L430,920 L370,850 L330,780 L300,710 L280,650 L250,600 L220,560 L190,520 L170,480 L190,440 L230,420 L280,400 L320,370 L360,330 L380,280 L400,220 L415,160 L425,100 Z";
 
 export default function OurNetworkPage() {
     const firestore = useFirestore();
@@ -171,8 +174,8 @@ export default function OurNetworkPage() {
                         </div>
 
                         {/* Map Viewport */}
-                        <div className="relative w-full h-full max-w-[900px] max-h-[700px] flex items-center justify-center transition-transform duration-700">
-                            <svg viewBox="0 0 1000 800" className="w-full h-full overflow-visible">
+                        <div className="relative w-full h-full max-w-[900px] max-h-[900px] flex items-center justify-center transition-transform duration-700">
+                            <svg viewBox="0 0 1000 1000" className="w-full h-full overflow-visible">
                                 <defs>
                                     <filter id="emboss" x="-20%" y="-20%" width="140%" height="140%">
                                         <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
@@ -193,14 +196,14 @@ export default function OurNetworkPage() {
                                     </radialGradient>
                                 </defs>
 
-                                {/* India Silhouette - Embossed Path */}
+                                {/* India Silhouette - Embossed Realistic Path */}
                                 <path 
-                                    d="M480,50 L520,80 L580,120 L620,180 L680,250 L750,320 L820,380 L880,450 L920,520 L940,600 L920,680 L850,750 L780,790 L700,780 L620,750 L550,720 L480,780 L400,750 L320,680 L280,600 L300,520 L350,450 L400,380 L420,300 L450,220 L460,150 L450,80 Z" 
+                                    d={indiaPath} 
                                     fill="url(#mapGradient)"
-                                    stroke="rgba(255,255,189,0.1)"
+                                    stroke="rgba(255,255,189,0.15)"
                                     strokeWidth="2"
                                     filter="url(#emboss)"
-                                    className="opacity-40"
+                                    className="opacity-60"
                                 />
 
                                 {/* Hub Markers */}
@@ -250,9 +253,9 @@ export default function OurNetworkPage() {
                                     })}
                                 </TooltipProvider>
 
-                                {/* Operational Route Arcs */}
-                                <path d="M480 220 Q 400 400, 320 580" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
-                                <path d="M480 220 Q 650 500, 480 780" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
+                                {/* Sample Operational Route Arcs for Visual Context */}
+                                <path d="M440 240 Q 350 400, 280 600" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
+                                <path d="M440 240 Q 550 500, 430 800" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
                             </svg>
                         </div>
                     </div>
