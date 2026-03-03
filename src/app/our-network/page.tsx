@@ -13,29 +13,29 @@ import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
 import { Info, ShieldCheck, Zap, Plane, Users, Globe, Activity, MapPin } from 'lucide-react';
 
-// Refined coordinates for the 1000x1000 viewport
+// Refined coordinates for the 1000x1000 viewport for actual geographic accuracy
 const hubCoordinates: Record<string, { x: number; y: number; airport: string }> = {
-    'Delhi': { x: 440, y: 240, airport: 'VIDP' },
-    'Chandigarh': { x: 430, y: 180, airport: 'VICG' },
-    'Lucknow': { x: 540, y: 320, airport: 'VILK' },
-    'Jaipur': { x: 380, y: 330, airport: 'VIJP' },
-    'Mumbai': { x: 280, y: 600, airport: 'VABB' },
-    'Ahmedabad': { x: 260, y: 480, airport: 'VAAH' },
-    'Pune': { x: 310, y: 640, airport: 'VAPO' },
-    'Goa': { x: 320, y: 740, airport: 'VOGO' },
-    'Bengaluru': { x: 430, y: 800, airport: 'VOBL' },
-    'Hyderabad': { x: 470, y: 670, airport: 'VOHS' },
-    'Chennai': { x: 520, y: 830, airport: 'VOMM' },
-    'Cochin': { x: 410, y: 900, airport: 'VOCI' },
-    'Kolkata': { x: 780, y: 500, airport: 'VECC' },
-    'Bhubaneswar': { x: 710, y: 600, airport: 'VEBS' },
-    'Bhopal': { x: 460, y: 480, airport: 'VABP' },
-    'Nagpur': { x: 510, y: 560, airport: 'VANP' },
-    'Guwahati': { x: 880, y: 380, airport: 'VEGT' },
+    'Delhi': { x: 442, y: 245, airport: 'VIDP' },
+    'Chandigarh': { x: 435, y: 185, airport: 'VICG' },
+    'Lucknow': { x: 545, y: 325, airport: 'VILK' },
+    'Jaipur': { x: 385, y: 335, airport: 'VIJP' },
+    'Mumbai': { x: 285, y: 605, airport: 'VABB' },
+    'Ahmedabad': { x: 265, y: 485, airport: 'VAAH' },
+    'Pune': { x: 315, y: 645, airport: 'VAPO' },
+    'Goa': { x: 325, y: 745, airport: 'VOGO' },
+    'Bengaluru': { x: 435, y: 805, airport: 'VOBL' },
+    'Hyderabad': { x: 475, y: 675, airport: 'VOHS' },
+    'Chennai': { x: 525, y: 835, airport: 'VOMM' },
+    'Cochin': { x: 415, y: 905, airport: 'VOCI' },
+    'Kolkata': { x: 785, y: 505, airport: 'VECC' },
+    'Bhubaneswar': { x: 715, y: 605, airport: 'VEBS' },
+    'Bhopal': { x: 465, y: 485, airport: 'VABP' },
+    'Nagpur': { x: 515, y: 565, airport: 'VANP' },
+    'Guwahati': { x: 885, y: 385, airport: 'VEGT' },
 };
 
-// Recognizable India Path
-const indiaPath = "M450,50 L480,80 L500,120 L520,150 L550,200 L600,220 L650,250 L750,300 L850,320 L920,350 L900,400 L850,420 L800,450 L750,500 L700,600 L650,700 L550,850 L450,950 L350,850 L300,750 L250,650 L200,550 L150,450 L180,400 L250,380 L350,350 L400,250 L420,150 L430,80 Z";
+// High-fidelity India Silhouette Path for 1000x1000 viewbox
+const indiaPath = "M435,50 L450,60 L465,50 L480,70 L495,100 L510,120 L530,140 L550,180 L580,200 L620,215 L660,230 L700,250 L750,280 L800,300 L850,310 L900,330 L930,350 L940,380 L920,410 L880,425 L840,440 L800,460 L760,490 L730,530 L710,580 L685,640 L650,720 L610,800 L560,880 L510,940 L450,980 L390,940 L340,880 L300,800 L260,720 L220,640 L195,580 L170,530 L140,490 L100,460 L70,440 L60,410 L70,380 L100,350 L150,330 L200,310 L250,300 L300,280 L350,250 L390,230 L410,180 L420,120 L425,80 Z";
 
 export default function OurNetworkPage() {
     const firestore = useFirestore();
@@ -94,7 +94,7 @@ export default function OurNetworkPage() {
                 <main className="relative flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
                     
                     {/* Compact Sidebar: High-Density Analytics */}
-                    <div className="w-full lg:w-64 p-4 z-20 flex flex-col gap-4 bg-black/40 backdrop-blur-3xl border-r border-white/10 overflow-y-auto">
+                    <div className="w-full lg:w-60 p-4 z-20 flex flex-col gap-4 bg-black/40 backdrop-blur-3xl border-r border-white/10 overflow-y-auto">
                         <div className="space-y-1">
                             <h1 className="text-xl font-bold tracking-tight font-headline">Intelligence</h1>
                             <p className="text-accent font-black text-[8px] uppercase tracking-[0.25em]">Spatial Grid Status</p>
@@ -267,9 +267,9 @@ export default function OurNetworkPage() {
                                     })}
                                 </TooltipProvider>
 
-                                {/* Spatial Connectivity Arcs */}
-                                <path d="M440 240 Q 350 400, 280 600" fill="none" stroke="rgba(255, 255, 189, 0.08)" strokeWidth="1" strokeDasharray="3,3" />
-                                <path d="M440 240 Q 550 500, 430 800" fill="none" stroke="rgba(255, 255, 189, 0.08)" strokeWidth="1" strokeDasharray="3,3" />
+                                {/* Spatial Connectivity Arcs - Updated to precisely align with new coordinates */}
+                                <path d="M442 245 Q 350 400, 285 605" fill="none" stroke="rgba(255, 255, 189, 0.08)" strokeWidth="1" strokeDasharray="3,3" />
+                                <path d="M442 245 Q 550 500, 435 805" fill="none" stroke="rgba(255, 255, 189, 0.08)" strokeWidth="1" strokeDasharray="3,3" />
                             </svg>
                         </div>
                     </div>
