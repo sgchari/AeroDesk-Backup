@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -129,7 +128,7 @@ export default function Home() {
               <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
                 <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/10 px-6 py-3 text-lg font-medium backdrop-blur-md">
                   <ShieldCheck className="h-6 w-6 text-accent" />
-                  Fly Charter. Stay Premium.
+                  Fly Private. Stay Premium.
                 </div>
                 <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
                   Where <span style={{ color: '#FFFFBD' }}>Exclusive Journeys</span>{' '}
