@@ -20,13 +20,14 @@ const HUB_DETAILS = {
 };
 
 const HubCallout = ({ city, data, active }: { city: string; data: any; active: boolean }) => {
+    // Calibrated positions for tighter proximity to the map outline
     const posClasses = {
-        'top-right': 'top-[10%] right-[10%] md:top-[12%] md:right-[15%]',
-        'mid-left': 'top-[35%] left-[5%] md:left-[10%]',
-        'mid-right': 'top-[35%] right-[5%] md:right-[10%]',
-        'bottom-left': 'bottom-[15%] left-[10%] md:left-[15%]',
-        'bottom-right': 'bottom-[15%] right-[10%] md:right-[15%]',
-        'bottom-center': 'bottom-10 left-1/2 -translate-x-1/2',
+        'top-right': 'top-[18%] right-[28%]',
+        'mid-left': 'top-[50%] left-[18%]',
+        'mid-right': 'top-[42%] right-[12%]',
+        'bottom-left': 'bottom-[18%] left-[25%]',
+        'bottom-right': 'bottom-[28%] right-[28%]',
+        'bottom-center': 'bottom-[12%] right-[35%]',
     }[data.position as string];
 
     return (
@@ -36,21 +37,21 @@ const HubCallout = ({ city, data, active }: { city: string; data: any; active: b
             active ? "opacity-100 translate-y-0 scale-100" : "opacity-60 translate-y-2 scale-95"
         )}>
             <div className="relative group">
-                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-full p-4 md:p-6 w-28 h-28 md:w-36 md:h-36 flex flex-col items-center justify-center text-center shadow-2xl group-hover:border-accent/40 transition-colors">
+                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-full p-4 md:p-6 w-28 h-28 md:w-32 md:h-32 flex flex-col items-center justify-center text-center shadow-2xl group-hover:border-accent/40 transition-colors">
                     <div className="absolute -top-2 bg-accent text-black text-[7px] md:text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest">
                         NETWORK NODE
                     </div>
                     
                     <div className="grid grid-cols-2 gap-2 mb-1">
-                        <div className="w-5 h-5 md:w-7 md:h-7 rounded bg-white/5 border border-white/10 flex items-center justify-center">
-                            <Plane className="h-3 w-3 md:h-4 md:w-4 text-accent" />
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded bg-white/5 border border-white/10 flex items-center justify-center">
+                            <Plane className="h-3 w-3 md:h-3.5 md:w-3.5 text-accent" />
                         </div>
-                        <div className="w-5 h-5 md:w-7 md:h-7 rounded bg-white/5 border border-white/10 flex items-center justify-center">
-                            <Building2 className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded bg-white/5 border border-white/10 flex items-center justify-center">
+                            <Building2 className="h-3 w-3 md:h-3.5 md:w-3.5 text-primary" />
                         </div>
                     </div>
                     
-                    <p className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-tighter mt-1">{data.label}</p>
+                    <p className="text-[8px] md:text-[9px] font-black text-white uppercase tracking-tighter mt-1">{data.label}</p>
                     <div className="flex gap-1 mt-2">
                         {data.operators.slice(0, 2).map((op: string) => (
                             <div key={op} className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -58,19 +59,11 @@ const HubCallout = ({ city, data, active }: { city: string; data: any; active: b
                     </div>
                 </div>
 
-                <div className="absolute -right-8 top-0 space-y-1 hidden md:block">
-                    {data.partners.slice(0, 2).map((p: string) => (
+                <div className="absolute -right-6 top-0 space-y-1 hidden md:block">
+                    {data.partners.slice(0, 1).map((p: string) => (
                         <div key={p} className="flex items-center gap-2">
                             <div className="w-1 h-1 rounded-full bg-rose-500" />
                             <span className="text-[7px] font-bold text-white/60 uppercase">{p}</span>
-                        </div>
-                    ))}
-                </div>
-                <div className="absolute -left-8 bottom-0 space-y-1 hidden md:block text-right">
-                    {data.operators.slice(0, 2).map((o: string) => (
-                        <div key={o} className="flex items-center gap-2 justify-end">
-                            <span className="text-[7px] font-bold text-sky-400 uppercase">{o}</span>
-                            <div className="w-1 h-1 rounded-full bg-sky-400" />
                         </div>
                     ))}
                 </div>
@@ -137,13 +130,14 @@ export default function OurNetworkPage() {
                         </div>
                     </div>
 
-                    {Object.entries(HUB_DETAILS).map(([city, data]) => (
-                        <HubCallout key={city} city={city} data={data} active={hoveredHub === city} />
-                    ))}
-
                     <div className="relative flex-1 flex items-center justify-center">
-                        <div className="w-full h-full max-w-[850px] max-h-[850px] animate-in fade-in zoom-in duration-1000">
-                            <svg viewBox="0 0 1000 1000" className="w-full h-full overflow-visible drop-shadow-[0_0_30px_rgba(14,165,233,0.1)]">
+                        <div className="relative w-full h-full max-w-[850px] max-h-[850px] flex items-center justify-center">
+                            {/* Hub Callouts - Integrated into the map container for consistent scaling */}
+                            {Object.entries(HUB_DETAILS).map(([city, data]) => (
+                                <HubCallout key={city} city={city} data={data} active={hoveredHub === city} />
+                            ))}
+
+                            <svg viewBox="0 0 1000 1000" className="w-full h-full overflow-visible drop-shadow-[0_0_30px_rgba(14,165,233,0.1)] animate-in fade-in zoom-in duration-1000">
                                 <defs>
                                     <pattern id="dotPatternActual" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
                                         <circle cx="2" cy="2" r="1" fill="rgba(255, 255, 189, 0.1)" />
