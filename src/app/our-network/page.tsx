@@ -130,7 +130,7 @@ export default function OurNetworkPage() {
                             <div className="p-3 rounded-xl bg-accent/5 border border-accent/10">
                                 <p className="text-[8px] font-black uppercase text-accent tracking-[0.2em] mb-1">Status Protocol</p>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                     <span className="text-[9px] text-muted-foreground uppercase font-bold">Network Operational</span>
                                 </div>
                             </div>
@@ -206,7 +206,7 @@ export default function OurNetworkPage() {
                                     className="opacity-60"
                                 />
 
-                                {/* Hub Markers with Blinking Animation */}
+                                {/* Hub Markers */}
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
                                         const hubOps = operators?.filter(o => o.city === city) || [];
@@ -220,15 +220,13 @@ export default function OurNetworkPage() {
                                                         onMouseEnter={() => setHoveredHub(city)}
                                                         onMouseLeave={() => setHoveredHub(null)}
                                                     >
-                                                        {/* Outer Pulse */}
-                                                        <circle cx={coords.x} cy={coords.y} r="12" fill="rgba(29, 191, 115, 0.1)" className="animate-ping" />
-                                                        {/* Inner Blinking Bullet */}
+                                                        {/* Static Marker Circle */}
                                                         <circle 
                                                             cx={coords.x} 
                                                             cy={coords.y} 
                                                             r="4" 
                                                             fill="#1DBF73" 
-                                                            className="filter drop-shadow-[0_0_8px_#1DBF73] animate-blink" 
+                                                            className="filter drop-shadow-[0_0_8px_#1DBF73]" 
                                                         />
                                                         <text 
                                                             x={coords.x + 12} 
@@ -262,8 +260,8 @@ export default function OurNetworkPage() {
                                 </TooltipProvider>
 
                                 {/* Sample Operational Route Arcs */}
-                                <path d="M440 240 Q 350 400, 280 600" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
-                                <path d="M440 240 Q 550 500, 430 800" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
+                                <path d="M440 240 Q 350 400, 280 600" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" />
+                                <path d="M440 240 Q 550 500, 430 800" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" />
                             </svg>
                         </div>
                     </div>
