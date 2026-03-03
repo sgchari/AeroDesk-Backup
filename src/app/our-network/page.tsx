@@ -4,16 +4,85 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
 import type { Operator, CharterRFQ, EmptyLeg } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
-import { ShieldCheck, Plane, Users, Globe, Activity, MapPin, Zap } from 'lucide-react';
+import { ShieldCheck, Plane, Users, Globe, MapPin, Zap, Building2, Landmark } from 'lucide-react';
 import { indiaPath, hubCoordinates } from '@/lib/geo-utils';
+
+const HUB_DETAILS = {
+    'Delhi': { label: 'Delhi - NCR', position: 'top-right', operators: ['Delhi Air', 'Club One'], partners: ['Taj', 'ITC'] },
+    'Mumbai': { label: 'Mumbai', position: 'mid-left', operators: ['FlyCo', 'Taj Air'], partners: ['Oberoi', 'Marriott'] },
+    'Bengaluru': { label: 'Bangalore', position: 'bottom-left', operators: ['Deccan'], partners: ['Leela', 'Ritz'] },
+    'Kolkata': { label: 'Kolkata', position: 'mid-right', operators: ['East Wings'], partners: ['ITC Sonar'] },
+    'Hyderabad': { label: 'Hyderabad', position: 'bottom-right', operators: ['GMR Air'], partners: ['Novotel'] },
+    'Chennai': { label: 'Chennai', position: 'bottom-center', operators: ['Blue Dart'], partners: ['Westin'] },
+};
+
+const HubCallout = ({ city, data, active }: { city: string; data: any; active: boolean }) => {
+    const posClasses = {
+        'top-right': 'top-4 right-4 md:top-10 md:right-10',
+        'mid-left': 'top-1/3 left-4 md:left-10',
+        'mid-right': 'top-1/2 right-4 md:right-10',
+        'bottom-left': 'bottom-20 left-4 md:left-10',
+        'bottom-right': 'bottom-20 right-4 md:right-10',
+        'bottom-center': 'bottom-10 left-1/2 -translate-x-1/2',
+    }[data.position as string];
+
+    return (
+        <div className={cn(
+            "absolute z-30 transition-all duration-500 scale-90 md:scale-100",
+            posClasses,
+            active ? "opacity-100 translate-y-0" : "opacity-60 translate-y-2"
+        )}>
+            <div className="relative group">
+                {/* Connecting Line (Visual only for aesthetics) */}
+                <div className="hidden lg:block absolute w-px h-16 bg-gradient-to-b from-accent/40 to-transparent -bottom-16 left-1/2" />
+                
+                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-full p-4 md:p-6 w-32 h-32 md:w-40 md:h-40 flex flex-col items-center justify-center text-center shadow-2xl group-hover:border-accent/40 transition-colors">
+                    <div className="absolute -top-2 bg-accent text-black text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest">
+                        {city === 'Delhi' ? 'NIXI' : 'AMS-IX'}
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2 mb-1">
+                        <div className="w-6 h-6 md:w-8 md:h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center">
+                            <Plane className="h-3 w-3 md:h-4 md:w-4 text-accent" />
+                        </div>
+                        <div className="w-6 h-6 md:w-8 md:h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center">
+                            <Building2 className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+                        </div>
+                    </div>
+                    
+                    <p className="text-[10px] md:text-xs font-black text-white uppercase tracking-tighter mt-1">{data.label}</p>
+                    <div className="flex gap-1 mt-2">
+                        {data.operators.slice(0, 2).map((op: string) => (
+                            <div key={op} className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Satellite Labels */}
+                <div className="absolute -right-12 top-0 space-y-1 hidden md:block">
+                    {data.partners.map((p: string) => (
+                        <div key={p} className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                            <span className="text-[8px] font-bold text-white/60 uppercase">{p}</span>
+                        </div>
+                    ))}
+                </div>
+                <div className="absolute -left-12 bottom-0 space-y-1 hidden md:block text-right">
+                    {data.operators.map((o: string) => (
+                        <div key={o} className="flex items-center gap-2 justify-end">
+                            <span className="text-[8px] font-bold text-sky-400 uppercase">{o}</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default function OurNetworkPage() {
     const firestore = useFirestore();
@@ -21,22 +90,16 @@ export default function OurNetworkPage() {
 
     const operatorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        return collection(firestore, 'operators');
+        return collection(firestore as any, 'operators');
     }, [firestore]);
     
     const rfqsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        return collection(firestore, 'charterRequests');
+        return collection(firestore as any, 'charterRequests');
     }, [firestore]);
 
-    const elQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return collection(firestore, 'emptyLegs');
-    }, [firestore]);
-
-    const { data: operators, isLoading: opsLoading } = useCollection<Operator>(operatorsQuery, 'operators');
-    const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
-    const { data: emptyLegs } = useCollection<EmptyLeg>(elQuery, 'emptyLegs');
+    const { data: operators, isLoading: opsLoading } = useCollection<Operator>(operatorsQuery as any, 'operators');
+    const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery as any, 'charterRequests');
 
     const activeMissionsList = useMemo(() => {
         return rfqs?.filter(r => 
@@ -44,179 +107,141 @@ export default function OurNetworkPage() {
         ) || [];
     }, [rfqs]);
 
-    const metrics = useMemo(() => {
-        return {
-            activeOperators: operators?.filter(o => o.status === 'Approved').length || 0,
-            totalFleet: 124, 
-            emptyLegs: emptyLegs?.filter(e => ['Published', 'Approved', 'live', 'live'].includes(e.status)).length || 0,
-            activeMissions: activeMissionsList.length
-        };
-    }, [operators, emptyLegs, activeMissionsList]);
-
     return (
-        <div className="w-full relative min-h-screen text-[#EAEAEA] overflow-x-hidden flex flex-col">
+        <div className="w-full relative min-h-screen text-[#EAEAEA] overflow-hidden flex flex-col bg-[#0B1220]">
             <div className="fixed inset-0 z-0">
                 <Image
                     src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
                     alt="Background"
                     fill
                     priority
-                    className="object-cover"
+                    className="object-cover opacity-20"
                     data-ai-hint="airplane beach"
                 />
-                <div className="absolute inset-0 bg-black/50 backdrop-blur-md" />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0B1220] via-transparent to-[#0B1220]" />
             </div>
 
             <div className="relative z-10 flex flex-col flex-1 bg-transparent">
                 <LandingHeader activePage="Our Network" />
                 
-                <main className="relative flex flex-col lg:flex-row flex-1 min-h-0">
+                <main className="relative flex-1 flex flex-col p-4 md:p-8">
                     
-                    {/* Metrics Sidebar */}
-                    <div className="w-full lg:w-64 p-4 md:p-6 z-20 flex flex-col gap-4 md:gap-6 bg-black/40 backdrop-blur-3xl border-b lg:border-b-0 lg:border-r border-white/10 text-[11px]">
-                        <div className="space-y-1">
-                            <h1 className="text-xl md:text-2xl font-bold tracking-tight font-headline">Intelligence</h1>
-                            <p className="text-accent font-black text-[8px] uppercase tracking-[0.25em]">Geographic Grid Status</p>
-                        </div>
+                    {/* Header Overlay */}
+                    <div className="absolute top-8 left-8 z-20 space-y-1">
+                        <h1 className="text-3xl md:text-4xl font-bold tracking-tighter font-headline text-white/90">Our Network</h1>
+                        <p className="text-accent font-black text-[10px] uppercase tracking-[0.3em] opacity-60">Aviation Infrastructure Grid v1.0</p>
+                    </div>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
-                            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-emerald-500/30 transition-all">
-                                <Users className="h-4 w-4 text-emerald-500 mb-2" />
-                                <p className="text-lg md:text-xl font-black text-white">{opsLoading ? '...' : metrics.activeOperators}</p>
-                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Active Operators</p>
+                    {/* Infrastructure Legend */}
+                    <div className="absolute bottom-8 right-8 z-20 bg-black/40 backdrop-blur-xl border border-white/10 p-4 rounded-xl hidden lg:block">
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                                <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[10px] border-b-accent" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">Backbone Hub</span>
                             </div>
-                            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-accent/30 transition-all">
-                                <Plane className="h-4 w-4 text-accent mb-2" />
-                                <p className="text-lg md:text-xl font-black text-white">{metrics.totalFleet}</p>
-                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Registered Fleet</p>
+                            <div className="flex items-center gap-3">
+                                <div className="w-3 h-3 bg-emerald-500 rounded-sm" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">NSOP Base</span>
                             </div>
-                            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-primary/30 transition-all">
-                                <Globe className="h-4 w-4 text-primary mb-2" />
-                                <p className="text-lg md:text-xl font-black text-white">Registry</p>
-                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Network Nodes</p>
+                            <div className="flex items-center gap-3">
+                                <Landmark className="h-3.5 w-3.5 text-primary" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">Location</span>
                             </div>
-                            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-emerald-400/30 transition-all">
-                                <Zap className="h-4 w-4 text-emerald-400 mb-2" />
-                                <p className="text-lg md:text-xl font-black text-white">{metrics.emptyLegs}</p>
-                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">EL Opportunities</p>
+                            <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-rose-500" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">Private Peering</span>
                             </div>
-                        </div>
-
-                        <div className="hidden lg:flex flex-col gap-3 mt-auto">
-                            <div className="p-4 rounded-xl bg-accent/5 border border-accent/10">
-                                <p className="text-[8px] font-black uppercase text-accent tracking-[0.2em] mb-2">Health Signal</p>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]" />
-                                    <span className="text-[9px] text-muted-foreground uppercase font-bold">Network Operational</span>
-                                </div>
-                            </div>
-                            
-                            <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                                <div className="flex items-center gap-2">
-                                    <Activity className="h-4 w-4 text-primary" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Live Missions</span>
-                                </div>
-                                <p className="text-2xl font-black text-white">{metrics.activeMissions}</p>
-                            </div>
-
-                            <div className="flex items-center gap-2 text-[9px] text-muted-foreground uppercase font-bold tracking-widest justify-center pt-4 border-t border-white/5">
-                                <ShieldCheck className="h-4 w-4 text-accent" />
-                                Protocol Secure
+                            <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-sky-400" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">Public Peering</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Spatial Map Viewport */}
-                    <div className="relative flex-1 bg-black/20 overflow-hidden flex items-center justify-center min-h-[400px] md:min-h-[600px] p-4">
-                        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
-                             style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-                        
-                        <div className="absolute top-4 right-4 z-30 hidden sm:flex">
-                            <div className="bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-full flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]" />
-                                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white">Registry Nodes Active</span>
-                                </div>
-                                <div className="w-px h-3 bg-white/20" />
-                                <div className="flex items-center gap-2">
-                                    <ShieldCheck className="h-3.5 w-3.5 text-accent" />
-                                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white">Encrypted Feed</span>
-                                </div>
-                            </div>
-                        </div>
+                    {/* Callouts */}
+                    {Object.entries(HUB_DETAILS).map(([city, data]) => (
+                        <HubCallout key={city} city={city} data={data} active={hoveredHub === city} />
+                    ))}
 
-                        <div className="relative w-full h-full max-w-[900px] max-h-[900px] flex items-center justify-center">
+                    {/* Central Map Viewport */}
+                    <div className="relative flex-1 flex items-center justify-center">
+                        <div className="w-full h-full max-w-[800px] max-h-[800px]">
                             <svg viewBox="0 0 1000 1000" className="w-full h-full overflow-visible">
                                 <defs>
-                                    <pattern id="dotPattern" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
-                                        <circle cx="2" cy="2" r="1.2" fill="rgba(255, 255, 189, 0.25)" />
+                                    <pattern id="dotPatternNet" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+                                        <circle cx="2" cy="2" r="1" fill="rgba(255, 255, 189, 0.15)" />
                                     </pattern>
-                                    <clipPath id="indiaClip">
+                                    <clipPath id="indiaClipNet">
                                         <path d={indiaPath} />
                                     </clipPath>
-                                    <radialGradient id="spatialGlow" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stopColor="rgba(255,255,189,0.08)" />
-                                        <stop offset="100%" stopColor="rgba(0,0,0,0)" />
-                                    </radialGradient>
+                                    <filter id="glowNet">
+                                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
                                 </defs>
 
-                                <path d={indiaPath} fill="url(#spatialGlow)" className="opacity-40" />
-                                <rect width="1000" height="1000" fill="url(#dotPattern)" clipPath="url(#indiaClip)" className="opacity-80" />
-                                <path d={indiaPath} fill="none" stroke="rgba(255,255,189,0.1)" strokeWidth="1" />
+                                <path d={indiaPath} fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
+                                <rect width="1000" height="1000" fill="url(#dotPatternNet)" clipPath="url(#indiaClipNet)" />
 
-                                <TooltipProvider>
-                                    {Object.entries(hubCoordinates).map(([city, coords]) => {
-                                        const hubOps = operators?.filter(o => o.city === city && o.status === 'Approved') || [];
-                                        const isVisibleHub = hubOps.length > 0 || ['Mumbai', 'Delhi', 'Bengaluru', 'Kolkata', 'Bhopal'].includes(city);
+                                {/* Hub Markers & Labels */}
+                                {Object.entries(hubCoordinates).map(([city, coords]) => {
+                                    const hasCallout = !!HUB_DETAILS[city as keyof typeof HUB_DETAILS];
+                                    
+                                    return (
+                                        <g key={city} 
+                                           className="cursor-pointer" 
+                                           onMouseEnter={() => setHoveredHub(city)} 
+                                           onMouseLeave={() => setHoveredHub(null)}>
+                                            
+                                            {/* Triangles for Backbone Hubs */}
+                                            {hasCallout ? (
+                                                <path 
+                                                    d={`M${coords.x},${coords.y-8} L${coords.x+7},${coords.y+5} L${coords.x-7},${coords.y+5} Z`} 
+                                                    fill="#FFFFBD" 
+                                                    filter="url(#glowNet)"
+                                                    className={cn("transition-transform duration-300", hoveredHub === city && "scale-125")}
+                                                />
+                                            ) : (
+                                                <circle cx={coords.x} cy={coords.y} r="3" fill="#1DBF73" className="opacity-40" />
+                                            )}
 
-                                        if (!isVisibleHub) return null;
+                                            <text x={coords.x + 12} y={coords.y + 4} fill="white" className="text-[10px] font-black uppercase tracking-tighter opacity-40 pointer-events-none hidden sm:block">
+                                                {city}
+                                            </text>
 
-                                        return (
-                                            <Tooltip key={city}>
-                                                <TooltipTrigger asChild>
-                                                    <g className="cursor-pointer group/marker" onMouseEnter={() => setHoveredHub(city)} onMouseLeave={() => setHoveredHub(null)}>
-                                                        <circle cx={coords.x} cy={coords.y} r={hubOps.length > 0 ? "5" : "3"} fill="#1DBF73" className={cn("filter transition-all", hubOps.length > 0 ? "drop-shadow-[0_0_10px_#1DBF73]" : "opacity-40")} />
-                                                        <text x={coords.x + 12} y={coords.y + 4} fill="white" className="text-[10px] font-black pointer-events-none opacity-40 group-hover/marker:opacity-100 transition-opacity uppercase tracking-tighter hidden sm:block">
-                                                            {city}
-                                                        </text>
-                                                    </g>
-                                                </TooltipTrigger>
-                                                <TooltipContent className="bg-[#0D1B2A] border-white/10 text-white p-4 shadow-2xl backdrop-blur-2xl">
-                                                    <div className="space-y-3">
-                                                        <div className="flex items-center justify-between gap-6">
-                                                            <h4 className="font-black uppercase tracking-widest text-[10px] text-accent">{city} HUB</h4>
-                                                            <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-500 font-code">{coords.airport}</Badge>
-                                                        </div>
-                                                        <div className="space-y-1">
-                                                            {hubOps.length > 0 ? hubOps.map(op => (
-                                                                <div key={op.id} className="flex items-center justify-between gap-8 text-[10px]">
-                                                                    <span className="font-bold text-white/90">{op.companyName}</span>
-                                                                    <span className="text-emerald-500 font-black text-[8px] uppercase">Online</span>
-                                                                </div>
-                                                            )) : (
-                                                                <p className="text-[9px] text-white/40 italic">Registry Node Standby</p>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        );
-                                    })}
-                                </TooltipProvider>
+                                            {/* Connecting line to Callout (Conceptual) */}
+                                            {hasCallout && hoveredHub === city && (
+                                                <line 
+                                                    x1={coords.x} y1={coords.y} 
+                                                    x2={coords.x > 500 ? coords.x + 100 : coords.x - 100} 
+                                                    y2={coords.y > 500 ? coords.y + 100 : coords.y - 100}
+                                                    stroke="#FFFFBD" strokeWidth="1" strokeDasharray="4,2" className="animate-in fade-in"
+                                                />
+                                            )}
+                                        </g>
+                                    );
+                                })}
 
+                                {/* Active Mission Arcs */}
                                 {activeMissionsList.map(mission => {
                                     const depCity = mission.departure.split(' (')[0];
                                     const arrCity = mission.arrival.split(' (')[0];
                                     const from = hubCoordinates[depCity];
                                     const to = hubCoordinates[arrCity];
                                     if (!from || !to) return null;
+                                    
                                     const cx = (from.x + to.x) / 2 + (from.y - to.y) * 0.15;
                                     const cy = (from.y + to.y) / 2 + (to.x - from.x) * 0.15;
+                                    
                                     return (
-                                        <g key={mission.id} className="animate-in fade-in duration-1000">
-                                            <path d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} fill="none" stroke="rgba(255, 255, 189, 0.2)" strokeWidth="1.5" strokeDasharray="4,4" className="animate-pulse" />
-                                            <circle cx={from.x} cy={from.y} r={2} fill="white" />
-                                            <circle cx={to.x} cy={to.y} r={2} fill="white" />
+                                        <g key={mission.id}>
+                                            <path d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} 
+                                                  fill="none" stroke="#FFFFBD" strokeWidth="1.5" strokeDasharray="4,4" className="opacity-30 animate-pulse" />
+                                            <circle cx={from.x} cy={from.y} r="2" fill="white" />
+                                            <circle cx={to.x} cy={to.y} r="2" fill="white" />
                                         </g>
                                     );
                                 })}
@@ -224,16 +249,6 @@ export default function OurNetworkPage() {
                         </div>
                     </div>
                 </main>
-                <div className="lg:hidden bg-black/60 p-4 border-t border-white/10 grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-primary" />
-                        <span className="text-[10px] font-black uppercase text-white">{metrics.activeMissions} Live Missions</span>
-                    </div>
-                    <div className="flex items-center gap-2 justify-end">
-                        <ShieldCheck className="h-4 w-4 text-accent" />
-                        <span className="text-[10px] font-black uppercase text-white">Nodes Active</span>
-                    </div>
-                </div>
             </div>
             <LandingFooter />
         </div>
