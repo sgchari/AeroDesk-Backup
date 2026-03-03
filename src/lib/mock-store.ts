@@ -1,5 +1,21 @@
 
-import { mockUsers, mockRfqs, mockEmptyLegs } from './data';
+import { 
+  mockUsers, 
+  mockRfqs, 
+  mockEmptyLegs, 
+  mockOperators, 
+  mockAgencies, 
+  mockHotelPartners,
+  mockCorporates,
+  mockAircrafts,
+  mockSeatRequests,
+  mockAuditLogs,
+  mockAccommodationRequests,
+  mockFeatureFlags,
+  mockPolicyFlags,
+  mockProperties,
+  mockRoomCategories
+} from './data';
 import { User, DashboardSummary } from './types';
 
 const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
@@ -7,8 +23,23 @@ const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 // Optimized DB Structure matching Scoped Ownership
 let db: any = {
   users: deepCopy(mockUsers),
+  operators: deepCopy(mockOperators),
+  distributors: deepCopy(mockAgencies),
+  agencies: deepCopy(mockAgencies),
+  corporateTravelDesks: deepCopy(mockCorporates),
+  corporates: deepCopy(mockCorporates),
+  hotelPartners: deepCopy(mockHotelPartners),
+  emptyLegs: deepCopy(mockEmptyLegs),
   emptyLegFlights: deepCopy(mockEmptyLegs),
+  charterRFQs: deepCopy(mockRfqs),
   charterRequests: deepCopy(mockRfqs),
+  seatAllocations: deepCopy(mockSeatRequests),
+  seatAllocationRequests: deepCopy(mockSeatRequests),
+  auditTrails: deepCopy(mockAuditLogs),
+  accommodationRequests: deepCopy(mockAccommodationRequests),
+  featureFlags: deepCopy(mockFeatureFlags),
+  properties: deepCopy(mockProperties),
+  roomCategories: deepCopy(mockRoomCategories),
   reports: [],
   readCount: 0 // Billing Protection: Monitoring reads per session
 };
@@ -41,6 +72,15 @@ const resolvePath = (path: string) => {
     };
   }
   
+  // Basic simulation of subcollections like /corporateTravelDesks/{id}/policyFlags
+  if (segments.length > 2 && segments[2] === 'policyFlags') {
+      return mockPolicyFlags;
+  }
+  
+  if (segments.length > 2 && segments[2] === 'users') {
+      return db.users.filter((u: any) => u.ctdId === segments[1] || u.operatorId === segments[1] || u.agencyId === segments[1]);
+  }
+
   return (db as any)[segments[0]] || [];
 };
 
@@ -48,7 +88,7 @@ const getCollection = (path: string, user?: User | null) => {
   let data = resolvePath(path);
   // Apply mandatory pagination & ordering
   if (Array.isArray(data)) {
-    return data.slice(0, 10); 
+    return data.slice(0, 20); 
   }
   return data;
 };

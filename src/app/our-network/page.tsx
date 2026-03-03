@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -38,9 +39,11 @@ export default function OurNetworkPage() {
     const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
     const { data: emptyLegs } = useCollection<EmptyLeg>(elQuery, 'emptyLegs');
 
-    // Derived Metrics
+    // Derived Metrics: Include live and enroute statuses for visualization
     const activeMissionsList = useMemo(() => {
-        return rfqs?.filter(r => ['operationalPreparation', 'boarding', 'departed', 'arrived'].includes(r.status)) || [];
+        return rfqs?.filter(r => 
+            ['operationalPreparation', 'boarding', 'departed', 'arrived', 'enroute', 'live'].includes(r.status)
+        ) || [];
     }, [rfqs]);
 
     const metrics = useMemo(() => {
@@ -107,7 +110,7 @@ export default function OurNetworkPage() {
                             <div className="p-3 rounded-lg bg-accent/5 border border-accent/10">
                                 <p className="text-[7px] font-black uppercase text-accent tracking-[0.2em] mb-1">Health Signal</p>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_5px_#10B981]" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_#10B981]" />
                                     <span className="text-[8px] text-muted-foreground uppercase font-bold">Network Operational</span>
                                 </div>
                             </div>
@@ -172,8 +175,13 @@ export default function OurNetworkPage() {
 
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
+                                        // Filter operators registered in this city hub
                                         const hubOps = operators?.filter(o => o.city === city) || [];
-                                        if (hubOps.length === 0) return null;
+                                        
+                                        // Hub is visible if operators exist or if it's a primary network node
+                                        const isVisibleHub = hubOps.length > 0 || ['Mumbai', 'Delhi', 'Bengaluru', 'Kolkata'].includes(city);
+
+                                        if (!isVisibleHub) return null;
 
                                         return (
                                             <Tooltip key={city}>
@@ -196,12 +204,14 @@ export default function OurNetworkPage() {
                                                             <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-500 font-code">{coords.airport}</Badge>
                                                         </div>
                                                         <div className="space-y-1">
-                                                            {hubOps.map(op => (
+                                                            {hubOps.length > 0 ? hubOps.map(op => (
                                                                 <div key={op.id} className="flex items-center justify-between gap-8 text-[10px]">
                                                                     <span className="font-bold text-white/90">{op.companyName}</span>
                                                                     <span className="text-emerald-500 font-black text-[8px] uppercase">Online</span>
                                                                 </div>
-                                                            ))}
+                                                            )) : (
+                                                                <p className="text-[9px] text-white/40 italic">Registry Node Active • Standby</p>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </TooltipContent>
@@ -211,6 +221,7 @@ export default function OurNetworkPage() {
                                 </TooltipProvider>
 
                                 {activeMissionsList.map(mission => {
+                                    // Parse city names for coordinate lookup
                                     const depCity = mission.departure.split(' (')[0];
                                     const arrCity = mission.arrival.split(' (')[0];
                                     const from = hubCoordinates[depCity];
@@ -218,6 +229,7 @@ export default function OurNetworkPage() {
                                     
                                     if (!from || !to) return null;
 
+                                    // Quadratic Bézier curve for geographic routes
                                     const cx = (from.x + to.x) / 2 + (from.y - to.y) * 0.15;
                                     const cy = (from.y + to.y) / 2 + (to.x - from.x) * 0.15;
                                     
