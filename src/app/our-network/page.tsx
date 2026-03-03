@@ -4,11 +4,11 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import type { Operator, CharterRFQ, EmptyLeg } from '@/lib/types';
+import type { Operator, CharterRFQ } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
-import { ShieldCheck, Plane, Users, Globe, MapPin, Zap, Building2, Landmark } from 'lucide-react';
+import { Plane, Building2, Landmark } from 'lucide-react';
 import { indiaPath, hubCoordinates } from '@/lib/geo-utils';
 
 const HUB_DETAILS = {
@@ -23,12 +23,14 @@ const HUB_DETAILS = {
 const HubCallout = ({ city, data, active }: { city: string; data: any; active: boolean }) => {
     const posClasses = {
         'top-right': 'top-4 right-4 md:top-10 md:right-10',
-        'mid-left': 'top-1/3 left-4 md:left-10',
-        'mid-right': 'top-1/2 right-4 md:right-10',
-        'bottom-left': 'bottom-20 left-4 md:left-10',
-        'bottom-right': 'bottom-20 right-4 md:right-10',
-        'bottom-center': 'bottom-10 left-1/2 -translate-x-1/2',
+        'mid-left': 'top-[30%] left-4 md:left-10',
+        'mid-right': 'top-[40%] right-4 md:right-10',
+        'bottom-left': 'bottom-[20%] left-4 md:left-10',
+        'bottom-right': 'bottom-[10%] right-4 md:right-10',
+        'bottom-center': 'bottom-5 left-1/2 -translate-x-1/2',
     }[data.position as string];
+
+    const hubPos = hubCoordinates[city] || { x: 500, y: 500 };
 
     return (
         <div className={cn(
@@ -37,9 +39,7 @@ const HubCallout = ({ city, data, active }: { city: string; data: any; active: b
             active ? "opacity-100 translate-y-0" : "opacity-60 translate-y-2"
         )}>
             <div className="relative group">
-                {/* Connecting Line (Visual only for aesthetics) */}
-                <div className="hidden lg:block absolute w-px h-16 bg-gradient-to-b from-accent/40 to-transparent -bottom-16 left-1/2" />
-                
+                {/* Visual Connector Logic (Simplified conceptual lines) */}
                 <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-full p-4 md:p-6 w-32 h-32 md:w-40 md:h-40 flex flex-col items-center justify-center text-center shadow-2xl group-hover:border-accent/40 transition-colors">
                     <div className="absolute -top-2 bg-accent text-black text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest">
                         {city === 'Delhi' ? 'NIXI' : 'AMS-IX'}
@@ -98,7 +98,6 @@ export default function OurNetworkPage() {
         return collection(firestore as any, 'charterRequests');
     }, [firestore]);
 
-    const { data: operators, isLoading: opsLoading } = useCollection<Operator>(operatorsQuery as any, 'operators');
     const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery as any, 'charterRequests');
 
     const activeMissionsList = useMemo(() => {
@@ -137,23 +136,23 @@ export default function OurNetworkPage() {
                         <div className="space-y-3">
                             <div className="flex items-center gap-3">
                                 <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[10px] border-b-accent" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">Backbone Hub</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-accent">Backbone Hub</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="w-3 h-3 bg-emerald-500 rounded-sm" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">NSOP Base</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500">NSOP Base</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <Landmark className="h-3.5 w-3.5 text-primary" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">Location</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-primary">Location</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-rose-500" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">Private Peering</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-rose-500">Private Peering</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-sky-400" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">Public Peering</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-sky-400">Public Peering</span>
                             </div>
                         </div>
                     </div>
@@ -196,13 +195,13 @@ export default function OurNetworkPage() {
                                            onMouseEnter={() => setHoveredHub(city)} 
                                            onMouseLeave={() => setHoveredHub(null)}>
                                             
-                                            {/* Triangles for Backbone Hubs */}
+                                            {/* Backbone Connectivity Visualizers */}
                                             {hasCallout ? (
                                                 <path 
                                                     d={`M${coords.x},${coords.y-8} L${coords.x+7},${coords.y+5} L${coords.x-7},${coords.y+5} Z`} 
                                                     fill="#FFFFBD" 
                                                     filter="url(#glowNet)"
-                                                    className={cn("transition-transform duration-300", hoveredHub === city && "scale-125")}
+                                                    className={cn("transition-transform duration-300", (hoveredHub === city || activeMissionsList.some(m => m.departure.includes(city) || m.arrival.includes(city))) ? "scale-150 fill-accent" : "scale-100 opacity-60")}
                                                 />
                                             ) : (
                                                 <circle cx={coords.x} cy={coords.y} r="3" fill="#1DBF73" className="opacity-40" />
@@ -211,16 +210,6 @@ export default function OurNetworkPage() {
                                             <text x={coords.x + 12} y={coords.y + 4} fill="white" className="text-[10px] font-black uppercase tracking-tighter opacity-40 pointer-events-none hidden sm:block">
                                                 {city}
                                             </text>
-
-                                            {/* Connecting line to Callout (Conceptual) */}
-                                            {hasCallout && hoveredHub === city && (
-                                                <line 
-                                                    x1={coords.x} y1={coords.y} 
-                                                    x2={coords.x > 500 ? coords.x + 100 : coords.x - 100} 
-                                                    y2={coords.y > 500 ? coords.y + 100 : coords.y - 100}
-                                                    stroke="#FFFFBD" strokeWidth="1" strokeDasharray="4,2" className="animate-in fade-in"
-                                                />
-                                            )}
                                         </g>
                                     );
                                 })}
