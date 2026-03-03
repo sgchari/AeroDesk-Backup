@@ -1,12 +1,6 @@
-
 'use client';
 
 import { useUser } from '@/hooks/use-user';
-import { OperatorDashboard } from '@/components/dashboard/operator-dashboard';
-import { AdminDashboard } from './admin-dashboard';
-import { CTDDashboard } from '@/components/dashboard/ctd-dashboard';
-import { TravelAgencyDashboard } from '@/components/dashboard/travel-agency-dashboard';
-import { HotelDashboard } from '@/components/dashboard/hotel-dashboard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
@@ -21,6 +15,24 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import type { CharterRFQ } from '@/lib/types';
 import { LiveRadarDashboardCard } from '@/components/dashboard/shared/live-radar-dashboard-card';
+import dynamic from 'next/dynamic';
+
+// Dynamic Imports to reduce initial compilation load and bundle size
+const AdminDashboard = dynamic(() => import('./admin-dashboard').then(mod => mod.AdminDashboard), { 
+    loading: () => <DashboardSkeleton /> 
+});
+const OperatorDashboard = dynamic(() => import('./operator-dashboard').then(mod => mod.OperatorDashboard), { 
+    loading: () => <DashboardSkeleton /> 
+});
+const CTDDashboard = dynamic(() => import('./ctd-dashboard').then(mod => mod.CTDDashboard), { 
+    loading: () => <DashboardSkeleton /> 
+});
+const TravelAgencyDashboard = dynamic(() => import('./travel-agency-dashboard').then(mod => mod.TravelAgencyDashboard), { 
+    loading: () => <DashboardSkeleton /> 
+});
+const HotelDashboard = dynamic(() => import('./hotel-dashboard').then(mod => mod.HotelDashboard), { 
+    loading: () => <DashboardSkeleton /> 
+});
 
 const quickLinks = [
     {
