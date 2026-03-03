@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -7,11 +6,37 @@ import { Inter } from 'next/font/google';
 import { UserProvider } from '@/hooks/use-user';
 import { FirebaseClientProvider } from '@/firebase';
 
-// AeroDesk Version: 1.0.5 - Performance Optimized
+// AeroDesk Version: 1.0.6 - SEO & Performance Optimized
 export const metadata: Metadata = {
-  title: 'AeroDesk',
+  title: 'AeroDesk | Digital Aviation Infrastructure for Private Charters in India',
   description:
-    'A compliance-first digital aviation infrastructure platform for non-scheduled charter operations (NSOP) in India.',
+    'The premier digital platform for Indian NSOP operations. Coordinate private jet charters, empty leg seat allocations, and premium hotel stays through a unified institutional network.',
+  keywords: [
+    'Private Jet Charter India',
+    'NSOP Operations India',
+    'Empty Leg Flights India',
+    'Corporate Jet Rental Mumbai',
+    'Aviation Compliance Software',
+    'Digital Aviation Infrastructure',
+    'Private Flight Coordination Delhi',
+    'AeroDesk Network'
+  ],
+  authors: [{ name: 'AeroDesk Engineering' }],
+  viewport: 'width=device-width, initial-scale=1',
+  robots: 'index, follow',
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    url: 'https://aerodesk.aero',
+    title: 'AeroDesk | Fly Private. Stay Premium.',
+    description: 'Digital coordination and governance for India’s private aviation ecosystem.',
+    siteName: 'AeroDesk',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AeroDesk | Private Aviation Infrastructure',
+    description: 'Coordinating India’s non-scheduled flight operations through institutional digital layers.',
+  },
 };
 
 const inter = Inter({

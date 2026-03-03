@@ -1,119 +1,108 @@
 'use client';
 
 import {
-  useState,
-  useEffect,
   type FC,
-  useRef,
 } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Logo } from '@/components/logo';
 import Link from 'next/link';
 import {
   ShieldCheck,
-  Menu,
   FileText,
   GanttChartSquare,
   Briefcase,
   Hotel,
   Wand2,
-  Phone,
-  Mail,
   Wallet,
   Banknote,
-  Shield,
   CheckCircle,
   Armchair,
-  Plane,
 } from 'lucide-react';
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookingWidget } from '@/components/booking-widget';
-import { cn } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { LandingHeader } from '@/components/landing-header';
 import { LandingFooter } from '@/components/landing-footer';
-
 
 const features = [
   {
     icon: FileText,
-    title: 'Charter Request & Full Journey Tracking',
+    title: 'Charter Request & Journey Tracking',
     description:
-      'Create private flight requests, define travel and stay requirements, and monitor every stage of your journey from submission to completion.',
+      'Seamlessly initiate private flight requests (RFQs) and monitor every operational stage from dispatch to destination arrival.',
   },
   {
     icon: GanttChartSquare,
-    title: 'Operator Quotation & Fleet Management',
+    title: 'Operator Fleet & Yield Management',
     description:
-      'Operators can respond to charter requests with structured quotations, manage fleet availability, coordinate crew stays and logistics, and create or manage empty-leg opportunities.',
+      'Verified NSOP holders can manage aircraft availability, respond to institutional demand, and optimize yield through seat allocations.',
   },
   {
     icon: Briefcase,
-    title: 'Corporate Travel Desk',
+    title: 'Corporate Travel Governance',
     description:
-      'Corporate Travel Desk users can create charter requests for employees, request jet seat allocations, and coordinate associated accommodation needs.',
+      'Enterprise-grade coordination for travel desks, enabling policy compliance, multi-level approvals, and employee movement tracking.',
   },
   {
     icon: Armchair,
-    title: 'Available Jet Seat Allocation',
+    title: 'Institutional Jet Seat Access',
     description:
-      'Access seats on select private jet flights operating on predefined routes',
+      'Discover and request seats on approved empty-leg positioning flights operating across high-density Indian aviation corridors.',
   },
   {
     icon: Hotel,
-    title: 'Hotel Partner Accommodation',
+    title: 'Curated Hotel Stays',
     description:
-      'Hotels maintain inventory visibility, configure stay availability, and handle accommodation requests tied to approved charter activity.',
+      'Automatic destination stay coordination with verified hotel partners, synchronized directly with flight arrival schedules.',
   },
   {
     icon: Wand2,
-    title: 'AI-Assisted Compliance Review',
+    title: 'Digital Compliance Guard',
     description:
-      'AI-assisted logic evaluates workflow inputs and highlights potential inconsistencies for administrative or review.',
+      'Advanced platform logic ensures all workflows adhere to institutional governance and operational transparency standards.',
   },
 ];
 
-const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M2 5h20" />
-    <path d="M12 5v3" />
-    <path d="M10 8l2-3 2 3" />
-    <path d="M12 8c-4 0-5 2-5 5v3c0 3 1 5 5 5s5-2 5-5v-3c0-3-1-5-5-5z" />
-    <path d="M12 8v10" />
-    <path d="M7 14c2 1 8 1 10 0" />
-    <path d="M9 18l-1.5 4" />
-    <path d="M15 18l1.5 4" />
-  </svg>
-);
-
-
 export default function Home() {
+  // Structured Data for SEO (JSON-LD)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "AeroDesk",
+    "url": "https://aerodesk.aero",
+    "logo": "https://aerodesk.aero/logo.png",
+    "description": "Digital aviation infrastructure platform for private charters and NSOP operations in India.",
+    "serviceType": [
+      "Private Jet Charter Coordination",
+      "Corporate Travel Governance",
+      "Empty Leg Seat Allocation",
+      "Institutional Aviation Logistics"
+    ],
+    "areaServed": "India",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-9819754038",
+      "contactType": "customer service",
+      "email": "info@aerodesk.com"
+    }
+  };
+
   return (
     <div className="w-full relative min-h-screen">
+      {/* Structured Data script injection */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Background Layer: Optimized with next/image */}
       <div className="fixed inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
-          alt="Aviation Background"
+          alt="Premium Private Jet Background"
           fill
           priority
           className="object-cover"
-          data-ai-hint="airplane beach"
+          data-ai-hint="private jet"
         />
         <div className="absolute inset-0 bg-black/30" />
       </div>
@@ -126,14 +115,17 @@ export default function Home() {
           <section className="relative w-full text-white">
             <div className="relative">
               <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
-                <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/10 px-6 py-3 text-lg font-medium backdrop-blur-md">
+                <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/10 px-6 py-3 text-lg font-medium backdrop-blur-md animate-in fade-in slide-in-from-top-4 duration-1000">
                   <ShieldCheck className="h-6 w-6 text-accent" />
                   Fly Private. Stay Premium.
                 </div>
-                <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-                  Where <span style={{ color: '#FFFFBD' }}>Exclusive Journeys</span>{' '}
-                  Begin
+                <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
+                  Digital Infrastructure for <br />
+                  <span style={{ color: '#FFFFBD' }}>Exclusive Aviation Journeys</span>
                 </h1>
+                <p className="mx-auto max-w-2xl text-lg text-white/80 md:text-xl">
+                  Coordinating India’s premier private charter network through institutional digital layers and compliance-first design.
+                </p>
               </div>
 
               <div className="relative z-10 py-6">
@@ -142,14 +134,13 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="container p-4 pt-2 sm:p-6 md:p-8">
+              <div className="container p-4 pt-12 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
                   <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    A Comprehensive Aviation Ecosystem
+                    A Unified Private Aviation Ecosystem
                   </h2>
                   <p className="mt-4 text-lg text-white/80">
-                    All your charter needs, coordinated through one intelligent
-                    platform.
+                    AeroDesk orchestrates the complex interplay between fleet operators, corporate travel desks, and hospitality partners across India.
                   </p>
                 </div>
 
@@ -157,13 +148,15 @@ export default function Home() {
                   {features.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex flex-col items-center rounded-xl border-white/10 bg-black/15 p-6 text-center backdrop-blur-md"
+                      className="flex flex-col items-center rounded-xl border border-white/10 bg-black/15 p-6 text-center backdrop-blur-md hover:bg-white/5 transition-colors group"
                     >
-                      <feature.icon className="h-7 w-7 text-[#FFFFBD]" />
+                      <div className="p-3 bg-accent/10 rounded-full group-hover:scale-110 transition-transform">
+                        <feature.icon className="h-7 w-7 text-[#FFFFBD]" />
+                      </div>
                       <h3 className="mt-4 text-lg font-bold text-white">
                         {feature.title}
                       </h3>
-                      <p className="mt-2 text-white/80">
+                      <p className="mt-2 text-sm text-white/70 leading-relaxed">
                         {feature.description}
                       </p>
                     </div>
@@ -173,15 +166,14 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="bg-transparent pt-2 pb-6 sm:pb-8">
+          <section className="bg-transparent pt-12 pb-16 sm:pb-24">
             <div className="container p-4 sm:p-6 md:p-8">
-              <div className="mx-auto mb-12 max-w-3xl text-center">
+              <div className="mx-auto mb-16 max-w-3xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  Transparent Payment Coordination
+                  Transparent Coordination & Settlements
                 </h2>
                 <p className="mt-4 text-lg text-white/80">
-                  AeroDesk streamlines the payment process without handling funds,
-                  ensuring compliance and transparency for all parties.
+                  We streamline the private aviation lifecycle without handling client funds, ensuring maximum transparency and regulatory compliance.
                 </p>
               </div>
 
@@ -190,22 +182,22 @@ export default function Home() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <Wallet className="h-6 w-6 text-accent" />
-                      Payment Coordination
+                      Platform Coordination
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="flex-grow space-y-3 text-white/80">
+                  <CardContent className="flex-grow space-y-3 text-white/80 text-sm">
                     <p className="flex items-start gap-3">
                       <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
-                      <span>Generate invoices for services.</span>
+                      <span>Institutional pro-forma invoicing for all services.</span>
                     </p>
                     <p className="flex items-start gap-3">
                       <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
-                      <span>Track payment status (Mark as Paid/Pending).</span>
+                      <span>Real-time payment status tracking and verification.</span>
                     </p>
                     <p className="flex items-start gap-3">
                       <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
                       <span>
-                        Provide clear payment instructions to all parties.
+                        Structured direct settlement instructions for all parties.
                       </span>
                     </p>
                   </CardContent>
@@ -215,7 +207,7 @@ export default function Home() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <Banknote className="h-6 w-6 text-accent" />
-                      Direct Payment Flow
+                      Direct Settlement Flow
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-grow space-y-6">
@@ -223,11 +215,10 @@ export default function Home() {
                       <CheckCircle className="mt-1 h-5 w-5 shrink-0 text-green-500" />
                       <div>
                         <h4 className="font-semibold text-white">
-                          Air Charter Payment
+                          Aviation Services
                         </h4>
                         <p className="text-xs text-white/80">
-                          Customer / Corporate / Agent → Pays Operator Directly
-                          (offline / bank transfer).
+                          Requesters pay licensed NSOP operators directly via bank transfer, preserving commercial integrity.
                         </p>
                       </div>
                     </div>
@@ -235,10 +226,10 @@ export default function Home() {
                       <CheckCircle className="mt-1 h-5 w-5 shrink-0 text-green-500" />
                       <div>
                         <h4 className="font-semibold text-white">
-                          Hotel Accommodation Payment
+                          Hospitality Services
                         </h4>
                         <p className="text-xs text-white/80">
-                          Customer / Corporate / Agent → Pays Hotel Directly.
+                          Accommodation settlements are handled directly with our verified hotel partners at the property level.
                         </p>
                       </div>
                     </div>
@@ -249,18 +240,18 @@ export default function Home() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
                       <ShieldCheck className="h-6 w-6 text-accent" />
-                      Our Role & Revenue Model
+                      Platform Integrity
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-grow grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
                       <h4 className="mb-2 font-semibold text-white">
-                        Compliance First
+                        Zero Risk Model
                       </h4>
-                      <ul className="space-y-2 text-sm text-white/80">
+                      <ul className="space-y-2 text-xs text-white/80">
                         <li className="flex items-start gap-2">
                           <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
-                          AeroDesk never touches funds.
+                          No fund handling.
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
@@ -268,30 +259,26 @@ export default function Home() {
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
-                          No financial regulatory risk.
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
-                          No OTA classification trigger.
+                          Full audit transparency.
                         </li>
                       </ul>
                     </div>
                     <div>
                       <h4 className="mb-2 font-semibold text-white">
-                        How We Earn
+                        Value Creation
                       </h4>
-                      <ul className="space-y-2 text-sm text-white/80">
+                      <ul className="space-y-2 text-xs text-white/80">
                         <li className="flex items-start gap-2">
                           <FileText className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
-                          Subscription fees.
+                          Tiered Subscriptions.
                         </li>
                         <li className="flex items-start gap-2">
                           <FileText className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
-                          Participation fees.
+                          Marketplace Participation.
                         </li>
                         <li className="flex items-start gap-2">
                           <FileText className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{' '}
-                          Coordination / facilitation fees.
+                          Operational Efficiency.
                         </li>
                       </ul>
                     </div>
