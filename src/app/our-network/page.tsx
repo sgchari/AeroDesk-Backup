@@ -36,7 +36,7 @@ const hubCoordinates: Record<string, { x: number; y: number; airport: string }> 
 
 export default function OurNetworkPage() {
     const firestore = useFirestore();
-    const [hoveredOperator, setHoveredOperator] = useState<string | null>(null);
+    const [hoveredHub, setHoveredHub] = useState<string | null>(null);
 
     // Data Queries
     const operatorsQuery = useMemoFirebase(() => {
@@ -90,70 +90,70 @@ export default function OurNetworkPage() {
                 
                 <main className="relative flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
                     
-                    {/* Left Panel: Network Summary - Reduced Width */}
-                    <div className="w-full lg:w-80 p-6 z-20 flex flex-col gap-6 bg-black/30 backdrop-blur-3xl border-r border-white/5 overflow-y-auto">
+                    {/* Left Panel: Network Summary - Tightened Width */}
+                    <div className="w-full lg:w-72 p-5 z-20 flex flex-col gap-5 bg-black/30 backdrop-blur-3xl border-r border-white/5 overflow-y-auto">
                         <div className="space-y-1">
-                            <h1 className="text-3xl font-bold tracking-tight font-headline">Network</h1>
-                            <p className="text-accent font-bold text-[10px] uppercase tracking-widest">Licensed Operator Ecosystem</p>
-                            <p className="text-muted-foreground text-xs leading-relaxed pt-2">
-                                Real-time visibility into India's non-scheduled fleet and operational hubs.
+                            <h1 className="text-2xl font-bold tracking-tight font-headline">Network</h1>
+                            <p className="text-accent font-black text-[9px] uppercase tracking-[0.2em]">Institutional Hubs</p>
+                            <p className="text-muted-foreground text-[11px] leading-relaxed pt-1">
+                                India's private aviation infrastructure, coordinated in real-time.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-emerald-500/30 transition-all">
-                                <Users className="h-3.5 w-3.5 text-emerald-500 mb-1.5" />
-                                <p className="text-xl font-black text-white">{opsLoading ? '...' : metrics.activeOperators}</p>
-                                <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Operators</p>
+                                <Users className="h-3 w-3 text-emerald-500 mb-1" />
+                                <p className="text-lg font-black text-white">{opsLoading ? '...' : metrics.activeOperators}</p>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-tighter">Operators</p>
                             </div>
                             <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-accent/30 transition-all">
-                                <Plane className="h-3.5 w-3.5 text-accent mb-1.5" />
-                                <p className="text-xl font-black text-white">{metrics.totalFleet}</p>
-                                <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Aircraft</p>
+                                <Plane className="h-3 w-3 text-accent mb-1" />
+                                <p className="text-lg font-black text-white">{metrics.totalFleet}</p>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-tighter">Aircraft</p>
                             </div>
                             <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-primary/30 transition-all">
-                                <Globe className="h-3.5 w-3.5 text-primary mb-1.5" />
-                                <p className="text-xl font-black text-white">Pan-India</p>
-                                <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Coverage</p>
+                                <Globe className="h-3 w-3 text-primary mb-1" />
+                                <p className="text-lg font-black text-white">Hubs</p>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-tighter">Coverage</p>
                             </div>
                             <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-emerald-400/30 transition-all">
-                                <Zap className="h-3.5 w-3.5 text-emerald-400 mb-1.5" />
-                                <p className="text-xl font-black text-white">{metrics.emptyLegs}</p>
-                                <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Empty Legs</p>
+                                <Zap className="h-3 w-3 text-emerald-400 mb-1" />
+                                <p className="text-lg font-black text-white">{metrics.emptyLegs}</p>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-tighter">Empty Legs</p>
                             </div>
                         </div>
 
                         <div className="space-y-3">
                             <div className="p-3 rounded-xl bg-accent/5 border border-accent/10">
-                                <p className="text-[9px] font-black uppercase text-accent tracking-[0.2em] mb-1">Status Protocol</p>
-                                <div className="flex items-center gap-2 mt-2">
+                                <p className="text-[8px] font-black uppercase text-accent tracking-[0.2em] mb-1">Status Protocol</p>
+                                <div className="flex items-center gap-2 mt-1">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-[10px] text-muted-foreground uppercase">Network Operational</span>
+                                    <span className="text-[9px] text-muted-foreground uppercase font-bold">Network Operational</span>
                                 </div>
                             </div>
                             
-                            <div className="p-3 rounded-xl bg-white/5 border border-white/5 space-y-2">
+                            <div className="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
                                 <div className="flex items-center gap-2">
                                     <Activity className="h-3 w-3 text-primary" />
-                                    <span className="text-[10px] font-bold uppercase tracking-widest">Active Missions</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Active Missions</span>
                                 </div>
-                                <p className="text-2xl font-black text-white">{metrics.activeMissions}</p>
-                                <p className="text-[9px] text-muted-foreground">In-flight coordination active.</p>
+                                <p className="text-xl font-black text-white">{metrics.activeMissions}</p>
                             </div>
                         </div>
 
                         <div className="mt-auto pt-4 border-t border-white/5">
-                            <p className="text-[9px] text-muted-foreground leading-relaxed italic text-center">
-                                "Integrated Infrastructure. Real-Time Fleet Visibility."
-                            </p>
+                            <div className="flex items-center gap-2 text-[9px] text-muted-foreground uppercase font-bold tracking-widest justify-center">
+                                <ShieldCheck className="h-3 w-3 text-accent" />
+                                Secure Feed Active
+                            </div>
                         </div>
                     </div>
 
-                    {/* Right Side: Interactive Map - Fills available space */}
-                    <div className="relative flex-1 bg-black/20 overflow-hidden flex items-center justify-center p-4">
+                    {/* Right Side: Interactive Embossed Map */}
+                    <div className="relative flex-1 bg-black/10 overflow-hidden flex items-center justify-center p-4">
                         {/* Grid Overlay */}
-                        <div className="absolute inset-0 opacity-10 pointer-events-none" 
-                             style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+                             style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
                         
                         {/* Status Strip */}
                         <div className="absolute top-4 right-4 z-30 flex gap-2">
@@ -170,10 +170,40 @@ export default function OurNetworkPage() {
                             </div>
                         </div>
 
-                        {/* SVG Map of India */}
-                        <div className="relative w-full h-full max-w-[800px] max-h-[600px] flex items-center justify-center transition-transform duration-700">
-                            <svg viewBox="0 0 1000 800" className="w-full h-full filter drop-shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-                                {/* Operator Hub Markers */}
+                        {/* Map Viewport */}
+                        <div className="relative w-full h-full max-w-[900px] max-h-[700px] flex items-center justify-center transition-transform duration-700">
+                            <svg viewBox="0 0 1000 800" className="w-full h-full overflow-visible">
+                                <defs>
+                                    <filter id="emboss" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+                                        <feOffset in="blur" dx="2" dy="2" result="offsetBlur" />
+                                        <feSpecularLighting in="blur" surfaceScale="5" specularConstant=".75" specularExponent="20" lightingColor="#ffffff" result="specOut">
+                                            <fePointLight x="-5000" y="-10000" z="20000" />
+                                        </feSpecularLighting>
+                                        <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut" />
+                                        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litPaint" />
+                                        <feMerge>
+                                            <feMergeNode in="offsetBlur" />
+                                            <feMergeNode in="litPaint" />
+                                        </feMerge>
+                                    </filter>
+                                    <radialGradient id="mapGradient" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stopColor="rgba(255,255,189,0.05)" />
+                                        <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+                                    </radialGradient>
+                                </defs>
+
+                                {/* India Silhouette - Embossed Path */}
+                                <path 
+                                    d="M480,50 L520,80 L580,120 L620,180 L680,250 L750,320 L820,380 L880,450 L920,520 L940,600 L920,680 L850,750 L780,790 L700,780 L620,750 L550,720 L480,780 L400,750 L320,680 L280,600 L300,520 L350,450 L400,380 L420,300 L450,220 L460,150 L450,80 Z" 
+                                    fill="url(#mapGradient)"
+                                    stroke="rgba(255,255,189,0.1)"
+                                    strokeWidth="2"
+                                    filter="url(#emboss)"
+                                    className="opacity-40"
+                                />
+
+                                {/* Hub Markers */}
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
                                         const hubOps = operators?.filter(o => o.city === city) || [];
@@ -183,13 +213,20 @@ export default function OurNetworkPage() {
                                             <Tooltip key={city}>
                                                 <TooltipTrigger asChild>
                                                     <g 
-                                                        className="cursor-pointer transition-opacity duration-500"
-                                                        onMouseEnter={() => setHoveredOperator(city)}
-                                                        onMouseLeave={() => setHoveredOperator(null)}
+                                                        className="cursor-pointer group/marker"
+                                                        onMouseEnter={() => setHoveredHub(city)}
+                                                        onMouseLeave={() => setHoveredHub(null)}
                                                     >
-                                                        <circle cx={coords.x} cy={coords.y} r="10" fill="rgba(29, 191, 115, 0.2)" className="animate-ping" />
-                                                        <circle cx={coords.x} cy={coords.y} r="5" fill="#1DBF73" className="filter drop-shadow-[0_0_8px_#1DBF73]" />
-                                                        <text x={coords.x + 10} y={coords.y + 4} fill="white" className="text-[9px] font-black pointer-events-none opacity-60 uppercase tracking-tighter">{city}</text>
+                                                        <circle cx={coords.x} cy={coords.y} r="12" fill="rgba(29, 191, 115, 0.15)" className="animate-ping" />
+                                                        <circle cx={coords.x} cy={coords.y} r="4" fill="#1DBF73" className="filter drop-shadow-[0_0_8px_#1DBF73]" />
+                                                        <text 
+                                                            x={coords.x + 12} 
+                                                            y={coords.y + 4} 
+                                                            fill="white" 
+                                                            className="text-[10px] font-black pointer-events-none opacity-40 group-hover/marker:opacity-100 transition-opacity uppercase tracking-tighter"
+                                                        >
+                                                            {city}
+                                                        </text>
                                                     </g>
                                                 </TooltipTrigger>
                                                 <TooltipContent className="bg-[#0D1B2A] border-white/10 text-white p-4 shadow-2xl">
@@ -202,7 +239,7 @@ export default function OurNetworkPage() {
                                                             {hubOps.map(op => (
                                                                 <div key={op.id} className="flex items-center justify-between gap-6 text-[10px]">
                                                                     <span className="font-bold">{op.companyName}</span>
-                                                                    <span className="text-muted-foreground">Active</span>
+                                                                    <span className="text-muted-foreground">Operational</span>
                                                                 </div>
                                                             ))}
                                                         </div>
@@ -213,9 +250,9 @@ export default function OurNetworkPage() {
                                     })}
                                 </TooltipProvider>
 
-                                {/* Decorative Animated Route Arcs (Subtle) */}
-                                <path d="M480 220 Q 400 400, 320 580" fill="none" stroke="rgba(255, 255, 189, 0.1)" strokeWidth="1" strokeDasharray="5,5" />
-                                <path d="M480 220 Q 650 500, 480 780" fill="none" stroke="rgba(255, 255, 189, 0.1)" strokeWidth="1" strokeDasharray="5,5" />
+                                {/* Operational Route Arcs */}
+                                <path d="M480 220 Q 400 400, 320 580" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
+                                <path d="M480 220 Q 650 500, 480 780" fill="none" stroke="rgba(255, 255, 189, 0.05)" strokeWidth="1" strokeDasharray="4,4" className="animate-pulse" />
                             </svg>
                         </div>
                     </div>
