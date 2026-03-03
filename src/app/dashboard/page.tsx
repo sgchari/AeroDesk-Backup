@@ -17,7 +17,6 @@ import type { CharterRFQ } from '@/lib/types';
 import { LiveRadarDashboardCard } from '@/components/dashboard/shared/live-radar-dashboard-card';
 import dynamic from 'next/dynamic';
 
-// Dynamic Imports to reduce initial compilation load and bundle size
 const AdminDashboard = dynamic(() => import('./admin-dashboard').then(mod => mod.AdminDashboard), { 
     loading: () => <DashboardSkeleton /> 
 });
@@ -37,28 +36,28 @@ const HotelDashboard = dynamic(() => import('./hotel-dashboard').then(mod => mod
 const quickLinks = [
     {
         title: "Charter a Flight",
-        description: "Request a private flight for any journey.",
+        description: "Request a private flight journey.",
         icon: Plane,
         href: "/dashboard/charter-rfq",
         cta: "New Request"
     },
     {
         title: "Available Jet Seats",
-        description: "Explore and request seats on empty leg flights.",
+        description: "Explore empty leg allocations.",
         icon: Armchair,
         href: "/dashboard/customer/empty-legs",
         cta: "View Seats"
     },
     {
         title: "Multi-City Journey",
-        description: "Plan a complex trip with multiple stops.",
+        description: "Plan complex stopping itineraries.",
         icon: Calendar,
         href: "/dashboard/charter-rfq",
         cta: "Plan Journey"
     },
     {
         title: "Support & Concierge",
-        description: "Contact our team for assistance.",
+        description: "Contact our operational team.",
         icon: LifeBuoy,
         href: "#",
         cta: "Get Help"
@@ -83,7 +82,7 @@ function CustomerGateway() {
         <div className="space-y-6">
             <PageHeader 
                 title="Fly Without Convention"
-                description="Your private aviation journey, perfectly coordinated. What would you like to do today?"
+                description="Your private aviation journey, perfectly coordinated."
             >
                 <CreateRfqDialog />
             </PageHeader>
@@ -92,23 +91,23 @@ function CustomerGateway() {
                 <LiveRadarDashboardCard missions={liveMissions} />
             )}
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {quickLinks.map(link => (
                     <Card key={link.title} className="bg-card group hover:border-primary transition-colors">
-                        <CardHeader className="flex-row items-center gap-4 space-y-0">
-                            <div className="p-3 bg-muted rounded-lg">
-                                <link.icon className="h-6 w-6 text-muted-foreground" />
+                        <CardHeader className="flex-row items-center gap-4 space-y-0 p-4 sm:p-6">
+                            <div className="p-3 bg-muted rounded-xl">
+                                <link.icon className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
                             </div>
                             <div>
-                                <CardTitle>{link.title}</CardTitle>
-                                <CardDescription>{link.description}</CardDescription>
+                                <CardTitle className="text-sm sm:text-base">{link.title}</CardTitle>
+                                <CardDescription className="text-xs line-clamp-1">{link.description}</CardDescription>
                             </div>
                         </CardHeader>
-                        <CardContent>
-                             <Button asChild variant="link" className="p-0">
-                                <Link href={link.href}>
+                        <CardContent className="px-4 sm:px-6 pb-4">
+                             <Button asChild variant="link" className="p-0 text-xs font-bold uppercase tracking-widest text-accent">
+                                <Link href={link.href} className="flex items-center gap-2">
                                     {link.cta}
-                                    <ArrowRight className="ml-2 h-4 w-4"/>
+                                    <ArrowRight className="h-3.5 w-3.5"/>
                                 </Link>
                             </Button>
                         </CardContent>
@@ -132,7 +131,6 @@ export default function DashboardPage() {
   const renderDashboard = () => {
     if (!user) return null;
 
-    // GST Compliance Lock Check
     const isRestrictedRole = ['Operator', 'Travel Agency', 'CTD Admin', 'Corporate Admin'].includes(user.role);
     const gstRequirement = isRestrictedRole && user.gstVerificationStatus !== 'verified';
 
@@ -153,7 +151,7 @@ export default function DashboardPage() {
             case 'Hotel Partner':
               return <HotelDashboard />;
             default:
-              return <div className="p-4">Invalid user role context. Please contact platform support.</div>;
+              return <div className="p-4 text-center text-muted-foreground italic border-2 border-dashed rounded-lg">Operational context loading...</div>;
           }
     })();
 
@@ -163,8 +161,8 @@ export default function DashboardPage() {
                 <Alert variant="destructive" className="bg-amber-500/10 border-amber-500/20 text-amber-500 animate-in fade-in slide-in-from-top-4">
                     <AlertTriangle className="h-4 w-4" />
                     <AlertTitle className="font-black uppercase text-[10px] tracking-widest">Compliance Warning: GST Verification Required</AlertTitle>
-                    <AlertDescription className="text-xs">
-                        Institutional invoicing and settlement features are restricted until your GST profile is verified. 
+                    <AlertDescription className="text-[11px] sm:text-xs">
+                        Institutional features are restricted until your GST profile is verified. 
                         <Button asChild variant="link" className="h-auto p-0 ml-2 text-amber-500 font-bold hover:text-amber-400">
                             <Link href="/dashboard/profile">Complete Tax Profile</Link>
                         </Button>
@@ -182,10 +180,10 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-        <div className="p-4 rounded-md border border-destructive bg-destructive/10 text-destructive-foreground">
-            <h3 className="font-bold">Governance Context Error</h3>
-            <p>There was a problem loading your institutional profile. Details: {error.message}</p>
-            <Button variant="link" onClick={() => router.replace('/login')} className="p-0 mt-2 text-destructive-foreground">
+        <div className="p-6 rounded-xl border border-destructive bg-destructive/10 text-destructive-foreground">
+            <h3 className="font-black uppercase tracking-widest text-xs mb-2">Governance Context Error</h3>
+            <p className="text-sm opacity-80">There was a problem loading your institutional profile. Details: {error.message}</p>
+            <Button variant="outline" onClick={() => router.replace('/login')} className="mt-4 border-destructive/20 text-destructive-foreground hover:bg-destructive/20">
               Re-authenticate to Platform
             </Button>
         </div>
@@ -193,7 +191,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="animate-in fade-in duration-500">
+    <div className="animate-in fade-in duration-500 max-w-full">
       {renderDashboard()}
     </div>
   );
@@ -202,17 +200,17 @@ export default function DashboardPage() {
 function DashboardSkeleton() {
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <Skeleton className="h-12 w-1/3" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <Skeleton className="h-10 w-64" />
                 <Skeleton className="h-10 w-32" />
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Skeleton className="h-32" />
-                <Skeleton className="h-32" />
-                <Skeleton className="h-32" />
-                <Skeleton className="h-32" />
+            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+                <Skeleton className="h-32 rounded-xl" />
+                <Skeleton className="h-32 rounded-xl" />
+                <Skeleton className="h-32 rounded-xl" />
+                <Skeleton className="h-32 rounded-xl" />
             </div>
-            <Skeleton className="h-96" />
+            <Skeleton className="h-[400px] w-full rounded-xl" />
         </div>
     )
 }

@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -27,7 +26,6 @@ export default function BlogPage() {
   const trendingPosts = mockBlogPosts.slice(1, 4);
   const remainingPosts = mockBlogPosts.slice(4);
 
-  // Safety guard for empty data registry
   if (!leadPost) {
     return (
       <div className="w-full relative min-h-screen">
@@ -45,7 +43,7 @@ export default function BlogPage() {
         <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
           <LandingHeader activePage="Blog" />
           <main className="flex-1 py-12 flex items-center justify-center">
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-4 px-4">
               <h1 className="text-2xl font-bold text-white">Institutional Intelligence</h1>
               <p className="text-white/60">No reports are currently available in the public registry.</p>
             </div>
@@ -58,7 +56,6 @@ export default function BlogPage() {
 
   return (
     <div className="w-full relative min-h-screen">
-      {/* Optimized Background Layer */}
       <div className="fixed inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
@@ -74,27 +71,24 @@ export default function BlogPage() {
       <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
         <LandingHeader activePage="Blog" />
 
-        <main className="flex-1 py-6">
+        <main className="flex-1 py-6 md:py-10">
           <div className="container px-4">
             
-            {/* Page Header - Compacted */}
-            <div className="mb-6 text-center max-w-3xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-1 font-headline">
+            <div className="mb-8 md:mb-12 text-center max-w-3xl mx-auto">
+              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-2 font-headline">
                 AeroDesk Intelligence
               </h1>
-              <p className="text-base text-white/70 leading-relaxed">
+              <p className="text-sm md:text-lg text-white/70 leading-relaxed">
                 India's evolving private aviation infrastructure and non-scheduled operations governance.
               </p>
             </div>
 
-            {/* Editorial Hero Area - Tight Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 md:mb-12">
               
-              {/* Featured Large Article (Left) */}
               <div className="lg:col-span-8">
                 <Link href={`/blog/${leadPost.id}`}>
                   <Card className="h-full overflow-hidden border-white/10 bg-black/30 backdrop-blur-xl group hover:border-primary/50 transition-all duration-500 cursor-pointer">
-                    <div className="relative h-[280px] md:h-[380px]">
+                    <div className="relative h-[300px] sm:h-[400px] md:h-[450px]">
                       <Image
                         src={leadPost.imageUrl}
                         alt={leadPost.title}
@@ -103,24 +97,24 @@ export default function BlogPage() {
                         priority
                         data-ai-hint="private jet"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-5">
-                        <Badge variant="outline" className="mb-2 text-accent border-accent/30 bg-accent/10 text-[10px]">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                        <Badge variant="outline" className="mb-3 text-accent border-accent/30 bg-accent/10 text-[10px] uppercase tracking-widest">
                           {leadPost.category}
                         </Badge>
-                        <h2 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight group-hover:text-accent transition-colors">
+                        <h2 className="text-2xl md:text-4xl font-bold text-white mb-3 leading-tight group-hover:text-accent transition-colors font-headline">
                           {leadPost.title}
                         </h2>
-                        <p className="text-white/70 text-sm mb-3 line-clamp-2 max-w-2xl">
+                        <p className="text-white/70 text-sm md:text-base mb-4 line-clamp-2 max-w-2xl">
                           {leadPost.excerpt}
                         </p>
-                        <div className="flex items-center gap-4">
-                          <Button className="bg-accent text-accent-foreground hover:bg-accent/90 h-8 text-xs px-4" size="sm">
+                        <div className="flex items-center gap-6">
+                          <Button className="bg-accent text-accent-foreground hover:bg-accent/90 h-9 text-xs px-6 font-black uppercase tracking-widest" size="sm">
                             Read Insight
-                            <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                            <ArrowRight className="ml-2 h-4 w-4" />
                           </Button>
-                          <div className="flex items-center gap-2 text-[9px] text-white/40 font-code uppercase tracking-widest">
-                            <User className="h-3 w-3" />
+                          <div className="hidden sm:flex items-center gap-2 text-[10px] text-white/40 font-code uppercase tracking-widest">
+                            <User className="h-3.5 w-3.5 text-accent" />
                             {leadPost.author}
                           </div>
                         </div>
@@ -130,57 +124,56 @@ export default function BlogPage() {
                 </Link>
               </div>
 
-              {/* Trending Stack (Right) */}
-              <div className="lg:col-span-4 flex flex-col gap-3">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-accent mb-1">Trending Now</h3>
-                {trendingPosts.map((post) => (
-                  <Link key={post.id} href={`/blog/${post.id}`}>
-                    <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all cursor-pointer">
-                      <div className="flex gap-3 p-2.5">
-                        <div className="relative h-14 w-16 shrink-0 rounded-md overflow-hidden">
-                          <Image src={post.imageUrl} alt={post.title} fill className="object-cover opacity-70 transition-opacity group-hover:opacity-100" data-ai-hint="aviation" />
+              <div className="lg:col-span-4 flex flex-col gap-4">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-accent mb-1 ml-1">Trending Reports</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                    {trendingPosts.map((post) => (
+                    <Link key={post.id} href={`/blog/${post.id}`}>
+                        <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all cursor-pointer">
+                        <div className="flex gap-4 p-3">
+                            <div className="relative h-16 w-20 shrink-0 rounded-lg overflow-hidden">
+                            <Image src={post.imageUrl} alt={post.title} fill className="object-cover opacity-70 transition-opacity group-hover:opacity-100" data-ai-hint="aviation" />
+                            </div>
+                            <div className="flex flex-col justify-center">
+                            <span className="text-[9px] uppercase tracking-widest font-bold text-white/40 mb-1">{post.category}</span>
+                            <h4 className="text-xs md:text-sm font-bold text-white group-hover:text-accent transition-colors line-clamp-2 leading-tight font-headline">
+                                {post.title}
+                            </h4>
+                            </div>
                         </div>
-                        <div className="flex flex-col justify-center">
-                          <span className="text-[8px] uppercase tracking-widest text-white/40 mb-0.5">{post.category}</span>
-                          <h4 className="text-[11px] font-bold text-white group-hover:text-accent transition-colors line-clamp-2 leading-tight">
-                            {post.title}
-                          </h4>
-                        </div>
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
+                        </Card>
+                    </Link>
+                    ))}
+                </div>
               </div>
             </div>
 
-            {/* Content Utility Bar */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-3 mb-8 bg-white/5 backdrop-blur-md border border-white/10 p-2.5 rounded-xl">
-              <nav className="flex wrap items-center gap-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10 bg-white/5 backdrop-blur-md border border-white/10 p-3 rounded-2xl">
+              <nav className="flex items-center gap-4 md:gap-6 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide px-2">
                 {categories.slice(0, 4).map((cat) => (
                   <button
                     key={cat}
-                    className="text-[11px] font-medium text-white/60 hover:text-white transition-colors relative"
+                    className="text-[10px] md:text-xs font-black uppercase tracking-widest text-white/60 hover:text-white transition-colors relative shrink-0"
                   >
                     {cat}
-                    {cat === 'All' && <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent" />}
+                    {cat === 'All' && <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-accent" />}
                   </button>
                 ))}
               </nav>
-              <div className="relative w-full md:w-56">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40" />
+              <div className="relative w-full md:w-72">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
                 <Input 
-                  placeholder="Search intelligence..." 
-                  className="bg-black/20 border-white/10 text-white pl-7 focus:ring-accent h-8 text-[11px]"
+                  placeholder="Search intelligence registry..." 
+                  className="bg-black/20 border-white/10 text-white pl-10 focus:ring-accent h-10 text-xs rounded-xl"
                 />
               </div>
             </div>
 
-            {/* Latest Articles Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {remainingPosts.map((post) => (
                 <Link key={post.id} href={`/blog/${post.id}`} className="block h-full">
-                  <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all flex flex-col h-full cursor-pointer">
-                    <div className="relative h-40 w-full">
+                  <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all flex flex-col h-full cursor-pointer rounded-2xl">
+                    <div className="relative h-48 w-full">
                       <Image
                         src={post.imageUrl}
                         alt={post.title}
@@ -188,30 +181,30 @@ export default function BlogPage() {
                         className="object-cover opacity-70 group-hover:opacity-90 transition-opacity"
                         data-ai-hint="flight cockpit"
                       />
-                      <div className="absolute top-2 left-2">
-                        <Badge className="bg-black/60 text-[9px] text-white border-transparent backdrop-blur-md h-5">
+                      <div className="absolute top-3 left-3">
+                        <Badge className="bg-black/60 text-[9px] text-white border-transparent backdrop-blur-md h-6 px-3 uppercase font-black tracking-widest">
                           {post.category}
                         </Badge>
                       </div>
                     </div>
-                    <CardContent className="p-4 flex flex-1 flex-col">
-                      <div className="flex items-center gap-2 text-[8px] text-white/40 uppercase tracking-widest mb-2">
-                        <div className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" /> 5 min</div>
+                    <CardContent className="p-6 flex flex-1 flex-col">
+                      <div className="flex items-center gap-2 text-[9px] text-white/40 uppercase tracking-widest mb-3">
+                        <div className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> 5 min</div>
                         <div>•</div>
                         <div>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
                       </div>
-                      <h4 className="text-base font-bold text-white mb-1.5 group-hover:text-accent transition-colors line-clamp-2 leading-tight">
+                      <h4 className="text-lg font-bold text-white mb-2 group-hover:text-accent transition-colors line-clamp-2 leading-tight font-headline">
                         {post.title}
                       </h4>
-                      <p className="text-[11px] text-white/60 mb-3 line-clamp-3">
+                      <p className="text-xs text-white/60 mb-4 line-clamp-3 leading-relaxed">
                         {post.excerpt}
                       </p>
-                      <div className="mt-auto pt-2.5 border-t border-white/5 flex items-center justify-between">
-                        <Button variant="link" className="p-0 text-accent hover:text-accent/80 h-auto font-bold text-[10px] group/btn">
-                          Read Insight
-                          <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
+                      <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+                        <Button variant="link" className="p-0 text-accent hover:text-accent/80 h-auto font-black text-[10px] uppercase tracking-widest group/btn">
+                          Read Full Insight
+                          <ArrowRight className="ml-2 h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
                         </Button>
-                        <span className="text-[8px] text-white/30 font-code">{post.author}</span>
+                        <span className="text-[9px] text-white/30 font-code font-bold">{post.author}</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -219,30 +212,29 @@ export default function BlogPage() {
               ))}
             </div>
 
-            {/* Newsletter CTA Section */}
-            <Card className="border-accent/20 bg-accent/5 backdrop-blur-2xl p-6 text-center max-w-2xl mx-auto overflow-hidden relative">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                <BookOpen className="h-32 w-32 -mr-12 -mt-12" />
+            <Card className="border-accent/20 bg-accent/5 backdrop-blur-3xl p-8 md:p-12 text-center max-w-3xl mx-auto overflow-hidden relative rounded-3xl">
+              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                <BookOpen className="h-48 w-48 -mr-16 -mt-16" />
               </div>
-              <div className="relative z-10 space-y-3">
-                <div className="inline-flex p-2 bg-accent/10 rounded-full mb-1">
-                  <Mail className="h-4 w-4 text-accent" />
+              <div className="relative z-10 space-y-4">
+                <div className="inline-flex p-3 bg-accent/10 rounded-full mb-2">
+                  <Mail className="h-6 w-6 text-accent" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Institutional Intelligence</h3>
-                <p className="text-[11px] text-white/60 max-w-sm mx-auto">
+                <h3 className="text-2xl md:text-3xl font-bold text-white font-headline">Institutional Intelligence Feed</h3>
+                <p className="text-xs md:text-sm text-white/60 max-w-md mx-auto leading-relaxed">
                   Receive weekly operational perspectives and market analysis directly from the charter infrastructure center.
                 </p>
-                <form className="flex flex-col sm:flex-row gap-2 max-w-sm mx-auto pt-1" onSubmit={(e) => e.preventDefault()}>
+                <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto pt-4" onSubmit={(e) => e.preventDefault()}>
                   <Input 
                     type="email" 
-                    placeholder="Corporate Email" 
-                    className="bg-black/40 border-white/10 text-white h-9 text-xs"
+                    placeholder="Corporate Email Protocol" 
+                    className="bg-black/40 border-white/10 text-white h-11 text-xs px-4 rounded-xl"
                   />
-                  <Button className="h-9 px-5 bg-accent text-accent-foreground hover:bg-accent/90 font-bold shrink-0 text-xs">
+                  <Button className="h-11 px-8 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-widest shrink-0 rounded-xl">
                     Subscribe
                   </Button>
                 </form>
-                <p className="text-[8px] text-white/30 uppercase tracking-[0.2em]">AeroDesk Governance Protocol • No Spam Policy</p>
+                <p className="text-[9px] text-white/30 uppercase tracking-[0.3em] pt-4">AeroDesk Governance Protocol • Zero Spam Policy</p>
               </div>
             </Card>
 

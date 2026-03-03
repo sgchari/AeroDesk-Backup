@@ -25,16 +25,16 @@ export function StatsCard({ title, value, icon: Icon, description, href, onClick
             {/* Soft decorative glow */}
             <div className="absolute top-0 right-0 -mr-4 -mt-4 h-24 w-24 bg-primary/5 blur-3xl rounded-full" />
             
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-                <CardTitle className="text-[9px] sm:text-[10px] uppercase font-black tracking-[0.1em] sm:tracking-[0.15em] text-slate-500 group-hover:text-primary transition-colors line-clamp-1">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 sm:px-4 pt-3 sm:pt-4">
+                <CardTitle className="text-[8px] sm:text-[10px] uppercase font-black tracking-[0.1em] sm:tracking-[0.15em] text-slate-500 group-hover:text-primary transition-colors line-clamp-1">
                     {title}
                 </CardTitle>
-                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-600 group-hover:text-primary transition-colors shrink-0" />
+                <Icon className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600 group-hover:text-primary transition-colors shrink-0" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-                <div className="text-xl sm:text-2xl font-black font-headline text-white tracking-tight break-all">{value}</div>
+            <CardContent className="px-3 sm:px-4 pb-3 sm:pb-4">
+                <div className="text-lg sm:text-2xl font-black font-headline text-white tracking-tight break-all">{value}</div>
                 {description && (
-                    <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase mt-1 tracking-tighter line-clamp-1">
+                    <p className="text-[8px] sm:text-[10px] font-bold text-slate-500 uppercase mt-1 tracking-tighter line-clamp-1">
                         {description}
                     </p>
                 )}

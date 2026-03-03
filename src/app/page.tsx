@@ -63,7 +63,6 @@ const features = [
 ];
 
 export default function Home() {
-  // Structured Data for SEO (JSON-LD)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -88,13 +87,11 @@ export default function Home() {
 
   return (
     <div className="w-full relative min-h-screen">
-      {/* Structured Data script injection */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Background Layer: Optimized with next/image */}
       <div className="fixed inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
@@ -107,51 +104,50 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/30" />
       </div>
 
-      {/* Content Layer: Sits on top of the background and handles scrolling */}
       <div className="relative z-10 flex min-h-screen flex-col overflow-x-hidden bg-transparent">
         <LandingHeader />
 
         <main className="flex-grow">
           <section className="relative w-full text-white">
             <div className="relative">
-              <div className="container space-y-6 px-4 pb-4 pt-16 text-center sm:px-6 md:px-8">
-                <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-black/10 px-6 py-3 text-lg font-medium backdrop-blur-md animate-in fade-in slide-in-from-top-4 duration-1000">
-                  <ShieldCheck className="h-6 w-6 text-accent" />
+              <div className="container space-y-6 px-4 pb-4 pt-12 md:pt-16 lg:pt-24 text-center">
+                <div className="inline-flex items-center gap-2 md:gap-3 rounded-full border border-white/20 bg-black/10 px-4 py-2 md:px-6 md:py-3 text-sm md:text-lg font-medium backdrop-blur-md animate-in fade-in slide-in-from-top-4 duration-1000">
+                  <ShieldCheck className="h-4 w-4 md:h-6 md:w-6 text-accent" />
                   Fly Private. Stay Premium.
                 </div>
-                <h1 className="text-center font-headline text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl [text-shadow:0_1px_4px_rgba(0,0,0,0.1)]">
-                  Digital Infrastructure for <br />
-                  <span style={{ color: '#FFFFBD' }}>Exclusive Aviation Journeys</span>
+                <h1 className="text-center font-headline text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.1)] leading-tight px-2">
+                  Digital Infrastructure for <br className="hidden md:block" />
+                  <span className="text-accent">Exclusive Aviation Journeys</span>
                 </h1>
-                <p className="mx-auto max-w-2xl text-lg text-white/80 md:text-xl">
+                <p className="mx-auto max-w-2xl text-base md:text-xl text-white/80 px-4">
                   Coordinating India’s premier private charter network through institutional digital layers and compliance-first design.
                 </p>
               </div>
 
-              <div className="relative z-10 py-6">
-                <div className="container">
+              <div className="relative z-10 py-6 px-4">
+                <div className="container p-0">
                   <BookingWidget />
                 </div>
               </div>
 
               <div className="container p-4 pt-12 sm:p-6 md:p-8">
                 <div className="mx-auto max-w-3xl text-center">
-                  <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  <h2 className="font-headline text-2xl md:text-4xl font-bold tracking-tight text-white">
                     A Unified Private Aviation Ecosystem
                   </h2>
-                  <p className="mt-4 text-lg text-white/80">
+                  <p className="mt-4 text-base md:text-lg text-white/80">
                     AeroDesk orchestrates the complex interplay between fleet operators, corporate travel desks, and hospitality partners across India.
                   </p>
                 </div>
 
-                <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-12 grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   {features.map((feature, index) => (
                     <div
                       key={index}
                       className="flex flex-col items-center rounded-xl border border-white/10 bg-black/15 p-6 text-center backdrop-blur-md hover:bg-white/5 transition-colors group"
                     >
                       <div className="p-3 bg-accent/10 rounded-full group-hover:scale-110 transition-transform">
-                        <feature.icon className="h-7 w-7 text-[#FFFFBD]" />
+                        <feature.icon className="h-6 w-6 md:h-7 md:w-7 text-accent" />
                       </div>
                       <h3 className="mt-4 text-lg font-bold text-white">
                         {feature.title}
@@ -166,18 +162,18 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="bg-transparent pt-12 pb-16 sm:pb-24">
-            <div className="container p-4 sm:p-6 md:p-8">
+          <section className="bg-transparent pt-12 pb-16 sm:pb-24 px-4">
+            <div className="container p-0">
               <div className="mx-auto mb-16 max-w-3xl text-center">
-                <h2 className="font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <h2 className="font-headline text-2xl md:text-4xl font-bold tracking-tight text-white">
                   Transparent Coordination & Settlements
                 </h2>
-                <p className="mt-4 text-lg text-white/80">
+                <p className="mt-4 text-base md:text-lg text-white/80">
                   We streamline the private aviation lifecycle without handling client funds, ensuring maximum transparency and regulatory compliance.
                 </p>
               </div>
 
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <Card className="flex flex-col border-white/10 bg-black/15 backdrop-blur-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
@@ -196,9 +192,7 @@ export default function Home() {
                     </p>
                     <p className="flex items-start gap-3">
                       <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />{' '}
-                      <span>
-                        Structured direct settlement instructions for all parties.
-                      </span>
+                      <span>Structured direct settlement instructions for all parties.</span>
                     </p>
                   </CardContent>
                 </Card>

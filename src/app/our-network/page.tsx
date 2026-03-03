@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -19,7 +18,6 @@ export default function OurNetworkPage() {
     const firestore = useFirestore();
     const [hoveredHub, setHoveredHub] = useState<string | null>(null);
 
-    // Data Queries
     const operatorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'operators'), where('status', '==', 'Approved'));
@@ -39,7 +37,6 @@ export default function OurNetworkPage() {
     const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
     const { data: emptyLegs } = useCollection<EmptyLeg>(elQuery, 'emptyLegs');
 
-    // Derived Metrics: Include live and enroute statuses for visualization
     const activeMissionsList = useMemo(() => {
         return rfqs?.filter(r => 
             ['operationalPreparation', 'boarding', 'departed', 'arrived', 'enroute', 'live'].includes(r.status)
@@ -47,9 +44,8 @@ export default function OurNetworkPage() {
     }, [rfqs]);
 
     const metrics = useMemo(() => {
-        const approved = operators || [];
         return {
-            activeOperators: approved.length,
+            activeOperators: operators?.length || 0,
             totalFleet: 124, 
             emptyLegs: emptyLegs?.length || 0,
             activeMissions: activeMissionsList.length
@@ -57,8 +53,7 @@ export default function OurNetworkPage() {
     }, [operators, emptyLegs, activeMissionsList]);
 
     return (
-        <div className="w-full relative min-h-screen text-[#EAEAEA] overflow-hidden flex flex-col">
-            {/* High-Fidelity Background with Frosted Layer */}
+        <div className="w-full relative min-h-screen text-[#EAEAEA] overflow-x-hidden flex flex-col">
             <div className="fixed inset-0 z-0">
                 <Image
                     src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
@@ -74,72 +69,68 @@ export default function OurNetworkPage() {
             <div className="relative z-10 flex flex-col flex-1 bg-transparent">
                 <LandingHeader activePage="Our Network" />
                 
-                <main className="relative flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
+                <main className="relative flex flex-col lg:flex-row flex-1 min-h-0">
                     
-                    {/* Compact Sidebar: High-Density Analytics */}
-                    <div className="w-full lg:w-56 p-4 z-20 flex flex-col gap-4 bg-black/40 backdrop-blur-3xl border-r border-white/10 overflow-y-auto text-[11px]">
+                    {/* Metrics Sidebar - Adaptive Grid on Mobile */}
+                    <div className="w-full lg:w-64 p-4 md:p-6 z-20 flex flex-col gap-4 md:gap-6 bg-black/40 backdrop-blur-3xl border-b lg:border-b-0 lg:border-r border-white/10 text-[11px]">
                         <div className="space-y-1">
-                            <h1 className="text-xl font-bold tracking-tight font-headline">Intelligence</h1>
+                            <h1 className="text-xl md:text-2xl font-bold tracking-tight font-headline">Intelligence</h1>
                             <p className="text-accent font-black text-[8px] uppercase tracking-[0.25em]">Geographic Grid Status</p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2">
-                            <div className="p-2.5 rounded-lg bg-white/[0.03] border border-white/5 group hover:border-emerald-500/30 transition-all">
-                                <Users className="h-3 w-3 text-emerald-500 mb-1" />
-                                <p className="text-base font-black text-white">{opsLoading ? '...' : metrics.activeOperators}</p>
-                                <p className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest">Operators</p>
+                        <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
+                            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-emerald-500/30 transition-all">
+                                <Users className="h-4 w-4 text-emerald-500 mb-2" />
+                                <p className="text-lg md:text-xl font-black text-white">{opsLoading ? '...' : metrics.activeOperators}</p>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Active Operators</p>
                             </div>
-                            <div className="p-2.5 rounded-lg bg-white/[0.03] border border-white/5 group hover:border-accent/30 transition-all">
-                                <Plane className="h-3 w-3 text-accent mb-1" />
-                                <p className="text-base font-black text-white">{metrics.totalFleet}</p>
-                                <p className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest">Aircraft</p>
+                            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-accent/30 transition-all">
+                                <Plane className="h-4 w-4 text-accent mb-2" />
+                                <p className="text-lg md:text-xl font-black text-white">{metrics.totalFleet}</p>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Registered Fleet</p>
                             </div>
-                            <div className="p-2.5 rounded-lg bg-white/[0.03] border border-white/5 group hover:border-primary/30 transition-all">
-                                <Globe className="h-3 w-3 text-primary mb-1" />
-                                <p className="text-base font-black text-white">Hubs</p>
-                                <p className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest">Nodes</p>
+                            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-primary/30 transition-all">
+                                <Globe className="h-4 w-4 text-primary mb-2" />
+                                <p className="text-lg md:text-xl font-black text-white">Registry</p>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Network Nodes</p>
                             </div>
-                            <div className="p-2.5 rounded-lg bg-white/[0.03] border border-white/5 group hover:border-emerald-400/30 transition-all">
-                                <Zap className="h-3 w-3 text-emerald-400 mb-1" />
-                                <p className="text-base font-black text-white">{metrics.emptyLegs}</p>
-                                <p className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest">Opportunities</p>
+                            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 group hover:border-emerald-400/30 transition-all">
+                                <Zap className="h-4 w-4 text-emerald-400 mb-2" />
+                                <p className="text-lg md:text-xl font-black text-white">{metrics.emptyLegs}</p>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">EL Opportunities</p>
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <div className="p-3 rounded-lg bg-accent/5 border border-accent/10">
-                                <p className="text-[7px] font-black uppercase text-accent tracking-[0.2em] mb-1">Health Signal</p>
+                        <div className="hidden lg:flex flex-col gap-3 mt-auto">
+                            <div className="p-4 rounded-xl bg-accent/5 border border-accent/10">
+                                <p className="text-[8px] font-black uppercase text-accent tracking-[0.2em] mb-2">Health Signal</p>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_#10B981]" />
-                                    <span className="text-[8px] text-muted-foreground uppercase font-bold">Network Operational</span>
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]" />
+                                    <span className="text-[9px] text-muted-foreground uppercase font-bold">Network Operational</span>
                                 </div>
                             </div>
                             
-                            <div className="p-3 rounded-lg bg-white/5 border border-white/5 space-y-1">
+                            <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-1">
                                 <div className="flex items-center gap-2">
-                                    <Activity className="h-3 w-3 text-primary" />
-                                    <span className="text-[8px] font-black uppercase tracking-widest text-white/60">Live Missions</span>
+                                    <Activity className="h-4 w-4 text-primary" />
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Live Missions</span>
                                 </div>
-                                <p className="text-lg font-black text-white">{metrics.activeMissions}</p>
+                                <p className="text-2xl font-black text-white">{metrics.activeMissions}</p>
                             </div>
-                        </div>
 
-                        <div className="mt-auto pt-4 border-t border-white/5 flex flex-col gap-2">
-                            <div className="flex items-center gap-2 text-[8px] text-muted-foreground uppercase font-bold tracking-widest justify-center">
-                                <ShieldCheck className="h-3 w-3 text-accent" />
+                            <div className="flex items-center gap-2 text-[9px] text-muted-foreground uppercase font-bold tracking-widest justify-center pt-4 border-t border-white/5">
+                                <ShieldCheck className="h-4 w-4 text-accent" />
                                 Protocol Secure
                             </div>
                         </div>
                     </div>
 
-                    {/* Right Side: Spatial India Map View */}
-                    <div className="relative flex-1 bg-black/20 overflow-hidden flex items-center justify-center p-4">
-                        {/* Grid Overlay */}
+                    {/* Spatial Map Viewport - Relative scaling for mobile */}
+                    <div className="relative flex-1 bg-black/20 overflow-hidden flex items-center justify-center min-h-[400px] md:min-h-[600px] p-4">
                         <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
-                             style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '25px 25px' }} />
+                             style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
                         
-                        {/* Top Indicator Strip */}
-                        <div className="absolute top-4 right-4 z-30">
+                        <div className="absolute top-4 right-4 z-30 hidden sm:flex">
                             <div className="bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-full flex items-center gap-4">
                                 <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]" />
@@ -153,8 +144,7 @@ export default function OurNetworkPage() {
                             </div>
                         </div>
 
-                        {/* Spatial Map Viewport */}
-                        <div className="relative w-full h-full max-w-[850px] max-h-[850px] flex items-center justify-center">
+                        <div className="relative w-full h-full max-w-[900px] max-h-[900px] flex items-center justify-center transition-transform duration-700">
                             <svg viewBox="0 0 1000 1000" className="w-full h-full overflow-visible">
                                 <defs>
                                     <pattern id="dotPattern" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
@@ -175,10 +165,7 @@ export default function OurNetworkPage() {
 
                                 <TooltipProvider>
                                     {Object.entries(hubCoordinates).map(([city, coords]) => {
-                                        // Filter operators registered in this city hub
                                         const hubOps = operators?.filter(o => o.city === city) || [];
-                                        
-                                        // Hub is visible if operators exist or if it's a primary network node
                                         const isVisibleHub = hubOps.length > 0 || ['Mumbai', 'Delhi', 'Bengaluru', 'Kolkata'].includes(city);
 
                                         if (!isVisibleHub) return null;
@@ -186,13 +173,9 @@ export default function OurNetworkPage() {
                                         return (
                                             <Tooltip key={city}>
                                                 <TooltipTrigger asChild>
-                                                    <g 
-                                                        className="cursor-pointer group/marker"
-                                                        onMouseEnter={() => setHoveredHub(city)}
-                                                        onMouseLeave={() => setHoveredHub(null)}
-                                                    >
-                                                        <circle cx={coords.x} cy={coords.y} r="3.5" fill="#1DBF73" className="filter drop-shadow-[0_0_10px_#1DBF73]" />
-                                                        <text x={coords.x + 10} y={coords.y + 3} fill="white" className="text-[9px] font-black pointer-events-none opacity-30 group-hover/marker:opacity-100 transition-opacity uppercase tracking-tighter">
+                                                    <g className="cursor-pointer group/marker" onMouseEnter={() => setHoveredHub(city)} onMouseLeave={() => setHoveredHub(null)}>
+                                                        <circle cx={coords.x} cy={coords.y} r="4" fill="#1DBF73" className="filter drop-shadow-[0_0_10px_#1DBF73]" />
+                                                        <text x={coords.x + 12} y={coords.y + 4} fill="white" className="text-[10px] font-black pointer-events-none opacity-40 group-hover/marker:opacity-100 transition-opacity uppercase tracking-tighter hidden sm:block">
                                                             {city}
                                                         </text>
                                                     </g>
@@ -210,7 +193,7 @@ export default function OurNetworkPage() {
                                                                     <span className="text-emerald-500 font-black text-[8px] uppercase">Online</span>
                                                                 </div>
                                                             )) : (
-                                                                <p className="text-[9px] text-white/40 italic">Registry Node Active • Standby</p>
+                                                                <p className="text-[9px] text-white/40 italic">Registry Node Standby</p>
                                                             )}
                                                         </div>
                                                     </div>
@@ -221,35 +204,33 @@ export default function OurNetworkPage() {
                                 </TooltipProvider>
 
                                 {activeMissionsList.map(mission => {
-                                    // Parse city names for coordinate lookup
                                     const depCity = mission.departure.split(' (')[0];
                                     const arrCity = mission.arrival.split(' (')[0];
                                     const from = hubCoordinates[depCity];
                                     const to = hubCoordinates[arrCity];
-                                    
                                     if (!from || !to) return null;
-
-                                    // Quadratic Bézier curve for geographic routes
                                     const cx = (from.x + to.x) / 2 + (from.y - to.y) * 0.15;
                                     const cy = (from.y + to.y) / 2 + (to.x - from.x) * 0.15;
-                                    
                                     return (
-                                        <path 
-                                            key={mission.id}
-                                            d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} 
-                                            fill="none" 
-                                            stroke="rgba(255, 255, 189, 0.12)" 
-                                            strokeWidth="1.5" 
-                                            strokeDasharray="4,4"
-                                            className="animate-pulse"
-                                        />
+                                        <path key={mission.id} d={`M${from.x} ${from.y} Q ${cx} ${cy}, ${to.x} ${to.y}`} fill="none" stroke="rgba(255, 255, 189, 0.15)" strokeWidth="1.5" strokeDasharray="4,4" />
                                     );
                                 })}
                             </svg>
                         </div>
                     </div>
                 </main>
+                <div className="lg:hidden bg-black/60 p-4 border-t border-white/10 grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                        <Activity className="h-4 w-4 text-primary" />
+                        <span className="text-[10px] font-black uppercase text-white">{metrics.activeMissions} Live Missions</span>
+                    </div>
+                    <div className="flex items-center gap-2 justify-end">
+                        <ShieldCheck className="h-4 w-4 text-accent" />
+                        <span className="text-[10px] font-black uppercase text-white">Nodes Active</span>
+                    </div>
+                </div>
             </div>
+            <LandingFooter />
         </div>
     );
 }
