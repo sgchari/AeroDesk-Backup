@@ -1,38 +1,11 @@
 /**
- * @fileOverview Precision Geographic Utilities for AeroDesk.
- * Handles high-fidelity projection mapping for the Indian landmass.
+ * @fileOverview Precision Geographic Assets for AeroDesk Infrastructure.
+ * Contains high-fidelity GeoJSON for India Mainland and verified hub coordinates.
  */
 
 export interface GeoCoord {
     lat: number;
     lng: number;
-}
-
-/**
- * Precision Bounding Box for the Indian Subcontinent (Mainland + standard buffers)
- * West: 68.1°E (Gujarat) | East: 97.4°E (Arunachal)
- * South: 8.0°N (Kanyakumari) | North: 37.5°N (Ladakh)
- */
-const MAP_BOUNDS = {
-    minLng: 68.1,
-    maxLng: 97.4,
-    minLat: 8.0,
-    maxLat: 37.5
-};
-
-/**
- * Geographic Projection Engine
- * Maps real-world [longitude, latitude] to a calibrated 1000x1000 SVG coordinate space.
- * Uses a linear mapping calibrated to the India silhouette path.
- */
-export function project(lat: number, lng: number): { x: number; y: number } {
-    // Horizontal mapping (Longitudinal)
-    const x = ((lng - MAP_BOUNDS.minLng) / (MAP_BOUNDS.maxLng - MAP_BOUNDS.minLng)) * 1000;
-    
-    // Vertical mapping (Latitudinal) - Inverted for SVG Y-axis
-    const y = 1000 - (((lat - MAP_BOUNDS.minLat) / (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat)) * 1000);
-    
-    return { x, y };
 }
 
 export const hubGeographics: Record<string, GeoCoord & { type: 'backbone' | 'operator', label: string, operators: number, partners: number }> = {
@@ -50,7 +23,29 @@ export const hubGeographics: Record<string, GeoCoord & { type: 'backbone' | 'ope
 };
 
 /**
- * High-resolution India boundary silhouette.
- * Calibrated for the 1000x1000 viewbox matching MAP_BOUNDS.
+ * Validated India Mainland GeoJSON (Simplified for platform performance).
+ * Excludes distant islands to maintain mainland scaling focus.
  */
-export const indiaPath = "M310,105 L335,85 L360,75 L380,60 L410,45 L440,35 L470,40 L490,60 L505,85 L515,110 L530,125 L550,145 L560,170 L550,195 L570,215 L590,230 L620,240 L650,245 L680,255 L710,275 L740,295 L770,315 L800,335 L830,350 L860,360 L890,375 L920,395 L950,415 L975,440 L985,470 L980,500 L960,525 L930,545 L895,555 L860,565 L825,580 L790,605 L760,635 L740,675 L725,720 L705,770 L680,825 L645,885 L605,945 L560,995 L520,1000 L480,995 L440,945 L400,885 L365,825 L335,770 L310,720 L290,675 L270,635 L245,605 L215,580 L180,565 L140,555 L105,545 L80,525 L60,500 L55,470 L70,440 L100,415 L140,395 L180,375 L220,360 L255,350 L290,335 L325,315 L360,295 L390,275 L420,255 L450,245 L475,240 L500,230 L520,215 L535,195 L545,170 L550,145 L560,125 L570,105 L580,85 L590,70 L610,65 L630,70 L650,80 L670,90 L690,110 L710,135 Z";
+export const indiaGeoJson: any = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "India Mainland" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [68.11, 23.88], [68.21, 23.55], [68.57, 23.33], [68.95, 23.65], [69.25, 22.95], 
+          [70.15, 22.65], [70.45, 21.05], [71.85, 20.85], [72.85, 21.15], [72.85, 18.95], 
+          [73.35, 16.05], [73.85, 15.45], [74.85, 12.85], [76.25, 9.95], [77.55, 8.05], 
+          [78.15, 8.75], [79.85, 10.25], [80.25, 13.05], [81.35, 16.15], [83.35, 17.75], 
+          [85.85, 19.75], [87.55, 21.55], [88.35, 22.55], [91.85, 21.85], [92.35, 20.85], 
+          [94.15, 23.55], [95.15, 26.95], [97.35, 28.25], [96.15, 29.45], [94.55, 28.55], 
+          [91.55, 27.95], [88.55, 27.95], [88.15, 26.55], [85.15, 26.55], [81.15, 30.05], 
+          [79.15, 31.05], [78.15, 35.05], [76.15, 37.05], [74.15, 37.05], [73.15, 34.05], 
+          [71.15, 31.05], [70.15, 28.05], [69.15, 25.05], [68.11, 23.88]
+        ]]
+      }
+    }
+  ]
+};
