@@ -17,7 +17,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 export default function TeamManagementPage() {
     const firestore = useFirestore();
     const { data: adminUsers, isLoading } = useCollection<User>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'platformAdmins') : null, [firestore]),
+        useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? collection(firestore, 'platformAdmins') : null, [firestore]),
         'platformAdmins'
     );
 
@@ -65,9 +65,9 @@ export default function TeamManagementPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant={user.status === 'Active' ? 'success' : 'secondary'}>{user.status}</Badge>
+                                            <Badge variant={user.status === 'active' ? 'success' : 'secondary'}>{user.status}</Badge>
                                         </TableCell>
-                                        <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</TableCell>
                                         <TableCell>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>

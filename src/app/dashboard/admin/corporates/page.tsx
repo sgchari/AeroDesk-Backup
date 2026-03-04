@@ -30,7 +30,7 @@ export default function CorporateManagementPage() {
     const { toast } = useToast();
 
     const { data: ctds, isLoading } = useCollection<CorporateTravelDesk>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'corporateTravelDesks') : null, [firestore]),
+        useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? collection(firestore, 'corporateTravelDesks') : null, [firestore]),
         'corporateTravelDesks'
     );
 
@@ -125,7 +125,7 @@ export default function CorporateManagementPage() {
                                                     )}
                                                     {ctd.status === 'Active' && (
                                                         <DropdownMenuItem className="text-destructive" onClick={() => handleUpdateStatus(ctd.id, 'Suspended', ctd.companyName)}>
-                                                            Suspend Operations
+                                                            _Suspend Operations
                                                         </DropdownMenuItem>
                                                     )}
                                                     {ctd.status === 'Suspended' && (

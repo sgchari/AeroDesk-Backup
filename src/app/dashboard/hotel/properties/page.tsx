@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ export default function HotelPropertiesPage() {
     const firestore = useFirestore();
 
     const propertiesQuery = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
+        if (!firestore || !user || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'properties'), where('hotelPartnerId', '==', user.id));
     }, [firestore, user]);
     const { data: properties, isLoading: propertiesLoading } = useCollection<Property>(propertiesQuery, 'properties');

@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -18,13 +19,13 @@ export default function HotelRoomCategoriesPage() {
     const firestore = useFirestore();
 
     const propertiesQuery = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
+        if (!firestore || !user || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'properties'), where('hotelPartnerId', '==', user.id));
     }, [firestore, user]);
     const { data: properties, isLoading: propertiesLoading } = useCollection<Property>(propertiesQuery, 'properties');
 
     const roomCategoriesQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
+        if (!firestore || (firestore as any)._isMock) return null;
         return collection(firestore, 'roomCategories');
     }, [firestore]);
     const { data: allRoomCategories, isLoading: roomsLoading } = useCollection<RoomCategory>(roomCategoriesQuery, 'roomCategories');

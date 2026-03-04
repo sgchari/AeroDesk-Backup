@@ -18,13 +18,13 @@ export default function PlatformApprovalsPage() {
     const { toast } = useToast();
 
     const pendingOperatorsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
+        if (!firestore || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'operators'), where('status', '==', 'Pending Approval'));
     }, [firestore]);
     const { data: pendingOperators, isLoading: operatorsLoading } = useCollection<Operator>(pendingOperatorsQuery, 'operators');
     
     const pendingEmptyLegsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
+        if (!firestore || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval'));
     }, [firestore]);
     const { data: pendingEmptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(pendingEmptyLegsQuery, 'emptyLegs');

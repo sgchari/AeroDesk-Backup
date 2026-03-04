@@ -30,7 +30,7 @@ export default function HotelRequestsPage() {
     const { toast } = useToast();
 
     const requestsQuery = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
+        if (!firestore || !user || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'accommodationRequests'), where('hotelPartnerId', '==', user.id));
     }, [firestore, user]);
     const { data: accommodationRequests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery, 'accommodationRequests');

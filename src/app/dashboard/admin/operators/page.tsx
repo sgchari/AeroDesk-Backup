@@ -29,7 +29,7 @@ export default function OperatorManagementPage() {
     const { toast } = useToast();
     
     const { data: operators, isLoading } = useCollection<Operator>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'operators') : null, [firestore]), 
+        useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? collection(firestore, 'operators') : null, [firestore]), 
         'operators'
     );
 

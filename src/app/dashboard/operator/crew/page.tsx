@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -40,7 +41,7 @@ export default function CrewManagementPage() {
     const [isAddOpen, setIsAddOpen] = useState(false);
 
     const crewQuery = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
+        if (!firestore || !user || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'crew'), where('operatorId', '==', user.id));
     }, [firestore, user]);
 

@@ -17,11 +17,11 @@ export default function PartnerManagementPage() {
     const firestore = useFirestore();
 
     const { data: hotelPartners, isLoading: hotelPartnersLoading } = useCollection<User>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'hotelPartners') : null, [firestore]),
+        useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? collection(firestore, 'hotelPartners') : null, [firestore]),
         'hotelPartners'
     );
     const { data: distributors, isLoading: distributorsLoading } = useCollection<User>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]),
+        useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? collection(firestore, 'distributors') : null, [firestore]),
         'distributors'
     );
     

@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,7 +35,7 @@ export default function SeatRequestsPage() {
   const [selectedRequest, setSelectedRequest] = useState<SeatAllocation | null>(null);
 
   const requestsQuery = useMemoFirebase(() => {
-    if (!firestore || !user?.operatorId) return null;
+    if (!firestore || !user?.operatorId || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'seatAllocations'), where('operatorId', '==', user.operatorId));
   }, [firestore, user]);
   

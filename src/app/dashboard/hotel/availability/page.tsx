@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -33,7 +34,7 @@ export default function HotelAvailabilityPage() {
 
     const { data: properties, isLoading: propsLoading } = useCollection<Property>(
         useMemoFirebase(() => {
-            if (!firestore || !user) return null;
+            if (!firestore || !user || (firestore as any)._isMock) return null;
             return query(collection(firestore, 'properties'), where('hotelPartnerId', '==', user.id));
         }, [firestore, user]),
         'properties'
@@ -41,7 +42,7 @@ export default function HotelAvailabilityPage() {
 
     const { data: roomCategories, isLoading: roomsLoading } = useCollection<RoomCategory>(
         useMemoFirebase(() => {
-            if (!firestore || !selectedPropertyId) return null;
+            if (!firestore || !selectedPropertyId || (firestore as any)._isMock) return null;
             return query(collection(firestore, 'roomCategories'), where('propertyId', '==', selectedPropertyId));
         }, [firestore, selectedPropertyId]),
         'roomCategories'

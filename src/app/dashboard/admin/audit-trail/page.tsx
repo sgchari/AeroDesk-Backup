@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function AuditTrailPage() {
     const firestore = useFirestore();
     const auditLogsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
+        if (!firestore || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'));
     }, [firestore]);
     const { data: auditLogs, isLoading } = useCollection<AuditLog>(auditLogsQuery, 'auditTrails');
