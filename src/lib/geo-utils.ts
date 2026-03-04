@@ -9,7 +9,7 @@ export interface GeoCoord {
 }
 
 export const hubGeographics: Record<string, GeoCoord & { type: 'backbone' | 'operator', label: string, operators: number, partners: number }> = {
-    'Delhi': { lat: 28.6139, lng: 77.2090, type: 'backbone', label: 'Delhi NCR Hub', operators: 4, partners: 6 },
+    'Delhi': { lat: 28.7041, lng: 77.1025, type: 'backbone', label: 'Delhi NCR Hub', operators: 4, partners: 6 },
     'Mumbai': { lat: 19.0760, lng: 72.8777, type: 'backbone', label: 'Mumbai Metro Hub', operators: 5, partners: 8 },
     'Bengaluru': { lat: 12.9716, lng: 77.5946, type: 'backbone', label: 'South Zone Hub', operators: 3, partners: 5 },
     'Kolkata': { lat: 22.5726, lng: 88.3639, type: 'backbone', label: 'East Zone Hub', operators: 2, partners: 3 },

@@ -9,8 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { Zap, ShieldCheck, Activity, Plane, Info } from 'lucide-react';
 
 // --- HUB NODES ---
+// UPDATED with correct GeoJSON [longitude, latitude] coordinates per institutional standards
 const hubNodes = [
-  { city: 'Delhi', position: [77.2090, 28.6139] as [number, number], label: 'NSOP Operator Base' },
+  { city: 'Delhi', position: [77.1025, 28.7041] as [number, number], label: 'NSOP Operator Base' },
   { city: 'Mumbai', position: [72.8777, 19.0760] as [number, number], label: 'NSOP Operator Base' },
   { city: 'Hyderabad', position: [78.4867, 17.3850] as [number, number], label: 'NSOP Operator Base' },
   { city: 'Chennai', position: [80.2707, 13.0827] as [number, number], label: 'NSOP Operator Base' },
@@ -19,10 +20,11 @@ const hubNodes = [
 ];
 
 // --- DEMAND HEATMAP DATA ---
+// Coordinates synchronized with hub node precision
 const demandHeatmapPoints = {
   type: 'FeatureCollection',
   features: [
-    { type: 'Feature', properties: { weight: 0.9 }, geometry: { type: 'Point', coordinates: [77.2090, 28.6139] } },
+    { type: 'Feature', properties: { weight: 0.9 }, geometry: { type: 'Point', coordinates: [77.1025, 28.7041] } },
     { type: 'Feature', properties: { weight: 0.8 }, geometry: { type: 'Point', coordinates: [72.8777, 19.0760] } },
     { type: 'Feature', properties: { weight: 0.6 }, geometry: { type: 'Point', coordinates: [77.5946, 12.9716] } },
     { type: 'Feature', properties: { weight: 0.5 }, geometry: { type: 'Point', coordinates: [78.4867, 17.3850] } },
@@ -114,7 +116,7 @@ export function IndiaOperatorNetworkMap() {
     map.current.on('load', () => {
       if (!map.current) return;
 
-      // Apply Brighter Institutional Navy Palette Safely
+      // Apply Institutional Navy Palette Safely
       const layers = map.current.getStyle().layers;
       layers?.forEach((layer) => {
         try {
@@ -135,7 +137,7 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
-      // Add NSOP Operator Hubs (Radar Nodes)
+      // Add NSOP Operator Hubs (Radar Nodes) using longitude first [lng, lat]
       hubNodes.forEach(hub => {
         const el = document.createElement('div');
         el.className = 'radar-node-container';
@@ -192,7 +194,7 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
-      // Animate Aircraft Telemetry with Dynamic Orientation
+      // Animate Aircraft Telemetry
       ACTIVE_MISSIONS.forEach(mission => {
         animateMission(mission, map.current!);
       });
@@ -205,7 +207,6 @@ export function IndiaOperatorNetworkMap() {
     const points = getBezierPoints(mission.from.position, mission.to.position || mission.to);
     let step = 0;
 
-    // Route Path Layer
     const routeId = `route-${mission.id}`;
     mapInstance.addSource(routeId, {
       type: 'geojson',
@@ -224,7 +225,6 @@ export function IndiaOperatorNetworkMap() {
       }
     });
 
-    // Trail Layer
     const trailId = `trail-${mission.id}`;
     mapInstance.addSource(trailId, {
       type: 'geojson',
@@ -241,7 +241,6 @@ export function IndiaOperatorNetworkMap() {
       }
     });
 
-    // Aircraft Marker (Using North-Facing SVG)
     const planeEl = document.createElement('div');
     planeEl.className = 'aircraft-marker';
     planeEl.innerHTML = `
@@ -261,7 +260,6 @@ export function IndiaOperatorNetworkMap() {
       const current = points[step];
       const next = points[(step + 1) % points.length];
       
-      // Update Trail
       const trailPoints = points.slice(Math.max(0, step - 20), step + 1);
       const trailSource = mapInstance.getSource(trailId) as maplibregl.GeoJSONSource;
       if (trailSource) {
@@ -272,7 +270,6 @@ export function IndiaOperatorNetworkMap() {
         });
       }
 
-      // Update Path
       const routeSource = mapInstance.getSource(routeId) as maplibregl.GeoJSONSource;
       if (routeSource) {
         routeSource.setData({
@@ -282,7 +279,6 @@ export function IndiaOperatorNetworkMap() {
         });
       }
       
-      // Calculate and Apply Dynamic Orientation
       const bearing = getBearing(current, next);
       marker.setLngLat(current);
       marker.setRotation(bearing);
@@ -305,7 +301,6 @@ export function IndiaOperatorNetworkMap() {
 
   return (
     <div className="w-full h-full relative overflow-hidden flex flex-col gap-4">
-      {/* Simulation Controls */}
       <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
         <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-4 shadow-2xl">
           <div className="flex items-center justify-between gap-8">
@@ -342,7 +337,6 @@ export function IndiaOperatorNetworkMap() {
 
       <div ref={mapContainer} className="w-full h-full rounded-3xl border border-white/5 shadow-2xl bg-[#061122]" />
 
-      {/* Legend Panel */}
       <div className="absolute bottom-6 left-6 z-20 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl">
         <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 border-b border-white/5 pb-2">Institutional Legend</h4>
         <div className="space-y-2.5">
