@@ -91,13 +91,13 @@ export function IndiaOperatorNetworkMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const [showForecast, setShowForecast] = useState(false);
-  const [showEmptyLegs, setShowEmptyLegs] = useState(false);
   const [selectedHub, setSelectedHub] = useState<typeof hubNodes[0] | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
     if (!mapContainer.current) return;
 
-    map.current = new maplibregl.Map({
+    const mapInstance = new maplibregl.Map({
       container: mapContainer.current,
       style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
       center: [79, 21],
@@ -110,24 +110,114 @@ export function IndiaOperatorNetworkMap() {
       maxBounds: [[60, 5], [100, 35]]
     });
 
-    map.current.on('load', () => {
-      if (!map.current) return;
+    map.current = mapInstance;
 
-      // --- APPLY INSTITUTIONAL PALETTE ---
-      const style = map.current.getStyle();
-      style.layers?.forEach((layer) => {
-        if (layer.type === 'background') {
-          map.current?.setPaintProperty(layer.id, 'background-color', '#0B1F33');
-        } else if (layer.type === 'fill' && (layer.id.includes('water') || layer.id.includes('ocean'))) {
-          map.current?.setPaintProperty(layer.id, 'fill-color', '#081622');
-        } else if (layer.type === 'line' && (layer.id.includes('admin') || layer.id.includes('boundary'))) {
-          map.current?.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
-        } else if (layer.type === 'symbol' && layer.id.includes('place')) {
-          map.current?.setPaintProperty(layer.id, 'text-opacity', 0.35);
-        }
-      });
+    const animateMission = (mission: any, instance: maplibregl.Map) => {
+      if (!isMounted || !instance || (instance as any)._removed) return;
 
-      // --- HUB RADAR NODES ---
+      const startPoint = turf.point(mission.from);
+      const endPoint = turf.point(mission.to);
+      const options = { units: 'kilometers' as const };
+      const routeDistance = turf.distance(startPoint, endPoint, options);
+      const routeLine = turf.greatCircle(startPoint, endPoint, { npoints: 500 });
+      const routeCoords = routeLine.geometry.coordinates;
+
+      const sourceId = `trail-${mission.id}`;
+      
+      try {
+        instance.addSource(sourceId, {
+          type: 'geojson',
+          data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} }
+        });
+
+        instance.addLayer({
+          id: `${sourceId}-layer`,
+          type: 'line',
+          source: sourceId,
+          paint: {
+            'line-color': '#00FFA6',
+            'line-width': 2,
+            'line-opacity': 0.6,
+            'line-dasharray': [2, 2]
+          },
+          layout: { 'line-cap': 'round', 'line-join': 'round' }
+        });
+
+        const planeEl = document.createElement('div');
+        planeEl.className = 'aircraft-marker';
+        planeEl.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="#00FFA6" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+          </svg>
+        `;
+        
+        const marker = new maplibregl.Marker({ element: planeEl, rotationAlignment: 'map' })
+          .setLngLat(mission.from)
+          .addTo(instance);
+
+        let progress = 0;
+        const speed = 0.0008;
+        let animationFrameId: number;
+
+        const step = () => {
+          if (!isMounted || !map.current || (instance as any)._removed) {
+            cancelAnimationFrame(animationFrameId);
+            return;
+          }
+
+          progress += speed;
+          if (progress > 1) progress = 0;
+
+          const currentAlong = turf.along(routeLine, progress * routeDistance, options);
+          const nextAlong = turf.along(routeLine, Math.min(1, progress + 0.01) * routeDistance, options);
+          const bearing = turf.bearing(currentAlong, nextAlong);
+
+          marker.setLngLat(currentAlong.geometry.coordinates as [number, number]);
+          marker.setRotation(bearing);
+
+          const currentIdx = Math.floor(progress * routeCoords.length);
+          const trailStartIdx = Math.max(0, currentIdx - 40);
+          const trailCoords = routeCoords.slice(trailStartIdx, currentIdx + 1);
+
+          if (instance.style && instance.getSource(sourceId)) {
+            const source = instance.getSource(sourceId) as maplibregl.GeoJSONSource;
+            source.setData({
+              type: 'Feature',
+              geometry: { type: 'LineString', coordinates: trailCoords },
+              properties: {}
+            });
+          }
+
+          animationFrameId = requestAnimationFrame(step);
+        };
+
+        animationFrameId = requestAnimationFrame(step);
+      } catch (err) {
+        console.warn(`Mission animation for ${mission.id} skipped or interrupted:`, err);
+      }
+    };
+
+    mapInstance.on('load', () => {
+      if (!isMounted || !mapInstance) return;
+
+      // --- APPLY BRIGHTER INSTITUTIONAL PALETTE ---
+      try {
+        const style = mapInstance.getStyle();
+        style.layers?.forEach((layer) => {
+          if (layer.type === 'background') {
+            mapInstance.setPaintProperty(layer.id, 'background-color', '#0E1A2B');
+          } else if (layer.type === 'fill' && (layer.id.includes('water') || layer.id.includes('ocean'))) {
+            mapInstance.setPaintProperty(layer.id, 'fill-color', '#0A1E2E');
+          } else if (layer.type === 'line' && (layer.id.includes('admin') || layer.id.includes('boundary'))) {
+            mapInstance.setPaintProperty(layer.id, 'line-color', '#2A4A6F');
+          } else if (layer.type === 'symbol' && layer.id.includes('place')) {
+            mapInstance.setPaintProperty(layer.id, 'text-opacity', 0.5);
+          }
+        });
+      } catch (e) {
+        console.warn('Style customization partial failure:', e);
+      }
+
       hubNodes.forEach(hub => {
         const el = document.createElement('div');
         el.className = 'radar-node-container';
@@ -141,12 +231,11 @@ export function IndiaOperatorNetworkMap() {
         };
         new maplibregl.Marker({ element: el, anchor: 'center' })
           .setLngLat(hub.position)
-          .addTo(map.current!);
+          .addTo(mapInstance);
       });
 
-      // --- INTELLIGENCE LAYERS ---
-      map.current.addSource('demand-forecast', { type: 'geojson', data: demandHeatmapPoints as any });
-      map.current.addLayer({
+      mapInstance.addSource('demand-forecast', { type: 'geojson', data: demandHeatmapPoints as any });
+      mapInstance.addLayer({
         id: 'demand-heat',
         type: 'heatmap',
         source: 'demand-forecast',
@@ -166,103 +255,33 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
-      // --- MISSION TELEMETRY ---
       ACTIVE_MISSIONS_CONFIG.forEach((mission, index) => {
-        // Stagger spawn times
         setTimeout(() => {
-          if (map.current) animateMission(mission, map.current);
+          if (isMounted && map.current) animateMission(mission, map.current);
         }, index * 2000);
       });
     });
 
-    return () => map.current?.remove();
-  }, []);
-
-  const animateMission = (mission: any, mapInstance: maplibregl.Map) => {
-    const startPoint = turf.point(mission.from);
-    const endPoint = turf.point(mission.to);
-    const options = { units: 'kilometers' as const };
-    const routeDistance = turf.distance(startPoint, endPoint, options);
-    const routeLine = turf.greatCircle(startPoint, endPoint, { npoints: 500 });
-    const routeCoords = routeLine.geometry.coordinates;
-
-    // Trail Source
-    const sourceId = `trail-${mission.id}`;
-    mapInstance.addSource(sourceId, {
-      type: 'geojson',
-      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} }
-    });
-
-    mapInstance.addLayer({
-      id: `${sourceId}-layer`,
-      type: 'line',
-      source: sourceId,
-      paint: {
-        'line-color': '#00FFA6',
-        'line-width': 2,
-        'line-opacity': 0.6,
-        'line-dasharray': [2, 2]
-      },
-      layout: { 'line-cap': 'round', 'line-join': 'round' }
-    });
-
-    // Aircraft Marker
-    const planeEl = document.createElement('div');
-    planeEl.className = 'aircraft-marker';
-    planeEl.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="#00FFA6" xmlns="http://www.w3.org/2000/svg">
-        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-      </svg>
-    `;
-    
-    const marker = new maplibregl.Marker({ element: planeEl, rotationAlignment: 'map' })
-      .setLngLat(mission.from)
-      .addTo(mapInstance);
-
-    let progress = 0;
-    const speed = 0.0008; // Units per frame
-
-    function step() {
-      if (!map.current) return;
-
-      progress += speed;
-      if (progress > 1) progress = 0;
-
-      const currentAlong = turf.along(routeLine, progress * routeDistance, options);
-      const nextAlong = turf.along(routeLine, Math.min(1, progress + 0.01) * routeDistance, options);
-      const bearing = turf.bearing(currentAlong, nextAlong);
-
-      marker.setLngLat(currentAlong.geometry.coordinates as [number, number]);
-      marker.setRotation(bearing);
-
-      // Contrail Update: Last 10% of coordinates
-      const currentIdx = Math.floor(progress * routeCoords.length);
-      const trailStartIdx = Math.max(0, currentIdx - 40);
-      const trailCoords = routeCoords.slice(trailStartIdx, currentIdx + 1);
-
-      const source = mapInstance.getSource(sourceId) as maplibregl.GeoJSONSource;
-      if (source) {
-        source.setData({
-          type: 'Feature',
-          geometry: { type: 'LineString', coordinates: trailCoords },
-          properties: {}
-        });
+    return () => {
+      isMounted = false;
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
       }
-
-      requestAnimationFrame(step);
-    }
-
-    requestAnimationFrame(step);
-  };
+    };
+  }, []);
 
   useEffect(() => {
     if (!map.current || !map.current.loaded()) return;
-    map.current.setLayoutProperty('demand-heat', 'visibility', showForecast ? 'visible' : 'none');
+    try {
+      map.current.setLayoutProperty('demand-heat', 'visibility', showForecast ? 'visible' : 'none');
+    } catch (e) {
+      console.warn('Heatmap toggle skipped:', e);
+    }
   }, [showForecast]);
 
   return (
     <div className="w-full h-full relative overflow-hidden flex flex-col gap-4">
-      {/* --- LAYER CONTROLS --- */}
       <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
         <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-4 shadow-2xl">
           <div className="flex items-center justify-between gap-8">
@@ -282,7 +301,6 @@ export function IndiaOperatorNetworkMap() {
         </div>
       </div>
 
-      {/* --- DISCOVERY PANEL --- */}
       {selectedHub && (
         <div className="absolute top-6 right-6 z-30 w-72 animate-in slide-in-from-right-4 duration-500">
             <Card className="bg-slate-950/90 backdrop-blur-2xl border-accent/20 shadow-2xl rounded-2xl overflow-hidden">
@@ -322,10 +340,8 @@ export function IndiaOperatorNetworkMap() {
         </div>
       )}
 
-      {/* --- MAP CONTAINER --- */}
       <div ref={mapContainer} className="w-full h-full rounded-3xl border border-white/5 shadow-2xl bg-[#061122]" />
 
-      {/* --- LEGEND --- */}
       <div className="absolute bottom-6 left-6 z-20 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl">
         <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 border-b border-white/5 pb-2">Intelligence Legend</h4>
         <div className="space-y-2.5">
