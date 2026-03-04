@@ -1,6 +1,7 @@
+
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import * as turf from '@turf/turf';
@@ -338,6 +339,7 @@ export function IndiaOperatorNetworkMap() {
 
   return (
     <div className="w-full h-full relative overflow-hidden flex flex-col group">
+      {/* Top Controls Overlay */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex flex-col gap-3 max-w-[calc(100%-2rem)]">
         <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-4 space-y-3 sm:space-y-4 shadow-2xl min-w-[180px] sm:min-w-[220px]">
           <div className="flex items-center justify-between gap-4">
@@ -400,8 +402,9 @@ export function IndiaOperatorNetworkMap() {
         )}
       </div>
 
+      {/* Hub Discovery Panel - Mobile Bottom / Desktop Right */}
       {selectedHub && !priceEstimate && (
-        <div className="absolute bottom-4 left-4 right-4 sm:top-6 sm:right-6 sm:bottom-auto sm:left-auto z-30 sm:w-72 animate-in slide-in-from-bottom-4 sm:slide-in-from-right-4 duration-500">
+        <div className="absolute bottom-4 left-4 right-4 lg:top-6 lg:right-6 lg:bottom-auto lg:left-auto z-30 lg:w-72 animate-in slide-in-from-bottom-4 lg:slide-in-from-right-4 duration-500">
             <Card className="bg-slate-950/90 backdrop-blur-2xl border-accent/20 shadow-2xl rounded-2xl overflow-hidden">
                 <CardHeader className="p-3 sm:p-4 pb-2 flex flex-row items-center justify-between space-y-0">
                     <div>
@@ -440,8 +443,10 @@ export function IndiaOperatorNetworkMap() {
         </div>
       )}
 
+      {/* Map Surface */}
       <div ref={mapContainer} className="w-full h-full rounded-3xl border border-white/5 shadow-2xl bg-[#061122]" />
 
+      {/* Bottom Legend Overlay */}
       <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-20 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-4 shadow-2xl hidden xs:block">
         <h4 className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 sm:mb-3 border-b border-white/5 pb-2">Institutional Signals</h4>
         <div className="space-y-2 sm:space-y-2.5">

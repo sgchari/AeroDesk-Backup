@@ -1,7 +1,8 @@
+
 'use client';
 
-import { useState, useRef } from 'react';
-import { Plane, Plus, X, Armchair } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Plane, Plus, X, Armchair, Search, ArrowRight, Clock, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -9,6 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
+import type { EmptyLeg } from '@/lib/types';
+import { useRouter } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
 
 const HelicopterIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -119,6 +125,8 @@ const AutocompleteInput = ({ value, onChange, placeholder }: { value: string; on
 
 
 export function BookingWidget() {
+  const router = useRouter();
+  const firestore = useFirestore();
   const [tripType, setTripType] = useState('oneway');
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
@@ -132,6 +140,14 @@ export function BookingWidget() {
     { id: 1, origin: '', destination: '', departureDate: '', departureTime: '' },
   ]);
   const [nextLegId, setNextLegId] = useState(2);
+
+  const { data: emptyLegs } = useCollection<EmptyLeg>(
+    useMemoFirebase(() => {
+        if (!firestore || (firestore as any)._isMock) return null;
+        return query(collection(firestore, 'emptyLegs'), where('status', '==', 'live'));
+    }, [firestore]),
+    'emptyLegs'
+  );
 
   const handleLegChange = (id: number, field: string, value: string) => {
     setLegs(
@@ -149,6 +165,10 @@ export function BookingWidget() {
 
   const borderLeg = (id: number) => {
     setLegs(legs.filter((leg) => leg.id !== id));
+  };
+
+  const handleSearch = () => {
+    router.push('/login');
   };
 
 
@@ -177,15 +197,19 @@ export function BookingWidget() {
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                        <TabsTrigger value="seats" className="flex flex-col gap-1 sm:gap-2 p-2 sm:p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10">
+                        <TabsTrigger value="seats" className="flex flex-col gap-1 sm:gap-2 p-2 sm:p-3 rounded-lg h-auto border-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-accent/20 text-white/80 data-[state=active]:text-white hover:bg-white/10 relative">
                             <Armchair className="h-6 w-6 sm:h-8 sm:w-8" />
                             <span className="text-[10px] font-bold uppercase tracking-widest">SEATS</span>
+                            <Badge className="absolute -top-1 -right-1 bg-accent text-black text-[8px] h-4 px-1 min-w-[16px] flex items-center justify-center font-black">
+                                {(emptyLegs?.length || 0)}
+                            </Badge>
                         </TabsTrigger>
                         </TooltipTrigger>
                         <TooltipContent><p>Book an empty leg seat</p></TooltipContent>
                     </Tooltip>
                 </TabsList>
             </TooltipProvider>
+            
             <TabsContent value="jet" className="mt-0">
                 <div className="space-y-4">
                     <RadioGroup value={tripType} onValueChange={setTripType} className="flex items-center justify-center gap-4 sm:gap-8 mt-2 mb-4">
@@ -260,14 +284,44 @@ export function BookingWidget() {
                     )}
                     
                     <div className="flex justify-center pt-2">
-                        <Button className="w-full sm:w-auto rounded-xl px-12 h-12 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-[0.2em] shadow-xl shadow-accent/10">
+                        <Button onClick={handleSearch} className="w-full sm:w-auto rounded-xl px-12 h-12 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-[0.2em] shadow-xl shadow-accent/10">
                             Search Missions
                         </Button>
                     </div>
                 </div>
             </TabsContent>
-            <TabsContent value="helicopter"><p className="text-center py-16 text-xs text-muted-foreground uppercase font-black tracking-widest animate-pulse px-4">Rotary wing coordination protocol in final compliance check.</p></TabsContent>
-            <TabsContent value="seats"><p className="text-center py-16 text-xs text-muted-foreground uppercase font-black tracking-widest animate-pulse px-4">Empty leg discovery system initializing...</p></TabsContent>
+
+            <TabsContent value="helicopter">
+                <p className="text-center py-16 text-xs text-muted-foreground uppercase font-black tracking-widest animate-pulse px-4">Rotary wing coordination protocol in final compliance check.</p>
+            </TabsContent>
+
+            <TabsContent value="seats">
+                <div className="space-y-4">
+                    <div className="p-4 rounded-xl border border-white/5 bg-white/[0.02] flex flex-col items-center gap-4">
+                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Active Positioning Hub</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+                            {(emptyLegs || []).slice(0, 2).map((leg) => (
+                                <div key={leg.id} className="p-3 rounded-lg border border-white/5 bg-black/20 flex items-center justify-between group hover:border-accent/30 transition-all cursor-pointer" onClick={() => router.push('/login')}>
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-bold text-white">{leg.departure} → {leg.arrival}</span>
+                                            <Badge variant="outline" className="text-[8px] bg-accent/10 text-accent border-accent/20 h-4">-{Math.round(Math.random() * 20 + 30)}%</Badge>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-[9px] text-white/40 font-medium">
+                                            <span className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" /> {new Date(leg.departureTime).toLocaleDateString()}</span>
+                                            <span className="flex items-center gap-1 uppercase tracking-tighter"><Tag className="h-2.5 w-2.5" /> ₹{(leg.pricePerSeat || 45000).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="h-4 w-4 text-white/20 group-hover:text-accent transition-colors" />
+                                </div>
+                            ))}
+                        </div>
+                        <Button onClick={() => router.push('/promotions')} variant="link" className="text-accent text-[10px] uppercase font-black tracking-widest">
+                            Explore All Empty Legs <ArrowRight className="ml-2 h-3 w-3" />
+                        </Button>
+                    </div>
+                </div>
+            </TabsContent>
         </Tabs>
     </div>
   );

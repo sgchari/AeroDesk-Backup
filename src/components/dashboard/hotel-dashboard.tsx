@@ -21,7 +21,7 @@ export function HotelDashboard() {
   const firestore = useFirestore();
 
   const requestsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return query(
         collection(firestore, 'accommodationRequests'), 
         where('hotelPartnerId', '==', user.id),
@@ -36,7 +36,7 @@ export function HotelDashboard() {
     pending: requests?.filter(r => r.status === 'Pending').length ?? 0,
     upcomingCheckIns: requests?.filter(r => r.status === 'Confirmed' && new Date(r.checkIn) > new Date()).length ?? 0,
     activeOccupancy: requests?.filter(r => r.status === 'Confirmed' && new Date(r.checkIn) <= new Date() && new Date(r.checkOut) > new Date()).reduce((acc, r) => acc + r.rooms, 0) ?? 0,
-    availabilityAlerts: 0, // Mocked for now
+    availabilityAlerts: 0, 
   }
 
   return (

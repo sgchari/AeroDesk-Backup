@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -32,7 +33,8 @@ import {
     Activity,
     Target,
     Zap,
-    History
+    History,
+    AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,12 +46,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
-// Base Mock Data (representing 30 days)
+// Base Mock Data
 const BASE_FLEET_DATA = [
-    { name: 'VT-FLY', hours: 45, idle: 12, revenue: 1850000 },
-    { name: 'VT-PC', hours: 32, idle: 25, revenue: 1200000 },
-    { name: 'VT-STK', hours: 58, idle: 5, revenue: 2450000 },
-    { name: 'VT-JSG', hours: 40, idle: 15, revenue: 1650000 },
+    { name: 'VT-FLY', hours: 45, idle: 12, revenue: 1850000, utilization: 72 },
+    { name: 'VT-PC', hours: 32, idle: 25, revenue: 1200000, utilization: 54 },
+    { name: 'VT-STK', hours: 58, idle: 5, revenue: 2450000, utilization: 88 },
+    { name: 'VT-JSG', hours: 40, idle: 15, revenue: 1650000, utilization: 62 },
 ];
 
 const BASE_CHARTER_DATA = [
@@ -68,13 +70,6 @@ const REVENUE_TREND_DATA = [
     { day: 'Sun', revenue: 1100000 },
 ];
 
-const SECTOR_YIELD_DATA = [
-    { sector: 'BOM-DEL', count: 18, yield: 1.2, revenue: 4500000 },
-    { sector: 'DEL-LHR', count: 5, yield: 1.8, revenue: 12000000 },
-    { sector: 'BLR-GOI', count: 12, yield: 0.9, revenue: 2400000 },
-    { sector: 'MAA-SIN', count: 3, yield: 1.5, revenue: 6800000 },
-];
-
 const COLORS = ['#0EA5E9', '#FFFFBD', '#F43F5E', '#10B981'];
 
 export default function OperatorReportsPage() {
@@ -82,7 +77,6 @@ export default function OperatorReportsPage() {
     const { toast } = useToast();
     const [period, setPeriod] = useState("30d");
 
-    // Dynamic scale factors based on period
     const scaleFactor = useMemo(() => {
         switch (period) {
             case '7d': return 0.25;
@@ -93,56 +87,36 @@ export default function OperatorReportsPage() {
         }
     }, [period]);
 
-    // Derived Scaled Data
     const fleetData = useMemo(() => BASE_FLEET_DATA.map(d => ({
         ...d,
         hours: Math.round(d.hours * scaleFactor),
         revenue: Math.round(d.revenue * scaleFactor)
     })), [scaleFactor]);
 
-    const sectorData = useMemo(() => SECTOR_YIELD_DATA.map(d => ({
-        ...d,
-        count: Math.round(d.count * scaleFactor),
-        revenue: Math.round(d.revenue * scaleFactor)
-    })), [scaleFactor]);
-
-    const revenueTrend = useMemo(() => REVENUE_TREND_DATA.map(d => ({
-        ...d,
-        revenue: Math.round(d.revenue * (scaleFactor < 1 ? scaleFactor * 4 : 1)) // Keep daily lines meaningful
-    })), [scaleFactor]);
-
     const stats = useMemo(() => {
         const totalRev = fleetData.reduce((acc, curr) => acc + curr.revenue, 0);
-        const elRev = Math.round(820000 * scaleFactor);
-        const avgValue = 1250000; // Remains stable per mission
+        const lostRev = Math.round(2400000 * scaleFactor);
+        const elCount = Math.round(11 * scaleFactor);
 
         return {
             totalRevenue: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(totalRev).replace('INR', '₹'),
-            charterShare: "94%",
-            emptyLegYield: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(elRev).replace('INR', '₹'),
-            avgMission: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(avgValue).replace('INR', '₹')
+            utilization: "68%",
+            lostRevenue: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(lostRev).replace('INR', '₹'),
+            emptyLegs: elCount.toString()
         };
     }, [fleetData, scaleFactor]);
-
-    const handlePeriodChange = (value: string) => {
-        setPeriod(value);
-        toast({
-            title: "Analytical Scope Updated",
-            description: `Now viewing institutional metrics for the last ${value === '7d' ? '7 days' : value === '30d' ? '30 days' : value === '90d' ? 'quarter' : 'year'}.`,
-        });
-    };
 
     return (
         <div className="space-y-6">
             <PageHeader 
-                title="Revenue Analytics" 
-                description="Institutional visibility into fleet profitability, mission yield, and AI-assisted performance signals."
+                title="Aviation Intelligence & Analytics" 
+                description="Fleet-wide utilization tracking, revenue lost analysis, and AI-assisted yield forecasts."
             >
                 <div className="flex flex-wrap items-center gap-2">
-                    <Select value={period} onValueChange={handlePeriodChange}>
-                        <SelectTrigger className="h-9 w-[140px] bg-muted/20 border-white/10 text-xs gap-2">
-                            <Filter className="h-3.5 w-3.5 text-accent" />
-                            <SelectValue placeholder="Period Scope" />
+                    <Select value={period} onValueChange={setPeriod}>
+                        <SelectTrigger className="h-9 w-[140px] bg-muted/20 border-white/10 text-xs">
+                            <Filter className="h-3.5 w-3.5 mr-2 text-accent" />
+                            <SelectValue placeholder="Period" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="7d">Last 7 Days</SelectItem>
@@ -151,211 +125,182 @@ export default function OperatorReportsPage() {
                             <SelectItem value="ytd">Year to Date</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[10px] tracking-widest hidden sm:flex">
-                        <Download className="h-3.5 w-3.5" /> Export
+                    <Button variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[10px] tracking-widest">
+                        <Download className="h-3.5 w-3.5" /> Export Audit
                     </Button>
                 </div>
             </PageHeader>
 
             <StatsGrid>
-                <StatsCard title="Total Gross Revenue" value={stats.totalRevenue} icon={DollarSign} description="Actual + Confirmed Bids" />
-                <StatsCard title="Charter Contribution" value={stats.charterShare} icon={Target} description="Full mission share" />
-                <StatsCard title="Empty Leg Yield" value={stats.emptyLegYield} icon={Zap} description="Recovery revenue" />
-                <StatsCard title="Avg. Mission Value" value={stats.avgMission} icon={TrendingUp} description="Per confirmed charter" />
+                <StatsCard title="Total Revenue" value={stats.totalRevenue} icon={DollarSign} description="Gross Settled Volume" />
+                <StatsCard title="Avg Utilization" value={stats.utilization} icon={Activity} description="Active Flight Hours" />
+                <StatsCard title="Empty Leg Revenue Gap" value={stats.lostRevenue} icon={AlertTriangle} description="Lost Opportunity Yield" />
+                <StatsCard title="Empty Legs Generated" value={stats.emptyLegs} icon={Zap} description="Current Positioning Count" />
             </StatsGrid>
 
-            <div className="space-y-6">
-                <AIInsights />
+            <AIInsights />
 
-                <Tabs defaultValue="revenue" className="w-full">
-                    <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1 h-auto flex flex-wrap">
-                        <TabsTrigger value="revenue" className="gap-2 flex-1 min-w-[120px]">
-                            <DollarSign className="h-3.5 w-3.5" /> Revenue & Yield
-                        </TabsTrigger>
-                        <TabsTrigger value="fleet" className="gap-2 flex-1 min-w-[120px]">
-                            <Plane className="h-3.5 w-3.5" /> Asset Profit
-                        </TabsTrigger>
-                        <TabsTrigger value="sectors" className="gap-2 flex-1 min-w-[120px]">
-                            <History className="h-3.5 w-3.5" /> Sector Yield
-                        </TabsTrigger>
-                        <TabsTrigger value="funnel" className="gap-2 flex-1 min-w-[120px]">
-                            <Activity className="h-3.5 w-3.5" /> Marketplace
-                        </TabsTrigger>
-                    </TabsList>
+            <Tabs defaultValue="utilization" className="w-full">
+                <TabsList className="bg-muted/20 border border-white/5 mb-6 p-1 h-auto flex flex-wrap">
+                    <TabsTrigger value="utilization" className="gap-2 flex-1 min-w-[120px]">
+                        <Plane className="h-3.5 w-3.5" /> Fleet Utilization
+                    </TabsTrigger>
+                    <TabsTrigger value="revenue" className="gap-2 flex-1 min-w-[120px]">
+                        <DollarSign className="h-3.5 w-3.5" /> Revenue & Yield
+                    </TabsTrigger>
+                    <TabsTrigger value="marketplace" className="gap-2 flex-1 min-w-[120px]">
+                        <Target className="h-3.5 w-3.5" /> Lead Conversion
+                    </TabsTrigger>
+                </TabsList>
 
-                    <TabsContent value="revenue" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 lg:grid-cols-3">
-                            <Card className="lg:col-span-2 bg-card">
-                                <CardHeader>
-                                    <CardTitle>Daily Yield Trend</CardTitle>
-                                    <CardDescription>Consolidated revenue flow across all active missions.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[300px] sm:h-[350px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={revenueTrend}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                                            <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
-                                            <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `₹${val/100000}L`} />
-                                            <Tooltip 
-                                                formatter={(val: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(val)}
-                                                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }}
-                                            />
-                                            <Line type="monotone" dataKey="revenue" stroke="#FFFFBD" strokeWidth={3} dot={{ fill: '#FFFFBD', r: 4 }} activeDot={{ r: 6, strokeWidth: 0 }} />
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Yield Indicators</CardTitle>
-                                    <CardDescription>Institutional margin signals.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
-                                            <span>Rev / Flight Hour</span>
-                                            <span className="text-accent">₹ 1.8 L</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-accent w-[75%]" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-xs uppercase font-bold text-muted-foreground">
-                                            <span>Rev / Sector</span>
-                                            <span className="text-sky-400">₹ 4.2 L</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-sky-400 w-[60%]" />
-                                        </div>
-                                    </div>
-                                    <Separator className="bg-white/5" />
-                                    <div className="p-3 rounded-lg bg-accent/5 border border-accent/10">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <Target className="h-3 w-3 text-accent" />
-                                            <span className="text-[10px] font-bold text-accent uppercase">Yield Target</span>
-                                        </div>
-                                        <p className="text-[10px] text-muted-foreground">Maintain &gt; ₹ 1.5 L / FH for heavy-jet category fleet sustainment.</p>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="fleet" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="grid gap-6 md:grid-cols-2">
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Asset Revenue Mix</CardTitle>
-                                    <CardDescription>Individual contribution to monthly gross volume.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[300px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={fleetData}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                                            <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} />
-                                            <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `₹${val/100000}L`} />
-                                            <Tooltip 
-                                                formatter={(val: number) => `₹${val/100000}L`}
-                                                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }}
-                                            />
-                                            <Bar dataKey="revenue" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Utilization Mix</CardTitle>
-                                    <CardDescription>Flight hours distribution across registered registry.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[300px] flex flex-col items-center">
-                                    <div className="flex-1 w-full min-h-0">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <RePieChart>
-                                                <Pie
-                                                    data={fleetData}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={60}
-                                                    outerRadius={80}
-                                                    paddingAngle={5}
-                                                    dataKey="hours"
-                                                    stroke="none"
-                                                >
-                                                    {fleetData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip />
-                                            </RePieChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                    <div className="flex flex-wrap justify-center gap-4 mt-2">
-                                        {fleetData.map((entry, index) => (
-                                            <div key={entry.name} className="flex items-center gap-1.5">
-                                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                                <span className="text-[10px] text-muted-foreground font-black uppercase">{entry.name}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="sectors" className="space-y-6 animate-in fade-in slide-in-from-top-2">
-                        <Card className="bg-card">
+                <TabsContent value="utilization" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <div className="grid gap-6 lg:grid-cols-3">
+                        <Card className="lg:col-span-2 bg-card">
                             <CardHeader>
-                                <CardTitle>Sector Performance</CardTitle>
-                                <CardDescription>Route performance tracked by commercial density and mission frequency.</CardDescription>
+                                <CardTitle>Asset Utilization Percentage</CardTitle>
+                                <CardDescription>Percentage of operational hours active vs. static positioning.</CardDescription>
                             </CardHeader>
-                            <CardContent className="h-[300px] sm:h-[400px]">
+                            <CardContent className="h-[350px]">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={sectorData} layout="vertical">
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
-                                        <XAxis type="number" hide />
-                                        <YAxis dataKey="sector" type="category" stroke="#94a3b8" fontSize={10} width={80} />
+                                    <BarChart data={fleetData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                        <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} />
+                                        <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `${val}%`} />
                                         <Tooltip 
-                                            formatter={(val: number) => `₹${val/100000}L`}
                                             contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }}
+                                            cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                                         />
-                                        <Bar dataKey="revenue" fill="#10B981" radius={[0, 4, 4, 0]} name="Sector Revenue" />
+                                        <Bar dataKey="utilization" fill="#0EA5E9" radius={[4, 4, 0, 0]} name="Utilization %" />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </CardContent>
                         </Card>
-                    </TabsContent>
 
-                    <TabsContent value="funnel" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                        <Card className="bg-card">
+                            <CardHeader>
+                                <CardTitle>Revenue Gap Analysis</CardTitle>
+                                <CardDescription>Lost opportunity yield from positioning flights.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col items-center justify-center space-y-6 pt-2 pb-6">
+                                <div className="aspect-square w-full max-w-[200px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RePieChart>
+                                            <Pie
+                                                data={fleetData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius="60%"
+                                                outerRadius="80%"
+                                                paddingAngle={5}
+                                                dataKey="revenueLostEmptyLegs"
+                                                stroke="none"
+                                            >
+                                                {fleetData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                        </RePieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className="w-full space-y-2">
+                                    {fleetData.map((item, idx) => (
+                                        <div key={item.name} className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
+                                                <span className="text-muted-foreground">{item.name}</span>
+                                            </div>
+                                            <span className="text-rose-500">₹ {(item.revenueLostEmptyLegs! / 100000).toFixed(1)}L</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="revenue" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <Card className="bg-card">
+                        <CardHeader>
+                            <CardTitle>Daily Yield Intensity</CardTitle>
+                            <CardDescription>Mission-level gross volume flow tracking.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[400px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={REVENUE_TREND_DATA}>
+                                    <defs>
+                                        <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+                                            <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                    <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} />
+                                    <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(val) => `₹${val/100000}L`} />
+                                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
+                                    <Area type="monotone" dataKey="revenue" stroke="#10B981" fillOpacity={1} fill="url(#colorRev)" name="Daily Rev" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="marketplace" className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                    <div className="grid gap-6 md:grid-cols-2">
                         <Card className="bg-card">
                             <CardHeader>
                                 <CardTitle>Marketplace Funnel</CardTitle>
-                                <CardDescription>Realization of monthly commercial volume.</CardDescription>
+                                <CardDescription>Inquiries vs. Quotations vs. Accepted Missions.</CardDescription>
                             </CardHeader>
-                            <CardContent className="h-[300px] sm:h-[400px]">
+                            <CardContent className="h-[300px]">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={BASE_CHARTER_DATA}>
-                                        <defs>
-                                            <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
-                                                <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
-                                            </linearGradient>
-                                        </defs>
+                                    <BarChart data={BASE_CHARTER_DATA}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                                         <XAxis dataKey="month" stroke="#94a3b8" fontSize={10} />
                                         <YAxis stroke="#94a3b8" fontSize={10} />
                                         <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b' }} />
-                                        <Area type="monotone" dataKey="revenue" stroke="#10B981" fillOpacity={1} fill="url(#colorRev)" name="Monthly Revenue" />
-                                    </AreaChart>
+                                        <Bar dataKey="received" fill="#1e293b" radius={[4, 4, 0, 0]} name="RFQs" />
+                                        <Bar dataKey="quoted" fill="#0EA5E9" radius={[4, 4, 0, 0]} name="Bids" />
+                                        <Bar dataKey="accepted" fill="#10B981" radius={[4, 4, 0, 0]} name="Won" />
+                                    </BarChart>
                                 </ResponsiveContainer>
                             </CardContent>
                         </Card>
-                    </TabsContent>
-                </Tabs>
-            </div>
+
+                        <Card className="bg-card flex flex-col justify-center">
+                            <CardHeader>
+                                <CardTitle>Conversion Intelligence</CardTitle>
+                                <CardDescription>Institutional marketplace performance signals.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-[10px] uppercase font-bold text-muted-foreground">
+                                        <span>Bid Response Rate</span>
+                                        <span className="text-primary">84.2%</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                        <div className="h-full bg-primary w-[84%]" />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-[10px] uppercase font-bold text-muted-foreground">
+                                        <span>Commercial Win Ratio</span>
+                                        <span className="text-emerald-500">28.5%</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                        <div className="h-full bg-emerald-500 w-[28%]" />
+                                    </div>
+                                </div>
+                                <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 space-y-1">
+                                    <p className="text-[10px] font-bold text-accent uppercase tracking-widest">Market Status</p>
+                                    <p className="text-lg font-black text-foreground">LEADERBOARD TOP 5</p>
+                                    <p className="text-[10px] text-muted-foreground italic">Maintaining optimal quotation latency of 1.4 hours.</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

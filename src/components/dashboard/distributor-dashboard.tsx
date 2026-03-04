@@ -16,7 +16,7 @@ import { collection, query, where } from "firebase/firestore";
 export function DistributorDashboard() {
   const firestore = useFirestore();
   const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Approved'));
   }, [firestore]);
   const { data: emptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');

@@ -99,15 +99,13 @@ export const mockHotelPartners: HotelPartner[] = [
 ];
 
 export const mockAircrafts: Aircraft[] = [
-    { id: 'ac-01', operatorId: 'op-west-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'BOM', status: 'Available', exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800' },
-    { id: 'ac-02', operatorId: 'op-west-01', name: 'Bombardier Global 6000', type: 'Heavy Jet', registration: 'VT-JSG', paxCapacity: 14, homeBase: 'BOM', status: 'Under Maintenance', exteriorImageUrl: 'https://images.unsplash.com/photo-1616193572425-fd11332ec645?q=80&w=800' },
+    { id: 'ac-01', operatorId: 'op-west-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'BOM', status: 'Available', utilizationPercent: 72, revenueLostEmptyLegs: 1800000, exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800' },
+    { id: 'ac-02', operatorId: 'op-west-01', name: 'Bombardier Global 6000', type: 'Heavy Jet', registration: 'VT-JSG', paxCapacity: 14, homeBase: 'BOM', status: 'Under Maintenance', utilizationPercent: 45, revenueLostEmptyLegs: 4500000, exteriorImageUrl: 'https://images.unsplash.com/photo-1616193572425-fd11332ec645?q=80&w=800' },
 ];
 
 export const mockRfqs: CharterRFQ[] = [
-    { id: 'RFQ-CORP-001', customerId: 'corp-west-01', requesterExternalAuthId: 'corp-west-01', customerName: 'Priya Sharma', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', pax: 5, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', costCenter: 'STRK-EXEC-25' },
-    { id: 'RFQ-LIVE-001', customerId: 'cust-01', requesterExternalAuthId: 'cust-01', customerName: 'Rahul Malhotra', tripType: 'Onward', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureDate: '2025-02-20', pax: 2, aircraftType: 'Mid-size Jet', status: 'enroute', createdAt: '2025-02-18T10:00:00Z', updatedAt: '2025-02-20T12:00:00Z', totalAmount: 1250000, operatorId: 'op-north-01' },
-    { id: 'RFQ-LIVE-002', customerId: 'corp-north-01', requesterExternalAuthId: 'corp-north-01', customerName: 'Neha Kapoor', company: 'Bharti Airtel', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Delhi (VIDP)', departureDate: '2025-02-20', pax: 4, aircraftType: 'Light Jet', status: 'live', createdAt: '2025-02-19T09:00:00Z', updatedAt: '2025-02-20T14:00:00Z', totalAmount: 950000, operatorId: 'op-south-01' },
-    { id: 'RFQ-LIVE-003', customerId: 'ag-west-01', requesterExternalAuthId: 'ag-west-01', customerName: 'Joydeep Sen', tripType: 'Onward', departure: 'Kolkata (VECC)', arrival: 'Guwahati (VEGT)', departureDate: '2025-02-20', pax: 3, aircraftType: 'Turboprop', status: 'operationalPreparation', createdAt: '2025-02-19T15:00:00Z', updatedAt: '2025-02-20T10:00:00Z', totalAmount: 450000, operatorId: 'op-east-01' },
+    { id: 'RFQ-CORP-001', customerId: 'corp-west-01', requesterExternalAuthId: 'corp-west-01', customerName: 'Priya Sharma', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', departureTime: '10:00', pax: 5, aircraftType: 'Any Light Jet', status: 'Bidding Open', bidsCount: 2, createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', costCenter: 'STRK-EXEC-25' },
+    { id: 'RFQ-LIVE-001', customerId: 'cust-01', requesterExternalAuthId: 'cust-01', customerName: 'Rahul Malhotra', tripType: 'Onward', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureDate: '2025-02-20', departureTime: '14:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'enroute', createdAt: '2025-02-18T10:00:00Z', updatedAt: '2025-02-20T12:00:00Z', totalAmount: 1250000, operatorId: 'op-north-01' },
 ];
 
 export const mockQuotations: Quotation[] = [
@@ -121,10 +119,6 @@ export const mockEmptyLegs: EmptyLeg[] = [
 
 export const mockSeatRequests: SeatAllocation[] = [
     { id: 'SAR-001', flightId: 'EL-LIVE-001', operatorId: 'op-west-01', customerId: 'ag-west-01', agencyId: 'ag-west-01', bookingChannel: 'agency', seatsRequested: 2, pricePerSeat: 45000, totalAmount: 90000, status: 'pendingApproval', paymentStatus: 'pending', passengerName: 'Anil Ambani', clientReference: 'VIP-WEST-01', createdAt: '2025-02-15T10:00:00Z' }
-];
-
-export const mockSeatInventoryLogs: SeatInventoryLog[] = [
-    { id: 'LOG-001', flightId: 'EL-LIVE-001', seatsBefore: 8, seatsAfter: 6, actionType: 'hold', changedBy: 'System (SAR-001)', timestamp: '2025-02-15T10:00:00Z' }
 ];
 
 export const mockAuditLogs: AuditLog[] = [
@@ -184,69 +178,7 @@ export const mockSettlementRecords: SettlementRecord[] = [
 ];
 
 export const mockBlogPosts: BlogPost[] = [
-    { 
-      id: 'post-01', 
-      title: "India's 2025 NSOP Infrastructure Roadmap", 
-      excerpt: "Analyzing the transition from fragmented regional operations to a unified digital infrastructure layer for non-scheduled flight governance.", 
-      category: 'Market Trends', 
-      author: 'AeroDesk Intelligence', 
-      date: '2025-02-10', 
-      imageUrl: 'https://images.unsplash.com/photo-1566212775038-532d06eda485?q=80&w=1080' 
-    },
-    { 
-      id: 'post-02', 
-      title: "The Rise of the Jet Seat: Empty Leg Economics", 
-      excerpt: "How systemic recovery of positioning flights is creating a new gateway for institutional clients to experience private aviation at scale.", 
-      category: 'Empty Leg Insights', 
-      author: 'Vikram Singh', 
-      date: '2025-02-08', 
-      imageUrl: 'https://images.unsplash.com/photo-1616142387171-fadb42551e7a?q=80&w=1080' 
-    },
-    { 
-      id: 'post-03', 
-      title: "Regional Connectivity: The Impact of Tier-2 Runways", 
-      excerpt: "Deep dive into the emerging demand zones in Goa and Jaipur as new aviation infrastructure comes online for private charter missions.", 
-      category: 'Market Trends', 
-      author: 'Ananya Iyer', 
-      date: '2025-02-05', 
-      imageUrl: 'https://images.unsplash.com/photo-1716161051573-5aad6047161a?q=80&w=1080' 
-    },
-    { 
-      id: 'post-04', 
-      title: "Corporate Governance in Private Charter Procurement", 
-      excerpt: "Standardizing manifest coordination and multi-level approval workflows for enterprise travel desks across India's backbone corridors.", 
-      category: 'Corporate Travel', 
-      author: 'Priya Sharma', 
-      date: '2025-02-01', 
-      imageUrl: 'https://images.unsplash.com/photo-1758837573876-63871cc70fd6?q=80&w=1080' 
-    },
-    { 
-      id: 'post-05', 
-      title: "AeroDesk Protocol: Standardizing Manifest Coordination", 
-      excerpt: "Technical analysis of the digital compliance layer ensuring NSOP operator safety standards are maintained across all coordinated journeys.", 
-      category: 'Operator Perspectives', 
-      author: 'Rajesh Verma', 
-      date: '2025-01-28', 
-      imageUrl: 'https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?q=80&w=1080' 
-    },
-    { 
-      id: 'post-06', 
-      title: "Sustainability in High-Yield Aviation Corridors", 
-      excerpt: "Evaluating the carbon offset initiatives and fuel efficiency metrics within India's growing mid-size and heavy jet fleet segments.", 
-      category: 'Private Aviation', 
-      author: 'AeroDesk Engineering', 
-      date: '2025-01-22', 
-      imageUrl: 'https://images.unsplash.com/photo-1768346564233-d71f37bd19b6?q=80&w=1080' 
-    },
-    { 
-      id: 'post-07', 
-      title: "Market Analysis: Q3 Charter Demand Surges in West Zone", 
-      excerpt: "Identifying high-density mission clusters originating from Mumbai Metro Hub and predicted spatial demand for the upcoming festive quarter.", 
-      category: 'Market Trends', 
-      author: 'Vikram Singh', 
-      date: '2025-01-15', 
-      imageUrl: 'https://images.unsplash.com/photo-1573108724029-4c46571d6490?q=80&w=1080' 
-    },
+    { id: 'post-01', title: "India's 2025 NSOP Infrastructure Roadmap", excerpt: "Analyzing the transition from fragmented regional operations to a unified digital infrastructure layer.", category: 'Market Trends', author: 'AeroDesk Intelligence', date: '2025-02-10', imageUrl: 'https://images.unsplash.com/photo-1566212775038-532d06eda485?q=80&w=1080' },
 ];
 
 export const mockPressReleases: PressRelease[] = [
@@ -258,5 +190,5 @@ export const mockMediaMentions: MediaMention[] = [
 ];
 
 export const mockBrandAssets: BrandAsset[] = [
-    { id: 'ba-01', title: 'Logo Pack', type: 'Vector', imageUrl: 'https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhdmlhdGlvbiUyMGxvZ298ZW58MHx8fHwxNzcyMDgzMDIyfDA&ixlib=rb-4.1.0&q=80&w=1080', fileSize: '2.4MB' },
+    { id: 'ba-01', title: 'Logo Pack', type: 'Vector', imageUrl: 'https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?q=80&w=1080', fileSize: '2.4MB' },
 ];

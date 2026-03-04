@@ -80,6 +80,7 @@ export type CharterRFQ = {
   specialRequirements?: string;
   hotelRequired?: boolean;
   hotelPreferences?: string;
+  bidsCount?: number;
 };
 
 export type AircraftStatus = 'Available' | 'Under Maintenance' | 'AOG' | 'Restricted';
@@ -95,6 +96,8 @@ export type Aircraft = {
     status: AircraftStatus;
     exteriorImageUrl?: string;
     interiorImageUrl?: string;
+    utilizationPercent?: number;
+    revenueLostEmptyLegs?: number;
     createdAt?: string;
     updatedAt?: string;
 };
@@ -119,6 +122,8 @@ export type EmptyLeg = {
     status: string;
     createdAt: string;
     updatedAt?: string;
+    seatPricingStrategy?: string;
+    estimatedPricePerSeat?: number;
 };
 
 export type SeatAllocationStatus = 'pendingApproval' | 'approved' | 'paymentPending' | 'confirmed' | 'rejected' | 'cancelled';
