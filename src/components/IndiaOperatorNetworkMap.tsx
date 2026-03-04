@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -111,21 +110,25 @@ export function IndiaOperatorNetworkMap() {
     map.current.on('load', () => {
       if (!map.current) return;
 
-      // Apply Institutional Navy Palette by finding background and water layers
+      // Apply Institutional Navy Palette Safely
       const layers = map.current.getStyle().layers;
       layers?.forEach((layer) => {
-        if (layer.type === 'background') {
-          map.current?.setPaintProperty(layer.id, 'background-color', '#0B1F33');
-        }
-        if (layer.id.includes('water') || layer.id.includes('river') || layer.id.includes('ocean')) {
-          map.current?.setPaintProperty(layer.id, 'fill-color', '#081622');
-        }
-        if (layer.id.includes('admin') || layer.id.includes('boundary')) {
-          map.current?.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
-        }
-        if (layer.type === 'symbol') {
-          map.current?.setLayoutProperty(layer.id, 'text-field', ['get', 'name']);
-          map.current?.setPaintProperty(layer.id, 'text-opacity', 0.35);
+        try {
+          if (layer.type === 'background') {
+            map.current?.setPaintProperty(layer.id, 'background-color', '#0B1F33');
+          } else if (layer.type === 'fill' && (layer.id.includes('water') || layer.id.includes('river') || layer.id.includes('ocean'))) {
+            map.current?.setPaintProperty(layer.id, 'fill-color', '#081622');
+          } else if (layer.type === 'line' && (layer.id.includes('admin') || layer.id.includes('boundary'))) {
+            map.current?.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
+          } else if (layer.type === 'symbol') {
+            // Some basemap labels might not have text-opacity paint property
+            const layout = (layer as any).layout;
+            if (layout && layout['text-field']) {
+              map.current?.setPaintProperty(layer.id, 'text-opacity', 0.35);
+            }
+          }
+        } catch (e) {
+          // Skip layers that don't support the property or are in flux
         }
       });
 
@@ -238,7 +241,7 @@ export function IndiaOperatorNetworkMap() {
       source: trailId,
       paint: { 
         'line-color': mission.color, 
-        'line-width': 3,
+        'line-width': 3, 
         'line-opacity': 0.8
       }
     });
@@ -261,18 +264,24 @@ export function IndiaOperatorNetworkMap() {
       
       // Update Trail
       const trailPoints = points.slice(Math.max(0, step - 20), step + 1);
-      (mapInstance.getSource(trailId) as maplibregl.GeoJSONSource).setData({
-        type: 'Feature',
-        geometry: { type: 'LineString', coordinates: trailPoints },
-        properties: {}
-      });
+      const trailSource = mapInstance.getSource(trailId) as maplibregl.GeoJSONSource;
+      if (trailSource) {
+        trailSource.setData({
+          type: 'Feature',
+          geometry: { type: 'LineString', coordinates: trailPoints },
+          properties: {}
+        });
+      }
 
       // Update Path
-      (mapInstance.getSource(routeId) as maplibregl.GeoJSONSource).setData({
-        type: 'Feature',
-        geometry: { type: 'LineString', coordinates: points },
-        properties: {}
-      });
+      const routeSource = mapInstance.getSource(routeId) as maplibregl.GeoJSONSource;
+      if (routeSource) {
+        routeSource.setData({
+          type: 'Feature',
+          geometry: { type: 'LineString', coordinates: points },
+          properties: {}
+        });
+      }
       
       const bearing = getBearing(current[1], current[0], next[1], next[0]);
       marker.setLngLat(current);
