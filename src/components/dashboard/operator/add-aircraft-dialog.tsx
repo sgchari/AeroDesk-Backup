@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef } from 'react';
@@ -69,7 +68,9 @@ export function AddAircraftDialog({ open, onOpenChange }: { open: boolean; onOpe
   const onSubmit = (data: AircraftFormValues) => {
     if (!user || !firestore) return;
 
-    const aircraftCollectionRef = collection(firestore, `operators/${user.id}/aircrafts`);
+    const aircraftCollectionRef = (firestore as any)._isMock
+        ? { path: `operators/${user.id}/aircrafts` } as any
+        : collection(firestore, 'operators', user.id, 'aircrafts');
     
     // Simulate image selection
     const extFile = exteriorRef.current?.files?.[0];

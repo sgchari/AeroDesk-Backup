@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -54,20 +53,15 @@ export function RequestSeatAllocationDialog({ emptyLeg, open, onOpenChange }: Re
   });
 
   const onSubmit = (data: SeatAllocationFormValues) => {
-    if (!user || !emptyLeg) {
-      toast({ title: 'Error', description: 'User or flight details are missing.', variant: 'destructive' });
-      return;
-    }
-    if (!firestore) {
-        toast({ title: 'Error', description: 'Database service is not available.', variant: 'destructive'});
-        return;
-    }
+    if (!user || !emptyLeg || !firestore) return;
 
-    const seatRequestCollectionRef = collection(firestore, `emptyLegs/${emptyLeg.id}/seatAllocationRequests`);
+    const seatRequestCollectionRef = (firestore as any)._isMock
+        ? { path: `emptyLegs/${emptyLeg.id}/seatAllocationRequests` } as any
+        : collection(firestore, `emptyLegs/${emptyLeg.id}/seatAllocationRequests`);
     
     addDocumentNonBlocking(seatRequestCollectionRef, {
         emptyLegId: emptyLeg.id,
-        distributorId: user.id, // Assuming distributor user ID is their ID
+        distributorId: user.id,
         requesterExternalAuthId: user.id,
         numberOfSeats: data.numberOfSeats,
         status: 'Requested',

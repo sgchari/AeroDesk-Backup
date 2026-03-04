@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -27,7 +26,7 @@ export default function CTDPoliciesPage() {
     const [newPolicyOpen, setNewPolicyOpen] = useState(false);
 
     const policiesQuery = useMemoFirebase(() => {
-        if (!firestore || !user?.ctdId) return null;
+        if (!firestore || (firestore as any)._isMock || !user?.ctdId) return null;
         return collection(firestore, `corporateTravelDesks/${user.ctdId}/policyFlags`);
     }, [firestore, user]);
 
@@ -35,8 +34,12 @@ export default function CTDPoliciesPage() {
 
     const handleToggleEnforcement = (policyId: string, currentStatus: boolean) => {
         if (!firestore || !user?.ctdId) return;
-        const policyRef = doc(firestore, `corporateTravelDesks/${user.ctdId}/policyFlags`, policyId);
-        updateDocumentNonBlocking(policyRef, { isEnforced: !currentStatus });
+        
+        const docRef = (firestore as any)._isMock
+            ? { path: `corporateTravelDesks/${user.ctdId}/policyFlags/${policyId}` } as any
+            : doc(firestore, `corporateTravelDesks/${user.ctdId}/policyFlags`, policyId);
+
+        updateDocumentNonBlocking(docRef, { isEnforced: !currentStatus });
         
         toast({
             title: "Policy Status Updated",
@@ -46,8 +49,12 @@ export default function CTDPoliciesPage() {
 
     const handleDeletePolicy = (policyId: string) => {
         if (!firestore || !user?.ctdId) return;
-        const policyRef = doc(firestore, `corporateTravelDesks/${user.ctdId}/policyFlags`, policyId);
-        deleteDocumentNonBlocking(policyRef);
+        
+        const docRef = (firestore as any)._isMock
+            ? { path: `corporateTravelDesks/${user.ctdId}/policyFlags/${policyId}` } as any
+            : doc(firestore, `corporateTravelDesks/${user.ctdId}/policyFlags`, policyId);
+
+        deleteDocumentNonBlocking(docRef);
     };
 
     const isLoading = isUserLoading || policiesLoading;

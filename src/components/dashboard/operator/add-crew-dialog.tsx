@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -54,7 +53,7 @@ export function AddCrewDialog({ open, onOpenChange }: { open: boolean; onOpenCha
 
   const { data: fleet } = useCollection<Aircraft>(
     useMemoFirebase(() => {
-        if (!firestore || !user) return null;
+        if (!firestore || (firestore as any)._isMock || !user) return null;
         return collection(firestore, 'operators', user.id, 'aircrafts');
     }, [firestore, user]),
     user ? `operators/${user.id}/aircrafts` : undefined
@@ -75,7 +74,9 @@ export function AddCrewDialog({ open, onOpenChange }: { open: boolean; onOpenCha
   const onSubmit = (data: CrewFormValues) => {
     if (!user || !firestore) return;
 
-    const crewCollectionRef = collection(firestore, 'crew');
+    const crewCollectionRef = (firestore as any)._isMock
+        ? { path: 'crew' } as any
+        : collection(firestore, 'crew');
     
     const assignedAc = fleet?.find(a => a.id === data.assignedAircraftId);
 

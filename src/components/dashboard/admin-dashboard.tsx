@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,48 +17,48 @@ export function AdminDashboard() {
   const firestore = useFirestore();
 
   const pendingLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'emptyLegs'), where('status', '==', 'Pending Approval'));
   }, [firestore]);
-  const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery);
+  const { data: pendingLegs, isLoading: pendingLegsLoading } = useCollection(pendingLegsQuery, 'emptyLegs');
   
   const usersQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return collection(firestore, 'customers'); // Simplified: just counting customers for now
+    if (!firestore || (firestore as any)._isMock) return null;
+    return collection(firestore, 'customers'); 
   }, [firestore]);
-  const { data: users, isLoading: usersLoading } = useCollection(usersQuery);
+  const { data: users, isLoading: usersLoading } = useCollection(usersQuery, 'customers');
 
   const operatorsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return collection(firestore, 'operators');
   }, [firestore]);
-  const { data: operators, isLoading: operatorsLoading } = useCollection(operatorsQuery);
+  const { data: operators, isLoading: operatorsLoading } = useCollection(operatorsQuery, 'operators');
   
   const partnersQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return collection(firestore, 'hotelPartners'); // Simplified: just hotel partners
+    if (!firestore || (firestore as any)._isMock) return null;
+    return collection(firestore, 'hotelPartners'); 
   }, [firestore]);
-  const { data: partners, isLoading: partnersLoading } = useCollection(partnersQuery);
+  const { data: partners, isLoading: partnersLoading } = useCollection(partnersQuery, 'hotelPartners');
 
   const auditLogsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'auditTrails'), orderBy('timestamp', 'desc'), limit(5));
   }, [firestore]);
-  const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery);
+  const { data: recentLogs, isLoading: auditLogsLoading } = useCollection<AuditLog>(auditLogsQuery, 'auditTrails');
 
   const activeRfqsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
   }, [firestore]);
-  const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery);
+  const { data: activeRfqs, isLoading: activeRfqsLoading } = useCollection(activeRfqsQuery, 'charterRequests');
   
   const isLoading = pendingLegsLoading || usersLoading || operatorsLoading || partnersLoading || auditLogsLoading || activeRfqsLoading;
   
   const stats = {
     pendingApprovals: pendingLegs?.length ?? 0,
-    activeUsers: users?.length ?? 0, // Note: This is a simplified count
+    activeUsers: users?.length ?? 0,
     operators: operators?.length ?? 0,
-    partners: partners?.length ?? 0, // Note: This is a simplified count
+    partners: partners?.length ?? 0,
     activeRfqs: activeRfqs?.length ?? 0,
   }
 
@@ -75,7 +74,7 @@ export function AdminDashboard() {
             <StatsCard title="Partners" href="/dashboard/admin/partners" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.partners.toString()} icon={Briefcase} description="Hotels & Distributors" />
             <StatsCard title="Active RFQs" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeRfqs.toString()} icon={GanttChartSquare} description="Open for bidding" />
         </StatsGrid>
-        <Card>
+        <Card className="bg-card">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>Recent Audit Trail</CardTitle>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -59,7 +58,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
   const firestore = useFirestore();
 
   const fleetQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return collection(firestore, 'operators', user.id, 'aircrafts');
   }, [firestore, user]);
 
@@ -80,7 +79,9 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
   const onSubmit = (data: QuoteFormValues) => {
     if (!user || !rfq || !firestore) return;
 
-    const quotesRef = collection(firestore, `charterRFQs/${rfq.id}/quotations`);
+    const quotesRef = (firestore as any)._isMock
+        ? { path: `charterRFQs/${rfq.id}/quotations` } as any
+        : collection(firestore, 'charterRFQs', rfq.id, 'quotations');
     
     addDocumentNonBlocking(quotesRef, {
         rfqId: rfq.id,

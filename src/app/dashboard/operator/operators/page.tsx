@@ -30,16 +30,20 @@ export default function OperatorManagementPage() {
     const { toast } = useToast();
     
     const operatorsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
+        if (!firestore || (firestore as any)._isMock) return null;
         return collection(firestore, 'operators');
     }, [firestore]);
     
-    const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery);
+    const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery, 'operators');
 
     const handleUpdateStatus = (operatorId: string, status: Operator['status']) => {
         if (!firestore) return;
-        const operatorDocRef = doc(firestore, 'operators', operatorId);
-        updateDocumentNonBlocking(operatorDocRef, { status });
+        
+        const docRef = (firestore as any)._isMock
+            ? { path: `operators/${operatorId}` } as any
+            : doc(firestore, 'operators', operatorId);
+
+        updateDocumentNonBlocking(docRef, { status });
         toast({
             title: "Operator Status Updated",
             description: `The operator has been ${status.toLowerCase()}.`,

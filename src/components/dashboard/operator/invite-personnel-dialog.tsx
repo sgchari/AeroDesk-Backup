@@ -63,10 +63,12 @@ export function InvitePersonnelDialog() {
   });
 
   const onSubmit = (data: InviteFormValues) => {
-    if (!currentUser || !currentUser.operatorId) return;
+    if (!currentUser || !currentUser.operatorId || !firestore) return;
 
-    // Use standard user collection but with operator mapping
-    const usersRef = collection(firestore as any, 'users');
+    // Handle mock collection reference
+    const usersRef = (firestore as any)._isMock
+        ? { path: 'users' } as any
+        : collection(firestore, 'users');
     
     const newUser = {
         firstName: data.firstName,
@@ -82,7 +84,7 @@ export function InvitePersonnelDialog() {
         updatedAt: new Date().toISOString(),
     };
 
-    addDocumentNonBlocking(usersRef as any, newUser);
+    addDocumentNonBlocking(usersRef, newUser);
 
     toast({
       title: 'Personnel Initialized',
