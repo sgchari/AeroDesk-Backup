@@ -1,17 +1,17 @@
 
 'use client';
 
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import * as turf from '@turf/turf';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Zap, ShieldCheck, Activity, Plane, Info, X, MapPin, Gavel, ArrowRight } from 'lucide-react';
+import { Zap, X, Plane, ArrowRight, ShieldCheck, Activity } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-// --- INSTITUTIONAL HUB DATA ---
+// --- INSTITUTIONAL HUB DATA (Lng, Lat) ---
 const hubNodes = [
   { 
     id: 'hub-delhi',
@@ -69,49 +69,23 @@ const hubNodes = [
   },
 ];
 
-// --- DEMAND HEATMAP DATA ---
+const ACTIVE_MISSIONS_CONFIG = [
+  { id: 'ADX-101', from: [77.1025, 28.7041], to: [72.8777, 19.0760] }, // Delhi to Mumbai
+  { id: 'ADX-102', from: [72.8777, 19.0760], to: [77.5946, 12.9716] }, // Mumbai to Bangalore
+  { id: 'ADX-103', from: [77.5946, 12.9716], to: [80.2707, 13.0827] }, // Bangalore to Chennai
+  { id: 'ADX-104', from: [80.2707, 13.0827], to: [78.4867, 17.3850] }, // Chennai to Hyderabad
+  { id: 'ADX-105', from: [78.4867, 17.3850], to: [77.1025, 28.7041] }, // Hyderabad to Delhi
+  { id: 'ADX-106', from: [88.3639, 22.5726], to: [77.1025, 28.7041] }, // Kolkata to Delhi
+];
+
 const demandHeatmapPoints = {
   type: 'FeatureCollection',
-  features: [
-    { type: 'Feature', properties: { weight: 0.9 }, geometry: { type: 'Point', coordinates: [77.1025, 28.7041] } },
-    { type: 'Feature', properties: { weight: 0.8 }, geometry: { type: 'Point', coordinates: [72.8777, 19.0760] } },
-    { type: 'Feature', properties: { weight: 0.6 }, geometry: { type: 'Point', coordinates: [77.5946, 12.9716] } },
-    { type: 'Feature', properties: { weight: 0.7 }, geometry: { type: 'Point', coordinates: [74.1240, 15.2993] } },
-    { type: 'Feature', properties: { weight: 0.5 }, geometry: { type: 'Point', coordinates: [75.7873, 26.9124] } },
-  ]
+  features: hubNodes.map(hub => ({
+    type: 'Feature',
+    properties: { weight: Math.random() },
+    geometry: { type: 'Point', coordinates: hub.position }
+  }))
 };
-
-// --- EMPTY LEG DATA ---
-const emptyLegPoints = {
-  type: 'FeatureCollection',
-  features: [
-    { type: 'Feature', properties: { id: 'EL-99', type: 'Empty Leg Opportunity' }, geometry: { type: 'Point', coordinates: [74.1240, 15.2993] } },
-    { type: 'Feature', properties: { id: 'EL-102', type: 'Empty Leg Opportunity' }, geometry: { type: 'Point', coordinates: [75.7873, 26.9124] } },
-    { type: 'Feature', properties: { id: 'EL-105', type: 'Empty Leg Opportunity' }, geometry: { type: 'Point', coordinates: [78.0421, 27.1767] } },
-  ]
-};
-
-// --- BEARING CALCULATION ---
-function getBearing(start: [number, number], end: [number, number]) {
-  const startLat = start[1] * Math.PI / 180;
-  const startLng = start[0] * Math.PI / 180;
-  const endLat = end[1] * Math.PI / 180;
-  const endLng = end[0] * Math.PI / 180;
-
-  const dLng = endLng - startLng;
-  const y = Math.sin(dLng) * Math.cos(endLat);
-  const x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLng);
-  const bearing = Math.atan2(y, x);
-  return (bearing * 180 / Math.PI + 360) % 360;
-}
-
-// --- MISSION CONFIG ---
-const ACTIVE_MISSIONS = [
-  { id: 'ADX-204', from: hubNodes[0].position, to: hubNodes[1].position, color: '#00FFA6' },
-  { id: 'ADX-312', from: hubNodes[1].position, to: hubNodes[3].position, color: '#00FFA6' },
-  { id: 'ADX-440', from: hubNodes[2].position, to: hubNodes[0].position, color: '#00FFA6' },
-  { id: 'ADX-505', from: hubNodes[5].position, to: hubNodes[4].position, color: '#00FFA6' },
-];
 
 export function IndiaOperatorNetworkMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -129,11 +103,11 @@ export function IndiaOperatorNetworkMap() {
       center: [79, 21],
       zoom: 4.7,
       minZoom: 4,
-      maxZoom: 10,
+      maxZoom: 8,
       attributionControl: false,
       scrollZoom: false,
       dragPan: true,
-      maxBounds: [[60, 5], [100, 40]] // Restrict to South Asia
+      maxBounds: [[60, 5], [100, 35]]
     });
 
     map.current.on('load', () => {
@@ -144,7 +118,7 @@ export function IndiaOperatorNetworkMap() {
       style.layers?.forEach((layer) => {
         if (layer.type === 'background') {
           map.current?.setPaintProperty(layer.id, 'background-color', '#0B1F33');
-        } else if (layer.type === 'fill' && layer.id.includes('water')) {
+        } else if (layer.type === 'fill' && (layer.id.includes('water') || layer.id.includes('ocean'))) {
           map.current?.setPaintProperty(layer.id, 'fill-color', '#081622');
         } else if (layer.type === 'line' && (layer.id.includes('admin') || layer.id.includes('boundary'))) {
           map.current?.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
@@ -153,7 +127,7 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
-      // --- RADAR NODES (OPERATOR BASES) ---
+      // --- HUB RADAR NODES ---
       hubNodes.forEach(hub => {
         const el = document.createElement('div');
         el.className = 'radar-node-container';
@@ -161,19 +135,17 @@ export function IndiaOperatorNetworkMap() {
           <div class="radar-node-pulse"></div>
           <div class="radar-node-core"></div>
         `;
-        
         el.onclick = (e) => {
-            e.stopPropagation();
-            setSelectedHub(hub);
+          e.stopPropagation();
+          setSelectedHub(hub);
         };
-        
         new maplibregl.Marker({ element: el, anchor: 'center' })
           .setLngLat(hub.position)
           .addTo(map.current!);
       });
 
       // --- INTELLIGENCE LAYERS ---
-      map.current.addSource('demand-forecast', { type: 'geojson', data: demandHeatmapPoints });
+      map.current.addSource('demand-forecast', { type: 'geojson', data: demandHeatmapPoints as any });
       map.current.addLayer({
         id: 'demand-heat',
         type: 'heatmap',
@@ -192,25 +164,14 @@ export function IndiaOperatorNetworkMap() {
           'heatmap-radius': 40,
           'heatmap-opacity': 0.35
         }
-      }); // Fixed: Removed invalid 'hub-delhi' beforeId reference
-
-      map.current.addSource('empty-legs', { type: 'geojson', data: emptyLegPoints });
-      map.current.addLayer({
-        id: 'empty-leg-nodes',
-        type: 'circle',
-        source: 'empty-legs',
-        layout: { visibility: 'none' },
-        paint: {
-          'circle-radius': 6,
-          'circle-color': '#FFD166',
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#0B1F33'
-        }
       });
 
-      // --- ANIMATE MISSIONS ---
-      ACTIVE_MISSIONS.forEach(mission => {
-        animateMission(mission, map.current!);
+      // --- MISSION TELEMETRY ---
+      ACTIVE_MISSIONS_CONFIG.forEach((mission, index) => {
+        // Stagger spawn times
+        setTimeout(() => {
+          if (map.current) animateMission(mission, map.current);
+        }, index * 2000);
       });
     });
 
@@ -218,104 +179,86 @@ export function IndiaOperatorNetworkMap() {
   }, []);
 
   const animateMission = (mission: any, mapInstance: maplibregl.Map) => {
-    const start = mission.from;
-    const end = mission.to;
-    
-    // Generate Great-Circle Arc
-    const arc = turf.greatCircle(turf.point(start), turf.point(end), { npoints: 300 });
-    const points = arc.geometry.coordinates as [number, number][];
-    
-    let step = 0;
+    const startPoint = turf.point(mission.from);
+    const endPoint = turf.point(mission.to);
+    const options = { units: 'kilometers' as const };
+    const routeDistance = turf.distance(startPoint, endPoint, options);
+    const routeLine = turf.greatCircle(startPoint, endPoint, { npoints: 500 });
+    const routeCoords = routeLine.geometry.coordinates;
 
-    const routeId = `route-${mission.id}`;
-    mapInstance.addSource(routeId, {
-      type: 'geojson',
-      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: points }, properties: {} }
-    });
-    
-    mapInstance.addLayer({
-      id: routeId,
-      type: 'line',
-      source: routeId,
-      paint: { 
-        'line-color': mission.color, 
-        'line-width': 2, 
-        'line-dasharray': [2, 3], 
-        'line-opacity': 0.4 
-      }
-    });
-
-    const trailId = `trail-${mission.id}`;
-    mapInstance.addSource(trailId, {
+    // Trail Source
+    const sourceId = `trail-${mission.id}`;
+    mapInstance.addSource(sourceId, {
       type: 'geojson',
       data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} }
     });
+
     mapInstance.addLayer({
-      id: trailId,
+      id: `${sourceId}-layer`,
       type: 'line',
-      source: trailId,
-      paint: { 
-        'line-color': mission.color, 
-        'line-width': 3, 
-        'line-opacity': 0.8
-      } as any,
+      source: sourceId,
+      paint: {
+        'line-color': '#00FFA6',
+        'line-width': 2,
+        'line-opacity': 0.6,
+        'line-dasharray': [2, 2]
+      },
       layout: { 'line-cap': 'round', 'line-join': 'round' }
     });
 
-    // Aircraft Marker with Zoom Scaling
+    // Aircraft Marker
     const planeEl = document.createElement('div');
     planeEl.className = 'aircraft-marker';
     planeEl.innerHTML = `
-      <div class="aircraft-glow"></div>
-      <div class="aircraft-icon">
-        <svg viewBox="0 0 24 24" fill="${mission.color}" xmlns="http://www.w3.org/2000/svg">
-          <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-        </svg>
-      </div>
+      <svg viewBox="0 0 24 24" fill="#00FFA6" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+      </svg>
     `;
     
     const marker = new maplibregl.Marker({ element: planeEl, rotationAlignment: 'map' })
-      .setLngLat(points[0])
+      .setLngLat(mission.from)
       .addTo(mapInstance);
 
-    const stepAnimation = () => {
+    let progress = 0;
+    const speed = 0.0008; // Units per frame
+
+    function step() {
       if (!map.current) return;
-      
-      step = (step + 1) % points.length;
-      const current = points[step];
-      const next = points[(step + 1) % points.length];
-      
-      // Update Trail
-      const trailPoints = points.slice(Math.max(0, step - 40), step + 1);
-      const trailSource = mapInstance.getSource(trailId) as maplibregl.GeoJSONSource;
-      if (trailSource) {
-        trailSource.setData({
+
+      progress += speed;
+      if (progress > 1) progress = 0;
+
+      const currentAlong = turf.along(routeLine, progress * routeDistance, options);
+      const nextAlong = turf.along(routeLine, Math.min(1, progress + 0.01) * routeDistance, options);
+      const bearing = turf.bearing(currentAlong, nextAlong);
+
+      marker.setLngLat(currentAlong.geometry.coordinates as [number, number]);
+      marker.setRotation(bearing);
+
+      // Contrail Update: Last 10% of coordinates
+      const currentIdx = Math.floor(progress * routeCoords.length);
+      const trailStartIdx = Math.max(0, currentIdx - 40);
+      const trailCoords = routeCoords.slice(trailStartIdx, currentIdx + 1);
+
+      const source = mapInstance.getSource(sourceId) as maplibregl.GeoJSONSource;
+      if (source) {
+        source.setData({
           type: 'Feature',
-          geometry: { type: 'LineString', coordinates: trailPoints },
+          geometry: { type: 'LineString', coordinates: trailCoords },
           properties: {}
         });
       }
-      
-      // Update Position & Rotation
-      const bearing = getBearing(current, next);
-      marker.setLngLat(current);
-      marker.setRotation(bearing);
 
-      requestAnimationFrame(stepAnimation);
-    };
+      requestAnimationFrame(step);
+    }
 
-    requestAnimationFrame(stepAnimation);
+    requestAnimationFrame(step);
   };
 
   useEffect(() => {
     if (!map.current || !map.current.loaded()) return;
     map.current.setLayoutProperty('demand-heat', 'visibility', showForecast ? 'visible' : 'none');
   }, [showForecast]);
-
-  useEffect(() => {
-    if (!map.current || !map.current.loaded()) return;
-    map.current.setLayoutProperty('empty-leg-nodes', 'visibility', showEmptyLegs ? 'visible' : 'none');
-  }, [showEmptyLegs]);
 
   return (
     <div className="w-full h-full relative overflow-hidden flex flex-col gap-4">
@@ -324,8 +267,8 @@ export function IndiaOperatorNetworkMap() {
         <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-4 shadow-2xl">
           <div className="flex items-center justify-between gap-8">
             <div className="space-y-0.5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white">Demand Forecast Layer</p>
-              <p className="text-[8px] text-muted-foreground uppercase font-bold">Predictive Market Intensity</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-white">Demand Forecast</p>
+              <p className="text-[8px] text-muted-foreground uppercase font-bold">Predictive Intensity</p>
             </div>
             <Button 
               size="sm" 
@@ -334,21 +277,6 @@ export function IndiaOperatorNetworkMap() {
               className={cn("h-7 text-[8px] font-black uppercase px-3", showForecast && "bg-primary text-white border-none")}
             >
               {showForecast ? "ON" : "OFF"}
-            </Button>
-          </div>
-          
-          <div className="flex items-center justify-between gap-8">
-            <div className="space-y-0.5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white">Empty Leg Layer</p>
-              <p className="text-[8px] text-muted-foreground uppercase font-bold">Repositioning Opportunities</p>
-            </div>
-            <Button 
-              size="sm" 
-              variant={showEmptyLegs ? "default" : "outline"} 
-              onClick={() => setShowEmptyLegs(!showEmptyLegs)}
-              className={cn("h-7 text-[8px] font-black uppercase px-3", showEmptyLegs && "bg-[#FFD166] text-black border-none hover:bg-[#FFD166]/90")}
-            >
-              {showEmptyLegs ? "ON" : "OFF"}
             </Button>
           </div>
         </div>
@@ -379,7 +307,7 @@ export function IndiaOperatorNetworkMap() {
                         </div>
                     </div>
                     <div className="space-y-1.5">
-                        <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">Verified Aircraft Types</p>
+                        <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">Aircraft Types</p>
                         <div className="flex flex-wrap gap-1">
                             {selectedHub.aircraft.map(ac => (
                                 <Badge key={ac} variant="outline" className="text-[7px] border-white/10 bg-white/5 text-white/70 h-4 px-1.5">{ac}</Badge>
@@ -387,7 +315,7 @@ export function IndiaOperatorNetworkMap() {
                         </div>
                     </div>
                     <Button className="w-full h-8 bg-accent text-accent-foreground text-[9px] font-black uppercase tracking-widest gap-2 shadow-xl shadow-accent/10">
-                        View Available Charters <ArrowRight className="h-3 w-3" />
+                        Available Charters <ArrowRight className="h-3 w-3" />
                     </Button>
                 </CardContent>
             </Card>
@@ -409,14 +337,6 @@ export function IndiaOperatorNetworkMap() {
             <div className="w-2.5 h-2.5 rounded-full border border-[#00FFA6] animate-ping" />
             <span className="text-[9px] font-bold text-white/70 uppercase tracking-tighter">NSOP Operator Base</span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-[#FFD166] shadow-[0_0_8px_#FFD166]" />
-            <span className="text-[9px] font-bold text-[#FFD166] uppercase tracking-tighter">Empty Leg Discovery</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded bg-gradient-to-r from-[#2A7FFF] to-[#FFD166]" />
-            <span className="text-[9px] font-bold text-white/70 uppercase tracking-tighter">Demand Heatmap</span>
-          </div>
         </div>
       </div>
 
@@ -427,7 +347,6 @@ export function IndiaOperatorNetworkMap() {
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          pointer-events: auto;
         }
         .radar-node-core {
           width: 6px;
@@ -451,32 +370,18 @@ export function IndiaOperatorNetworkMap() {
           100% { transform: scale(1.5); opacity: 0; }
         }
         .aircraft-marker {
-          position: relative;
+          width: 28px;
+          height: 28px;
           display: flex;
           align-items: center;
           justify-content: center;
-          animation: aircraft-pulse 1.5s ease-in-out infinite;
+          filter: drop-shadow(0 0 12px #00FFA6);
+          transition: transform 0.1s linear;
         }
-        .aircraft-glow {
-          position: absolute;
-          width: 16px;
-          height: 16px;
-          background: radial-gradient(circle, #00FFA699 0%, transparent 70%);
-          filter: blur(4px);
+        .aircraft-marker svg {
+          width: 100%;
+          height: 100%;
         }
-        .aircraft-icon svg {
-          width: 26px;
-          height: 26px;
-          filter: drop-shadow(0 0 4px #00FFA6);
-        }
-        @keyframes aircraft-pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); opacity: 0.9; }
-        }
-        /* Zoom Scaling Simulation via CSS */
-        .maplibregl-map[zoom^="1"], .maplibregl-map[zoom^="2"], .maplibregl-map[zoom^="3"] .aircraft-icon svg { width: 18px; height: 18px; }
-        .maplibregl-map[zoom^="4"], .maplibregl-map[zoom^="5"], .maplibregl-map[zoom^="6"] .aircraft-icon svg { width: 26px; height: 26px; }
-        .maplibregl-map[zoom^="7"], .maplibregl-map[zoom^="8"], .maplibregl-map[zoom^="9"] .aircraft-icon svg { width: 32px; height: 32px; }
       `}</style>
     </div>
   );
