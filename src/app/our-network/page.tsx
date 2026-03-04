@@ -53,14 +53,14 @@ export default function OurNetworkPage() {
         <main className="flex-1 flex flex-col lg:flex-row items-stretch overflow-hidden">
           
           {/* Left Sector: Institutional Intelligence */}
-          <div className="w-full lg:w-[35%] p-6 md:p-12 xl:p-20 flex flex-col justify-center gap-8 z-20">
+          <div className="w-full lg:w-[35%] p-6 md:p-12 xl:p-16 flex flex-col justify-center gap-8 z-20">
             <div className="space-y-4">
               <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full border border-accent/20 bg-accent/5">
                 <Zap className="h-3 w-3 text-accent animate-pulse" />
                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">National Operator Grid</span>
               </div>
               
-              <h1 className="text-4xl md:text-5xl xl:text-7xl font-bold tracking-tighter font-headline text-white leading-[0.9]">
+              <h1 className="text-3xl md:text-4xl xl:text-5xl font-bold tracking-tighter font-headline text-white leading-[0.9]">
                 NETWORK <br />
                 <span className="text-accent uppercase">Infrastructure</span> <br />
                 GRID

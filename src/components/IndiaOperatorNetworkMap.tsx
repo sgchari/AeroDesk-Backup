@@ -236,7 +236,7 @@ export function IndiaOperatorNetworkMap() {
         <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(0,212,255,0.1),transparent_70%)]" />
         
         <MapContainer
-          center={[22.5937, 78.9629]}
+          center={[20.5, 78.9629]}
           zoom={5}
           scrollWheelZoom={false}
           className="w-full h-full z-10"
