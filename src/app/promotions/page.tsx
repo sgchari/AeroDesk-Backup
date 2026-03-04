@@ -62,8 +62,8 @@ export default function PromotionsPage() {
           className="object-cover"
           data-ai-hint="airplane beach"
         />
-        {/* Frosted Overlay - Reduced for better visibility */}
-        <div className="absolute inset-0 bg-[#0B1220]/40 backdrop-blur-[2px]" />
+        {/* Frosted Overlay - Increased blur density per request */}
+        <div className="absolute inset-0 bg-[#0B1220]/40 backdrop-blur-md" />
         <div className="absolute inset-0 bg-aviation-radial opacity-20" />
       </div>
 
