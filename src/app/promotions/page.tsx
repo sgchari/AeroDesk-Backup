@@ -70,44 +70,44 @@ export default function PromotionsPage() {
       <div className="relative z-10 flex flex-col flex-1">
         <LandingHeader activePage="Promotions" />
 
-        <main className="flex-1 py-12 md:py-20">
+        <main className="flex-1 py-10 md:py-16">
           <div className="container px-4">
             
-            {/* Hero Header */}
-            <div className="max-w-3xl mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/20 bg-accent/5 mb-6">
+            {/* Hero Header - Refined to Single Line */}
+            <div className="max-w-4xl mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/20 bg-accent/5 mb-4">
                 <Star className="h-3 w-3 text-accent fill-accent" />
                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">Exclusive Opportunities</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tighter font-headline text-white leading-tight mb-6">
-                INSTITUTIONAL <br />
+              <h1 className="text-2xl md:text-5xl font-bold tracking-tighter font-headline text-white leading-tight mb-4 flex flex-wrap items-center gap-x-3">
+                INSTITUTIONAL 
                 <span className="text-accent uppercase font-black">Privileges</span>
               </h1>
-              <p className="text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed">
+              <p className="text-muted-foreground text-sm md:text-base max-w-xl leading-relaxed">
                 Access AeroDesk’s secondary marketplace for repositioning flights and network-exclusive stay coordination.
               </p>
             </div>
 
-            {/* Promo Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+            {/* Promo Features Grid - Reduced Card Sizes */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
               {promoFeatures.map((feature, idx) => (
-                <div key={idx} className="p-6 rounded-3xl bg-white/[0.03] border border-white/5 backdrop-blur-xl group hover:border-accent/30 transition-all duration-500">
-                  <div className="p-3 bg-accent/10 rounded-2xl w-fit mb-4 group-hover:scale-110 transition-transform">
-                    <feature.icon className="h-6 w-6 text-accent" />
+                <div key={idx} className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 backdrop-blur-xl group hover:border-accent/30 transition-all duration-500">
+                  <div className="p-2 bg-accent/10 rounded-xl w-fit mb-3 group-hover:scale-110 transition-transform">
+                    <feature.icon className="h-5 w-5 text-accent" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-sm font-bold text-white mb-1.5">{feature.title}</h3>
+                  <p className="text-xs text-white/50 leading-relaxed">{feature.description}</p>
                 </div>
               ))}
             </div>
 
             {/* Opportunities Table */}
             <Card className="border-white/10 bg-white/[0.02] backdrop-blur-3xl text-white rounded-3xl overflow-hidden">
-              <CardHeader className="p-8 border-b border-white/5">
+              <CardHeader className="p-6 md:p-8 border-b border-white/5">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle className="text-2xl font-headline flex items-center gap-3">
-                      <Plane className="h-6 w-6 text-accent" />
+                    <CardTitle className="text-xl md:text-2xl font-headline flex items-center gap-3">
+                      <Plane className="h-5 w-5 md:h-6 md:w-6 text-accent" />
                       Approved Jet Seats
                     </CardTitle>
                     <CardDescription className="text-white/50 mt-1">
