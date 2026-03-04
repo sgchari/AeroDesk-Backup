@@ -35,8 +35,8 @@ const createHubIcon = () => {
         <div class="hub-marker-pulse"></div>
       </div>
     `,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
   });
 };
 
@@ -49,19 +49,22 @@ export function IndiaOperatorNetworkMap() {
 
   if (!isMounted) {
     return (
-      <div className="w-full h-[600px] bg-slate-950/50 rounded-3xl animate-pulse flex items-center justify-center">
+      <div className="w-full h-[600px] bg-slate-950/50 rounded-3xl animate-pulse flex items-center justify-center border border-white/5">
         <p className="text-muted-foreground text-xs uppercase font-black tracking-widest">Initializing Geographic Grid...</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-[600px] relative overflow-hidden rounded-3xl border border-white/5 shadow-2xl bg-slate-950/50">
+    <div className="w-full h-[600px] relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl bg-[#061122]">
+      {/* Background Radial Glow */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(0,212,255,0.15),transparent_70%)]" />
+      
       <MapContainer
         center={[22.5937, 78.9629]}
         zoom={5}
         scrollWheelZoom={false}
-        className="w-full h-full z-0"
+        className="w-full h-full z-10"
         zoomControl={false}
         dragging={true}
         doubleClickZoom={false}
@@ -69,7 +72,7 @@ export function IndiaOperatorNetworkMap() {
         attributionControl={false}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
           subdomains="abcd"
         />
 
@@ -80,9 +83,9 @@ export function IndiaOperatorNetworkMap() {
             positions={[corridor.from, corridor.to]}
             pathOptions={{
               color: '#00d4ff',
-              weight: 1.5,
-              opacity: 0.3,
-              dashArray: '4, 8',
+              weight: 1.2,
+              opacity: 0.6,
+              dashArray: '6, 10',
               className: 'animated-corridor'
             }}
           />
@@ -105,13 +108,16 @@ export function IndiaOperatorNetworkMap() {
         ))}
       </MapContainer>
 
+      {/* Navy Overlay to soften map and blend with UI */}
+      <div className="absolute inset-0 z-20 bg-[#061122]/65 pointer-events-none" />
+
       <style jsx global>{`
         .hub-marker-wrapper {
           position: relative;
-          width: 20px;
-          height: 20px;
+          width: 24px;
+          height: 24px;
           display: flex;
-          items-center: center;
+          align-items: center;
           justify-content: center;
         }
         .hub-marker-core {
@@ -119,7 +125,7 @@ export function IndiaOperatorNetworkMap() {
           height: 8px;
           background-color: #00ffa6;
           border-radius: 50%;
-          box-shadow: 0 0 10px #00ffa6;
+          box-shadow: 0 0 12px #00ffa6;
           z-index: 2;
         }
         .hub-marker-pulse {
@@ -128,17 +134,17 @@ export function IndiaOperatorNetworkMap() {
           height: 100%;
           background-color: #00ffa6;
           border-radius: 50%;
-          animation: pulse-marker 2s infinite ease-in-out;
-          opacity: 0.5;
+          animation: pulse-marker 2.5s infinite ease-in-out;
+          opacity: 0.4;
           z-index: 1;
         }
         @keyframes pulse-marker {
-          0% { transform: scale(0.5); opacity: 0.8; }
-          100% { transform: scale(2.5); opacity: 0; }
+          0% { transform: scale(0.4); opacity: 0.8; }
+          100% { transform: scale(2.2); opacity: 0; }
         }
         .animated-corridor {
           stroke-dashoffset: 100;
-          animation: flow-line 20s linear infinite;
+          animation: flow-line 25s linear infinite;
         }
         @keyframes flow-line {
           to { stroke-dashoffset: 0; }
@@ -150,8 +156,8 @@ export function IndiaOperatorNetworkMap() {
           background: rgba(15, 23, 42, 0.95);
           border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 8px;
-          backdrop-filter: blur(8px);
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
           color: white;
         }
         .custom-map-popup .leaflet-popup-tip {
