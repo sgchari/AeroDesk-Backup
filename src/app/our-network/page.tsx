@@ -1,11 +1,25 @@
+
 'use client';
 
 import React from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
-import { IndiaOperatorNetworkMap } from '@/components/IndiaOperatorNetworkMap';
 import { ShieldCheck, Zap } from 'lucide-react';
+
+// Use dynamic import for the map to prevent SSR issues with Leaflet
+const IndiaOperatorNetworkMap = dynamic(
+  () => import('@/components/IndiaOperatorNetworkMap').then((mod) => mod.IndiaOperatorNetworkMap),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[600px] bg-slate-950/50 rounded-3xl animate-pulse flex items-center justify-center border border-white/5">
+        <p className="text-muted-foreground text-xs uppercase font-black tracking-widest">Loading Geographic Infrastructure...</p>
+      </div>
+    )
+  }
+);
 
 export default function OurNetworkPage() {
   return (
