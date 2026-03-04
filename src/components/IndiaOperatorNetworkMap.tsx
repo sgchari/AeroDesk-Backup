@@ -42,19 +42,23 @@ const emptyLegPoints = {
   ]
 };
 
-// --- BEZIER & BEARING HELPERS ---
-function getBearing(startLat: number, startLng: number, endLat: number, endLng: number) {
-  const dLon = (endLng - startLng) * Math.PI / 180;
-  const lat1 = startLat * Math.PI / 180;
-  const lat2 = endLat * Math.PI / 180;
+// --- BEARING CALCULATION (INSTITUTIONAL STANDARD) ---
+function getBearing(start: [number, number], end: [number, number]) {
+  const startLat = start[1] * Math.PI / 180;
+  const startLng = start[0] * Math.PI / 180;
+  const endLat = end[1] * Math.PI / 180;
+  const endLng = end[0] * Math.PI / 180;
 
-  const y = Math.sin(dLon) * Math.cos(lat2);
+  const dLng = endLng - startLng;
+
+  const y = Math.sin(dLng) * Math.cos(endLat);
   const x =
-    Math.cos(lat1) * Math.sin(lat2) -
-    Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+    Math.cos(startLat) * Math.sin(endLat) -
+    Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLng);
 
-  const brng = Math.atan2(y, x);
-  return ((brng * 180 / Math.PI) + 360) % 360;
+  const bearing = Math.atan2(y, x);
+
+  return (bearing * 180 / Math.PI + 360) % 360;
 }
 
 function getBezierPoints(start: [number, number], end: [number, number], segments = 300) {
@@ -110,7 +114,7 @@ export function IndiaOperatorNetworkMap() {
     map.current.on('load', () => {
       if (!map.current) return;
 
-      // Apply Institutional Navy Palette Safely
+      // Apply Brighter Institutional Navy Palette Safely
       const layers = map.current.getStyle().layers;
       layers?.forEach((layer) => {
         try {
@@ -121,14 +125,13 @@ export function IndiaOperatorNetworkMap() {
           } else if (layer.type === 'line' && (layer.id.includes('admin') || layer.id.includes('boundary'))) {
             map.current?.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
           } else if (layer.type === 'symbol') {
-            // Some basemap labels might not have text-opacity paint property
             const layout = (layer as any).layout;
             if (layout && layout['text-field']) {
               map.current?.setPaintProperty(layer.id, 'text-opacity', 0.35);
             }
           }
         } catch (e) {
-          // Skip layers that don't support the property or are in flux
+          // Standard catch for non-compliant basemap layers
         }
       });
 
@@ -189,15 +192,7 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
-      // Add hover interaction for empty legs
-      map.current.on('mouseenter', 'empty-leg-nodes', () => {
-        if (map.current) map.current.getCanvas().style.cursor = 'pointer';
-      });
-      map.current.on('mouseleave', 'empty-leg-nodes', () => {
-        if (map.current) map.current.getCanvas().style.cursor = '';
-      });
-
-      // Animate Aircraft Telemetry
+      // Animate Aircraft Telemetry with Dynamic Orientation
       ACTIVE_MISSIONS.forEach(mission => {
         animateMission(mission, map.current!);
       });
@@ -229,7 +224,7 @@ export function IndiaOperatorNetworkMap() {
       }
     });
 
-    // Trail Layer (Fading Effect)
+    // Trail Layer
     const trailId = `trail-${mission.id}`;
     mapInstance.addSource(trailId, {
       type: 'geojson',
@@ -246,10 +241,14 @@ export function IndiaOperatorNetworkMap() {
       }
     });
 
-    // Aircraft Marker
+    // Aircraft Marker (Using North-Facing SVG)
     const planeEl = document.createElement('div');
     planeEl.className = 'aircraft-marker';
-    planeEl.innerHTML = `<span style="font-size: 20px; color: ${mission.color}; display: block; filter: drop-shadow(0 0 8px ${mission.color}99);">✈</span>`;
+    planeEl.innerHTML = `
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="${mission.color}" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px ${mission.color}99);">
+        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+      </svg>
+    `;
     
     const marker = new maplibregl.Marker({ element: planeEl })
       .setLngLat(points[0])
@@ -283,7 +282,8 @@ export function IndiaOperatorNetworkMap() {
         });
       }
       
-      const bearing = getBearing(current[1], current[0], next[1], next[0]);
+      // Calculate and Apply Dynamic Orientation
+      const bearing = getBearing(current, next);
       marker.setLngLat(current);
       marker.setRotation(bearing);
 
@@ -394,11 +394,12 @@ export function IndiaOperatorNetworkMap() {
           100% { transform: scale(1.5); opacity: 0; }
         }
         .aircraft-marker {
-          transition: transform 0.1s linear;
-          animation: aircraft-blink 1.5s step-start infinite;
+          transition: none;
+          animation: aircraft-pulse 1.5s ease-in-out infinite;
         }
-        @keyframes aircraft-blink {
-          50% { opacity: 0.6; }
+        @keyframes aircraft-pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); opacity: 0.8; }
         }
         .maplibregl-popup-content {
           background: rgba(11, 18, 32, 0.95) !important;
