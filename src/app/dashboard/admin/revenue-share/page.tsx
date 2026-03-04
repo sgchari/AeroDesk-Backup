@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -7,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
 import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking } from "@/firebase";
-import { collection, query, orderBy, doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { CommissionRule, RevenueShareConfig, CommissionLedgerEntry, SettlementRecord } from "@/lib/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -16,13 +14,11 @@ import {
     Zap, 
     Coins, 
     History, 
-    ShieldCheck, 
     DollarSign, 
     PieChart, 
     Users,
     Settings,
     Globe,
-    Briefcase
 } from "lucide-react";
 import { 
     PieChart as RePieChart, 
@@ -35,7 +31,6 @@ import {
     XAxis,
     YAxis,
     CartesianGrid,
-    Legend
 } from 'recharts';
 import { Button } from "@/components/ui/button";
 import { CreateRevenueRuleDialog } from "@/components/dashboard/admin/revenue/create-revenue-rule-dialog";
@@ -48,28 +43,28 @@ export default function RevenueShareEnginePage() {
     const { toast } = useToast();
 
     const { data: rules, isLoading: rulesLoading } = useCollection<CommissionRule>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'commissionRules') : null, [firestore]),
+        useMemoFirebase(() => null, []),
         'commissionRules'
     );
 
     const { data: configs, isLoading: configsLoading } = useCollection<RevenueShareConfig>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'revenueShareConfigs') : null, [firestore]),
+        useMemoFirebase(() => null, []),
         'revenueShareConfigs'
     );
 
     const { data: ledger, isLoading: ledgerLoading } = useCollection<CommissionLedgerEntry>(
-        useMemoFirebase(() => firestore ? query(collection(firestore, 'commissionLedger'), orderBy('createdAt', 'desc')) : null, [firestore]),
+        useMemoFirebase(() => null, []),
         'commissionLedger'
     );
 
     const { data: settlements, isLoading: settlementsLoading } = useCollection<SettlementRecord>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'settlementRecords') : null, [firestore]),
+        useMemoFirebase(() => null, []),
         'settlementRecords'
     );
 
     const handleToggleRule = (ruleId: string, currentState: boolean, collectionName: string) => {
         if (!firestore) return;
-        const ruleRef = doc(firestore, collectionName, ruleId);
+        const ruleRef = { path: `${collectionName}/${ruleId}` } as any;
         updateDocumentNonBlocking(ruleRef, { isActive: !currentState });
         
         toast({

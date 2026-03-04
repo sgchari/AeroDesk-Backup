@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -34,7 +33,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
 import { useFirestore, addDocumentNonBlocking } from '@/firebase';
-import { collection } from 'firebase/firestore';
 import { Settings, ShieldCheck, PlusCircle } from 'lucide-react';
 
 const revenueRuleSchema = z.object({
@@ -63,7 +61,8 @@ export function CreateRevenueRuleDialog() {
   const onSubmit = (data: RevenueRuleFormValues) => {
     if (!user || !firestore) return;
 
-    const rulesRef = collection(firestore, 'commissionRules');
+    // Use path-based reference for simulation compatibility
+    const rulesRef = { path: 'commissionRules' } as any;
     
     addDocumentNonBlocking(rulesRef, {
       ...data,

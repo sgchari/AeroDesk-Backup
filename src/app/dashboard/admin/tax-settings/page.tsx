@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -7,7 +6,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase";
-import { collection, query, doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Settings, PlusCircle, History, ShieldCheck, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -23,7 +21,7 @@ export default function TaxSettingsPage() {
     const [isAdding, setIsAdding] = useState(false);
 
     const { data: configs, isLoading } = useCollection<TaxConfig>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'taxConfig') : null, [firestore]),
+        useMemoFirebase(() => null, []),
         'taxConfig'
     );
 
@@ -40,14 +38,14 @@ export default function TaxSettingsPage() {
             isActive: true
         };
 
-        addDocumentNonBlocking(collection(firestore, 'taxConfig'), newRule);
+        addDocumentNonBlocking({ path: 'taxConfig' } as any, newRule);
         toast({ title: "Tax Rule Updated", description: "New GST parameters have been synchronized with the invoicing engine." });
         setIsAdding(false);
     };
 
     const handleToggleRule = (ruleId: string, currentState: boolean) => {
         if (!firestore) return;
-        const ruleRef = doc(firestore, 'taxConfig', ruleId);
+        const ruleRef = { path: `taxConfig/${ruleId}` } as any;
         updateDocumentNonBlocking(ruleRef, { isActive: !currentState });
         
         toast({

@@ -39,7 +39,6 @@ import {
 import { cn } from "@/lib/utils";
 import { CreateChargeRuleDialog } from "@/components/dashboard/admin/billing/create-charge-rule-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { doc, collection } from "firebase/firestore";
 import { useState, useMemo } from "react";
 
 const MOCK_REV_DATA = [
@@ -55,26 +54,17 @@ export default function AdminBillingEnginePage() {
     const [invoiceFilter, setInvoiceFilter] = useState<string | null>(null);
 
     const { data: invoices, isLoading: invoicesLoading } = useCollection<PlatformInvoice>(
-        useMemoFirebase(() => {
-            if (!firestore) return null;
-            return collection(firestore, 'platformInvoices');
-        }, [firestore]), 
+        useMemoFirebase(() => null, []), 
         'platformInvoices'
     );
 
     const { data: ledger, isLoading: ledgerLoading } = useCollection<EntityBillingLedger>(
-        useMemoFirebase(() => {
-            if (!firestore) return null;
-            return collection(firestore, 'entityBillingLedger');
-        }, [firestore]), 
+        useMemoFirebase(() => null, []), 
         'entityBillingLedger'
     );
 
     const { data: rules, isLoading: rulesLoading } = useCollection<PlatformChargeRule>(
-        useMemoFirebase(() => {
-            if (!firestore) return null;
-            return collection(firestore, 'platformChargeRules');
-        }, [firestore]), 
+        useMemoFirebase(() => null, []), 
         'platformChargeRules'
     );
 
@@ -88,7 +78,7 @@ export default function AdminBillingEnginePage() {
 
     const handleToggleRule = (ruleId: string, currentState: boolean) => {
         if (!firestore) return;
-        const ruleRef = doc(firestore, 'platformChargeRules', ruleId);
+        const ruleRef = { path: `platformChargeRules/${ruleId}` } as any;
         updateDocumentNonBlocking(ruleRef, { isActive: !currentState });
         
         toast({

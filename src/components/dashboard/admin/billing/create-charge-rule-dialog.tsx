@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -34,10 +33,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
-import { useFirestore, addDocumentNonBlocking, useCollection } from '@/firebase';
-import { collection, query, where, doc } from 'firebase/firestore';
+import { useFirestore, addDocumentNonBlocking } from '@/firebase';
 import { Settings, ShieldCheck, PlusCircle } from 'lucide-react';
-import type { PlatformChargeRule, UserRole, BillingServiceType, ChargeType } from '@/lib/types';
 
 const chargeRuleSchema = z.object({
   entityType: z.enum(['Operator', 'Travel Agency', 'Hotel Partner', 'Corporate Admin'] as const),
@@ -73,7 +70,8 @@ export function CreateChargeRuleDialog() {
   const onSubmit = (data: ChargeRuleFormValues) => {
     if (!user || !firestore) return;
 
-    const rulesRef = collection(firestore, 'platformChargeRules');
+    // Use path-based reference for simulation compatibility
+    const rulesRef = { path: 'platformChargeRules' } as any;
     
     addDocumentNonBlocking(rulesRef, {
       ...data,

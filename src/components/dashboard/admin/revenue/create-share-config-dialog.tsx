@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -35,7 +34,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
 import { useFirestore, addDocumentNonBlocking } from '@/firebase';
-import { collection } from 'firebase/firestore';
 import { Zap, ShieldCheck, PlusCircle } from 'lucide-react';
 
 const shareConfigSchema = z.object({
@@ -72,7 +70,8 @@ export function CreateShareConfigDialog() {
   const onSubmit = (data: ShareConfigFormValues) => {
     if (!user || !firestore) return;
 
-    const configRef = collection(firestore, 'revenueShareConfigs');
+    // Use path-based reference for simulation compatibility
+    const configRef = { path: 'revenueShareConfigs' } as any;
     
     addDocumentNonBlocking(configRef, {
       ...data,
