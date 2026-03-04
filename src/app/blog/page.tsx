@@ -71,24 +71,24 @@ export default function BlogPage() {
       <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
         <LandingHeader activePage="Blog" />
 
-        <main className="flex-1 py-6 md:py-10">
+        <main className="flex-1 py-6 md:py-8">
           <div className="container px-4">
             
-            <div className="mb-8 md:mb-12 text-center max-w-3xl mx-auto">
-              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-2 font-headline">
+            <div className="mb-6 md:mb-10 text-center max-w-3xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-2 font-headline">
                 AeroDesk Intelligence
               </h1>
-              <p className="text-sm md:text-lg text-white/70 leading-relaxed">
+              <p className="text-xs md:text-sm text-white/70 leading-relaxed max-w-xl mx-auto">
                 India's evolving private aviation infrastructure and non-scheduled operations governance.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 md:mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 md:mb-10">
               
               <div className="lg:col-span-8">
                 <Link href={`/blog/${leadPost.id}`}>
-                  <Card className="h-full overflow-hidden border-white/10 bg-black/30 backdrop-blur-xl group hover:border-primary/50 transition-all duration-500 cursor-pointer">
-                    <div className="relative h-[300px] sm:h-[400px] md:h-[450px]">
+                  <Card className="h-full overflow-hidden border-white/10 bg-black/30 backdrop-blur-xl group hover:border-primary/50 transition-all duration-500 cursor-pointer rounded-2xl">
+                    <div className="relative h-[250px] sm:h-[320px] md:h-[380px]">
                       <Image
                         src={leadPost.imageUrl}
                         alt={leadPost.title}
@@ -99,22 +99,22 @@ export default function BlogPage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                        <Badge variant="outline" className="mb-3 text-accent border-accent/30 bg-accent/10 text-[10px] uppercase tracking-widest">
+                        <Badge variant="outline" className="mb-3 text-accent border-accent/30 bg-accent/10 text-[10px] uppercase tracking-widest h-5">
                           {leadPost.category}
                         </Badge>
-                        <h2 className="text-2xl md:text-4xl font-bold text-white mb-3 leading-tight group-hover:text-accent transition-colors font-headline">
+                        <h2 className="text-xl md:text-3xl font-bold text-white mb-3 leading-tight group-hover:text-accent transition-colors font-headline">
                           {leadPost.title}
                         </h2>
-                        <p className="text-white/70 text-sm md:text-base mb-4 line-clamp-2 max-w-2xl">
+                        <p className="text-white/70 text-xs md:text-sm mb-4 line-clamp-2 max-w-2xl">
                           {leadPost.excerpt}
                         </p>
                         <div className="flex items-center gap-6">
-                          <Button className="bg-accent text-accent-foreground hover:bg-accent/90 h-9 text-xs px-6 font-black uppercase tracking-widest" size="sm">
+                          <Button className="bg-accent text-accent-foreground hover:bg-accent/90 h-8 text-[10px] px-5 font-black uppercase tracking-widest" size="sm">
                             Read Insight
-                            <ArrowRight className="ml-2 h-4 w-4" />
+                            <ArrowRight className="ml-2 h-3.5 w-3.5" />
                           </Button>
                           <div className="hidden sm:flex items-center gap-2 text-[10px] text-white/40 font-code uppercase tracking-widest">
-                            <User className="h-3.5 w-3.5 text-accent" />
+                            <User className="h-3 w-3 text-accent" />
                             {leadPost.author}
                           </div>
                         </div>
@@ -129,14 +129,14 @@ export default function BlogPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
                     {trendingPosts.map((post) => (
                     <Link key={post.id} href={`/blog/${post.id}`}>
-                        <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all cursor-pointer">
+                        <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all cursor-pointer rounded-xl">
                         <div className="flex gap-4 p-3">
-                            <div className="relative h-16 w-20 shrink-0 rounded-lg overflow-hidden">
+                            <div className="relative h-14 w-16 shrink-0 rounded-lg overflow-hidden">
                             <Image src={post.imageUrl} alt={post.title} fill className="object-cover opacity-70 transition-opacity group-hover:opacity-100" data-ai-hint="aviation" />
                             </div>
                             <div className="flex flex-col justify-center">
-                            <span className="text-[9px] uppercase tracking-widest font-bold text-white/40 mb-1">{post.category}</span>
-                            <h4 className="text-xs md:text-sm font-bold text-white group-hover:text-accent transition-colors line-clamp-2 leading-tight font-headline">
+                            <span className="text-[8px] uppercase tracking-widest font-bold text-white/40 mb-1">{post.category}</span>
+                            <h4 className="text-[11px] md:text-xs font-bold text-white group-hover:text-accent transition-colors line-clamp-2 leading-tight font-headline">
                                 {post.title}
                             </h4>
                             </div>
@@ -148,32 +148,32 @@ export default function BlogPage() {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10 bg-white/5 backdrop-blur-md border border-white/10 p-3 rounded-2xl">
-              <nav className="flex items-center gap-4 md:gap-6 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide px-2">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 bg-white/5 backdrop-blur-md border border-white/10 p-2 rounded-2xl">
+              <nav className="flex items-center gap-4 md:gap-6 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-hide px-2">
                 {categories.slice(0, 4).map((cat) => (
                   <button
                     key={cat}
-                    className="text-[10px] md:text-xs font-black uppercase tracking-widest text-white/60 hover:text-white transition-colors relative shrink-0"
+                    className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-white transition-colors relative shrink-0 py-2"
                   >
                     {cat}
-                    {cat === 'All' && <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-accent" />}
+                    {cat === 'All' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent" />}
                   </button>
                 ))}
               </nav>
-              <div className="relative w-full md:w-72">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+              <div className="relative w-full md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/40" />
                 <Input 
                   placeholder="Search intelligence registry..." 
-                  className="bg-black/20 border-white/10 text-white pl-10 focus:ring-accent h-10 text-xs rounded-xl"
+                  className="bg-black/20 border-white/10 text-white pl-9 focus:ring-accent h-9 text-[10px] rounded-xl"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
               {remainingPosts.map((post) => (
                 <Link key={post.id} href={`/blog/${post.id}`} className="block h-full">
                   <Card className="border-white/10 bg-black/20 backdrop-blur-md overflow-hidden group hover:border-white/20 transition-all flex flex-col h-full cursor-pointer rounded-2xl">
-                    <div className="relative h-48 w-full">
+                    <div className="relative h-40 w-full">
                       <Image
                         src={post.imageUrl}
                         alt={post.title}
@@ -182,29 +182,29 @@ export default function BlogPage() {
                         data-ai-hint="flight cockpit"
                       />
                       <div className="absolute top-3 left-3">
-                        <Badge className="bg-black/60 text-[9px] text-white border-transparent backdrop-blur-md h-6 px-3 uppercase font-black tracking-widest">
+                        <Badge className="bg-black/60 text-[8px] text-white border-transparent backdrop-blur-md h-5 px-2 uppercase font-black tracking-widest">
                           {post.category}
                         </Badge>
                       </div>
                     </div>
-                    <CardContent className="p-6 flex flex-1 flex-col">
-                      <div className="flex items-center gap-2 text-[9px] text-white/40 uppercase tracking-widest mb-3">
-                        <div className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> 5 min</div>
+                    <CardContent className="p-5 flex flex-1 flex-col">
+                      <div className="flex items-center gap-2 text-[8px] text-white/40 uppercase tracking-widest mb-3">
+                        <div className="flex items-center gap-1.5"><Clock className="h-2.5 w-2.5" /> 5 min</div>
                         <div>•</div>
                         <div>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
                       </div>
-                      <h4 className="text-lg font-bold text-white mb-2 group-hover:text-accent transition-colors line-clamp-2 leading-tight font-headline">
+                      <h4 className="text-base font-bold text-white mb-2 group-hover:text-accent transition-colors line-clamp-2 leading-tight font-headline">
                         {post.title}
                       </h4>
-                      <p className="text-xs text-white/60 mb-4 line-clamp-3 leading-relaxed">
+                      <p className="text-[11px] text-white/60 mb-4 line-clamp-3 leading-relaxed">
                         {post.excerpt}
                       </p>
                       <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
-                        <Button variant="link" className="p-0 text-accent hover:text-accent/80 h-auto font-black text-[10px] uppercase tracking-widest group/btn">
+                        <Button variant="link" className="p-0 text-accent hover:text-accent/80 h-auto font-black text-[9px] uppercase tracking-widest group/btn">
                           Read Full Insight
                           <ArrowRight className="ml-2 h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
                         </Button>
-                        <span className="text-[9px] text-white/30 font-code font-bold">{post.author}</span>
+                        <span className="text-[8px] text-white/30 font-code font-bold">{post.author}</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -212,29 +212,29 @@ export default function BlogPage() {
               ))}
             </div>
 
-            <Card className="border-accent/20 bg-accent/5 backdrop-blur-3xl p-8 md:p-12 text-center max-w-3xl mx-auto overflow-hidden relative rounded-3xl">
+            <Card className="border-accent/20 bg-accent/5 backdrop-blur-3xl p-8 md:p-10 text-center max-w-2xl mx-auto overflow-hidden relative rounded-3xl">
               <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                <BookOpen className="h-48 w-48 -mr-16 -mt-16" />
+                <BookOpen className="h-40 w-40 -mr-12 -mt-12" />
               </div>
               <div className="relative z-10 space-y-4">
-                <div className="inline-flex p-3 bg-accent/10 rounded-full mb-2">
-                  <Mail className="h-6 w-6 text-accent" />
+                <div className="inline-flex p-2.5 bg-accent/10 rounded-full mb-1">
+                  <Mail className="h-5 w-5 text-accent" />
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-white font-headline">Institutional Intelligence Feed</h3>
-                <p className="text-xs md:text-sm text-white/60 max-w-md mx-auto leading-relaxed">
+                <h3 className="text-xl md:text-2xl font-bold text-white font-headline">Institutional Intelligence Feed</h3>
+                <p className="text-[11px] md:text-xs text-white/60 max-w-sm mx-auto leading-relaxed">
                   Receive weekly operational perspectives and market analysis directly from the charter infrastructure center.
                 </p>
-                <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto pt-4" onSubmit={(e) => e.preventDefault()}>
+                <form className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto pt-2" onSubmit={(e) => e.preventDefault()}>
                   <Input 
                     type="email" 
                     placeholder="Corporate Email Protocol" 
-                    className="bg-black/40 border-white/10 text-white h-11 text-xs px-4 rounded-xl"
+                    className="bg-black/40 border-white/10 text-white h-10 text-[10px] px-4 rounded-xl"
                   />
-                  <Button className="h-11 px-8 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-widest shrink-0 rounded-xl">
+                  <Button className="h-10 px-6 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-widest shrink-0 rounded-xl text-[10px]">
                     Subscribe
                   </Button>
                 </form>
-                <p className="text-[9px] text-white/30 uppercase tracking-[0.3em] pt-4">AeroDesk Governance Protocol • Zero Spam Policy</p>
+                <p className="text-[8px] text-white/30 uppercase tracking-[0.3em] pt-2">AeroDesk Governance Protocol • Zero Spam Policy</p>
               </div>
             </Card>
 
