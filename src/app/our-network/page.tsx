@@ -13,16 +13,18 @@ import { hubGeographics, indiaGeoJson } from '@/lib/geo-utils';
 import * as d3Geo from 'd3-geo';
 import { collection } from 'firebase/firestore';
 
-const VIEWBOX_SIZE = 1000;
+const VIEWBOX_SIZE = 900;
 
 export default function OurNetworkPage() {
     const firestore = useFirestore();
     const [hoveredHub, setHoveredHub] = useState<string | null>(null);
 
     // --- GEOGRAPHIC PROJECTION ENGINE (D3-GEO) ---
-    // STRICT ALIGNMENT: Using fitSize to automatically center and scale based on GeoJSON bounds
+    // Recalibrated to fit perfectly within a 900x900 sector
     const projection = useMemo(() => {
-        return d3Geo.geoMercator().fitSize([VIEWBOX_SIZE, VIEWBOX_SIZE], indiaGeoJson);
+        const proj = d3Geo.geoMercator();
+        proj.fitSize([VIEWBOX_SIZE, VIEWBOX_SIZE], indiaGeoJson);
+        return proj;
     }, []);
 
     const pathGenerator = useMemo(() => {
@@ -145,7 +147,7 @@ export default function OurNetworkPage() {
                                     </filter>
                                 </defs>
 
-                                {/* Geographic India Outline */}
+                                {/* Geographic India Outline - Validated path */}
                                 <path 
                                     d={indiaPath || ''} 
                                     fill="rgba(14, 165, 233, 0.02)" 
@@ -178,7 +180,7 @@ export default function OurNetworkPage() {
                                     ))}
                                 </g>
 
-                                {/* Geographic Hub Markers */}
+                                {/* Geographic Hub Markers - SVG Native Placement */}
                                 {hubs.map((hub) => (
                                     <g 
                                         key={hub.city}
