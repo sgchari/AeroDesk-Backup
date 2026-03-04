@@ -233,7 +233,7 @@ export function IndiaOperatorNetworkMap() {
       </div>
 
       <div className="w-full h-[600px] relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl bg-[#061122]">
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(0,212,255,0.1),transparent_70%)]" />
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(0,212,255,0.2),transparent_70%)]" />
         
         <MapContainer
           center={[20.5, 78.9629]}
@@ -284,7 +284,7 @@ export function IndiaOperatorNetworkMap() {
                                         </div>
                                         <div className="text-[10px] space-y-1">
                                             <p className="text-white font-bold">{route.fromName} → {route.toName}</p>
-                                            <div className="flex justify-between">
+                                            <div className="justify-between flex">
                                                 <span className="text-muted-foreground">Seats:</span>
                                                 <span className="text-white font-black">{route.seats} Available</span>
                                             </div>
@@ -403,7 +403,7 @@ export function IndiaOperatorNetworkMap() {
           </div>
         </div>
 
-        <div className="absolute inset-0 z-20 bg-[#061122]/50 pointer-events-none" />
+        <div className="absolute inset-0 z-20 bg-[#061122]/15 pointer-events-none" />
 
         <style jsx global>{`
           .radar-node {

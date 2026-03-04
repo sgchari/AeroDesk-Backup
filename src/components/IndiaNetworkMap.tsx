@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useRef, useEffect, useState, useMemo } from 'react';
@@ -82,8 +83,8 @@ export function IndiaNetworkMap() {
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
           <linearGradient id="mapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(0, 212, 255, 0.05)" />
-            <stop offset="100%" stopColor="rgba(0, 212, 255, 0.15)" />
+            <stop offset="0%" stopColor="rgba(0, 212, 255, 0.15)" />
+            <stop offset="100%" stopColor="rgba(0, 212, 255, 0.3)" />
           </linearGradient>
         </defs>
 
@@ -93,7 +94,7 @@ export function IndiaNetworkMap() {
           fill="url(#mapGradient)"
           stroke="#00d4ff"
           strokeWidth="1.5"
-          className="transition-all duration-1000 ease-in-out opacity-40 hover:opacity-60"
+          className="transition-all duration-1000 ease-in-out opacity-70 hover:opacity-90"
         />
 
         {/* Hub Connectors (Subtle Network Grid) */}
