@@ -25,33 +25,41 @@ export default function TaxSettingsPage() {
         'taxConfig'
     );
 
-    const handleAddRule = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleAddRule = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!firestore) return;
+        
+        try {
+            const formData = new FormData(e.currentTarget);
+            const newRule = {
+                serviceType: formData.get('serviceType'),
+                taxRatePercent: Number(formData.get('taxRate')),
+                sacCode: formData.get('sacCode'),
+                effectiveFrom: new Date().toISOString().split('T')[0],
+                isActive: true
+            };
 
-        const formData = new FormData(e.currentTarget);
-        const newRule = {
-            serviceType: formData.get('serviceType'),
-            taxRatePercent: Number(formData.get('taxRate')),
-            sacCode: formData.get('sacCode'),
-            effectiveFrom: new Date().toISOString().split('T')[0],
-            isActive: true
-        };
-
-        addDocumentNonBlocking({ path: 'taxConfig' } as any, newRule);
-        toast({ title: "Tax Rule Updated", description: "New GST parameters have been synchronized with the invoicing engine." });
-        setIsAdding(false);
+            const configRef = { path: 'taxConfig' } as any;
+            await addDocumentNonBlocking(configRef, newRule);
+            
+            toast({ title: "Tax Rule Updated", description: "New GST parameters have been synchronized with the invoicing engine." });
+            setIsAdding(false);
+        } catch (err) {
+            toast({ title: "Submission Error", description: "Failed to update taxation parameters.", variant: 'destructive' });
+        }
     };
 
-    const handleToggleRule = (ruleId: string, currentState: boolean) => {
-        if (!firestore) return;
-        const ruleRef = { path: `taxConfig/${ruleId}` } as any;
-        updateDocumentNonBlocking(ruleRef, { isActive: !currentState });
-        
-        toast({
-            title: currentState ? "Rule Archived" : "Rule Activated",
-            description: "Taxation parameters updated successfully.",
-        });
+    const handleToggleRule = async (ruleId: string, currentState: boolean) => {
+        try {
+            const ruleRef = { path: `taxConfig/${ruleId}` } as any;
+            await updateDocumentNonBlocking(ruleRef, { isActive: !currentState });
+            
+            toast({
+                title: currentState ? "Rule Archived" : "Rule Activated",
+                description: "Taxation parameters updated successfully.",
+            });
+        } catch (err) {
+            toast({ title: "Update Error", description: "Failed to change rule status.", variant: 'destructive' });
+        }
     };
 
     return (
@@ -134,7 +142,7 @@ export default function TaxSettingsPage() {
                                             <Input name="sacCode" placeholder="9964" className="h-8 text-xs bg-muted/20" required />
                                         </div>
                                     </div>
-                                    <Button type="submit" className="w-full bg-accent text-accent-foreground h-9 text-[10px] font-black uppercase">Publish Parameters</Button>
+                                    <Button type="submit" className="w-full bg-accent text-accent-foreground h-9 text-[10px] font-black uppercase tracking-widest mt-2">Publish Parameters</Button>
                                 </form>
                             </CardContent>
                         </Card>
@@ -148,15 +156,15 @@ export default function TaxSettingsPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <p className="text-[11px] text-muted-foreground leading-relaxed">
+                            <p className="text-[11px] text-muted-foreground leading-relaxed italic">
                                 AeroDesk applies Indian GST rules based on the <span className="text-white font-bold">Place of Supply</span> protocol.
                             </p>
                             <ul className="space-y-2">
-                                <li className="flex items-center gap-2 text-[10px]">
+                                <li className="flex items-center gap-2 text-[10px] font-bold">
                                     <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                     <span>Intra-state: CGST + SGST split</span>
                                 </li>
-                                <li className="flex items-center gap-2 text-[10px]">
+                                <li className="flex items-center gap-2 text-[10px] font-bold">
                                     <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                     <span>Inter-state: IGST full rate</span>
                                 </li>

@@ -37,7 +37,7 @@ import { Settings, ShieldCheck, PlusCircle } from 'lucide-react';
 
 const revenueRuleSchema = z.object({
   serviceType: z.enum(['charter', 'seat', 'accommodation'] as const),
-  commissionRatePercent: z.coerce.number().min(0).max(100),
+  commissionRatePercent: z.coerce.number().min(0, 'Minimum 0%').max(100, 'Maximum 100%'),
   effectiveFrom: z.string().min(1, 'Required'),
 });
 
@@ -58,26 +58,33 @@ export function CreateRevenueRuleDialog() {
     },
   });
 
-  const onSubmit = (data: RevenueRuleFormValues) => {
-    if (!user || !firestore) return;
+  const onSubmit = async (data: RevenueRuleFormValues) => {
+    if (!user) return;
 
-    // Use path-based reference for simulation compatibility
-    const rulesRef = { path: 'commissionRules' } as any;
-    
-    addDocumentNonBlocking(rulesRef, {
-      ...data,
-      isActive: true,
-      createdBy: user.id,
-      createdAt: new Date().toISOString(),
-    });
+    try {
+      const rulesRef = { path: 'commissionRules' } as any;
+      
+      await addDocumentNonBlocking(rulesRef, {
+        ...data,
+        isActive: true,
+        createdBy: user.id,
+        createdAt: new Date().toISOString(),
+      });
 
-    toast({
-      title: 'Platform Rule Updated',
-      description: `New ${data.serviceType} commission rate defined as ${data.commissionRatePercent}%.`,
-    });
-    
-    setOpen(false);
-    form.reset();
+      toast({
+        title: 'Platform Rule Updated',
+        description: `New ${data.serviceType} commission rate defined as ${data.commissionRatePercent}%.`,
+      });
+      
+      setOpen(false);
+      form.reset();
+    } catch (err) {
+      toast({ title: 'Submission Error', description: 'Failed to publish commission rule.', variant: 'destructive' });
+    }
+  };
+
+  const onInvalid = () => {
+    toast({ title: 'Validation Error', description: 'Please check the rule parameters.', variant: 'destructive' });
   };
 
   return (
@@ -96,16 +103,16 @@ export function CreateRevenueRuleDialog() {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-4 py-4">
             <FormField
               control={form.control}
               name="serviceType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Service Category</FormLabel>
+                  <FormLabel className="text-[10px] uppercase font-black">Service Category</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-muted/20">
+                      <SelectTrigger className="bg-muted/20 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
@@ -115,6 +122,7 @@ export function CreateRevenueRuleDialog() {
                       <SelectItem value="accommodation">Accommodation</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -124,10 +132,11 @@ export function CreateRevenueRuleDialog() {
               name="commissionRatePercent"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Total Commission (%)</FormLabel>
+                  <FormLabel className="text-[10px] uppercase font-black">Total Commission (%)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="5.0" {...field} className="bg-muted/20" />
+                    <Input type="number" placeholder="5.0" {...field} className="bg-muted/20 text-xs" />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -137,24 +146,25 @@ export function CreateRevenueRuleDialog() {
               name="effectiveFrom"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Effective From Date</FormLabel>
+                  <FormLabel className="text-[10px] uppercase font-black">Effective From Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} className="bg-muted/20" />
+                    <Input type="date" {...field} className="bg-muted/20 text-xs" />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
             <div className="p-3 rounded-lg bg-accent/5 border border-accent/20 flex items-start gap-3 mt-2">
               <ShieldCheck className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
+              <p className="text-[10px] text-muted-foreground leading-relaxed italic">
                 Rules take immediate effect for all new transactions confirmed after the effective date.
               </p>
             </div>
 
             <DialogFooter className="pt-4">
-              <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-accent text-accent-foreground font-bold">Publish Rule</Button>
+              <Button type="button" variant="ghost" onClick={() => setOpen(false)} className="text-[10px] uppercase font-black">Cancel</Button>
+              <Button type="submit" className="bg-accent text-accent-foreground font-black uppercase text-[10px] px-8">Publish Rule</Button>
             </DialogFooter>
           </form>
         </Form>

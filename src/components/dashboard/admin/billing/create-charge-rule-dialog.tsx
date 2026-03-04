@@ -34,14 +34,14 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
 import { useFirestore, addDocumentNonBlocking } from '@/firebase';
-import { Settings, ShieldCheck, PlusCircle } from 'lucide-react';
+import { Settings, ShieldCheck, PlusCircle, AlertCircle } from 'lucide-react';
 
 const chargeRuleSchema = z.object({
   entityType: z.enum(['Operator', 'Travel Agency', 'Hotel Partner', 'Corporate Admin'] as const),
   serviceType: z.enum(['charter', 'seat', 'accommodation', 'subscription'] as const),
   chargeType: z.enum(['percentage', 'fixed', 'hybrid'] as const),
-  percentageRate: z.coerce.number().min(0).max(1).default(0),
-  fixedAmount: z.coerce.number().min(0).default(0),
+  percentageRate: z.coerce.number().min(0, 'Rate cannot be negative').max(1, 'Enter decimal (e.g. 0.05 for 5%)').default(0),
+  fixedAmount: z.coerce.number().min(0, 'Amount cannot be negative').default(0),
   effectiveFrom: z.string().min(1, 'Required'),
 });
 
@@ -67,26 +67,41 @@ export function CreateChargeRuleDialog() {
 
   const chargeType = form.watch('chargeType');
 
-  const onSubmit = (data: ChargeRuleFormValues) => {
-    if (!user || !firestore) return;
+  const onSubmit = async (data: ChargeRuleFormValues) => {
+    try {
+      if (!user) {
+        toast({ title: 'Auth Error', description: 'Institutional session not active.', variant: 'destructive' });
+        return;
+      }
 
-    // Use path-based reference for simulation compatibility
-    const rulesRef = { path: 'platformChargeRules' } as any;
-    
-    addDocumentNonBlocking(rulesRef, {
-      ...data,
-      isActive: true,
-      createdBy: user.id,
-      createdAt: new Date().toISOString(),
-    });
+      // Simulation mode uses path-based reference
+      const rulesRef = { path: 'platformChargeRules' } as any;
+      
+      await addDocumentNonBlocking(rulesRef, {
+        ...data,
+        isActive: true,
+        createdBy: user.id,
+        createdAt: new Date().toISOString(),
+      });
 
+      toast({
+        title: 'Governance Rule Published',
+        description: `New ${data.chargeType} rule for ${data.entityType} (${data.serviceType}) is now active in the registry.`,
+      });
+      
+      setOpen(false);
+      form.reset();
+    } catch (err) {
+      toast({ title: 'Processing Error', description: 'Failed to synchronize governance parameters.', variant: 'destructive' });
+    }
+  };
+
+  const onInvalid = (errors: any) => {
     toast({
-      title: 'Governance Rule Published',
-      description: `New ${data.chargeType} rule for ${data.entityType} (${data.serviceType}) is now active.`,
+      title: "Input Validation Required",
+      description: "Please ensure all governance parameters meet platform standards.",
+      variant: "destructive",
     });
-    
-    setOpen(false);
-    form.reset();
   };
 
   return (
@@ -104,22 +119,22 @@ export function CreateChargeRuleDialog() {
             <DialogTitle>Configure Platform Governance</DialogTitle>
           </div>
           <DialogDescription>
-            Define new commission rates or transaction fees. Publishing this rule will deactivate existing rules for the same parameters.
+            Define new commission rates or transaction fees. Publishing this rule will synchronize parameters across the invoicing engine.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="entityType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Entity Group</FormLabel>
+                    <FormLabel className="text-[10px] uppercase font-black">Entity Group</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-muted/20">
+                        <SelectTrigger className="bg-muted/20 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
@@ -138,10 +153,10 @@ export function CreateChargeRuleDialog() {
                 name="serviceType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Service Line</FormLabel>
+                    <FormLabel className="text-[10px] uppercase font-black">Service Line</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-muted/20">
+                        <SelectTrigger className="bg-muted/20 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
@@ -162,10 +177,10 @@ export function CreateChargeRuleDialog() {
               name="chargeType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Revenue Model</FormLabel>
+                  <FormLabel className="text-[10px] uppercase font-black">Revenue Model</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-muted/20">
+                      <SelectTrigger className="bg-muted/20 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
@@ -186,11 +201,12 @@ export function CreateChargeRuleDialog() {
                   name="percentageRate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Rate (Decimal)</FormLabel>
+                      <FormLabel className="text-[10px] uppercase font-black">Rate (Decimal)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" placeholder="0.05" {...field} className="bg-muted/20" />
+                        <Input type="number" step="0.01" placeholder="0.05" {...field} className="bg-muted/20 text-xs" />
                       </FormControl>
-                      <FormDescription className="text-[10px]">e.g. 0.05 for 5%</FormDescription>
+                      <FormDescription className="text-[9px]">e.g. 0.05 for 5%</FormDescription>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -201,10 +217,11 @@ export function CreateChargeRuleDialog() {
                   name="fixedAmount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Fixed Amount (INR)</FormLabel>
+                      <FormLabel className="text-[10px] uppercase font-black">Fixed Amount (INR)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="500" {...field} className="bg-muted/20" />
+                        <Input type="number" placeholder="500" {...field} className="bg-muted/20 text-xs" />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -216,24 +233,25 @@ export function CreateChargeRuleDialog() {
               name="effectiveFrom"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Effective Date</FormLabel>
+                  <FormLabel className="text-[10px] uppercase font-black">Effective Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} className="bg-muted/20" />
+                    <Input type="date" {...field} className="bg-muted/20 text-xs" />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
             <div className="p-3 rounded-lg bg-accent/5 border border-accent/20 flex items-start gap-3 mt-2">
               <ShieldCheck className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
-                Rules are immutable once finalized. New rules will supersede existing configurations for all new transactions confirmed after the effective date.
+              <p className="text-[10px] text-muted-foreground leading-relaxed italic">
+                New rules will supersede existing configurations for all new transactions confirmed after the effective date. Audit trails are recorded for all parameter changes.
               </p>
             </div>
 
             <DialogFooter className="pt-4">
-              <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-accent text-accent-foreground font-bold">Publish Rule</Button>
+              <Button type="button" variant="ghost" onClick={() => setOpen(false)} className="text-[10px] uppercase font-black">Cancel</Button>
+              <Button type="submit" className="bg-accent text-accent-foreground font-black uppercase text-[10px] px-8">Publish Rule</Button>
             </DialogFooter>
           </form>
         </Form>
