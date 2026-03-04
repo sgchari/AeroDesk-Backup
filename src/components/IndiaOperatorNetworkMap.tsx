@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import * as turf from '@turf/turf';
@@ -22,8 +22,7 @@ const hubNodes = [
   { id: 'hyderabad', city: 'Hyderabad', position: [78.4867, 17.3850] as [number, number], operators: 2, aircraft: ['Phenom 300', 'Pilatus PC-12'], emptyLegs: 1, status: 'Standby' },
   { id: 'bangalore', city: 'Bangalore', position: [77.5946, 12.9716] as [number, number], operators: 3, aircraft: ['Citation CJ4', 'Hawker 800XP'], emptyLegs: 4, status: 'Optimal' },
   { id: 'chennai', city: 'Chennai', position: [80.2707, 13.0827] as [number, number], operators: 2, aircraft: ['King Air C90', 'Bell 429'], emptyLegs: 0, status: 'Limited' },
-  { id: 'kolkata', city: 'Kolkata', position: [88.3639, 22.5726] as [number, number], operators: 2, aircraft: ['Dornier 228', 'Citation XLS'], emptyLegs: 1, status: 'Regional Focus' },
-  { id: 'ahmedabad', city: 'Ahmedabad', position: [72.5714, 23.0225] as [number, number], operators: 1, aircraft: ['Phenom 100'], emptyLegs: 0, status: 'Growth Zone' }
+  { id: 'kolkata', city: 'Kolkata', position: [88.3639, 22.5726] as [number, number], operators: 2, aircraft: ['Dornier 228', 'Citation XLS'], emptyLegs: 1, status: 'Regional Focus' }
 ];
 
 const ACTIVE_MISSIONS_CONFIG = [
@@ -32,8 +31,7 @@ const ACTIVE_MISSIONS_CONFIG = [
   { id: 'ADX-103', from: 'bangalore', to: 'chennai' },
   { id: 'ADX-104', from: 'chennai', to: 'hyderabad' },
   { id: 'ADX-105', from: 'hyderabad', to: 'delhi' },
-  { id: 'ADX-106', from: 'kolkata', to: 'delhi' },
-  { id: 'ADX-107', from: 'ahmedabad', to: 'mumbai' },
+  { id: 'ADX-106', from: 'kolkata', to: 'delhi' }
 ];
 
 const demandHeatmapPoints = {
@@ -58,17 +56,19 @@ export function IndiaOperatorNetworkMap() {
     let isMounted = true;
     if (!mapContainer.current) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const mapInstance = new maplibregl.Map({
       container: mapContainer.current,
       style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
       center: [79, 21],
-      zoom: 4.7,
-      minZoom: 4,
-      maxZoom: 8,
+      zoom: isMobile ? 3.8 : 4.7,
+      minZoom: 3,
+      maxZoom: 10,
       attributionControl: false,
       scrollZoom: false,
       dragPan: true,
-      maxBounds: [[60, 5], [100, 35]]
+      maxBounds: [[55, 5], [105, 38]]
     });
 
     map.current = mapInstance;
@@ -120,8 +120,8 @@ export function IndiaOperatorNetworkMap() {
           .setLngLat(start)
           .addTo(instance);
 
-        let progress = Math.random(); // Randomize starting progress for radar realism
-        const speed = 0.0005;
+        let progress = Math.random(); 
+        const speed = isMobile ? 0.0003 : 0.0005;
         let animationFrameId: number;
 
         const step = () => {
@@ -222,12 +222,12 @@ export function IndiaOperatorNetworkMap() {
             0.5, '#00FFA6',
             0.8, '#FFD166'
           ],
-          'heatmap-radius': 50,
+          'heatmap-radius': isMobile ? 30 : 50,
           'heatmap-opacity': 0.35
         }
       });
 
-      ACTIVE_MISSIONS_CONFIG.forEach((mission, index) => {
+      ACTIVE_MISSIONS_CONFIG.slice(0, isMobile ? 4 : 6).forEach((mission, index) => {
         setTimeout(() => { if (isMounted && map.current) animateMission(mission, map.current); }, index * 1500);
       });
     });
@@ -266,8 +266,8 @@ export function IndiaOperatorNetworkMap() {
   return (
     <div className="w-full h-full relative overflow-hidden flex flex-col group">
       {/* Control Overlay */}
-      <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
-        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-4 shadow-2xl min-w-[220px]">
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex flex-col gap-3 max-w-[calc(100%-2rem)]">
+        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-4 space-y-3 sm:space-y-4 shadow-2xl min-w-[180px] sm:min-w-[220px]">
           <div className="flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="text-[10px] font-black uppercase tracking-widest text-white">Demand Forecast</p>
@@ -291,38 +291,34 @@ export function IndiaOperatorNetworkMap() {
 
         {/* Price Prediction Card */}
         {priceEstimate && (
-            <Card className="bg-slate-950/90 backdrop-blur-2xl border-primary/20 shadow-2xl rounded-2xl overflow-hidden animate-in slide-in-from-left-4 duration-500 w-[280px]">
-                <CardHeader className="p-4 pb-2 border-b border-white/5">
+            <Card className="bg-slate-950/90 backdrop-blur-2xl border-primary/20 shadow-2xl rounded-2xl overflow-hidden animate-in slide-in-from-left-4 duration-500 w-full sm:w-[280px]">
+                <CardHeader className="p-3 sm:p-4 pb-2 border-b border-white/5">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-[10px] font-black uppercase tracking-widest text-primary">Charter Prediction</CardTitle>
                         <Button variant="ghost" size="icon" className="h-5 w-5 text-white/40" onClick={() => setPriceEstimate(null)}><X className="h-3.5 w-3.5" /></Button>
                     </div>
                     <div className="flex items-center gap-2 mt-2">
-                        <span className="text-sm font-bold text-white">{priceEstimate.from}</span>
+                        <span className="text-xs sm:text-sm font-bold text-white">{priceEstimate.from}</span>
                         <ArrowRight className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm font-bold text-white">{priceEstimate.to}</span>
+                        <span className="text-xs sm:text-sm font-bold text-white">{priceEstimate.to}</span>
                     </div>
                 </CardHeader>
-                <CardContent className="p-4 space-y-4">
+                <CardContent className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-muted-foreground">
                             <Clock className="h-3 w-3" />
-                            <span className="text-[10px] uppercase font-bold">Flight Time</span>
+                            <span className="text-[9px] sm:text-[10px] uppercase font-bold">Flight Time</span>
                         </div>
                         <span className="text-xs font-black text-white">{calcTime()}</span>
                     </div>
-                    <div className="space-y-2.5">
+                    <div className="space-y-2">
                         <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
-                            <span className="text-[9px] font-bold text-white/60">Citation XLS</span>
-                            <span className="text-[10px] font-black text-accent">{calcPrice(1200)}</span>
+                            <span className="text-[8px] sm:text-[9px] font-bold text-white/60">Citation XLS</span>
+                            <span className="text-[9px] sm:text-[10px] font-black text-accent">{calcPrice(1200)}</span>
                         </div>
                         <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
-                            <span className="text-[9px] font-bold text-white/60">Phenom 300</span>
-                            <span className="text-[10px] font-black text-accent">{calcPrice(1000)}</span>
-                        </div>
-                        <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
-                            <span className="text-[9px] font-bold text-white/60">King Air 350</span>
-                            <span className="text-[10px] font-black text-accent">{calcPrice(600)}</span>
+                            <span className="text-[8px] sm:text-[9px] font-bold text-white/60">Phenom 300</span>
+                            <span className="text-[9px] sm:text-[10px] font-black text-accent">{calcPrice(1000)}</span>
                         </div>
                     </div>
                     <Button className="w-full h-8 bg-primary text-white text-[9px] font-black uppercase tracking-widest gap-2">
@@ -335,34 +331,35 @@ export function IndiaOperatorNetworkMap() {
 
       {/* Hub Discovery Panel */}
       {selectedHub && !priceEstimate && (
-        <div className="absolute top-6 right-6 z-30 w-72 animate-in slide-in-from-right-4 duration-500">
+        <div className="absolute bottom-4 left-4 right-4 sm:top-6 sm:right-6 sm:bottom-auto sm:left-auto z-30 sm:w-72 animate-in slide-in-from-bottom-4 sm:slide-in-from-right-4 duration-500">
             <Card className="bg-slate-950/90 backdrop-blur-2xl border-accent/20 shadow-2xl rounded-2xl overflow-hidden">
-                <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0">
+                <CardHeader className="p-3 sm:p-4 pb-2 flex flex-row items-center justify-between space-y-0">
                     <div>
-                        <CardTitle className="text-sm font-black uppercase tracking-widest text-white">{selectedHub.city} HUB</CardTitle>
+                        <CardTitle className="text-xs sm:text-sm font-black uppercase tracking-widest text-white">{selectedHub.city} HUB</CardTitle>
                         <p className="text-[8px] text-accent uppercase font-bold">{selectedHub.status}</p>
                     </div>
                     <Button variant="ghost" size="icon" className="h-6 w-6 text-white/40 hover:text-white" onClick={() => setSelectedHub(null)}>
                         <X className="h-4 w-4" />
                     </Button>
                 </CardHeader>
-                <CardContent className="p-4 pt-2 space-y-4">
+                <CardContent className="p-3 sm:p-4 pt-2 space-y-3 sm:space-y-4">
                     <div className="grid grid-cols-2 gap-2">
                         <div className="p-2 rounded-lg bg-white/5 border border-white/5 text-center">
                             <p className="text-[8px] text-muted-foreground uppercase font-bold mb-1">Operators</p>
-                            <p className="text-lg font-black text-white">{selectedHub.operators}</p>
+                            <p className="text-base sm:text-lg font-black text-white">{selectedHub.operators}</p>
                         </div>
                         <div className="p-2 rounded-lg bg-white/5 border border-white/5 text-center">
                             <p className="text-[8px] text-muted-foreground uppercase font-bold mb-1">Empty Legs</p>
-                            <p className="text-lg font-black text-[#FFD166]">{selectedHub.emptyLegs}</p>
+                            <p className="text-base sm:text-lg font-black text-[#FFD166]">{selectedHub.emptyLegs}</p>
                         </div>
                     </div>
                     <div className="space-y-1.5">
                         <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">Verified Fleet Assets</p>
                         <div className="flex flex-wrap gap-1">
-                            {selectedHub.aircraft.map(ac => (
+                            {selectedHub.aircraft.slice(0, 2).map(ac => (
                                 <Badge key={ac} variant="outline" className="text-[7px] border-white/10 bg-white/5 text-white/70 h-4 px-1.5">{ac}</Badge>
                             ))}
+                            {selectedHub.aircraft.length > 2 && <span className="text-[7px] text-muted-foreground">+{selectedHub.aircraft.length - 2} more</span>}
                         </div>
                     </div>
                     <Button className="w-full h-8 bg-accent text-accent-foreground text-[9px] font-black uppercase tracking-widest gap-2 shadow-xl shadow-accent/10">
@@ -377,24 +374,20 @@ export function IndiaOperatorNetworkMap() {
       <div ref={mapContainer} className="w-full h-full rounded-3xl border border-white/5 shadow-2xl bg-[#061122]" />
 
       {/* Institutional Legend */}
-      <div className="absolute bottom-6 left-6 z-20 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl">
-        <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 border-b border-white/5 pb-2">Institutional Signals</h4>
-        <div className="space-y-2.5">
+      <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-20 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-4 shadow-2xl hidden xs:block">
+        <h4 className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 sm:mb-3 border-b border-white/5 pb-2">Institutional Signals</h4>
+        <div className="space-y-2 sm:space-y-2.5">
           <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-[#00FFA6] shadow-[0_0_8px_#00FFA6] animate-pulse" />
-            <span className="text-[9px] font-bold text-white/70 uppercase tracking-tighter">Active Charter Mission</span>
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#00FFA6] shadow-[0_0_8px_#00FFA6] animate-pulse" />
+            <span className="text-[8px] sm:text-[9px] font-bold text-white/70 uppercase tracking-tighter">Active Charter Mission</span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-2.5 h-2.5 rounded-full border border-[#00FFA6] animate-ping" />
-            <span className="text-[9px] font-bold text-white/70 uppercase tracking-tighter">Operator Network Hub</span>
+            <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full border border-[#00FFA6] animate-ping" />
+            <span className="text-[8px] sm:text-[9px] font-bold text-white/70 uppercase tracking-tighter">Operator Network Hub</span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-[#FFD166] shadow-[0_0_8px_#FFD166]" />
-            <span className="text-[9px] font-bold text-white/70 uppercase tracking-tighter">Empty Leg Opportunity</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-gradient-to-r from-[#2A7FFF] to-[#FFD166] rounded-sm opacity-60" />
-            <span className="text-[9px] font-bold text-white/70 uppercase tracking-tighter">Demand Heatmap</span>
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#FFD166] shadow-[0_0_8px_#FFD166]" />
+            <span className="text-[8px] sm:text-[9px] font-bold text-white/70 uppercase tracking-tighter">Empty Leg Opportunity</span>
           </div>
         </div>
       </div>
@@ -404,8 +397,10 @@ export function IndiaOperatorNetworkMap() {
         .radar-node-core { width: 6px; height: 6px; background: #00FFA6; border-radius: 50%; box-shadow: 0 0 10px #00FFA6; z-index: 2; }
         .radar-node-pulse { position: absolute; width: 28px; height: 28px; border: 2px solid #00FFA6; border-radius: 50%; animation: radar-pulse 2.5s infinite; z-index: 1; }
         @keyframes radar-pulse { 0% { transform: scale(0.2); opacity: 0.8; } 100% { transform: scale(1.5); opacity: 0; } }
-        .aircraft-marker { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; z-index: 100; transition: transform 0.1s linear; }
-        .aircraft-glow { position: absolute; width: 40px; height: 40px; background: radial-gradient(circle, rgba(0,255,166,0.2) 0%, transparent 70%); border-radius: 50%; z-index: -1; animation: blink 1.5s infinite; }
+        .aircraft-marker { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; z-index: 100; transition: transform 0.1s linear; }
+        @media (min-width: 640px) { .aircraft-marker { width: 28px; height: 28px; } }
+        .aircraft-glow { position: absolute; width: 32px; height: 32px; background: radial-gradient(circle, rgba(0,255,166,0.2) 0%, transparent 70%); border-radius: 50%; z-index: -1; animation: blink 1.5s infinite; }
+        @media (min-width: 640px) { .aircraft-glow { width: 40px; height: 40px; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .aircraft-marker svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px #00FFA6); }
       `}</style>
