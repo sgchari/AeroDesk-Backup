@@ -38,7 +38,7 @@ export default function PromotionsPage() {
   const router = useRouter();
 
   const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'emptyLegs'));
   }, [firestore]);
   
