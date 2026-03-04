@@ -67,9 +67,6 @@ const getCollectionPathFromRole = (user: DisplayUser): string | null => {
         case 'Requester':
             return ctdId ? `corporateTravelDesks/${ctdId}/users` : null;
         default:
-            // This attempts to handle any unexpected roles gracefully.
-            const unhandledRole: never = role;
-            console.warn(`Unhandled user role for collection path: ${unhandledRole}`);
             return null;
     }
 };
@@ -105,7 +102,10 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
       return;
     }
 
-    const userDocRef = doc(firestore, collectionPath, user.id);
+    const userDocRef = (firestore as any)._isMock
+        ? { path: `${collectionPath}/${user.id}` } as any
+        : doc(firestore, collectionPath, user.id);
+
     const profileUpdateData: any = {
       updatedAt: new Date().toISOString(),
     };
@@ -113,16 +113,13 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
     const isCompany = ['Operator', 'Travel Agency', 'Hotel Partner'].includes(user.role);
 
     if (isCompany) {
-        // For these roles, the `name` in the table is the company name.
         profileUpdateData.companyName = data.name;
     } else {
-        // For other roles, `name` is a person's name.
         const [firstName, ...lastNameParts] = data.name.split(' ');
         const lastName = lastNameParts.join(' ');
         profileUpdateData.firstName = firstName;
-        profileUpdateData.lastName = lastName || ' '; // Ensure lastName is not undefined
+        profileUpdateData.lastName = lastName || ' '; 
         
-        // Some person-based roles also use contactPersonName.
         if (user.role === 'Operator' || user.role === 'Travel Agency' || user.role === 'Hotel Partner') {
             profileUpdateData.contactPersonName = data.name;
         }

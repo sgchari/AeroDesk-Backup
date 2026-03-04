@@ -23,25 +23,25 @@ export function TravelAgencyDashboard() {
   const { user, isLoading: isUserLoading } = useUser();
 
   const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'emptyLegs'), where('status', 'in', ['Approved', 'Published', 'live']));
   }, [firestore]);
   const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
   const seatRequestsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return query(collection(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
   }, [firestore, user]);
   const { data: seatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(seatRequestsQuery, 'seatAllocationRequests');
   
   const charterRequestsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return query(collection(firestore, 'charterRequests'), where('requesterExternalAuthId', '==', user.id));
   }, [firestore, user]);
   const { data: charterRequests, isLoading: charterRequestsLoading } = useCollection<CharterRFQ>(charterRequestsQuery, 'charterRequests');
 
   const ledgerQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return query(collection(firestore, 'commissionLedger'), where('entityId', '==', user.id));
   }, [firestore, user]);
   const { data: ledger } = useCollection<CommissionLedgerEntry>(ledgerQuery, 'commissionLedger');

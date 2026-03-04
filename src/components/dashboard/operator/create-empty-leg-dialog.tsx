@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
@@ -31,7 +32,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
-import { useCollection, useFirestore, addDocumentNonBlocking } from '@/firebase';
+import { useCollection, useFirestore, addDocumentNonBlocking, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import type { Aircraft } from '@/lib/types';
 import { SystemAdvisory } from './system-advisory';
@@ -142,7 +143,10 @@ export function CreateEmptyLegDialog() {
   const firestore = useFirestore();
 
   const { data: fleet } = useCollection<Aircraft>(
-    useMemo(() => firestore && user ? query(collection(firestore, 'operators', user.id, 'aircrafts')) : null, [firestore, user]),
+    useMemoFirebase(() => {
+        if (!firestore || (firestore as any)._isMock || !user) return null;
+        return query(collection(firestore, 'operators', user.id, 'aircrafts'));
+    }, [firestore, user]),
     user ? `operators/${user.id}/aircrafts` : undefined
   );
 
@@ -164,7 +168,9 @@ export function CreateEmptyLegDialog() {
   const onSubmit = (data: EmptyLegFormValues) => {
     if (!user || !firestore) return;
 
-    const legsRef = collection(firestore, 'emptyLegs');
+    const legsRef = (firestore as any)._isMock 
+        ? { path: 'emptyLegs' } as any 
+        : collection(firestore, 'emptyLegs');
     
     addDocumentNonBlocking(legsRef, {
         operatorId: user.id,

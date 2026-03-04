@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -63,9 +64,11 @@ export function AddStaffDialog() {
   });
 
   const onSubmit = (data: StaffFormValues) => {
-    if (!currentUser || !currentUser.hotelPartnerId) return;
+    if (!currentUser || !currentUser.hotelPartnerId || !firestore) return;
 
-    const usersRef = collection(firestore as any, 'users');
+    const usersRef = (firestore as any)._isMock
+        ? { path: 'users' } as any
+        : collection(firestore, 'users');
     
     const newUser = {
         firstName: data.firstName,
@@ -81,7 +84,7 @@ export function AddStaffDialog() {
         updatedAt: new Date().toISOString(),
     };
 
-    addDocumentNonBlocking(usersRef as any, newUser);
+    addDocumentNonBlocking(usersRef, newUser);
 
     toast({
       title: 'Personnel Registered',

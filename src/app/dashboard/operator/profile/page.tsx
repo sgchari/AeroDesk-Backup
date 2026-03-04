@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -71,7 +72,10 @@ export default function OperatorCompanyProfilePage() {
   const onSubmit = async (data: CompanyFormValues) => {
     if (!operator || !firestore || !isAdmin) return;
 
-    const opDocRef = doc(firestore, 'operators', operator.id);
+    const opDocRef = (firestore as any)._isMock
+        ? { path: `operators/${operator.id}` } as any
+        : doc(firestore, 'operators', operator.id);
+
     const nsopChanged = data.nsopLicenseNumber !== operator.nsopLicenseNumber;
 
     updateDocumentNonBlocking(opDocRef, {

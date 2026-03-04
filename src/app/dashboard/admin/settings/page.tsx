@@ -15,13 +15,20 @@ export default function PlatformSettingsPage() {
     const firestore = useFirestore();
     const { toast } = useToast();
     const { data: featureFlags, isLoading } = useCollection<FeatureFlag>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'featureFlags') : null, [firestore]),
+        useMemoFirebase(() => {
+            if (!firestore || (firestore as any)._isMock) return null;
+            return collection(firestore, 'featureFlags');
+        }, [firestore]),
         'featureFlags'
     );
     
     const handleToggle = (flagId: string, isEnabled: boolean) => {
         if (!firestore) return;
-        const flagDocRef = doc(firestore, 'featureFlags', flagId);
+        
+        const flagDocRef = (firestore as any)._isMock
+            ? { path: `featureFlags/${flagId}` } as any
+            : doc(firestore, 'featureFlags', flagId);
+
         updateDocumentNonBlocking(flagDocRef, { isEnabled: !isEnabled });
         toast({
             title: "Feature Flag Updated",

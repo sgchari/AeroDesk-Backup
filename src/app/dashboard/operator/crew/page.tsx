@@ -49,7 +49,11 @@ export default function CrewManagementPage() {
 
     const handleUpdateStatus = (memberId: string, status: CrewStatus) => {
         if (!firestore) return;
-        const memberRef = doc(firestore, 'crew', memberId);
+        
+        const memberRef = (firestore as any)._isMock
+            ? { path: `crew/${memberId}` } as any
+            : doc(firestore, 'crew', memberId);
+
         updateDocumentNonBlocking(memberRef, { status });
         
         toast({
