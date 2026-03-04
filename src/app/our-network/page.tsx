@@ -8,14 +8,14 @@ import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
 import { ShieldCheck, Zap, Activity, Plane, Users } from 'lucide-react';
 
-// Use dynamic import for the map to prevent SSR issues with Leaflet
-const IndiaOperatorNetworkMap = dynamic(
+// Use dynamic import for the Mapbox dashboard to prevent SSR issues
+const AviationIntelligenceMap = dynamic(
   () => import('@/components/IndiaOperatorNetworkMap').then((mod) => mod.IndiaOperatorNetworkMap),
   { 
     ssr: false,
     loading: () => (
-      <div className="w-full h-[600px] bg-slate-950/50 rounded-3xl animate-pulse flex items-center justify-center border border-white/5">
-        <p className="text-muted-foreground text-[10px] uppercase font-black tracking-widest">Synchronizing National Infrastructure Matrix...</p>
+      <div className="w-full h-full bg-slate-950/50 rounded-3xl animate-pulse flex items-center justify-center border border-white/5">
+        <p className="text-muted-foreground text-[10px] uppercase font-black tracking-widest">Initializing National Intelligence Grid...</p>
       </div>
     )
   }
@@ -34,7 +34,7 @@ export default function OurNetworkPage() {
 
   return (
     <div className="w-full relative min-h-screen bg-[#0B1220] flex flex-col overflow-hidden">
-      {/* Background Atmosphere Layer - Synced with Homepage */}
+      {/* Background Atmosphere Layer */}
       <div className="fixed inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
@@ -44,7 +44,6 @@ export default function OurNetworkPage() {
           className="object-cover"
           data-ai-hint="airplane beach"
         />
-        {/* Frosted Effect Overlays */}
         <div className="absolute inset-0 bg-[#0B1220]/70 backdrop-blur-md" />
         <div className="absolute inset-0 bg-aviation-radial opacity-40" />
       </div>
@@ -113,9 +112,9 @@ export default function OurNetworkPage() {
           </div>
 
           {/* Right Sector: Geographic Dashboard */}
-          <div className="flex-1 w-full h-[600px] lg:h-auto flex items-center justify-center p-4 lg:p-12 xl:p-16">
-            <div className="w-full h-full max-w-5xl">
-              <IndiaOperatorNetworkMap />
+          <div className="flex-1 w-full h-[600px] lg:h-auto flex items-center justify-center p-4 lg:p-12 xl:p-16 relative overflow-hidden">
+            <div className="w-full h-full max-w-5xl relative z-10">
+              <AviationIntelligenceMap />
             </div>
           </div>
         </main>
