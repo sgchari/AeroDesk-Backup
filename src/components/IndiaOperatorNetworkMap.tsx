@@ -51,24 +51,24 @@ export function IndiaOperatorNetworkMap() {
   const [priceEstimate, setPriceEstimate] = useState<{from: string, to: string, distance: number} | null>(null);
   const [selection, setSelection] = useState<string[]>([]);
 
-  // Cleanup effect
   useEffect(() => {
     let isMounted = true;
     if (!mapContainer.current) return;
 
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 1024;
 
     const mapInstance = new maplibregl.Map({
       container: mapContainer.current,
       style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-      center: [79, 21],
-      zoom: isMobile ? 3.8 : 4.7,
+      // Center and Zoom calibrated to show full India outline
+      center: [78.9629, 23.5937],
+      zoom: isMobile ? 3.5 : 4.3,
       minZoom: 3,
       maxZoom: 10,
       attributionControl: false,
       scrollZoom: false,
       dragPan: true,
-      maxBounds: [[55, 5], [105, 38]]
+      maxBounds: [[60, 5], [100, 38]]
     });
 
     map.current = mapInstance;
@@ -165,7 +165,6 @@ export function IndiaOperatorNetworkMap() {
     mapInstance.on('load', () => {
       if (!isMounted || !mapInstance) return;
 
-      // --- BRIGHTER INSTITUTIONAL PALETTE ---
       const style = mapInstance.getStyle();
       style.layers?.forEach((layer) => {
         if (layer.type === 'background') {
@@ -175,11 +174,10 @@ export function IndiaOperatorNetworkMap() {
         } else if (layer.type === 'line' && (layer.id.includes('admin') || layer.id.includes('boundary'))) {
           mapInstance.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
         } else if (layer.type === 'symbol') {
-          mapInstance.setPaintProperty(layer.id, 'text-opacity', 0.35);
+          mapInstance.setPaintProperty(layer.id, 'text-opacity', 0.5);
         }
       });
 
-      // --- HUB RADAR NODES ---
       hubNodes.forEach(hub => {
         const el = document.createElement('div');
         el.className = 'radar-node-container';
@@ -205,7 +203,6 @@ export function IndiaOperatorNetworkMap() {
         new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(hub.position).addTo(mapInstance);
       });
 
-      // --- INTELLIGENCE LAYERS ---
       mapInstance.addSource('demand-forecast', { type: 'geojson', data: demandHeatmapPoints as any });
       mapInstance.addLayer({
         id: 'demand-heat',
@@ -227,7 +224,7 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
-      ACTIVE_MISSIONS_CONFIG.slice(0, isMobile ? 4 : 6).forEach((mission, index) => {
+      ACTIVE_MISSIONS_CONFIG.forEach((mission, index) => {
         setTimeout(() => { if (isMounted && map.current) animateMission(mission, map.current); }, index * 1500);
       });
     });
@@ -241,7 +238,6 @@ export function IndiaOperatorNetworkMap() {
     };
   }, []);
 
-  // Layer Toggles
   useEffect(() => {
     if (!map.current || !map.current.loaded()) return;
     try { map.current.setLayoutProperty('demand-heat', 'visibility', showForecast ? 'visible' : 'none'); } catch (e) {}
@@ -257,7 +253,7 @@ export function IndiaOperatorNetworkMap() {
 
   const calcTime = () => {
     if (!priceEstimate) return '---';
-    const hours = priceEstimate.distance / 700; // Avg jet speed
+    const hours = priceEstimate.distance / 700;
     const h = Math.floor(hours);
     const m = Math.round((hours - h) * 60);
     return `${h}h ${m}m`;
@@ -265,7 +261,6 @@ export function IndiaOperatorNetworkMap() {
 
   return (
     <div className="w-full h-full relative overflow-hidden flex flex-col group">
-      {/* Control Overlay */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex flex-col gap-3 max-w-[calc(100%-2rem)]">
         <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-4 space-y-3 sm:space-y-4 shadow-2xl min-w-[180px] sm:min-w-[220px]">
           <div className="flex items-center justify-between gap-4">
@@ -289,7 +284,6 @@ export function IndiaOperatorNetworkMap() {
           </div>
         </div>
 
-        {/* Price Prediction Card */}
         {priceEstimate && (
             <Card className="bg-slate-950/90 backdrop-blur-2xl border-primary/20 shadow-2xl rounded-2xl overflow-hidden animate-in slide-in-from-left-4 duration-500 w-full sm:w-[280px]">
                 <CardHeader className="p-3 sm:p-4 pb-2 border-b border-white/5">
@@ -329,7 +323,6 @@ export function IndiaOperatorNetworkMap() {
         )}
       </div>
 
-      {/* Hub Discovery Panel */}
       {selectedHub && !priceEstimate && (
         <div className="absolute bottom-4 left-4 right-4 sm:top-6 sm:right-6 sm:bottom-auto sm:left-auto z-30 sm:w-72 animate-in slide-in-from-bottom-4 sm:slide-in-from-right-4 duration-500">
             <Card className="bg-slate-950/90 backdrop-blur-2xl border-accent/20 shadow-2xl rounded-2xl overflow-hidden">
@@ -370,10 +363,8 @@ export function IndiaOperatorNetworkMap() {
         </div>
       )}
 
-      {/* Main Map Engine */}
       <div ref={mapContainer} className="w-full h-full rounded-3xl border border-white/5 shadow-2xl bg-[#061122]" />
 
-      {/* Institutional Legend */}
       <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-20 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-4 shadow-2xl hidden xs:block">
         <h4 className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-2 sm:mb-3 border-b border-white/5 pb-2">Institutional Signals</h4>
         <div className="space-y-2 sm:space-y-2.5">
@@ -398,9 +389,9 @@ export function IndiaOperatorNetworkMap() {
         .radar-node-pulse { position: absolute; width: 28px; height: 28px; border: 2px solid #00FFA6; border-radius: 50%; animation: radar-pulse 2.5s infinite; z-index: 1; }
         @keyframes radar-pulse { 0% { transform: scale(0.2); opacity: 0.8; } 100% { transform: scale(1.5); opacity: 0; } }
         .aircraft-marker { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; z-index: 100; transition: transform 0.1s linear; }
-        @media (min-width: 640px) { .aircraft-marker { width: 28px; height: 28px; } }
+        @media (min-width: 1024px) { .aircraft-marker { width: 28px; height: 28px; } }
         .aircraft-glow { position: absolute; width: 32px; height: 32px; background: radial-gradient(circle, rgba(0,255,166,0.2) 0%, transparent 70%); border-radius: 50%; z-index: -1; animation: blink 1.5s infinite; }
-        @media (min-width: 640px) { .aircraft-glow { width: 40px; height: 40px; } }
+        @media (min-width: 1024px) { .aircraft-glow { width: 40px; height: 40px; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .aircraft-marker svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px #00FFA6); }
       `}</style>

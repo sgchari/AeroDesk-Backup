@@ -52,7 +52,7 @@ export default function OurNetworkPage() {
         
         <main className="flex-1 flex flex-col lg:flex-row items-stretch overflow-hidden">
           
-          {/* Reduced Left Sector: Institutional Intelligence */}
+          {/* Reduced Left Sector: Institutional Intelligence (25%) */}
           <div className="w-full lg:w-[25%] p-6 md:p-8 xl:p-10 flex flex-col justify-center gap-4 md:gap-6 z-20">
             <div className="space-y-3 md:space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-accent/20 bg-accent/5">
@@ -110,7 +110,7 @@ export default function OurNetworkPage() {
             </div>
           </div>
 
-          {/* Maximized Right Sector: Geographic Dashboard */}
+          {/* Maximized Right Sector: Geographic Dashboard (75%) */}
           <div className="flex-1 w-full h-[500px] lg:h-auto flex items-center justify-center p-2 sm:p-4 lg:p-6 xl:p-8 relative overflow-hidden">
             <div className="w-full h-full relative z-10">
               <AviationIntelligenceMap />
