@@ -34,13 +34,13 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
 import { useFirestore, addDocumentNonBlocking } from '@/firebase';
-import { Settings, ShieldCheck, PlusCircle, AlertCircle } from 'lucide-react';
+import { Settings, ShieldCheck, PlusCircle } from 'lucide-react';
 
 const chargeRuleSchema = z.object({
   entityType: z.enum(['Operator', 'Travel Agency', 'Hotel Partner', 'Corporate Admin'] as const),
   serviceType: z.enum(['charter', 'seat', 'accommodation', 'subscription'] as const),
   chargeType: z.enum(['percentage', 'fixed', 'hybrid'] as const),
-  percentageRate: z.coerce.number().min(0, 'Rate cannot be negative').max(1, 'Enter decimal (e.g. 0.05 for 5%)').default(0),
+  percentageRate: z.coerce.number().min(0, 'Rate cannot be negative').max(100, 'Maximum 100%').default(5),
   fixedAmount: z.coerce.number().min(0, 'Amount cannot be negative').default(0),
   effectiveFrom: z.string().min(1, 'Required'),
 });
@@ -59,7 +59,7 @@ export function CreateChargeRuleDialog() {
       entityType: 'Operator',
       serviceType: 'charter',
       chargeType: 'percentage',
-      percentageRate: 0.05,
+      percentageRate: 5,
       fixedAmount: 0,
       effectiveFrom: new Date().toISOString().split('T')[0],
     },
@@ -74,11 +74,11 @@ export function CreateChargeRuleDialog() {
         return;
       }
 
-      // Simulation mode uses path-based reference
       const rulesRef = { path: 'platformChargeRules' } as any;
       
       await addDocumentNonBlocking(rulesRef, {
         ...data,
+        percentageRate: data.percentageRate / 100, // Convert whole number to decimal for institutional storage
         isActive: true,
         createdBy: user.id,
         createdAt: new Date().toISOString(),
@@ -86,7 +86,7 @@ export function CreateChargeRuleDialog() {
 
       toast({
         title: 'Governance Rule Published',
-        description: `New ${data.chargeType} rule for ${data.entityType} (${data.serviceType}) is now active in the registry.`,
+        description: `New rate of ${data.percentageRate}% for ${data.entityType} is now active in the registry.`,
       });
       
       setOpen(false);
@@ -201,11 +201,11 @@ export function CreateChargeRuleDialog() {
                   name="percentageRate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] uppercase font-black">Rate (Decimal)</FormLabel>
+                      <FormLabel className="text-[10px] uppercase font-black">Rate (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" placeholder="0.05" {...field} className="bg-muted/20 text-xs" />
+                        <Input type="number" placeholder="7.0" {...field} className="bg-muted/20 text-xs" />
                       </FormControl>
-                      <FormDescription className="text-[9px]">e.g. 0.05 for 5%</FormDescription>
+                      <FormDescription className="text-[9px]">Enter whole number (e.g. 7.0 for 7%)</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -245,7 +245,7 @@ export function CreateChargeRuleDialog() {
             <div className="p-3 rounded-lg bg-accent/5 border border-accent/20 flex items-start gap-3 mt-2">
               <ShieldCheck className="h-4 w-4 text-accent shrink-0 mt-0.5" />
               <p className="text-[10px] text-muted-foreground leading-relaxed italic">
-                New rules will supersede existing configurations for all new transactions confirmed after the effective date. Audit trails are recorded for all parameter changes.
+                New rules will supersede existing configurations for all new transactions. Audit trails are recorded for all parameter changes.
               </p>
             </div>
 

@@ -1,4 +1,3 @@
-
 import { 
   mockUsers, 
   mockRfqs, 
@@ -127,7 +126,8 @@ export const mockStore = {
     const rootCol = segments[0];
     if (!db[rootCol]) db[rootCol] = [];
     const newDoc = { id: `id-${Date.now()}`, ...data };
-    db[rootCol].push(newDoc);
+    // Institutional Prepend: Ensure new rules/requests appear at the top
+    db[rootCol].unshift(newDoc);
     notify(); 
   },
   updateDoc: (path: string, id: string, data: any) => { 
