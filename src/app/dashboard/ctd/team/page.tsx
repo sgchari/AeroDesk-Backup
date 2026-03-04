@@ -19,8 +19,7 @@ export default function CTDTeamManagementPage() {
     const firestore = useFirestore();
 
     const teamQuery = useMemoFirebase(() => {
-        if (!firestore || !user?.ctdId) return null;
-        // In demo mode, mockStore handles filtering by company/ctd
+        if (!firestore || (firestore as any)._isMock || !user?.ctdId) return null;
         return collection(firestore, 'users');
     }, [firestore, user]);
 
@@ -85,7 +84,7 @@ export default function CTDTeamManagementPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant={member.status === 'Active' ? 'default' : 'secondary'} className="text-[9px] h-5">
+                                            <Badge variant={member.status === 'active' || member.status === 'Active' ? 'default' : 'secondary'} className="text-[9px] h-5">
                                                 {member.status}
                                             </Badge>
                                         </TableCell>

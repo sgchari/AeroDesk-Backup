@@ -21,7 +21,7 @@ export default function CTDApprovalsPage() {
     const { toast } = useToast();
 
     const pendingQuery = useMemoFirebase(() => {
-        if (!firestore || !user?.company) return null;
+        if (!firestore || (firestore as any)._isMock || !user?.company) return null;
         return query(
             collection(firestore, 'charterRFQs'), 
             where('company', '==', user.company),
@@ -31,16 +31,19 @@ export default function CTDApprovalsPage() {
 
     const { data: allCompanyRfqs, isLoading: requestsLoading } = useCollection<CharterRFQ>(pendingQuery, 'charterRFQs');
 
-    // Robust client-side filter for pending status in demo/simulation mode
+    // Client-side fallback for simulation mode
     const pendingRfqs = allCompanyRfqs?.filter(r => r.status === 'Pending Approval') || [];
 
     const handleAction = (rfqId: string, action: 'Approve' | 'Reject') => {
         if (!firestore) return;
         
         const status = action === 'Approve' ? 'Bidding Open' : 'Closed';
-        const rfqRef = doc(firestore, 'charterRFQs', rfqId);
         
-        updateDocumentNonBlocking(rfqRef, { status });
+        const docRef = (firestore as any)._isMock
+            ? { path: `charterRFQs/${rfqId}` } as any
+            : doc(firestore, 'charterRFQs', rfqId);
+        
+        updateDocumentNonBlocking(docRef, { status });
         
         toast({
             title: `Request ${action}d`,

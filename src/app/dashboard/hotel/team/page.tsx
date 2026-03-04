@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -29,15 +30,24 @@ export default function TeamManagementPage() {
 
     const handleRoleChange = (userId: string, newRole: FirmRole) => {
         if (!firestore) return;
-        const userRef = doc(firestore, 'users', userId);
+        
+        const userRef = (firestore as any)._isMock
+            ? { path: `users/${userId}` } as any
+            : doc(firestore, 'users', userId);
+
         updateDocumentNonBlocking(userRef, { firmRole: newRole });
         toast({ title: "Privileges Updated", description: `Staff role has been set to ${newRole}.` });
     };
 
     const handleStatusToggle = (userId: string, currentStatus: string) => {
         if (!firestore) return;
-        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-        const userRef = doc(firestore, 'users', userId);
+        
+        const newStatus = currentStatus === 'active' || currentStatus === 'Active' ? 'inactive' : 'active';
+        
+        const userRef = (firestore as any)._isMock
+            ? { path: `users/${userId}` } as any
+            : doc(firestore, 'users', userId);
+
         updateDocumentNonBlocking(userRef, { status: newStatus });
         toast({ title: "Account State Synchronized", description: `Access has been ${newStatus === 'active' ? 'granted' : 'revoked'}.` });
     };
@@ -99,7 +109,7 @@ export default function TeamManagementPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge className={member.status === 'active' ? 'bg-emerald-500/20 text-emerald-500 border-none h-5 uppercase text-[9px]' : 'bg-rose-500/20 text-rose-500 border-none h-5 uppercase text-[9px]'}>
+                                            <Badge className={member.status === 'active' || member.status === 'Active' ? 'bg-emerald-500/20 text-emerald-500 border-none h-5 uppercase text-[9px]' : 'bg-rose-500/20 text-rose-500 border-none h-5 uppercase text-[9px]'}>
                                                 {member.status}
                                             </Badge>
                                         </TableCell>
@@ -117,10 +127,10 @@ export default function TeamManagementPage() {
                                                         <DropdownMenuItem onClick={() => handleRoleChange(member.id, 'operations')}>Set Front Desk Lead</DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem 
-                                                            className={member.status === 'active' ? 'text-rose-500' : 'text-emerald-500'}
+                                                            className={member.status === 'active' || member.status === 'Active' ? 'text-rose-500' : 'text-emerald-500'}
                                                             onClick={() => handleStatusToggle(member.id, member.status)}
                                                         >
-                                                            {member.status === 'active' ? 'Revoke Access' : 'Grant Access'}
+                                                            {member.status === 'active' || member.status === 'Active' ? 'Revoke Access' : 'Grant Access'}
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>

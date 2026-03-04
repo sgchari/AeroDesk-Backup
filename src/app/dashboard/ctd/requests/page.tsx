@@ -21,7 +21,7 @@ export default function CTDRequestsPage() {
     const [search, setSearch] = useState("");
 
     const rfqsQuery = useMemoFirebase(() => {
-        if (!firestore || !user?.company) return null;
+        if (!firestore || (firestore as any)._isMock || !user?.company) return null;
         return query(collection(firestore, 'charterRFQs'), where('company', '==', user.company));
     }, [firestore, user]);
 

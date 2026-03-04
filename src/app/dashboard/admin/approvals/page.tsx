@@ -31,8 +31,12 @@ export default function PlatformApprovalsPage() {
 
     const handleUpdateStatus = (collectionName: string, docId: string, status: string, entityName: string) => {
         if (!firestore) return;
-        const ruleRef = doc(firestore, collectionName, docId);
-        updateDocumentNonBlocking(ruleRef, { status });
+        
+        const docRef = (firestore as any)._isMock 
+            ? { path: `${collectionName}/${docId}` } as any 
+            : doc(firestore, collectionName, docId);
+
+        updateDocumentNonBlocking(docRef, { status });
         toast({
             title: `${entityName} Status Updated`,
             description: `The ${entityName.toLowerCase()} has been ${status.toLowerCase()}.`
@@ -70,12 +74,14 @@ export default function PlatformApprovalsPage() {
                                             </TableCell>
                                             <TableCell className="font-code text-xs">{op.nsopLicenseNumber}</TableCell>
                                             <TableCell className="text-right">
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-green-500 hover:text-green-500 hover:bg-green-500/10" onClick={() => handleUpdateStatus('operators', op.id, 'Approved', 'Operator')}>
-                                                    <Check className="h-4 w-4" />
-                                                </Button>
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500 hover:text-red-500 hover:bg-red-500/10" onClick={() => handleUpdateStatus('operators', op.id, 'Rejected', 'Operator')}>
-                                                    <X className="h-4 w-4" />
-                                                </Button>
+                                                <div className="flex justify-end gap-2">
+                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-green-500 hover:text-green-500 hover:bg-green-500/10" onClick={() => handleUpdateStatus('operators', op.id, 'Approved', 'Operator')}>
+                                                        <Check className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500 hover:text-red-500 hover:bg-red-500/10" onClick={() => handleUpdateStatus('operators', op.id, 'Rejected', 'Operator')}>
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -114,12 +120,14 @@ export default function PlatformApprovalsPage() {
                                             </TableCell>
                                             <TableCell>{new Date(leg.departureTime).toLocaleDateString()}</TableCell>
                                             <TableCell className="text-right">
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-green-500 hover:text-green-500 hover:bg-green-500/10" onClick={() => handleUpdateStatus('emptyLegs', leg.id, 'Approved', 'Empty Leg')}>
-                                                    <Check className="h-4 w-4" />
-                                                </Button>
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500 hover:text-red-500 hover:bg-red-500/10" onClick={() => handleUpdateStatus('emptyLegs', leg.id, 'Rejected', 'Empty Leg')}>
-                                                    <X className="h-4 w-4" />
-                                                </Button>
+                                                <div className="flex justify-end gap-2">
+                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-green-500 hover:text-green-500 hover:bg-green-500/10" onClick={() => handleUpdateStatus('emptyLegs', leg.id, 'Approved', 'Empty Leg')}>
+                                                        <Check className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500 hover:text-red-500 hover:bg-red-500/10" onClick={() => handleUpdateStatus('emptyLegs', leg.id, 'Rejected', 'Empty Leg')}>
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))}

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useUser } from '@/hooks/use-user';
@@ -69,7 +70,7 @@ function CustomerGateway() {
     const firestore = useFirestore();
 
     const rfqsQuery = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
+        if (!firestore || (firestore as any)._isMock || !user) return null;
         return query(collection(firestore, 'charterRequests'), where('customerId', '==', user.id));
     }, [firestore, user]);
     const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');

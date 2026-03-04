@@ -35,7 +35,7 @@ export default function SeatRequestsPage() {
   const [selectedRequest, setSelectedRequest] = useState<SeatAllocation | null>(null);
 
   const requestsQuery = useMemoFirebase(() => {
-    if (!firestore || !user?.operatorId || (firestore as any)._isMock) return null;
+    if (!firestore || (firestore as any)._isMock || !user?.operatorId) return null;
     return query(collection(firestore, 'seatAllocations'), where('operatorId', '==', user.operatorId));
   }, [firestore, user]);
   
@@ -43,7 +43,10 @@ export default function SeatRequestsPage() {
 
   const handleAction = (request: SeatAllocation, newStatus: SeatAllocationStatus) => {
     if (!firestore) return;
-    const reqRef = doc(firestore, 'seatAllocations', request.id);
+    
+    const reqRef = (firestore as any)._isMock
+        ? { path: `seatAllocations/${request.id}` } as any
+        : doc(firestore, 'seatAllocations', request.id);
     
     updateDocumentNonBlocking(reqRef, { 
         status: newStatus,
@@ -52,8 +55,8 @@ export default function SeatRequestsPage() {
 
     // If approved, trigger institutional workflow (Invoice generation simulation)
     if (newStatus === 'approved') {
-        const invoiceRef = collection(firestore, 'invoices');
-        addDocumentNonBlocking(invoiceRef, {
+        const invoicesPath = 'invoices';
+        addDocumentNonBlocking({ path: invoicesPath } as any, {
             relatedEntityId: request.id,
             operatorId: user?.operatorId,
             invoiceNumber: `INV-SEAT-${request.id.slice(-4)}`,
@@ -70,8 +73,8 @@ export default function SeatRequestsPage() {
     }
 
     // Activity Log
-    const logsRef = collection(firestore, 'activityLogs');
-    addDocumentNonBlocking(logsRef, {
+    const logsPath = 'activityLogs';
+    addDocumentNonBlocking({ path: logsPath } as any, {
         entityId: request.id,
         actionType: 'SEAT_ALLOCATION_STATUS_CHANGE',
         performedBy: user?.firstName || 'Operator',

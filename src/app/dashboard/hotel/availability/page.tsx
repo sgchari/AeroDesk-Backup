@@ -53,7 +53,10 @@ export default function HotelAvailabilityPage() {
     const handleSaveRate = () => {
         if (!firestore || !selectedRoomId || !rate) return;
         
-        const roomRef = doc(firestore, 'roomCategories', selectedRoomId);
+        const roomRef = (firestore as any)._isMock
+            ? { path: `roomCategories/${selectedRoomId}` } as any
+            : doc(firestore, 'roomCategories', selectedRoomId);
+
         updateDocumentNonBlocking(roomRef, { nightlyRate: parseFloat(rate) });
         
         toast({

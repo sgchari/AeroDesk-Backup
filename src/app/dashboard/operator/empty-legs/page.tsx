@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,7 @@ export default function EmptyLegsPage() {
   const [selectedLeg, setSelectedLeg] = useState<EmptyLeg | null>(null);
 
   const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return query(collection(firestore, 'emptyLegs'), where('operatorId', '==', user.id));
   }, [firestore, user]);
   const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
@@ -75,7 +76,7 @@ export default function EmptyLegsPage() {
                         <TableRow key={leg.id}>
                             <TableCell className="font-medium font-code">{leg.aircraftName || leg.aircraftId}</TableCell>
                             <TableCell>{leg.departure} to {leg.arrival}</TableCell>
-                            <TableCell className="text-xs">{new Date(leg.departureTime).toLocaleString()}</TableCell>
+                            <TableCell className="text-xs">{leg.departureTime ? new Date(leg.departureTime).toLocaleString() : 'N/A'}</TableCell>
                             <TableCell className="text-center">
                                 <div className="flex flex-col">
                                     <span className="font-bold">{leg.availableSeats}</span>

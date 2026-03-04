@@ -30,7 +30,7 @@ export default function HotelRequestsPage() {
     const { toast } = useToast();
 
     const requestsQuery = useMemoFirebase(() => {
-        if (!firestore || !user || (firestore as any)._isMock) return null;
+        if (!firestore || (firestore as any)._isMock || !user) return null;
         return query(collection(firestore, 'accommodationRequests'), where('hotelPartnerId', '==', user.id));
     }, [firestore, user]);
     const { data: accommodationRequests, isLoading: requestsLoading } = useCollection<AccommodationRequest>(requestsQuery, 'accommodationRequests');
@@ -39,7 +39,11 @@ export default function HotelRequestsPage() {
 
     const handleUpdateStatus = (requestId: string, status: AccommodationRequest['status']) => {
         if (!firestore) return;
-        const requestDocRef = doc(firestore, 'accommodationRequests', requestId);
+        
+        const requestDocRef = (firestore as any)._isMock
+            ? { path: `accommodationRequests/${requestId}` } as any
+            : doc(firestore, 'accommodationRequests', requestId);
+
         updateDocumentNonBlocking(requestDocRef, { status });
         toast({
             title: "Request Updated",
@@ -79,7 +83,7 @@ export default function HotelRequestsPage() {
                         <TableCell className="font-medium font-code">{req.id}</TableCell>
                         <TableCell>{req.guestName || 'N/A'}</TableCell>
                         <TableCell>{req.propertyName}</TableCell>
-                        <TableCell>{new Date(req.checkIn).toLocaleDateString()} - {new Date(req.checkOut).toLocaleDateString()}</TableCell>
+                        <TableCell>{req.checkIn ? new Date(req.checkIn).toLocaleDateString() : 'N/A'} - {req.checkOut ? new Date(req.checkOut).toLocaleDateString() : 'N/A'}</TableCell>
                         <TableCell className="text-center">{req.rooms}</TableCell>
                         <TableCell>
                             <Badge variant={getStatusVariant(req.status)}>{req.status}</Badge>

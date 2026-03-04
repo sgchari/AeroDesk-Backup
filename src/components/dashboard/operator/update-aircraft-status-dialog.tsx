@@ -38,7 +38,11 @@ export function UpdateAircraftStatusDialog({ aircraft, open, onOpenChange }: Upd
   const handleUpdate = () => {
     if (!aircraft || !firestore) return;
 
-    const acRef = doc(firestore, 'operators', aircraft.operatorId, 'aircrafts', aircraft.id);
+    const path = `operators/${aircraft.operatorId}/aircrafts/${aircraft.id}`;
+    const acRef = (firestore as any)._isMock 
+        ? { path } as any 
+        : doc(firestore, 'operators', aircraft.operatorId, 'aircrafts', aircraft.id);
+        
     updateDocumentNonBlocking(acRef, { status });
 
     toast({

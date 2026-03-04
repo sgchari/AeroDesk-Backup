@@ -80,7 +80,10 @@ export function EditAircraftDialog({ aircraft, open, onOpenChange }: { aircraft:
   const onSubmit = (data: AircraftFormValues) => {
     if (!user || !firestore || !aircraft) return;
 
-    const aircraftDocRef = doc(firestore, `operators/${user.id}/aircrafts`, aircraft.id);
+    const path = `operators/${user.id}/aircrafts/${aircraft.id}`;
+    const aircraftDocRef = (firestore as any)._isMock
+        ? { path } as any
+        : doc(firestore, 'operators', user.id, 'aircrafts', aircraft.id);
     
     updateDocumentNonBlocking(aircraftDocRef, {
         ...data,

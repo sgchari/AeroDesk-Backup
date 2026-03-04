@@ -30,7 +30,11 @@ export function ProcessSeatRequestDialog({ request, open, onOpenChange }: Proces
   const handleUpdate = (status: 'Approved' | 'Rejected') => {
     if (!request || !firestore) return;
 
-    const reqRef = doc(firestore, 'emptyLegs', request.emptyLegId, 'seatAllocationRequests', request.id);
+    const path = `emptyLegs/${request.emptyLegId}/seatAllocationRequests/${request.id}`;
+    const reqRef = (firestore as any)._isMock
+        ? { path } as any
+        : doc(firestore, 'emptyLegs', request.emptyLegId, 'seatAllocationRequests', request.id);
+        
     updateDocumentNonBlocking(reqRef, { status });
 
     toast({

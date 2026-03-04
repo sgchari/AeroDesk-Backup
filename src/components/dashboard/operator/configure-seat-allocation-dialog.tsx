@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -80,7 +81,10 @@ export function ConfigureSeatAllocationDialog({ leg, open, onOpenChange }: { leg
   const onSubmit = (data: ConfigFormValues) => {
     if (!leg || !firestore) return;
 
-    const legRef = doc(firestore, 'emptyLegs', leg.id);
+    const path = `emptyLegs/${leg.id}`;
+    const legRef = (firestore as any)._isMock 
+        ? { path } as any 
+        : doc(firestore, 'emptyLegs', leg.id);
     
     updateDocumentNonBlocking(legRef, {
         ...data,

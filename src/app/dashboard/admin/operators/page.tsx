@@ -28,14 +28,21 @@ export default function OperatorManagementPage() {
     const firestore = useFirestore();
     const { toast } = useToast();
     
-    const { data: operators, isLoading } = useCollection<Operator>(
-        useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? collection(firestore, 'operators') : null, [firestore]), 
-        'operators'
-    );
+    const operatorsQuery = useMemoFirebase(() => {
+        if (!firestore || (firestore as any)._isMock) return null;
+        return collection(firestore, 'operators');
+    }, [firestore]);
+    
+    const { data: operators, isLoading } = useCollection<Operator>(operatorsQuery, 'operators');
 
     const handleUpdateStatus = (operatorId: string, status: Operator['status']) => {
-        const mockOperatorDocRef = { path: `operators/${operatorId}` } as any;
-        updateDocumentNonBlocking(mockOperatorDocRef, { status });
+        if (!firestore) return;
+        
+        const docRef = (firestore as any)._isMock
+            ? { path: `operators/${operatorId}` } as any
+            : doc(firestore, 'operators', operatorId);
+
+        updateDocumentNonBlocking(docRef, { status });
         toast({
             title: "Operator Updated",
             description: `Status changed to ${status}.`
@@ -76,7 +83,7 @@ export default function OperatorManagementPage() {
                                             <TableCell className="text-xs">{op.contactPersonName}</TableCell>
                                             <TableCell className="text-xs text-muted-foreground">{op.contactEmail}</TableCell>
                                             <TableCell className="font-code text-xs text-accent">{op.nsopLicenseNumber}</TableCell>
-                                            <TableCell className="text-xs">{new Date(op.createdAt).toLocaleDateString()}</TableCell>
+                                            <TableCell className="text-xs">{op.createdAt ? new Date(op.createdAt).toLocaleDateString() : 'N/A'}</TableCell>
                                             <TableCell>
                                                 <Badge variant={getStatusVariant(op.status)} className="text-[9px] uppercase h-5">
                                                     {op.status}

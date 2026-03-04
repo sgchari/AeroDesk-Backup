@@ -20,7 +20,6 @@ export default function GSTVerificationPage() {
     const { user: currentUser } = useUser();
 
     // Fetch all entities with pending GST status
-    // For demo purposes, we scan operators and distributors
     const operatorsQuery = useMemoFirebase(() => {
         if (!firestore || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'operators'), where('gstVerificationStatus', '==', 'pending'));
@@ -38,7 +37,10 @@ export default function GSTVerificationPage() {
         if (!firestore || !currentUser) return;
 
         const collectionName = entityType === 'Operator' ? 'operators' : 'distributors';
-        const docRef = doc(firestore, collectionName, entityId);
+        
+        const docRef = (firestore as any)._isMock
+            ? { path: `${collectionName}/${entityId}` } as any
+            : doc(firestore, collectionName, entityId);
 
         updateDocumentNonBlocking(docRef, {
             gstVerificationStatus: approved ? 'verified' : 'rejected',
