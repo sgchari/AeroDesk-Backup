@@ -34,11 +34,23 @@ const ACTIVE_MISSIONS_CONFIG = [
   { id: 'ADX-106', from: 'kolkata', to: 'delhi' }
 ];
 
+const mockEmptyLegs = [
+    { id: 'EL-992', from: 'Mumbai', to: 'Delhi', coords: [[72.8777, 19.0760], [77.1025, 28.7041]], ac: 'Legacy 650', seats: 8, price: '₹ 6.5L', date: 'Tomorrow' },
+    { id: 'EL-441', from: 'Delhi', to: 'Goa', coords: [[77.1025, 28.7041], [73.8333, 15.4989]], ac: 'Citation XLS', seats: 6, price: '₹ 4.8L', date: 'Feb 22' },
+    { id: 'EL-210', from: 'Bangalore', to: 'Hyderabad', coords: [[77.5946, 12.9716], [78.4867, 17.3850]], ac: 'Phenom 300', seats: 4, price: '₹ 2.2L', date: 'Feb 24' },
+    { id: 'EL-885', from: 'Chennai', to: 'Mumbai', coords: [[80.2707, 13.0827], [72.8777, 19.0760]], ac: 'King Air B200', seats: 7, price: '₹ 3.1L', date: 'Feb 25' }
+];
+
 const demandHeatmapPoints = {
   type: 'FeatureCollection',
   features: [
     ...hubNodes.map(hub => ({ type: 'Feature', properties: { weight: 0.8 }, geometry: { type: 'Point', coordinates: hub.position } })),
-    { type: 'Feature', properties: { weight: 0.9 }, geometry: { type: 'Point', coordinates: [55.2708, 25.2048] } } // Dubai
+    { type: 'Feature', properties: { weight: 0.9 }, geometry: { type: 'Point', coordinates: [55.2708, 25.2048] } }, // Dubai
+    { type: 'Feature', properties: { weight: 0.7 }, geometry: { type: 'Point', coordinates: [103.8198, 1.3521] } }, // Singapore
+    { type: 'Feature', properties: { weight: 0.6 }, geometry: { type: 'Point', coordinates: [73.8567, 18.5204] } }, // Pune
+    { type: 'Feature', properties: { weight: 0.5 }, geometry: { type: 'Point', coordinates: [72.5714, 23.0225] } }, // Ahmedabad
+    { type: 'Feature', properties: { weight: 0.95 }, geometry: { type: 'Point', coordinates: [77.2090, 28.6139] } }, // NCR Hotspot
+    { type: 'Feature', properties: { weight: 0.85 }, geometry: { type: 'Point', coordinates: [73.8333, 15.4989] } }, // Goa Hotspot
   ]
 };
 
@@ -60,7 +72,6 @@ export function IndiaOperatorNetworkMap() {
     const mapInstance = new maplibregl.Map({
       container: mapContainer.current,
       style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-      // Center and Zoom calibrated to show full India outline
       center: [78.9629, 23.5937],
       zoom: isMobile ? 3.5 : 4.3,
       minZoom: 3,
@@ -74,7 +85,7 @@ export function IndiaOperatorNetworkMap() {
     map.current = mapInstance;
 
     const animateMission = (mission: any, instance: maplibregl.Map) => {
-      if (!isMounted || !instance || (instance as any)._removed) return;
+      if (!isMounted || !instance || (instance as any)._removed || !instance.style) return;
 
       const fromNode = hubNodes.find(h => h.id === mission.from);
       const toNode = hubNodes.find(h => h.id === mission.to);
@@ -178,6 +189,7 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
+      // --- HUB MARKERS ---
       hubNodes.forEach(hub => {
         const el = document.createElement('div');
         el.className = 'radar-node-container';
@@ -203,6 +215,7 @@ export function IndiaOperatorNetworkMap() {
         new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(hub.position).addTo(mapInstance);
       });
 
+      // --- INTELLIGENCE LAYERS: DEMAND ---
       mapInstance.addSource('demand-forecast', { type: 'geojson', data: demandHeatmapPoints as any });
       mapInstance.addLayer({
         id: 'demand-heat',
@@ -224,6 +237,59 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
+      // --- INTELLIGENCE LAYERS: EMPTY LEGS ---
+      const emptyLegFeatures = mockEmptyLegs.map(leg => {
+          const arc = turf.greatCircle(turf.point(leg.coords[0]), turf.point(leg.coords[1]), { npoints: 100 });
+          return {
+              type: 'Feature',
+              properties: { ...leg },
+              geometry: arc.geometry
+          };
+      });
+
+      mapInstance.addSource('empty-legs', { 
+          type: 'geojson', 
+          data: { type: 'FeatureCollection', features: emptyLegFeatures as any } 
+      });
+
+      mapInstance.addLayer({
+          id: 'empty-leg-lines',
+          type: 'line',
+          source: 'empty-legs',
+          layout: { visibility: 'none' },
+          paint: {
+              'line-color': '#FFD166',
+              'line-width': 1.5,
+              'line-dasharray': [4, 4],
+              'line-opacity': 0.6
+          }
+      });
+
+      // Add icons for empty leg destinations
+      mockEmptyLegs.forEach(leg => {
+          const el = document.createElement('div');
+          el.className = 'empty-leg-marker';
+          el.innerHTML = `<svg viewBox="0 0 24 24" fill="#FFD166" class="w-4 h-4 shadow-[0_0_10px_#FFD166]"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`;
+          const popup = new maplibregl.Popup({ offset: 15, closeButton: false, className: 'institutional-popup' })
+            .setHTML(`
+                <div class="p-2 space-y-1">
+                    <p class="text-[8px] font-black uppercase text-[#FFD166]">Empty Leg Alert</p>
+                    <p class="text-[10px] font-bold text-white">${leg.from} → ${leg.to}</p>
+                    <p class="text-[9px] text-muted-foreground">${leg.ac} • ${leg.seats} Seats</p>
+                    <p class="text-[10px] font-black text-accent">${leg.price}</p>
+                </div>
+            `);
+          
+          const marker = new maplibregl.Marker({ element: el })
+            .setLngLat(leg.coords[1] as [number, number])
+            .setPopup(popup);
+          
+          // Store markers to toggle visibility
+          (marker as any)._elType = 'empty-leg';
+          marker.addTo(mapInstance);
+          if (!showEmptyLegs) el.style.display = 'none';
+      });
+
       ACTIVE_MISSIONS_CONFIG.forEach((mission, index) => {
         setTimeout(() => { if (isMounted && map.current) animateMission(mission, map.current); }, index * 1500);
       });
@@ -242,6 +308,17 @@ export function IndiaOperatorNetworkMap() {
     if (!map.current || !map.current.loaded()) return;
     try { map.current.setLayoutProperty('demand-heat', 'visibility', showForecast ? 'visible' : 'none'); } catch (e) {}
   }, [showForecast]);
+
+  useEffect(() => {
+    if (!map.current || !map.current.loaded()) return;
+    try { 
+        map.current.setLayoutProperty('empty-leg-lines', 'visibility', showEmptyLegs ? 'visible' : 'none');
+        // Toggle HTML markers for empty legs
+        const container = map.current.getContainer();
+        const markers = container.querySelectorAll('.empty-leg-marker');
+        markers.forEach((m: any) => m.style.display = showEmptyLegs ? 'block' : 'none');
+    } catch (e) {}
+  }, [showEmptyLegs]);
 
   const calcPrice = (rate: number) => {
     if (!priceEstimate) return '---';
@@ -394,6 +471,8 @@ export function IndiaOperatorNetworkMap() {
         @media (min-width: 1024px) { .aircraft-glow { width: 40px; height: 40px; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .aircraft-marker svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px #00FFA6); }
+        .institutional-popup .maplibregl-popup-content { background: rgba(15, 23, 42, 0.9) !important; backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 0; }
+        .institutional-popup .maplibregl-popup-tip { border-top-color: rgba(15, 23, 42, 0.9) !important; }
       `}</style>
     </div>
   );
