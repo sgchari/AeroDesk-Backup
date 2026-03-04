@@ -140,8 +140,8 @@ export function IndiaOperatorNetworkMap() {
       if (!map.current) return;
 
       // --- APPLY INSTITUTIONAL PALETTE ---
-      const layers = map.current.getStyle().layers;
-      layers?.forEach((layer) => {
+      const style = map.current.getStyle();
+      style.layers?.forEach((layer) => {
         if (layer.type === 'background') {
           map.current?.setPaintProperty(layer.id, 'background-color', '#0B1F33');
         } else if (layer.type === 'fill' && layer.id.includes('water')) {
@@ -192,7 +192,7 @@ export function IndiaOperatorNetworkMap() {
           'heatmap-radius': 40,
           'heatmap-opacity': 0.35
         }
-      }, 'hub-delhi'); // Render below hubs
+      }); // Fixed: Removed invalid 'hub-delhi' beforeId reference
 
       map.current.addSource('empty-legs', { type: 'geojson', data: emptyLegPoints });
       map.current.addLayer({
@@ -257,7 +257,7 @@ export function IndiaOperatorNetworkMap() {
       paint: { 
         'line-color': mission.color, 
         'line-width': 3, 
-        'line-opacity': ['interpolate', ['linear'], ['line-progress'], 0, 0, 1, 0.8]
+        'line-opacity': 0.8
       } as any,
       layout: { 'line-cap': 'round', 'line-join': 'round' }
     });
@@ -329,9 +329,9 @@ export function IndiaOperatorNetworkMap() {
             </div>
             <Button 
               size="sm" 
-              variant={showForecast ? "accent" : "outline"} 
+              variant={showForecast ? "default" : "outline"} 
               onClick={() => setShowForecast(!showForecast)}
-              className="h-7 text-[8px] font-black uppercase px-3"
+              className={cn("h-7 text-[8px] font-black uppercase px-3", showForecast && "bg-primary text-white border-none")}
             >
               {showForecast ? "ON" : "OFF"}
             </Button>
@@ -344,7 +344,7 @@ export function IndiaOperatorNetworkMap() {
             </div>
             <Button 
               size="sm" 
-              variant={showEmptyLegs ? "accent" : "outline"} 
+              variant={showEmptyLegs ? "default" : "outline"} 
               onClick={() => setShowEmptyLegs(!showEmptyLegs)}
               className={cn("h-7 text-[8px] font-black uppercase px-3", showEmptyLegs && "bg-[#FFD166] text-black border-none hover:bg-[#FFD166]/90")}
             >
