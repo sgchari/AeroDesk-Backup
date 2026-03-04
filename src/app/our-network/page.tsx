@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
 import { IndiaOperatorNetworkMap } from '@/components/IndiaOperatorNetworkMap';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Zap } from 'lucide-react';
 
 export default function OurNetworkPage() {
   return (
@@ -32,8 +32,8 @@ export default function OurNetworkPage() {
           <div className="w-full lg:w-[35%] p-6 md:p-12 xl:p-20 flex flex-col justify-center gap-8 z-20">
             <div className="space-y-4">
               <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full border border-accent/20 bg-accent/5">
-                <div className="w-2 h-2 rounded-full bg-[#00ffa6] animate-pulse shadow-[0_0_8px_#00ffa6]" />
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">Spatial Engine Initialized</span>
+                <Zap className="h-3 w-3 text-[#00ffa6] animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">National Spatial Engine</span>
               </div>
               
               <h1 className="text-4xl md:text-5xl xl:text-7xl font-bold tracking-tighter font-headline text-white leading-[0.9]">
@@ -43,7 +43,7 @@ export default function OurNetworkPage() {
               </h1>
               
               <p className="text-muted-foreground text-sm md:text-base max-w-sm leading-relaxed">
-                AeroDesk’s national aviation backbone visualized through a high-fidelity geographic coordination layer. Our network provides institutional-grade access to NSOP fleet operators across primary metropolitan hubs.
+                AeroDesk’s national aviation backbone visualized through high-fidelity geographic coordination. Our network provide institutional access to verified NSOP fleet operators across primary metropolitan hubs.
               </p>
             </div>
             
@@ -76,9 +76,9 @@ export default function OurNetworkPage() {
             </div>
           </div>
 
-          {/* Right Spatial Map Sector (65%) */}
-          <div className="flex-1 w-full h-full flex items-center justify-center p-4 lg:p-12 xl:p-16">
-            <div className="w-full h-[600px] max-w-5xl">
+          {/* Right Spatial Sector (65%) - Scroll Constrained */}
+          <div className="flex-1 w-full h-[600px] lg:h-auto flex items-center justify-center p-4 lg:p-12 xl:p-16">
+            <div className="w-full h-full max-w-5xl aspect-square lg:aspect-auto">
               <IndiaOperatorNetworkMap />
             </div>
           </div>
