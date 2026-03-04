@@ -184,7 +184,69 @@ export const mockSettlementRecords: SettlementRecord[] = [
 ];
 
 export const mockBlogPosts: BlogPost[] = [
-    { id: 'post-01', title: 'Future of NSOP', excerpt: 'Digital standardisation.', category: 'Institutional', author: 'AeroDesk Intelligence', date: '2025-02-10', imageUrl: 'https://images.unsplash.com/photo-1566212775038-532d06eda485?q=80&w=800' },
+    { 
+      id: 'post-01', 
+      title: "India's 2025 NSOP Infrastructure Roadmap", 
+      excerpt: "Analyzing the transition from fragmented regional operations to a unified digital infrastructure layer for non-scheduled flight governance.", 
+      category: 'Market Trends', 
+      author: 'AeroDesk Intelligence', 
+      date: '2025-02-10', 
+      imageUrl: 'https://images.unsplash.com/photo-1566212775038-532d06eda485?q=80&w=1080' 
+    },
+    { 
+      id: 'post-02', 
+      title: "The Rise of the Jet Seat: Empty Leg Economics", 
+      excerpt: "How systemic recovery of positioning flights is creating a new gateway for institutional clients to experience private aviation at scale.", 
+      category: 'Empty Leg Insights', 
+      author: 'Vikram Singh', 
+      date: '2025-02-08', 
+      imageUrl: 'https://images.unsplash.com/photo-1616142387171-fadb42551e7a?q=80&w=1080' 
+    },
+    { 
+      id: 'post-03', 
+      title: "Regional Connectivity: The Impact of Tier-2 Runways", 
+      excerpt: "Deep dive into the emerging demand zones in Goa and Jaipur as new aviation infrastructure comes online for private charter missions.", 
+      category: 'Market Trends', 
+      author: 'Ananya Iyer', 
+      date: '2025-02-05', 
+      imageUrl: 'https://images.unsplash.com/photo-1716161051573-5aad6047161a?q=80&w=1080' 
+    },
+    { 
+      id: 'post-04', 
+      title: "Corporate Governance in Private Charter Procurement", 
+      excerpt: "Standardizing manifest coordination and multi-level approval workflows for enterprise travel desks across India's backbone corridors.", 
+      category: 'Corporate Travel', 
+      author: 'Priya Sharma', 
+      date: '2025-02-01', 
+      imageUrl: 'https://images.unsplash.com/photo-1758837573876-63871cc70fd6?q=80&w=1080' 
+    },
+    { 
+      id: 'post-05', 
+      title: "AeroDesk Protocol: Standardizing Manifest Coordination", 
+      excerpt: "Technical analysis of the digital compliance layer ensuring NSOP operator safety standards are maintained across all coordinated journeys.", 
+      category: 'Operator Perspectives', 
+      author: 'Rajesh Verma', 
+      date: '2025-01-28', 
+      imageUrl: 'https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?q=80&w=1080' 
+    },
+    { 
+      id: 'post-06', 
+      title: "Sustainability in High-Yield Aviation Corridors", 
+      excerpt: "Evaluating the carbon offset initiatives and fuel efficiency metrics within India's growing mid-size and heavy jet fleet segments.", 
+      category: 'Private Aviation', 
+      author: 'AeroDesk Engineering', 
+      date: '2025-01-22', 
+      imageUrl: 'https://images.unsplash.com/photo-1768346564233-d71f37bd19b6?q=80&w=1080' 
+    },
+    { 
+      id: 'post-07', 
+      title: "Market Analysis: Q3 Charter Demand Surges in West Zone", 
+      excerpt: "Identifying high-density mission clusters originating from Mumbai Metro Hub and predicted spatial demand for the upcoming festive quarter.", 
+      category: 'Market Trends', 
+      author: 'Vikram Singh', 
+      date: '2025-01-15', 
+      imageUrl: 'https://images.unsplash.com/photo-1573108724029-4c46571d6490?q=80&w=1080' 
+    },
 ];
 
 export const mockPressReleases: PressRelease[] = [
