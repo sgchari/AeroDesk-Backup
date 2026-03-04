@@ -1,15 +1,17 @@
+
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import * as turf from '@turf/turf';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Zap, ShieldCheck, Activity, Plane, Info } from 'lucide-react';
 
 // --- HUB NODES ---
-// UPDATED with correct GeoJSON [longitude, latitude] coordinates per institutional standards
+// Verified GeoJSON [longitude, latitude] coordinates
 const hubNodes = [
   { city: 'Delhi', position: [77.1025, 28.7041] as [number, number], label: 'NSOP Operator Base' },
   { city: 'Mumbai', position: [72.8777, 19.0760] as [number, number], label: 'NSOP Operator Base' },
@@ -20,7 +22,6 @@ const hubNodes = [
 ];
 
 // --- DEMAND HEATMAP DATA ---
-// Coordinates synchronized with hub node precision
 const demandHeatmapPoints = {
   type: 'FeatureCollection',
   features: [
@@ -61,29 +62,6 @@ function getBearing(start: [number, number], end: [number, number]) {
   const bearing = Math.atan2(y, x);
 
   return (bearing * 180 / Math.PI + 360) % 360;
-}
-
-function getBezierPoints(start: [number, number], end: [number, number], segments = 300) {
-  const points: [number, number][] = [];
-  const midX = (start[0] + end[0]) / 2;
-  const midY = (start[1] + end[1]) / 2;
-  
-  const dx = end[0] - start[0];
-  const dy = end[1] - start[1];
-  const len = Math.sqrt(dx * dx + dy * dy);
-  const nx = -dy / len;
-  const ny = dx / len;
-  const offset = len * 0.15;
-  const ctrlX = midX + nx * offset;
-  const ctrlY = midY + ny * offset;
-
-  for (let i = 0; i <= segments; i++) {
-    const t = i / segments;
-    const x = (1 - t) * (1 - t) * start[0] + 2 * (1 - t) * t * ctrlX + t * t * end[0];
-    const y = (1 - t) * (1 - t) * start[1] + 2 * (1 - t) * t * ctrlY + t * t * end[1];
-    points.push([x, y]);
-  }
-  return points;
 }
 
 // --- MISSION CONFIG ---
@@ -127,17 +105,14 @@ export function IndiaOperatorNetworkMap() {
           } else if (layer.type === 'line' && (layer.id.includes('admin') || layer.id.includes('boundary'))) {
             map.current?.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
           } else if (layer.type === 'symbol') {
-            const layout = (layer as any).layout;
-            if (layout && layout['text-field']) {
-              map.current?.setPaintProperty(layer.id, 'text-opacity', 0.35);
-            }
+            map.current?.setPaintProperty(layer.id, 'text-opacity', 0.35);
           }
         } catch (e) {
           // Standard catch for non-compliant basemap layers
         }
       });
 
-      // Add NSOP Operator Hubs (Radar Nodes) using longitude first [lng, lat]
+      // Add NSOP Operator Hubs (Radar Nodes)
       hubNodes.forEach(hub => {
         const el = document.createElement('div');
         el.className = 'radar-node-container';
@@ -194,7 +169,7 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
-      // Animate Aircraft Telemetry
+      // Animate Aircraft Telemetry along Great Circles
       ACTIVE_MISSIONS.forEach(mission => {
         animateMission(mission, map.current!);
       });
@@ -204,7 +179,15 @@ export function IndiaOperatorNetworkMap() {
   }, []);
 
   const animateMission = (mission: any, mapInstance: maplibregl.Map) => {
-    const points = getBezierPoints(mission.from.position, mission.to.position || mission.to);
+    // Generate arc using turf greatCircle
+    const start = mission.from.position;
+    const end = mission.to.position || mission.to;
+    
+    if (start[0] === end[0] && start[1] === end[1]) return;
+
+    const arc = turf.greatCircle(turf.point(start), turf.point(end), { npoints: 300 });
+    const points = arc.geometry.coordinates as [number, number][];
+    
     let step = 0;
 
     const routeId = `route-${mission.id}`;
