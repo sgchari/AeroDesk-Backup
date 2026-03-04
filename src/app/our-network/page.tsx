@@ -1,12 +1,12 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { LandingFooter } from '@/components/landing-footer';
 import { LandingHeader } from '@/components/landing-header';
-import { ShieldCheck, Zap } from 'lucide-react';
+import { ShieldCheck, Zap, Activity, Plane, Users } from 'lucide-react';
 
 // Use dynamic import for the map to prevent SSR issues with Leaflet
 const IndiaOperatorNetworkMap = dynamic(
@@ -15,16 +15,26 @@ const IndiaOperatorNetworkMap = dynamic(
     ssr: false,
     loading: () => (
       <div className="w-full h-[600px] bg-slate-950/50 rounded-3xl animate-pulse flex items-center justify-center border border-white/5">
-        <p className="text-muted-foreground text-xs uppercase font-black tracking-widest">Loading Geographic Infrastructure...</p>
+        <p className="text-muted-foreground text-[10px] uppercase font-black tracking-widest">Synchronizing National Infrastructure Matrix...</p>
       </div>
     )
   }
 );
 
 export default function OurNetworkPage() {
+  const [liveCharters, setLiveCharters] = useState(3);
+
+  // Simulated live flux for activity counters
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveCharters(Math.floor(Math.random() * 4) + 2); // Random range 2-5
+    }, 12000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="w-full relative min-h-screen bg-[#0B1220] flex flex-col overflow-hidden">
-      {/* Background Layer: Dimmed Atmosphere */}
+      {/* Background Atmosphere Layer */}
       <div className="fixed inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
@@ -42,57 +52,67 @@ export default function OurNetworkPage() {
         
         <main className="flex-1 flex flex-col lg:flex-row items-stretch overflow-hidden">
           
-          {/* Left Intelligence Column (35%) */}
+          {/* Left Sector: Institutional Intelligence */}
           <div className="w-full lg:w-[35%] p-6 md:p-12 xl:p-20 flex flex-col justify-center gap-8 z-20">
             <div className="space-y-4">
               <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full border border-accent/20 bg-accent/5">
-                <Zap className="h-3 w-3 text-[#00ffa6] animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">National Spatial Engine</span>
+                <Zap className="h-3 w-3 text-accent animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent">National Operator Grid</span>
               </div>
               
               <h1 className="text-4xl md:text-5xl xl:text-7xl font-bold tracking-tighter font-headline text-white leading-[0.9]">
-                NATIONAL <br />
-                <span className="text-accent uppercase">Operator</span> <br />
+                NETWORK <br />
+                <span className="text-accent uppercase">Infrastructure</span> <br />
                 GRID
               </h1>
               
               <p className="text-muted-foreground text-sm md:text-base max-w-sm leading-relaxed">
-                AeroDesk’s national aviation backbone visualized through high-fidelity geographic coordination. Our network provide institutional access to verified NSOP fleet operators across primary metropolitan hubs.
+                AeroDesk’s digital backbone provides institutional access to verified NSOP fleet operators across primary metropolitan sectors. Our national spatial grid coordinates complex multi-sector journeys through high-fidelity surveillance layers.
               </p>
             </div>
             
-            <div className="grid grid-cols-2 gap-8">
+            {/* Live Activity Counters */}
+            <div className="grid grid-cols-3 gap-4 border-y border-white/5 py-8">
               <div className="space-y-1">
-                <p className="text-[8px] font-black uppercase text-white/40 tracking-[0.2em]">Validated Hubs</p>
-                <p className="text-3xl font-black text-white">06</p>
+                <div className="flex items-center gap-2 mb-1">
+                    <Activity className="h-3 w-3 text-accent" />
+                    <p className="text-[8px] font-black uppercase text-white/40 tracking-widest">Active Hubs</p>
+                </div>
+                <p className="text-2xl font-black text-white">06</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[8px] font-black uppercase text-white/40 tracking-[0.2em]">Ready Fleet</p>
-                <p className="text-3xl font-black text-accent">42+</p>
+                <div className="flex items-center gap-2 mb-1">
+                    <Plane className="h-3 w-3 text-accent" />
+                    <p className="text-[8px] font-black uppercase text-white/40 tracking-widest">Ready Fleet</p>
+                </div>
+                <p className="text-2xl font-black text-accent">42+</p>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 mb-1">
+                    <Users className="h-3 w-3 text-[#00ffa6]" />
+                    <p className="text-[8px] font-black uppercase text-white/40 tracking-widest">Live Missions</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <p className="text-2xl font-black text-white">{liveCharters}</p>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#00ffa6] animate-ping" />
+                </div>
               </div>
             </div>
 
             <div className="p-6 bg-white/[0.03] backdrop-blur-xl border border-white/5 rounded-3xl space-y-4 max-w-sm">
               <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2 flex items-center gap-2">
                 <ShieldCheck className="h-3 w-3 text-accent" />
-                Network Integrity
+                Platform Integrity
               </h4>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#00ffa6]" style={{ filter: 'drop-shadow(0 0 4px #00ffa6)' }} />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">Active Operator Base</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-4 h-0.5 border-t border-dashed border-[#00d4ff]" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Mission Corridor</span>
-                </div>
-              </div>
+              <p className="text-[10px] text-muted-foreground italic leading-relaxed">
+                "All coordinates and fleet telemetry are synchronized directly from verified NSOP operator profiles and mission dispatch logs."
+              </p>
             </div>
           </div>
 
-          {/* Right Spatial Sector (65%) - Scroll Constrained */}
+          {/* Right Sector: Geographic Dashboard */}
           <div className="flex-1 w-full h-[600px] lg:h-auto flex items-center justify-center p-4 lg:p-12 xl:p-16">
-            <div className="w-full h-full max-w-5xl aspect-square lg:aspect-auto">
+            <div className="w-full h-full max-w-5xl">
               <IndiaOperatorNetworkMap />
             </div>
           </div>
