@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,11 +21,11 @@ export default function RfqMarketplacePage() {
   const [search, setSearch] = useState("");
 
   const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore || firestore._isMock) return null;
-    return query(collection(firestore, 'charterRFQs'), where('status', '==', 'Bidding Open'));
+    if (!firestore || (firestore as any)._isMock) return null;
+    return query(collection(firestore, 'charterRequests'), where('status', '==', 'Bidding Open'));
   }, [firestore]);
   
-  const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRFQs');
+  const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
   const filteredRfqs = rfqs?.filter(r => 
     (r.status === 'Bidding Open' || r.status === 'New') && (

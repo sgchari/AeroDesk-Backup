@@ -30,7 +30,7 @@ export default function AgencyRevenuePortal() {
 
     const { data: ledger, isLoading: ledgerLoading } = useCollection<CommissionLedgerEntry>(
         useMemoFirebase(() => {
-            if (!firestore || !user) return null;
+            if (!firestore || (firestore as any)._isMock || !user) return null;
             return query(
                 collection(firestore, 'commissionLedger'),
                 where('entityId', '==', user.id),
@@ -42,7 +42,7 @@ export default function AgencyRevenuePortal() {
 
     const { data: settlements, isLoading: settlementsLoading } = useCollection<SettlementRecord>(
         useMemoFirebase(() => {
-            if (!firestore || !user) return null;
+            if (!firestore || (firestore as any)._isMock || !user) return null;
             return query(
                 collection(firestore, 'settlementRecords'),
                 where('entityId', '==', user.id),

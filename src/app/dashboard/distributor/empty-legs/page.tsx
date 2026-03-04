@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,8 +17,7 @@ export default function DistributorEmptyLegsPage() {
   const [legToRequest, setLegToRequest] = useState<EmptyLeg | null>(null);
 
   const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    // Fetch all legs; filtering happens client-side for demo
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'emptyLegs'));
   }, [firestore]);
   const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');

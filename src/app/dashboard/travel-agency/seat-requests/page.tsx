@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -29,7 +28,7 @@ export default function SeatRequestsPage() {
     const { user, isLoading: isUserLoading } = useUser();
     
     const requestsQuery = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
+        if (!firestore || (firestore as any)._isMock || !user) return null;
         return query(collection(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
     }, [firestore, user]);
 

@@ -98,7 +98,7 @@ export default function AvailableSeatsPage() {
   const [search, setSearch] = useState('');
 
   const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'emptyLegs'), where('status', '==', 'live'));
   }, [firestore]);
   

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -21,7 +20,7 @@ export default function TeamManagementPage() {
 
     // Fetch all distributors to find team members
     const { data: allDistributors, isLoading: distributorsLoading } = useCollection<User>(
-        useMemoFirebase(() => firestore ? collection(firestore, 'distributors') : null, [firestore]),
+        useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? collection(firestore, 'distributors') : null, [firestore]),
         'distributors'
     );
 

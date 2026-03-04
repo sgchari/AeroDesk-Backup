@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Plane, Users, Coins, GanttChartSquare } from "lucide-react";

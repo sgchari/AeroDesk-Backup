@@ -29,7 +29,7 @@ export default function AgencyTeamManagementPage() {
 
     const handleRoleChange = (userId: string, newRole: FirmRole) => {
         if (!firestore) return;
-        const userRef = doc(firestore, 'users', userId);
+        const userRef = (firestore as any)._isMock ? { path: `users/${userId}` } as any : doc(firestore, 'users', userId);
         updateDocumentNonBlocking(userRef, { firmRole: newRole });
         toast({ title: "Privileges Updated", description: `Agency staff role has been set to ${newRole}.` });
     };
@@ -37,7 +37,7 @@ export default function AgencyTeamManagementPage() {
     const handleStatusToggle = (userId: string, currentStatus: string) => {
         if (!firestore) return;
         const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-        const userRef = doc(firestore, 'users', userId);
+        const userRef = (firestore as any)._isMock ? { path: `users/${userId}` } as any : doc(firestore, 'users', userId);
         updateDocumentNonBlocking(userRef, { status: newStatus });
         toast({ title: "Account State Synchronized", description: `Access has been ${newStatus === 'active' ? 'granted' : 'revoked'}.` });
     };

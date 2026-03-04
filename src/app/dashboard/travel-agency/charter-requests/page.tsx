@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
@@ -32,7 +31,7 @@ export default function CharterRequestsPage() {
   const firestore = useFirestore();
 
   const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return query(collection(firestore, 'charterRequests'), where('requesterExternalAuthId', '==', user.id));
   }, [firestore, user]);
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');

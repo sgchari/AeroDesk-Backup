@@ -91,7 +91,7 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
 export default function AvailableJetSeatsPage() {
     const firestore = useFirestore();
     const emptyLegsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
+        if (!firestore || (firestore as any)._isMock) return null;
         return query(collection(firestore, 'emptyLegs'));
     }, [firestore]);
     const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');

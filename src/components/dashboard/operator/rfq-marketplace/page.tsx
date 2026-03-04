@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +22,7 @@ export default function RfqMarketplacePage() {
   const [search, setSearch] = useState("");
 
   const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'charterRequests'));
   }, [firestore]);
   
@@ -82,7 +81,7 @@ export default function RfqMarketplacePage() {
                         </TableHeader>
                         <TableBody>
                         {filteredRfqs.map((rfq: CharterRFQ) => (
-                            <TableRow key={rfq.id} className="group">
+                            <TableRow key={rfq.id} className="border-white/5 hover:bg-white/[0.02] group">
                                 <TableCell className="font-medium font-code text-xs">{rfq.id}</TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-2">

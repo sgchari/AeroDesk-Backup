@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { BedDouble, Clock, Calendar, AlertTriangle } from "lucide-react";
@@ -12,6 +11,7 @@ import type { DashboardSummary } from "@/lib/types";
 export function HotelDashboard() {
   const { user, isLoading: isUserLoading } = useUser();
 
+  // CRITICAL: Reads ONLY the pre-computed summary document
   const { data: summary, isLoading: summaryLoading } = useDoc<DashboardSummary>(
     useMemoFirebase(() => null, []), 
     user ? `hotelPartners/${user.id}/dashboardSummary` : undefined

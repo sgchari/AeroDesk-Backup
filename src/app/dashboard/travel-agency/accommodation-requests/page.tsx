@@ -1,4 +1,3 @@
-
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -30,7 +29,7 @@ export default function AgencyAccommodationRequestsPage() {
     const firestore = useFirestore();
 
     const requestsQuery = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
+        if (!firestore || (firestore as any)._isMock || !user) return null;
         return query(collection(firestore, 'accommodationRequests'), where('requesterId', '==', user.id));
     }, [firestore, user]);
 
