@@ -63,7 +63,7 @@ export default function FleetManagementPage() {
                     <div className="relative h-44 w-full bg-muted/20">
                         <Image 
                             src={ac.exteriorImageUrl || `https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800`} 
-                            alt={ac.registration} 
+                            alt={ac.registration || "Aircraft Asset"} 
                             fill 
                             className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                             data-ai-hint="private jet"
