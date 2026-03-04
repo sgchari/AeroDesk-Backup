@@ -2,15 +2,12 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Zap, ShieldCheck, Activity, Coins, Plane, Info } from 'lucide-react';
-
-// Use a placeholder if token is not in env
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || 'pk.eyJ1IjoiZGV2ZWxvcGVyLWFpIiwiYSI6ImNtNnhwaGNuejAwenIycXB2NXNhdTFnbTkifQ.v_clZ_CL_Z_CL_Z_CL_Z_Q';
+import { Zap, ShieldCheck, Activity, Plane, Info } from 'lucide-react';
 
 // --- HUB NODES ---
 const hubNodes = [
@@ -37,6 +34,15 @@ const demandHeatmapPoints = {
   ]
 };
 
+// --- EMPTY LEG OPPORTUNITIES ---
+const emptyLegPoints = {
+  type: 'FeatureCollection',
+  features: [
+    { type: 'Feature', properties: { id: 'EL-99', type: 'Empty Leg Opportunity' }, geometry: { type: 'Point', coordinates: [74.1240, 15.2993] } },
+    { type: 'Feature', properties: { id: 'EL-102', type: 'Empty Leg Opportunity' }, geometry: { type: 'Point', coordinates: [75.7873, 26.9124] } },
+  ]
+};
+
 // --- BEZIER & BEARING HELPERS ---
 function getBearing(startLat: number, startLng: number, endLat: number, endLng: number) {
   const dLon = (endLng - startLng) * Math.PI / 180;
@@ -52,7 +58,7 @@ function getBearing(startLat: number, startLng: number, endLat: number, endLng: 
   return ((brng * 180 / Math.PI) + 360) % 360;
 }
 
-function getBezierPoints(start: [number, number], end: [number, number], segments = 150) {
+function getBezierPoints(start: [number, number], end: [number, number], segments = 300) {
   const points: [number, number][] = [];
   const midX = (start[0] + end[0]) / 2;
   const midY = (start[1] + end[1]) / 2;
@@ -83,23 +89,18 @@ const ACTIVE_MISSIONS = [
   { id: 'ADX-505', from: hubNodes[5], to: hubNodes[3], color: '#00FFA6' },
 ];
 
-const EMPTY_LEGS = [
-  { id: 'EL-001', from: hubNodes[1], to: [74.1240, 15.2993] as [number, number], color: '#FFD166' },
-  { id: 'EL-002', from: hubNodes[0], to: [75.7873, 26.9124] as [number, number], color: '#FFD166' },
-];
-
 export function IndiaOperatorNetworkMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<maplibregl.Map | null>(null);
   const [showForecast, setShowForecast] = useState(false);
   const [showEmptyLegs, setShowEmptyLegs] = useState(false);
 
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    map.current = new mapboxgl.Map({
+    map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/navigation-night-v1',
+      style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
       center: [78.9629, 22.5937],
       zoom: 4.2,
       attributionControl: false,
@@ -107,19 +108,26 @@ export function IndiaOperatorNetworkMap() {
       dragPan: true,
     });
 
-    map.current.on('style.load', () => {
+    map.current.on('load', () => {
       if (!map.current) return;
 
-      // Apply Institutional Navy Palette
-      const style = map.current.getStyle();
-      if (style && style.layers) {
-        style.layers.forEach((layer) => {
-          if (layer.id === 'background') map.current?.setPaintProperty(layer.id, 'background-color', '#0B1F33');
-          if (layer.id.includes('water')) map.current?.setPaintProperty(layer.id, 'fill-color', '#081622');
-          if (layer.id.includes('admin') && layer.type === 'line') map.current?.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
-          if (layer.type === 'symbol') map.current?.setPaintProperty(layer.id, 'text-opacity', 0.35);
-        });
-      }
+      // Apply Institutional Navy Palette by finding background and water layers
+      const layers = map.current.getStyle().layers;
+      layers?.forEach((layer) => {
+        if (layer.type === 'background') {
+          map.current?.setPaintProperty(layer.id, 'background-color', '#0B1F33');
+        }
+        if (layer.id.includes('water') || layer.id.includes('river') || layer.id.includes('ocean')) {
+          map.current?.setPaintProperty(layer.id, 'fill-color', '#081622');
+        }
+        if (layer.id.includes('admin') || layer.id.includes('boundary')) {
+          map.current?.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
+        }
+        if (layer.type === 'symbol') {
+          map.current?.setLayoutProperty(layer.id, 'text-field', ['get', 'name']);
+          map.current?.setPaintProperty(layer.id, 'text-opacity', 0.35);
+        }
+      });
 
       // Add NSOP Operator Hubs (Radar Nodes)
       hubNodes.forEach(hub => {
@@ -130,9 +138,14 @@ export function IndiaOperatorNetworkMap() {
           <div class="radar-node-core"></div>
         `;
         
-        new mapboxgl.Marker(el)
+        new maplibregl.Marker({ element: el })
           .setLngLat(hub.position)
-          .setPopup(new mapboxgl.Popup({ className: 'ops-popup' }).setHTML(`<p class="text-[10px] font-black uppercase tracking-widest text-accent">${hub.city}</p><p class="text-[8px] text-white/60">${hub.label}</p>`))
+          .setPopup(new maplibregl.Popup({ className: 'ops-popup' }).setHTML(`
+            <div class="p-2">
+              <p class="text-[10px] font-black uppercase tracking-widest text-accent">${hub.city}</p>
+              <p class="text-[8px] text-white/60 mt-0.5">${hub.label}</p>
+            </div>
+          `))
           .addTo(map.current!);
       });
 
@@ -158,6 +171,29 @@ export function IndiaOperatorNetworkMap() {
         }
       });
 
+      // Initialize Empty Leg Layer
+      map.current.addSource('empty-legs', { type: 'geojson', data: emptyLegPoints });
+      map.current.addLayer({
+        id: 'empty-leg-nodes',
+        type: 'circle',
+        source: 'empty-legs',
+        layout: { visibility: 'none' },
+        paint: {
+          'circle-radius': 6,
+          'circle-color': '#FFD166',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#0B1F33'
+        }
+      });
+
+      // Add hover interaction for empty legs
+      map.current.on('mouseenter', 'empty-leg-nodes', () => {
+        if (map.current) map.current.getCanvas().style.cursor = 'pointer';
+      });
+      map.current.on('mouseleave', 'empty-leg-nodes', () => {
+        if (map.current) map.current.getCanvas().style.cursor = '';
+      });
+
       // Animate Aircraft Telemetry
       ACTIVE_MISSIONS.forEach(mission => {
         animateMission(mission, map.current!);
@@ -167,7 +203,7 @@ export function IndiaOperatorNetworkMap() {
     return () => map.current?.remove();
   }, []);
 
-  const animateMission = (mission: any, mapInstance: mapboxgl.Map) => {
+  const animateMission = (mission: any, mapInstance: maplibregl.Map) => {
     const points = getBezierPoints(mission.from.position, mission.to.position || mission.to);
     let step = 0;
 
@@ -175,29 +211,68 @@ export function IndiaOperatorNetworkMap() {
     const routeId = `route-${mission.id}`;
     mapInstance.addSource(routeId, {
       type: 'geojson',
-      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: points }, properties: {} }
+      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} }
     });
+    
     mapInstance.addLayer({
       id: routeId,
       type: 'line',
       source: routeId,
-      paint: { 'line-color': mission.color, 'line-width': 2, 'line-dasharray': [4, 6], 'line-opacity': 0.7 }
+      paint: { 
+        'line-color': mission.color, 
+        'line-width': 2, 
+        'line-dasharray': [2, 3], 
+        'line-opacity': 0.4 
+      }
+    });
+
+    // Trail Layer (Fading Effect)
+    const trailId = `trail-${mission.id}`;
+    mapInstance.addSource(trailId, {
+      type: 'geojson',
+      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} }
+    });
+    mapInstance.addLayer({
+      id: trailId,
+      type: 'line',
+      source: trailId,
+      paint: { 
+        'line-color': mission.color, 
+        'line-width': 3,
+        'line-opacity': 0.8
+      }
     });
 
     // Aircraft Marker
     const planeEl = document.createElement('div');
     planeEl.className = 'aircraft-marker';
-    planeEl.innerHTML = `<span style="font-size: 18px; color: ${mission.color}; display: block; filter: drop-shadow(0 0 8px ${mission.color}99);">✈</span>`;
+    planeEl.innerHTML = `<span style="font-size: 20px; color: ${mission.color}; display: block; filter: drop-shadow(0 0 8px ${mission.color}99);">✈</span>`;
     
-    const marker = new mapboxgl.Marker(planeEl)
+    const marker = new maplibregl.Marker({ element: planeEl })
       .setLngLat(points[0])
       .addTo(mapInstance);
 
     const stepAnimation = () => {
       if (!map.current) return;
+      
       step = (step + 1) % points.length;
       const current = points[step];
       const next = points[(step + 1) % points.length];
+      
+      // Update Trail
+      const trailPoints = points.slice(Math.max(0, step - 20), step + 1);
+      (mapInstance.getSource(trailId) as maplibregl.GeoJSONSource).setData({
+        type: 'Feature',
+        geometry: { type: 'LineString', coordinates: trailPoints },
+        properties: {}
+      });
+
+      // Update Path
+      (mapInstance.getSource(routeId) as maplibregl.GeoJSONSource).setData({
+        type: 'Feature',
+        geometry: { type: 'LineString', coordinates: points },
+        properties: {}
+      });
       
       const bearing = getBearing(current[1], current[0], next[1], next[0]);
       marker.setLngLat(current);
@@ -210,9 +285,14 @@ export function IndiaOperatorNetworkMap() {
   };
 
   useEffect(() => {
-    if (!map.current || !map.current.isStyleLoaded()) return;
+    if (!map.current || !map.current.loaded()) return;
     map.current.setLayoutProperty('demand-heat', 'visibility', showForecast ? 'visible' : 'none');
   }, [showForecast]);
+
+  useEffect(() => {
+    if (!map.current || !map.current.loaded()) return;
+    map.current.setLayoutProperty('empty-leg-nodes', 'visibility', showEmptyLegs ? 'visible' : 'none');
+  }, [showEmptyLegs]);
 
   return (
     <div className="w-full h-full relative overflow-hidden flex flex-col gap-4">
@@ -281,7 +361,7 @@ export function IndiaOperatorNetworkMap() {
           position: relative;
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-center: center;
         }
         .radar-node-core {
           width: 6px;
@@ -311,17 +391,17 @@ export function IndiaOperatorNetworkMap() {
         @keyframes aircraft-blink {
           50% { opacity: 0.6; }
         }
-        .ops-popup .mapboxgl-popup-content {
-          background: rgba(11, 18, 32, 0.95);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
+        .maplibregl-popup-content {
+          background: rgba(11, 18, 32, 0.95) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 12px !important;
           backdrop-filter: blur(12px);
-          padding: 8px 12px;
+          padding: 0 !important;
           color: white;
           box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .ops-popup .mapboxgl-popup-tip {
-          border-top-color: rgba(11, 18, 32, 0.95);
+        .maplibregl-popup-tip {
+          border-top-color: rgba(11, 18, 32, 0.95) !important;
         }
       `}</style>
     </div>
