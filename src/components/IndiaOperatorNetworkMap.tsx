@@ -2,13 +2,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Polyline, Tooltip, Circle, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Polyline, Tooltip, Circle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Zap, ShieldCheck, Activity } from 'lucide-react';
+import { Zap, ShieldCheck, Activity, Coins, Plane, Info } from 'lucide-react';
 
 // --- HUB NODES ---
 const hubNodes = [
@@ -32,12 +32,14 @@ const demandZones = [
     { city: 'Ahmedabad', pos: [23.0225, 72.5714], level: 'Emerging', color: '#ffd166', radius: 90000, opacity: 0.18, prediction: '15-22', routes: 'Delhi, Mumbai' },
 ];
 
-const predictedCorridors = [
-    { from: [28.6139, 77.2090], to: [26.9124, 75.7873], label: 'Delhi → Jaipur' },
-    { from: [19.0760, 72.8777], to: [15.2993, 74.1240], label: 'Mumbai → Goa' },
-    { from: [12.9716, 77.5946], to: [17.3850, 78.4867], label: 'Bengaluru → Hyderabad' },
-    { from: [28.6139, 77.2090], to: [23.0225, 72.5714], label: 'Delhi → Ahmedabad' },
-    { from: [19.0760, 72.8777], to: [12.9716, 77.5946], label: 'Mumbai → Bengaluru' },
+// --- EMPTY LEG DATA ---
+const emptyLegRoutes = [
+    { from: [19.0760, 72.8777], to: [15.2993, 74.1240], fromName: 'Mumbai', toName: 'Goa', aircraft: 'Citation XLS+', seats: 6, price: '₹45,000', discount: '65%' },
+    { from: [28.6139, 77.2090], to: [26.9124, 75.7873], fromName: 'Delhi', toName: 'Jaipur', aircraft: 'Phenom 300', seats: 4, price: '₹32,000', discount: '55%' },
+    { from: [17.3850, 78.4867], to: [12.9716, 77.5946], fromName: 'Hyderabad', toName: 'Bengaluru', aircraft: 'Falcon 2000', seats: 8, price: '₹55,000', discount: '60%' },
+    { from: [13.0827, 80.2707], to: [9.9312, 76.2673], fromName: 'Chennai', toName: 'Kochi', aircraft: 'King Air B200', seats: 5, price: '₹28,000', discount: '70%' },
+    { from: [19.0760, 72.8777], to: [23.0225, 72.5714], fromName: 'Mumbai', toName: 'Ahmedabad', aircraft: 'Challenger 350', seats: 9, price: '₹62,000', discount: '50%' },
+    { from: [28.6139, 77.2090], to: [30.7333, 76.7794], fromName: 'Delhi', toName: 'Chandigarh', aircraft: 'Hawker 800XP', seats: 6, price: '₹38,000', discount: '58%' },
 ];
 
 // --- STATUS CONFIG ---
@@ -56,8 +58,6 @@ const simulatedFlightsInitial = [
   { id: 'ADX-312', from: 'Mumbai', to: 'Bengaluru', aircraft: 'Global 6000', pax: 12, status: 'Boarding' as CharterStatus },
   { id: 'ADX-105', from: 'Bengaluru', to: 'Chennai', aircraft: 'Phenom 300', pax: 4, status: 'Scheduled' as CharterStatus },
   { id: 'ADX-440', from: 'Hyderabad', to: 'Mumbai', aircraft: 'Falcon 2000', pax: 8, status: 'Airborne' as CharterStatus },
-  { id: 'ADX-098', from: 'Kolkata', to: 'Delhi', aircraft: 'Legacy 650', pax: 10, status: 'Completed' as CharterStatus },
-  { id: 'ADX-552', from: 'Chennai', to: 'Hyderabad', aircraft: 'King Air B200', pax: 5, status: 'Airborne' as CharterStatus },
 ];
 
 // --- BEZIER CURVE HELPER ---
@@ -87,32 +87,29 @@ function getHeading(start: [number, number], end: [number, number]) {
     return 90 - theta;
 }
 
-const AircraftMarker = ({ flight, points }: { flight: typeof simulatedFlightsInitial[0], points: [number, number][] }) => {
-  const [index, setIndex] = useState(0);
+const AircraftMarker = ({ flight, points, colorOverride }: { flight: any, points: [number, number][], colorOverride?: string }) => {
+  const [index, setIndex] = useState(Math.floor(Math.random() * 20));
   const totalPoints = points.length;
-  const config = statusConfig[flight.status];
+  const config = statusConfig[flight.status as CharterStatus] || { color: colorOverride || '#00ffa6' };
 
   useEffect(() => {
-    if (flight.status !== 'Airborne') return;
+    if (flight.status !== 'Airborne' && !colorOverride) return;
     
     const speed = Math.random() * 100 + 150;
     const interval = setInterval(() => {
       setIndex((prev) => (prev >= totalPoints - 1 ? 0 : prev + 1));
     }, speed);
     return () => clearInterval(interval);
-  }, [totalPoints, flight.status]);
+  }, [totalPoints, flight.status, colorOverride]);
 
-  const currentPos = flight.status === 'Airborne' ? points[index] : 
-                   flight.status === 'Completed' ? points[totalPoints - 1] : 
-                   points[0];
-
+  const currentPos = points[index] || points[0];
   const nextPos = points[index + 1] || points[0];
-  const heading = flight.status === 'Airborne' ? getHeading(currentPos, nextPos) : 0;
+  const heading = getHeading(currentPos, nextPos);
 
   const iconHtml = `
-    <div class="aircraft-beacon ${flight.status.toLowerCase()}" style="transform: rotate(${heading}deg); color: ${config.color}">
+    <div class="aircraft-beacon ${flight.status?.toLowerCase() || 'airborne'}" style="transform: rotate(${heading}deg); color: ${colorOverride || config.color}">
       <span class="aircraft-icon">✈</span>
-      <div class="status-glow" style="background: ${config.color}40"></div>
+      <div class="status-glow" style="background: ${colorOverride || config.color}40"></div>
     </div>
   `;
 
@@ -123,35 +120,23 @@ const AircraftMarker = ({ flight, points }: { flight: typeof simulatedFlightsIni
     iconAnchor: [12, 12],
   });
 
-  if (flight.status === 'Completed') return null;
-
   return (
     <Marker position={currentPos} icon={aircraftIcon}>
       <Tooltip direction="top" offset={[0, -10]} className="ops-tooltip">
         <div className="p-2 space-y-1.5 min-w-[140px]">
           <div className="flex items-center justify-between border-b border-white/10 pb-1">
-            <span className="text-[10px] font-black text-accent">{flight.id}</span>
-            <span className="text-[8px] font-bold uppercase px-1 rounded bg-white/10" style={{ color: config.color }}>{flight.status}</span>
+            <span className="text-[10px] font-black text-accent">{flight.id || 'EL-OPP'}</span>
+            <span className="text-[8px] font-bold uppercase px-1 rounded bg-white/10" style={{ color: colorOverride || config.color }}>{colorOverride ? 'OFFER' : flight.status}</span>
           </div>
           <div className="text-[10px] space-y-0.5">
-            <p className="text-white font-bold">{flight.from} → {flight.to}</p>
-            <p className="text-muted-foreground">{flight.aircraft} • {flight.pax} PAX</p>
-            <p className="text-[8px] text-muted-foreground uppercase tracking-tighter">Verified NSOP Partner</p>
+            <p className="text-white font-bold">{flight.fromName || flight.from} → {flight.toName || flight.to}</p>
+            <p className="text-muted-foreground">{flight.aircraft} • {flight.seats || flight.pax} {colorOverride ? 'SEATS' : 'PAX'}</p>
+            {colorOverride && <p className="text-[9px] text-accent font-black">{flight.price} / Seat</p>}
           </div>
         </div>
       </Tooltip>
     </Marker>
   );
-};
-
-const RadarSweep = () => {
-    const radarIcon = L.divIcon({
-        className: 'radar-sweep-icon',
-        html: `<div class="radar-beam"></div>`,
-        iconSize: [0, 0],
-        iconAnchor: [0, 0],
-    });
-    return <Marker position={[21.1458, 79.0882]} icon={radarIcon} interactive={false} />;
 };
 
 const createRadarNodeIcon = (type: string) => {
@@ -172,6 +157,7 @@ export function IndiaOperatorNetworkMap() {
   const [isMounted, setIsMounted] = useState(false);
   const [flights, setFlights] = useState(simulatedFlightsInitial);
   const [showForecast, setShowForecast] = useState(false);
+  const [showEmptyLegs, setShowEmptyLegs] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -193,27 +179,56 @@ export function IndiaOperatorNetworkMap() {
 
   return (
     <div className="w-full space-y-4">
-      {/* Forecasting Control Toggle */}
-      <div className="flex items-center justify-between bg-[#0B1220]/60 backdrop-blur-md border border-white/5 p-3 rounded-2xl">
-        <div className="flex items-center gap-3">
-            <div className={cn("p-2 rounded-lg transition-colors", showForecast ? "bg-accent/20" : "bg-white/5")}>
-                <Zap className={cn("h-4 w-4 transition-colors", showForecast ? "text-accent animate-pulse" : "text-muted-foreground")} />
+      {/* Control Panel */}
+      <div className="flex flex-col sm:flex-row items-center justify-between bg-[#0B1220]/60 backdrop-blur-md border border-white/5 p-3 rounded-2xl gap-4">
+        <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+                <div className={cn("p-2 rounded-lg transition-colors", showForecast ? "bg-accent/20" : "bg-white/5")}>
+                    <Zap className={cn("h-4 w-4 transition-colors", showForecast ? "text-accent animate-pulse" : "text-muted-foreground")} />
+                </div>
+                <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white leading-none">Forecast Layer</p>
+                    <p className="text-[8px] text-muted-foreground uppercase font-bold tracking-tighter mt-1">AI Demand Logic</p>
+                </div>
+                <Button 
+                    variant={showForecast ? "accent" : "outline"} 
+                    size="sm" 
+                    onClick={() => setShowForecast(!showForecast)}
+                    className="h-7 text-[8px] font-black uppercase tracking-[0.1em] px-3 ml-2"
+                >
+                    {showForecast ? "ON" : "OFF"}
+                </Button>
             </div>
-            <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-white">Market Intelligence Layer</p>
-                <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">AI Demand Forecasting active</p>
+
+            <div className="h-8 w-px bg-white/5" />
+
+            <div className="flex items-center gap-3">
+                <div className={cn("p-2 rounded-lg transition-colors", showEmptyLegs ? "bg-[#ffd166]/20" : "bg-white/5")}>
+                    <Coins className={cn("h-4 w-4 transition-colors", showEmptyLegs ? "text-[#ffd166]" : "text-muted-foreground")} />
+                </div>
+                <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white leading-none">Empty Legs</p>
+                    <p className="text-[8px] text-muted-foreground uppercase font-bold tracking-tighter mt-1">Repositioning Yield</p>
+                </div>
+                <Button 
+                    variant={showEmptyLegs ? "accent" : "outline"} 
+                    size="sm" 
+                    onClick={() => setShowEmptyLegs(!showEmptyLegs)}
+                    className={cn(
+                        "h-7 text-[8px] font-black uppercase tracking-[0.1em] px-3 ml-2",
+                        showEmptyLegs && "bg-[#ffd166] text-black hover:bg-[#ffd166]/90 border-none"
+                    )}
+                >
+                    {showEmptyLegs ? "ON" : "OFF"}
+                </Button>
             </div>
         </div>
-        <div className="flex items-center gap-2">
-            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mr-2">Status:</span>
-            <Button 
-                variant={showForecast ? "accent" : "outline"} 
-                size="sm" 
-                onClick={() => setShowForecast(!showForecast)}
-                className="h-8 text-[9px] font-black uppercase tracking-[0.2em] px-4 transition-all"
-            >
-                {showForecast ? "FORECAST ON" : "FORECAST OFF"}
-            </Button>
+        
+        <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00ffa6] animate-pulse shadow-[0_0_5px_#00ffa6]" />
+                <span className="text-[8px] font-black uppercase text-white/40 tracking-widest">Grid Active</span>
+            </div>
         </div>
       </div>
 
@@ -234,7 +249,59 @@ export function IndiaOperatorNetworkMap() {
             subdomains="abcd"
           />
 
-          <RadarSweep />
+          {/* EMPTY LEG LAYER */}
+          {showEmptyLegs && (
+              <>
+                {emptyLegRoutes.map((route, i) => {
+                    const points = getBezierPoints(route.from as [number, number], route.to as [number, number]);
+                    const midPoint = points[Math.floor(points.length / 2)];
+                    
+                    return (
+                        <React.Fragment key={`el-${i}`}>
+                            <Polyline
+                                positions={points}
+                                pathOptions={{
+                                    color: '#ffd166',
+                                    weight: 2,
+                                    opacity: 0.85,
+                                    dashArray: '10, 10',
+                                    className: 'el-path-glow'
+                                }}
+                            />
+                            {/* Destination Glow */}
+                            <Circle 
+                                center={route.to as [number, number]}
+                                radius={60000}
+                                pathOptions={{ fillColor: '#ffd166', fillOpacity: 0.25, color: 'transparent' }}
+                            />
+                            {/* Midpoint Badge Trigger */}
+                            <Marker position={midPoint} icon={L.divIcon({ className: 'custom-div-icon', html: '<div class="el-badge-dot"></div>' })}>
+                                <Tooltip direction="top" className="ops-tooltip gold-theme">
+                                    <div className="p-2 space-y-1 min-w-[160px]">
+                                        <div className="flex items-center justify-between border-b border-white/10 pb-1 mb-1">
+                                            <span className="text-[9px] font-black uppercase text-black bg-[#ffd166] px-1.5 rounded">Empty Leg</span>
+                                            <span className="text-[9px] font-black text-[#ffd166]">{route.discount} OFF</span>
+                                        </div>
+                                        <div className="text-[10px] space-y-1">
+                                            <p className="text-white font-bold">{route.fromName} → {route.toName}</p>
+                                            <div className="flex justify-between">
+                                                <span className="text-muted-foreground">Seats:</span>
+                                                <span className="text-white font-black">{route.seats} Available</span>
+                                            </div>
+                                            <div className="flex justify-between pt-1 border-t border-white/5">
+                                                <span className="text-muted-foreground">Price:</span>
+                                                <span className="text-[#ffd166] font-black">{route.price} / Seat</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Tooltip>
+                            </Marker>
+                            <AircraftMarker flight={route} points={points} colorOverride="#ffd166" />
+                        </React.Fragment>
+                    );
+                })}
+              </>
+          )}
 
           {/* DEMAND FORECAST LAYER */}
           {showForecast && (
@@ -265,26 +332,10 @@ export function IndiaOperatorNetworkMap() {
                                         <span className="text-muted-foreground">Predicted Vol:</span>
                                         <span className="text-accent font-black">{zone.prediction} / Mo</span>
                                     </div>
-                                    <div className="pt-1 border-t border-white/5">
-                                        <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest mb-1">Primary Corridors</p>
-                                        <p className="text-[9px] text-white/80 italic">{zone.routes}</p>
-                                    </div>
                                 </div>
                             </div>
                         </Tooltip>
                     </Circle>
-                ))}
-                {predictedCorridors.map((route, i) => (
-                    <Polyline
-                        key={`pred-${i}`}
-                        positions={[route.from as [number, number], route.to as [number, number]]}
-                        pathOptions={{
-                            color: '#ffd166',
-                            weight: 1.5,
-                            opacity: 0.35,
-                            dashArray: '4, 8'
-                        }}
-                    />
                 ))}
               </>
           )}
@@ -332,21 +383,19 @@ export function IndiaOperatorNetworkMap() {
         </MapContainer>
 
         {/* OPERATIONS LEGEND */}
-        <div className="absolute bottom-6 right-6 z-20 bg-[#0B1220]/80 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl pointer-events-none animate-in fade-in slide-in-from-bottom-2">
+        <div className="absolute bottom-6 right-6 z-20 bg-[#0B1220]/80 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl pointer-events-none">
           <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 border-b border-white/5 pb-2">
-            Operations Panel
+            Grid Status
           </h4>
           <div className="space-y-2">
             <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-[#00ffa6] shadow-[0_0_8px_#00ffa6]" />
                 <span className="text-[9px] font-bold text-white/70 uppercase tracking-tighter">Live Mission</span>
             </div>
-            {showForecast && (
-                <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[#ffd166] shadow-[0_0_8px_#ffd166] animate-pulse" />
-                    <span className="text-[9px] font-bold text-[#ffd166] uppercase tracking-tighter">Demand Signal</span>
-                </div>
-            )}
+            <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#ffd166] shadow-[0_0_8px_#ffd166]" />
+                <span className="text-[9px] font-bold text-[#ffd166] uppercase tracking-tighter">Empty Leg Offer</span>
+            </div>
             <div className="flex items-center gap-3 opacity-50">
                 <div className="w-2 h-2 rounded-full bg-[#8b9bb0]" />
                 <span className="text-[9px] font-bold text-white/70 uppercase tracking-tighter">Scheduled</span>
@@ -430,22 +479,15 @@ export function IndiaOperatorNetworkMap() {
             50% { transform: scale(1.3); opacity: 0.6; }
           }
 
-          .radar-sweep-icon { width: 0 !important; height: 0 !important; }
-          .radar-beam {
-              position: absolute;
-              width: 800px;
-              height: 800px;
-              background: conic-gradient(from 0deg, rgba(0, 255, 166, 0.1) 0deg, transparent 60deg);
-              border-radius: 50%;
-              transform-origin: center;
-              animation: radar-rotate 6s linear infinite;
-              top: -400px;
-              left: -400px;
-              pointer-events: none;
+          .el-path-glow {
+              filter: drop-shadow(0 0 3px rgba(255, 209, 102, 0.4));
           }
-          @keyframes radar-rotate {
-              from { transform: rotate(0deg); }
-              to { transform: rotate(360deg); }
+          .el-badge-dot {
+              width: 4px;
+              height: 4px;
+              background: #ffd166;
+              border-radius: 50%;
+              box-shadow: 0 0 10px #ffd166;
           }
 
           .leaflet-container { background: transparent !important; }
@@ -456,6 +498,9 @@ export function IndiaOperatorNetworkMap() {
             backdrop-filter: blur(12px);
             color: white !important;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+          }
+          .ops-tooltip.gold-theme {
+              border-color: rgba(255, 209, 102, 0.3) !important;
           }
           .custom-div-icon { background: transparent !important; border: none !important; }
         `}</style>
