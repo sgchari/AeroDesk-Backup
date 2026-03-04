@@ -34,17 +34,19 @@ export default function OurNetworkPage() {
 
   return (
     <div className="w-full relative min-h-screen bg-[#0B1220] flex flex-col overflow-hidden">
-      {/* Background Atmosphere Layer */}
+      {/* Background Atmosphere Layer - Synced with Homepage */}
       <div className="fixed inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
           alt="Atmosphere"
           fill
           priority
-          className="object-cover opacity-5 blur-3xl"
+          className="object-cover"
           data-ai-hint="airplane beach"
         />
-        <div className="absolute inset-0 bg-aviation-radial opacity-90" />
+        {/* Frosted Effect Overlays */}
+        <div className="absolute inset-0 bg-[#0B1220]/70 backdrop-blur-md" />
+        <div className="absolute inset-0 bg-aviation-radial opacity-40" />
       </div>
 
       <div className="relative z-10 flex flex-col flex-1">
