@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -5,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, orderBy } from "firebase/firestore";
+import { useCollection, useFirestore, useMemoFirebase, updateDocumentNonBlocking } from "@/firebase";
+import { collection, query, orderBy, doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { CommissionRule, RevenueShareConfig, CommissionLedgerEntry, SettlementRecord } from "@/lib/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -40,9 +41,11 @@ import { Button } from "@/components/ui/button";
 import { CreateRevenueRuleDialog } from "@/components/dashboard/admin/revenue/create-revenue-rule-dialog";
 import { CreateShareConfigDialog } from "@/components/dashboard/admin/revenue/create-share-config-dialog";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 export default function RevenueShareEnginePage() {
     const firestore = useFirestore();
+    const { toast } = useToast();
 
     const { data: rules, isLoading: rulesLoading } = useCollection<CommissionRule>(
         useMemoFirebase(() => firestore ? collection(firestore, 'commissionRules') : null, [firestore]),
@@ -63,6 +66,17 @@ export default function RevenueShareEnginePage() {
         useMemoFirebase(() => firestore ? collection(firestore, 'settlementRecords') : null, [firestore]),
         'settlementRecords'
     );
+
+    const handleToggleRule = (ruleId: string, currentState: boolean, collectionName: string) => {
+        if (!firestore) return;
+        const ruleRef = doc(firestore, collectionName, ruleId);
+        updateDocumentNonBlocking(ruleRef, { isActive: !currentState });
+        
+        toast({
+            title: currentState ? "Protocol Deactivated" : "Protocol Activated",
+            description: "Institutional share parameters have been synchronized.",
+        });
+    };
 
     const isLoading = rulesLoading || configsLoading || ledgerLoading || settlementsLoading;
 
@@ -170,12 +184,22 @@ export default function RevenueShareEnginePage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {rules?.map(rule => (
-                                <div key={rule.id} className="p-4 rounded-lg bg-black/20 border border-white/5 flex items-center justify-between">
+                                <div key={rule.id} className="p-4 rounded-lg bg-black/20 border border-white/5 flex items-center justify-between group">
                                     <div className="space-y-1">
                                         <p className="text-xs font-bold capitalize">{rule.serviceType}</p>
                                         <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Effective: {new Date(rule.effectiveFrom).toLocaleDateString()}</p>
                                     </div>
-                                    <Badge className="bg-primary/20 text-primary font-black text-sm">{rule.commissionRatePercent}%</Badge>
+                                    <div className="flex items-center gap-4">
+                                        <Badge className="bg-primary/20 text-primary font-black text-sm">{rule.commissionRatePercent}%</Badge>
+                                        <Button 
+                                            variant={rule.isActive ? 'default' : 'outline'} 
+                                            size="sm" 
+                                            className={cn("text-[8px] font-black h-6", !rule.isActive && "border-white/10 opacity-50")}
+                                            onClick={() => handleToggleRule(rule.id, rule.isActive, 'commissionRules')}
+                                        >
+                                            {rule.isActive ? 'ACTIVE' : 'ARCHIVED'}
+                                        </Button>
+                                    </div>
                                 </div>
                             ))}
                         </CardContent>
@@ -188,10 +212,20 @@ export default function RevenueShareEnginePage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {configs?.map(config => (
-                                <div key={config.id} className="p-4 rounded-lg bg-black/20 border border-white/5 space-y-3">
+                                <div key={config.id} className="p-4 rounded-lg bg-black/20 border border-white/5 space-y-3 relative group">
                                     <div className="flex items-center justify-between">
                                         <Badge variant="outline" className="text-[8px] uppercase tracking-widest border-white/10">{config.scopeType}</Badge>
-                                        {config.serviceType && <Badge className="text-[8px] uppercase">{config.serviceType}</Badge>}
+                                        <div className="flex items-center gap-2">
+                                            {config.serviceType && <Badge className="text-[8px] uppercase">{config.serviceType}</Badge>}
+                                            <Button 
+                                                variant={config.isActive ? 'default' : 'outline'} 
+                                                size="sm" 
+                                                className={cn("text-[8px] font-black h-5", !config.isActive && "border-white/10 opacity-50")}
+                                                onClick={() => handleToggleRule(config.id, config.isActive, 'revenueShareConfigs')}
+                                            >
+                                                {config.isActive ? 'ON' : 'OFF'}
+                                            </Button>
+                                        </div>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="flex-1 space-y-1">

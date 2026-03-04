@@ -14,7 +14,15 @@ import {
   mockFeatureFlags,
   mockPolicyFlags,
   mockProperties,
-  mockRoomCategories
+  mockRoomCategories,
+  mockTaxConfig,
+  mockPlatformInvoices,
+  mockPlatformChargeRules,
+  mockBillingLedger,
+  mockCommissionRules,
+  mockRevenueShareConfigs,
+  mockCommissionLedger,
+  mockSettlementRecords
 } from './data';
 import { User, DashboardSummary } from './types';
 
@@ -40,6 +48,14 @@ let db: any = {
   featureFlags: deepCopy(mockFeatureFlags),
   properties: deepCopy(mockProperties),
   roomCategories: deepCopy(mockRoomCategories),
+  taxConfig: deepCopy(mockTaxConfig),
+  platformInvoices: deepCopy(mockPlatformInvoices),
+  platformChargeRules: deepCopy(mockPlatformChargeRules),
+  entityBillingLedger: deepCopy(mockBillingLedger),
+  commissionRules: deepCopy(mockCommissionRules),
+  revenueShareConfigs: deepCopy(mockRevenueShareConfigs),
+  commissionLedger: deepCopy(mockCommissionLedger),
+  settlementRecords: deepCopy(mockSettlementRecords),
   reports: [],
   readCount: 0 // Billing Protection: Monitoring reads per session
 };

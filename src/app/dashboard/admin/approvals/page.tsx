@@ -30,8 +30,9 @@ export default function PlatformApprovalsPage() {
     const { data: pendingEmptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(pendingEmptyLegsQuery, 'emptyLegs');
 
     const handleUpdateStatus = (collectionName: string, docId: string, status: string, entityName: string) => {
-        const mockDocRef = { path: `${collectionName}/${docId}` } as any;
-        updateDocumentNonBlocking(mockDocRef, { status });
+        if (!firestore) return;
+        const ruleRef = doc(firestore, collectionName, docId);
+        updateDocumentNonBlocking(ruleRef, { status });
         toast({
             title: `${entityName} Status Updated`,
             description: `The ${entityName.toLowerCase()} has been ${status.toLowerCase()}.`

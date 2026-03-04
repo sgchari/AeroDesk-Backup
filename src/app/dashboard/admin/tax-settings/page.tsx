@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -5,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase";
 import { collection, query, doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Settings, PlusCircle, History, ShieldCheck, Zap } from "lucide-react";
@@ -14,6 +15,7 @@ import type { TaxConfig } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function TaxSettingsPage() {
     const firestore = useFirestore();
@@ -43,6 +45,17 @@ export default function TaxSettingsPage() {
         setIsAdding(false);
     };
 
+    const handleToggleRule = (ruleId: string, currentState: boolean) => {
+        if (!firestore) return;
+        const ruleRef = doc(firestore, 'taxConfig', ruleId);
+        updateDocumentNonBlocking(ruleRef, { isActive: !currentState });
+        
+        toast({
+            title: currentState ? "Rule Archived" : "Rule Activated",
+            description: "Taxation parameters updated successfully.",
+        });
+    };
+
     return (
         <div className="space-y-6">
             <PageHeader 
@@ -70,20 +83,25 @@ export default function TaxSettingsPage() {
                                         <TableHead className="text-[10px] uppercase font-black">Rate (%)</TableHead>
                                         <TableHead className="text-[10px] uppercase font-black">SAC Code</TableHead>
                                         <TableHead className="text-[10px] uppercase font-black">Effective</TableHead>
-                                        <TableHead className="text-right text-[10px] uppercase font-black">Status</TableHead>
+                                        <TableHead className="text-right text-[10px] uppercase font-black">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {configs?.map((config) => (
-                                        <TableRow key={config.id} className="border-white/5">
+                                        <TableRow key={config.id} className="border-white/5 group">
                                             <TableCell className="font-bold py-4 uppercase text-xs">{config.serviceType}</TableCell>
                                             <TableCell className="font-black text-accent">{config.taxRatePercent}%</TableCell>
                                             <TableCell className="font-code text-xs">{config.sacCode}</TableCell>
                                             <TableCell className="text-xs text-muted-foreground">{new Date(config.effectiveFrom).toLocaleDateString()}</TableCell>
                                             <TableCell className="text-right">
-                                                <Badge variant={config.isActive ? 'default' : 'secondary'} className="text-[8px] h-4 uppercase">
-                                                    {config.isActive ? 'Active' : 'Archived'}
-                                                </Badge>
+                                                <Button 
+                                                    variant={config.isActive ? 'default' : 'outline'} 
+                                                    size="sm" 
+                                                    className={cn("text-[8px] font-black h-6", !config.isActive && "border-white/10 opacity-50")}
+                                                    onClick={() => handleToggleRule(config.id, config.isActive)}
+                                                >
+                                                    {config.isActive ? 'ACTIVE' : 'ARCHIVE'}
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
