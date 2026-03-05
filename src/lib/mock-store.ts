@@ -21,7 +21,9 @@ import {
   mockCommissionLedger,
   mockSettlementRecords,
   mockAlerts,
-  mockSystemLogs
+  mockSystemLogs,
+  mockAircraft,
+  mockCrew
 } from './data';
 import { User } from './types';
 
@@ -35,6 +37,7 @@ let db: any = {
   hotelPartners: deepCopy(mockHotelPartners),
   emptyLegs: deepCopy(mockEmptyLegs),
   charterRequests: deepCopy(mockRfqs),
+  charterRFQs: deepCopy(mockRfqs), // Map consistent naming
   auditTrails: deepCopy(mockAuditLogs),
   accommodationRequests: deepCopy(mockAccommodationRequests),
   featureFlags: deepCopy(mockFeatureFlags),
@@ -50,6 +53,8 @@ let db: any = {
   settlementRecords: deepCopy(mockSettlementRecords),
   alerts: deepCopy(mockAlerts),
   systemLogs: deepCopy(mockSystemLogs),
+  aircrafts: deepCopy(mockAircraft),
+  crew: deepCopy(mockCrew),
   readCount: 0
 };
 
@@ -85,11 +90,16 @@ const resolvePath = (path: string) => {
   }
   
   if (segments.length > 2 && segments[2] === 'policyFlags') {
-      return mockPolicyFlags;
+      return db.policyFlags || [];
   }
   
   if (segments.length > 2 && segments[2] === 'users') {
       return db.users.filter((u: any) => u.ctdId === segments[1] || u.operatorId === segments[1] || u.agencyId === segments[1] || u.hotelPartnerId === segments[1]);
+  }
+
+  // Handle nested aircrafts for operators
+  if (segments.length > 2 && segments[2] === 'aircrafts') {
+      return db.aircrafts.filter((a: any) => a.operatorId === segments[1]);
   }
 
   return (db as any)[segments[0]] || [];
