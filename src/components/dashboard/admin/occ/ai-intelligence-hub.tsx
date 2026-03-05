@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useCollection } from "@/firebase";
 import type { RouteDemandHistory, EmptyLegPrediction, FleetOptimizationSuggestion } from "@/lib/types";
 import { Sparkles, TrendingUp, Target, Zap, ArrowUpRight, ShieldCheck, MapPin, Activity } from "lucide-react";
