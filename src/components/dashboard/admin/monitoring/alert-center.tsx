@@ -8,10 +8,17 @@ import { Button } from "@/components/ui/button";
 import { ShieldCheck, AlertCircle, Clock, CheckCircle2, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
 export function AlertCenter() {
     const firestore = useFirestore();
     const { toast } = useToast();
+    const [mounted, setMounted] = useState(false);
+    
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     const { data: alerts, isLoading } = useCollection<SystemAlert>(null, 'alerts');
 
     const activeAlerts = alerts?.filter(a => a.status === 'active') || [];
@@ -60,7 +67,8 @@ export function AlertCenter() {
                                 <span className="text-[10px] font-black uppercase tracking-widest">{alert.type}</span>
                                 <div className="w-1 h-1 rounded-full bg-white/20" />
                                 <span className="text-[10px] font-bold text-muted-foreground flex items-center gap-1">
-                                    <Clock className="h-2.5 w-2.5" /> {new Date(alert.timestamp).toLocaleTimeString()}
+                                    <Clock className="h-2.5 w-2.5" /> 
+                                    {mounted ? new Date(alert.timestamp).toLocaleTimeString() : '...'}
                                 </span>
                             </div>
                             <p className="text-xs font-bold text-foreground leading-relaxed">{alert.message}</p>

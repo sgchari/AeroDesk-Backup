@@ -45,9 +45,11 @@ const MOCK_TRAFFIC_DATA = [
 
 export default function AdminMonitoringPage() {
     const firestore = useFirestore();
+    const [mounted, setMounted] = useState(false);
     const [lastSync, setLastSync] = useState<string | null>(null);
 
     useEffect(() => {
+        setMounted(true);
         // Defer time setting to client side only to avoid hydration mismatch
         setLastSync(new Date().toLocaleTimeString());
     }, []);
@@ -162,7 +164,7 @@ export default function AdminMonitoringPage() {
                         </CardHeader>
                         <CardContent className="p-0">
                             <div className="max-h-[300px] overflow-y-auto px-6 pb-6 space-y-4">
-                                {logs?.map((log) => (
+                                {mounted ? logs?.map((log) => (
                                     <div key={log.id} className="relative pl-4 border-l border-white/5 space-y-1 group">
                                         <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
                                         <p className="text-[10px] font-bold text-foreground uppercase">{log.event.replace('_', ' ')}</p>
@@ -171,7 +173,7 @@ export default function AdminMonitoringPage() {
                                             {new Date(log.timestamp).toLocaleTimeString()} • {log.userId}
                                         </p>
                                     </div>
-                                ))}
+                                )) : <div className="p-6"><Skeleton className="h-32 w-full" /></div>}
                             </div>
                         </CardContent>
                     </Card>
