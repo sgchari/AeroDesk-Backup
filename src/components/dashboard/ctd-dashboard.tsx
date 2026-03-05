@@ -66,20 +66,20 @@ export function CTDDashboard() {
   const firestore = useFirestore();
 
   const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore || !user || !user.company) return null;
+    if (!firestore || (firestore as any)._isMock || !user || !user.company) return null;
     return query(collection(firestore, 'charterRequests'), where('company', '==', user.company));
   }, [firestore, user]);
   
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
   const policiesQuery = useMemoFirebase(() => {
-    if (!firestore || !user?.ctdId) return null;
+    if (!firestore || (firestore as any)._isMock || !user?.ctdId) return null;
     return collection(firestore, `corporateTravelDesks/${user.ctdId}/policyFlags`);
   }, [firestore, user]);
   const { data: policies } = useCollection<PolicyFlag>(policiesQuery, `corporateTravelDesks/${user?.ctdId}/policyFlags`);
 
   const teamQuery = useMemoFirebase(() => {
-    if (!firestore || !user?.company) return null;
+    if (!firestore || (firestore as any)._isMock || !user?.company) return null;
     return collection(firestore, 'users');
   }, [firestore, user]);
   const { data: allUsers } = useCollection<AppUser>(teamQuery, 'users');
@@ -136,7 +136,7 @@ export function CTDDashboard() {
                 </div>
                 <Badge variant="outline" className="font-code text-[10px] text-primary border-primary/20">LIVE MARKET SIGNAL</Badge>
             </CardHeader>
-            <CardContent className="h-[300px] pt-4">
+            <CardContent className="h-[350px] pt-4">
                 <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart data={MOCK_CHART_DATA}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />

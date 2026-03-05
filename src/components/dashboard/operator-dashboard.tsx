@@ -28,7 +28,7 @@ export function OperatorDashboard() {
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
   const activeMissionsQuery = useMemoFirebase(() => {
-    if (!firestore || !user || (firestore as any)._isMock) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return query(collection(firestore, 'charterRequests'), where('operatorId', '==', user.id));
   }, [firestore, user]);
   const { data: rawActiveMissions, isLoading: missionsLoading } = useCollection<CharterRFQ>(activeMissionsQuery, 'charterRequests');
@@ -44,7 +44,7 @@ export function OperatorDashboard() {
   }, [activeMissions]);
 
   const aircraftsQuery = useMemoFirebase(() => {
-    if (!firestore || !user || (firestore as any)._isMock) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return collection(firestore, 'operators', user.id, 'aircrafts');
   }, [firestore, user]);
   const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, 'aircrafts');
