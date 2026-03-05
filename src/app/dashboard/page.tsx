@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 
 // Shared loading skeleton for all dashboards to ensure layout stability
@@ -55,19 +54,26 @@ const CustomerGateway = dynamic(() => import('@/components/dashboard/customer-ga
 export default function DashboardPage() {
   const { user, isLoading, error } = useUser();
   const router = useRouter();
+  const isRedirecting = useRef(false);
 
   useEffect(() => {
-    if (!isLoading && !user && !error) {
+    if (isLoading || isRedirecting.current) return;
+
+    if (!user && !error) {
+      isRedirecting.current = true;
       router.replace('/');
+      return;
     }
+    
     // Redirect super user to role selection if no simulation role is picked
-    if (!isLoading && user && user.role === 'demo_super_user' && !user.platformRole) {
+    if (user && user.role === 'demo_super_user' && !user.platformRole) {
+        isRedirecting.current = true;
         router.replace('/dashboard/select-role');
     }
   }, [user, isLoading, error, router]);
 
   const dashboardView = useMemo(() => {
-    if (!user) return null;
+    if (!user || isLoading) return null;
 
     // Direct dashboard resolution based on platform role
     switch (user.role) {
@@ -92,7 +98,7 @@ export default function DashboardPage() {
             </div>
           );
       }
-  }, [user?.role]);
+  }, [user?.role, isLoading]);
 
   if (isLoading && !user) {
     return <DashboardSkeleton />;

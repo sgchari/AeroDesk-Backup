@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Query,
   DocumentData,
@@ -21,7 +21,7 @@ export interface UseCollectionResult<T> {
 
 /**
  * Institutional Hook for managing real-time data collections.
- * Supports both Production (Firestore) and Simulation (Local Store) modes.
+ * Optimized to prevent redundant re-renders and hydration mismatches.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
@@ -31,19 +31,27 @@ export function useCollection<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   const { user, isLoading: isUserLoading } = useUser();
+  const mountedRef = useRef(true);
   
   const isDemoMode = !memoizedTargetRefOrQuery || !memoizedTargetRefOrQuery.firestore?.app || (memoizedTargetRefOrQuery.firestore as any)._isMock;
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
 
   useEffect(() => {
     if (!isDemoMode && memoizedTargetRefOrQuery) {
       setIsLoading(true);
       const unsubscribe = onSnapshot(memoizedTargetRefOrQuery, 
         (snapshot) => {
+          if (!mountedRef.current) return;
           const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<T>));
           setData(items);
           setIsLoading(false);
         },
         (err) => {
+          if (!mountedRef.current) return;
           setError(err);
           setIsLoading(false);
         }
@@ -52,7 +60,7 @@ export function useCollection<T = any>(
     }
     
     const fetchDemoData = () => {
-        if (isUserLoading) return;
+        if (isUserLoading || !mountedRef.current) return;
 
         const path = demoPath;
         if (!path) {
@@ -62,7 +70,11 @@ export function useCollection<T = any>(
 
         try {
             const mockData = mockStore.getCollection(path, user);
-            setData(mockData as WithId<T>[]);
+            // Only update if data changed to prevent infinite render loops in simulation
+            setData(prev => {
+                if (JSON.stringify(prev) === JSON.stringify(mockData)) return prev;
+                return mockData as WithId<T>[];
+            });
         } catch (e: any) {
             setError(e);
         } finally {

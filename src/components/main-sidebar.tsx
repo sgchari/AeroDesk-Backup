@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import React, { useMemo } from 'react';
 
 import { useUser } from '@/hooks/use-user';
 import { Logo } from './logo';
@@ -106,7 +107,7 @@ export function MainSidebar() {
   const { isMobile, setOpenMobile } = useSidebar();
 
   const platformRole = user?.platformRole || 'individual';
-  const currentNavItems = NAV_ITEMS[platformRole] || [];
+  const currentNavItems = useMemo(() => NAV_ITEMS[platformRole] || [], [platformRole]);
 
   const handleLinkClick = () => {
     if (isMobile) setOpenMobile(false);

@@ -42,6 +42,8 @@ export function OCCNetworkMap() {
     map.current = mapInstance;
 
     mapInstance.on('load', () => {
+      if (!map.current) return;
+
       // --- OPERATOR HUB NODES ---
       hubs.forEach(hub => {
         const el = document.createElement('div');
@@ -55,7 +57,7 @@ export function OCCNetworkMap() {
       });
 
       // --- ACTIVE MISSION TELEMETRY ---
-      activeMissions.forEach((mission, i) => {
+      activeMissions.forEach((mission) => {
         const routeId = `route-${mission.id}`;
         
         mapInstance.addSource(routeId, {
@@ -94,7 +96,6 @@ export function OCCNetworkMap() {
             <div class="flight-id">${mission.id}</div>
         `;
         
-        // Simple mid-point simulation for static OCC view
         const midPoint: [number, number] = [
             (mission.from[0] + mission.to[0]) / 2,
             (mission.from[1] + mission.to[1]) / 2
@@ -104,7 +105,12 @@ export function OCCNetworkMap() {
       });
     });
 
-    return () => mapInstance.remove();
+    return () => {
+        if (map.current) {
+            map.current.remove();
+            map.current = null;
+        }
+    };
   }, []);
 
   return (
