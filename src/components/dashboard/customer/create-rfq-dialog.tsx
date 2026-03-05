@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -31,7 +30,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FilePlus, ArrowRight, ArrowLeft, CheckCircle2, Plane, Calendar, Users, Hotel, Clock, ShieldCheck, Briefcase } from "lucide-react";
+import { FilePlus, ArrowRight, ArrowLeft, CheckCircle2, Plane, Calendar, Users, Hotel, Clock, ShieldCheck, Briefcase, Sparkles } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -152,7 +151,7 @@ const rfqSchema = z.object({
 
 type RfqFormValues = z.infer<typeof rfqSchema>;
 
-type Step = 'ROUTE' | 'PREFERENCES' | 'GOVERNANCE' | 'STAY' | 'SUMMARY';
+type Step = 'ROUTE' | 'PREFERENCES' | 'GOVERNANCE' | 'STAY' | 'AUTOPILOT' | 'SUMMARY';
 
 export function CreateRfqDialog() {
   const [open, setOpen] = useState(false);
@@ -200,7 +199,8 @@ export function CreateRfqDialog() {
         else setStep('STAY');
     }
     else if (step === 'GOVERNANCE') setStep('STAY');
-    else if (step === 'STAY') setStep('SUMMARY');
+    else if (step === 'STAY') setStep('AUTOPILOT');
+    else if (step === 'AUTOPILOT') setStep('SUMMARY');
   };
 
   const handleBack = () => {
@@ -210,7 +210,8 @@ export function CreateRfqDialog() {
         if (isCorporate) setStep('GOVERNANCE');
         else setStep('PREFERENCES');
     }
-    else if (step === 'SUMMARY') setStep('STAY');
+    else if (step === 'AUTOPILOT') setStep('STAY');
+    else if (step === 'SUMMARY') setStep('AUTOPILOT');
   };
 
   const onSubmit = (data: RfqFormValues) => {
@@ -219,9 +220,7 @@ export function CreateRfqDialog() {
       return;
     }
 
-    const rfqCollectionRef = collection(firestore, 'charterRFQs');
-
-    // Corporate logic: Requests move to 'Pending Approval' (Internal)
+    const rfqCollectionRef = collection(firestore, 'charterRequests');
     const status = isCorporate ? 'Pending Approval' : 'Bidding Open';
 
     addDocumentNonBlocking(rfqCollectionRef, {
@@ -266,32 +265,26 @@ export function CreateRfqDialog() {
         }
     }}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="bg-accent text-accent-foreground hover:bg-accent/90">
           <FilePlus className="mr-2 h-4 w-4" />
           {isCorporate ? "Create Travel Request" : "Request a Flight"}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] overflow-hidden flex flex-col max-h-[90vh]">
+      <DialogContent className="sm:max-w-[650px] overflow-hidden flex flex-col max-h-[90vh]">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
-            <Badge variant="outline" className="text-[10px] uppercase tracking-widest font-bold text-accent border-accent/20">
-                Step {step === 'ROUTE' ? '1' : step === 'PREFERENCES' ? '2' : step === 'GOVERNANCE' ? '3' : step === 'STAY' ? '4' : '5'} of {isCorporate ? '5' : '4'}
+            <Badge variant="outline" className="text-[10px] uppercase tracking-widest font-black text-accent border-accent/20">
+                Protocol Phase: {step}
             </Badge>
           </div>
-          <DialogTitle>
-            {step === 'ROUTE' && "Where are we going?"}
-            {step === 'PREFERENCES' && "Passenger & Aircraft Preferences"}
-            {step === 'GOVERNANCE' && "Enterprise Governance"}
-            {step === 'STAY' && "Destination Stay Services"}
-            {step === 'SUMMARY' && "Review Your Journey"}
+          <DialogTitle className="text-xl font-bold font-headline">
+            {step === 'ROUTE' && "Sector Identification"}
+            {step === 'PREFERENCES' && "Mission Parameters"}
+            {step === 'GOVERNANCE' && "Institutional Governance"}
+            {step === 'STAY' && "Ancillary Stay Services"}
+            {step === 'AUTOPILOT' && "AI Charter Autopilot"}
+            {step === 'SUMMARY' && "Mission Finalization"}
           </DialogTitle>
-          <DialogDescription>
-            {step === 'ROUTE' && "Specify your route and timing details."}
-            {step === 'PREFERENCES' && "Tell us about your guests and flight needs."}
-            {step === 'GOVERNANCE' && "Mandatory data for corporate policy compliance."}
-            {step === 'STAY' && "Optional hotel coordination at your destination."}
-            {step === 'SUMMARY' && "Final check before internal submission."}
-          </DialogDescription>
         </DialogHeader>
 
         <Separator className="my-2" />
@@ -305,17 +298,17 @@ export function CreateRfqDialog() {
                     name="tripType"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Journey Profile</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black tracking-widest">Journey Profile</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-muted/20">
                                 <SelectValue placeholder="Select a trip type" />
                             </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                             <SelectItem value="Onward">One-Way</SelectItem>
-                            <SelectItem value="Return">Return</SelectItem>
-                            <SelectItem value="Multi-City">Multi-City</SelectItem>
+                            <SelectItem value="Return">Return Journey</SelectItem>
+                            <SelectItem value="Multi-City">Multi-Sector</SelectItem>
                             </SelectContent>
                         </Select>
                         <FormMessage />
@@ -328,12 +321,13 @@ export function CreateRfqDialog() {
                     name="departure"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Departure From</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black tracking-widest">Departure Node</FormLabel>
                         <FormControl>
                           <AutocompleteInput 
                             placeholder="e.g., Mumbai (VABB)" 
                             value={field.value} 
                             onChange={field.onChange}
+                            className="bg-muted/20"
                           />
                         </FormControl>
                         <FormMessage />
@@ -345,12 +339,13 @@ export function CreateRfqDialog() {
                     name="arrival"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Arrival At</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black tracking-widest">Arrival Node</FormLabel>
                         <FormControl>
                           <AutocompleteInput 
                             placeholder="e.g., Delhi (VIDP)" 
                             value={field.value} 
                             onChange={field.onChange}
+                            className="bg-muted/20"
                           />
                         </FormControl>
                         <FormMessage />
@@ -365,9 +360,9 @@ export function CreateRfqDialog() {
                             name="departureDate"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Departure Date</FormLabel>
+                                <FormLabel className="text-[10px] uppercase font-black tracking-widest">Departure Date</FormLabel>
                                 <FormControl>
-                                <Input type="date" {...field} min={new Date().toISOString().split("T")[0]} />
+                                <Input type="date" {...field} min={new Date().toISOString().split("T")[0]} className="bg-muted/20" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -378,9 +373,9 @@ export function CreateRfqDialog() {
                             name="departureTime"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Time</FormLabel>
+                                <FormLabel className="text-[10px] uppercase font-black tracking-widest">Time</FormLabel>
                                 <FormControl>
-                                <Input type="time" {...field} />
+                                <Input type="time" {...field} className="bg-muted/20" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -394,9 +389,9 @@ export function CreateRfqDialog() {
                                 name="returnDate"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Return Date</FormLabel>
+                                    <FormLabel className="text-[10px] uppercase font-black tracking-widest">Return Date</FormLabel>
                                     <FormControl>
-                                    <Input type="date" {...field} min={formData.departureDate} />
+                                    <Input type="date" {...field} min={formData.departureDate} className="bg-muted/20" />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -407,9 +402,9 @@ export function CreateRfqDialog() {
                                 name="returnTime"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Time</FormLabel>
+                                    <FormLabel className="text-[10px] uppercase font-black tracking-widest">Time</FormLabel>
                                     <FormControl>
-                                    <Input type="time" {...field} />
+                                    <Input type="time" {...field} className="bg-muted/20" />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -429,9 +424,9 @@ export function CreateRfqDialog() {
                         name="pax"
                         render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Number of Passengers</FormLabel>
+                            <FormLabel className="text-[10px] uppercase font-black tracking-widest">Passenger Count</FormLabel>
                             <FormControl>
-                            <Input type="number" min="1" {...field} />
+                            <Input type="number" min="1" {...field} className="bg-muted/20" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -442,19 +437,19 @@ export function CreateRfqDialog() {
                         name="aircraftType"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Aircraft Preference</FormLabel>
+                            <FormLabel className="text-[10px] uppercase font-black tracking-widest">Asset Class Preference</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="bg-muted/20">
                                     <SelectValue placeholder="Select a type" />
                                 </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="Any">Any Available</SelectItem>
-                                    <SelectItem value="Any Turboprop">Turboprop</SelectItem>
-                                    <SelectItem value="Any Light Jet">Light Jet</SelectItem>
-                                    <SelectItem value="Any Mid-size Jet">Mid-size Jet</SelectItem>
-                                    <SelectItem value="Any Heavy Jet">Heavy Jet</SelectItem>
+                                    <SelectItem value="Any">Optimized Availability</SelectItem>
+                                    <SelectItem value="Any Turboprop">Turboprop (Short-haul)</SelectItem>
+                                    <SelectItem value="Any Light Jet">Light Jet (Executive)</SelectItem>
+                                    <SelectItem value="Any Mid-size Jet">Mid-size Jet (Regional)</SelectItem>
+                                    <SelectItem value="Any Heavy Jet">Heavy Jet (Inter-continental)</SelectItem>
                                 </SelectContent>
                             </Select>
                             </FormItem>
@@ -466,9 +461,9 @@ export function CreateRfqDialog() {
                   name="catering"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Catering & On-board Requirements</FormLabel>
+                      <FormLabel className="text-[10px] uppercase font-black tracking-widest">On-board Coordination Details</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="e.g., Specific meals, beverages..." {...field} />
+                        <Textarea placeholder="Specific dietary requirements, beverage selection, or cabin handling..." {...field} className="bg-muted/20 h-24" />
                       </FormControl>
                     </FormItem>
                   )}
@@ -478,20 +473,21 @@ export function CreateRfqDialog() {
 
             {step === 'GOVERNANCE' && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
-                    <div className="flex items-center gap-3 p-3 bg-muted/20 border border-white/5 rounded-lg mb-4">
-                        <ShieldCheck className="h-5 w-5 text-accent" />
-                        <p className="text-xs text-muted-foreground">
-                            This request is subject to the <span className="font-bold text-foreground">{user?.company}</span> Travel Policy.
-                        </p>
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-accent/5 border border-accent/20 mb-4">
+                        <ShieldCheck className="h-6 w-6 text-accent" />
+                        <div className="space-y-0.5">
+                            <p className="text-xs font-bold text-white">Institutional Compliance Active</p>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Governed by {user?.company} Policy Profile.</p>
+                        </div>
                     </div>
                     <FormField
                         control={form.control}
                         name="costCenter"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Cost Center / Project Reference</FormLabel>
+                                <FormLabel className="text-[10px] uppercase font-black tracking-widest">Cost Center Allocation</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g., Q3-GLOBAL-SUMMIT" {...field} />
+                                    <Input placeholder="e.g., GLOBAL-SUMMIT-2025" {...field} className="bg-muted/20" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -502,9 +498,9 @@ export function CreateRfqDialog() {
                         name="businessPurpose"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Justification / Business Purpose</FormLabel>
+                                <FormLabel className="text-[10px] uppercase font-black tracking-widest">Mission Justification</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="Detail the strategic requirement for this charter..." {...field} />
+                                    <Textarea placeholder="Detail the strategic business requirement for this charter..." {...field} className="bg-muted/20 h-24" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -519,14 +515,14 @@ export function CreateRfqDialog() {
                     control={form.control}
                     name="hotelRequired"
                     render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-muted/20">
+                        <FormItem className="flex flex-row items-center justify-between rounded-xl border p-6 bg-muted/20 border-white/5">
                             <div className="space-y-0.5">
                                 <FormLabel className="text-base flex items-center gap-2">
-                                    <Hotel className="h-4 w-4 text-accent" />
-                                    Destination Accommodation
+                                    <Hotel className="h-5 w-5 text-accent" />
+                                    Destination Stay Services
                                 </FormLabel>
-                                <FormDescription>
-                                    Coordinate hotel stays at destination?
+                                <FormDescription className="text-xs">
+                                    Synchronize hotel coordination with flight arrival.
                                 </FormDescription>
                             </div>
                             <FormControl>
@@ -544,11 +540,12 @@ export function CreateRfqDialog() {
                         name="hotelPreferences"
                         render={({ field }) => (
                             <FormItem className="animate-in fade-in slide-in-from-top-2">
-                                <FormLabel>Accommodation Preferences</FormLabel>
+                                <FormLabel className="text-[10px] uppercase font-black tracking-widest">Property & Room Preferences</FormLabel>
                                 <FormControl>
                                     <Textarea 
-                                        placeholder="Specific hotel chains, room counts, or location preferences..." 
+                                        placeholder="Preferred hotel chains, suite configurations, or location specific requirements..." 
                                         {...field} 
+                                        className="bg-muted/20 h-32"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -559,40 +556,114 @@ export function CreateRfqDialog() {
               </div>
             )}
 
-            {step === 'SUMMARY' && (
-              <div className="space-y-4">
-                <div className="rounded-lg border bg-muted/10 p-4 space-y-4">
-                    <div className="flex items-center justify-between border-b pb-2 border-white/5">
-                        <h4 className="font-bold text-accent uppercase text-[10px] tracking-widest">Journey Profile</h4>
-                        <Badge variant="outline">{formData.tripType}</Badge>
+            {step === 'AUTOPILOT' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
+                    <div className="p-4 rounded-xl bg-accent/10 border border-accent/30 flex items-center gap-3">
+                        <Sparkles className="h-6 w-6 text-accent animate-pulse" />
+                        <div>
+                            <p className="text-xs font-black text-accent uppercase tracking-widest">AI Charter Autopilot: Active</p>
+                            <p className="text-[10px] text-accent/70">Evaluating fleet availability and positioning corridors...</p>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                            <Label className="text-muted-foreground text-[10px] uppercase">Route</Label>
-                            <p className="text-sm font-medium">{formData.departure} → {formData.arrival}</p>
-                        </div>
-                        <div className="space-y-1 text-right">
-                            <Label className="text-muted-foreground text-[10px] uppercase">Schedule</Label>
-                            <p className="text-sm font-medium flex items-center justify-end gap-1.5">
-                                <Calendar className="h-3 w-3" /> {formData.departureDate}
-                                <Clock className="h-3 w-3 ml-1" /> {formData.departureTime}
-                            </p>
-                        </div>
-                        {isCorporate && (
-                            <div className="col-span-2 space-y-1 pt-2 border-t border-white/5">
-                                <Label className="text-muted-foreground text-[10px] uppercase flex items-center gap-1.5"><Briefcase className="h-3 w-3" /> Governance Context</Label>
-                                <p className="text-xs font-medium">Cost Center: {formData.costCenter || 'N/A'}</p>
-                                <p className="text-xs text-muted-foreground truncate">{formData.businessPurpose}</p>
+
+                    <div className="grid gap-4">
+                        <p className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-1">Instant Network Recommendations</p>
+                        
+                        <div className="p-4 rounded-xl border border-accent/20 bg-white/[0.02] flex items-center justify-between group hover:bg-accent/5 transition-all">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <Badge className="bg-accent text-black font-black text-[8px] h-4">BEST VALUE</Badge>
+                                    <span className="text-sm font-bold text-white">Citation XLS (FlyCo Charter)</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-medium">
+                                    <span className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" /> 2h 15m</span>
+                                    <span className="flex items-center gap-1"><ShieldCheck className="h-2.5 w-2.5 text-emerald-500" /> NSOP Verified</span>
+                                </div>
                             </div>
-                        )}
+                            <div className="text-right">
+                                <p className="text-[8px] uppercase font-black text-muted-foreground">Estimated Yield</p>
+                                <p className="text-lg font-black text-accent">₹ 8.5 L</p>
+                            </div>
+                        </div>
+
+                        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01] flex items-center justify-between opacity-60">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-bold text-white">Phenom 300 (Club One Air)</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-medium">
+                                    <span className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" /> 2h 05m</span>
+                                    <span className="flex items-center gap-1">Empty Leg Sync Active</span>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[8px] uppercase font-black text-muted-foreground">Estimated Yield</p>
+                                <p className="text-lg font-black text-white">₹ 10.2 L</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="p-3 bg-muted/20 rounded-lg italic text-[10px] text-muted-foreground text-center">
+                        * Estimates are generated based on real-time positioning and historical data. Final pricing is subject to operator quotation.
                     </div>
                 </div>
-                <div className="flex items-start gap-3 p-3 bg-accent/10 border border-accent/20 rounded-lg">
+            )}
+
+            {step === 'SUMMARY' && (
+              <div className="space-y-4">
+                <div className="rounded-xl border bg-accent/5 border-accent/20 p-6 space-y-6">
+                    <div className="flex items-center justify-between border-b pb-4 border-accent/10">
+                        <div>
+                            <h4 className="font-black text-accent uppercase text-[10px] tracking-widest">Mission Index</h4>
+                            <p className="text-lg font-bold text-white">{formData.departure.split(' (')[0]} <ArrowRight className="inline mx-2 text-accent/40" /> {formData.arrival.split(' (')[0]}</p>
+                        </div>
+                        <Badge variant="outline" className="h-6 border-accent/30 text-accent font-black">{formData.tripType}</Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-8">
+                        <div className="space-y-1">
+                            <Label className="text-muted-foreground text-[10px] uppercase font-black tracking-widest">Sector Schedule</Label>
+                            <p className="text-sm font-medium flex items-center gap-2">
+                                <Calendar className="h-3.5 w-3.5 text-accent" /> {formData.departureDate}
+                                <span className="text-white/20">|</span>
+                                <Clock className="h-3.5 w-3.5 text-accent" /> {formData.departureTime}
+                            </p>
+                        </div>
+                        <div className="space-y-1">
+                            <Label className="text-muted-foreground text-[10px] uppercase font-black tracking-widest">Manifest & Class</Label>
+                            <p className="text-sm font-medium flex items-center gap-2">
+                                <Users className="h-3.5 w-3.5 text-accent" /> {formData.pax} PAX
+                                <span className="text-white/20">|</span>
+                                <Plane className="h-3.5 w-3.5 text-accent" /> {formData.aircraftType}
+                            </p>
+                        </div>
+                    </div>
+
+                    {isCorporate && (
+                        <div className="pt-4 border-t border-accent/10 space-y-2">
+                            <Label className="text-accent text-[10px] uppercase font-black tracking-widest flex items-center gap-2">
+                                <ShieldCheck className="h-3.5 w-3.5" /> Governance Metadata
+                            </Label>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-[9px] text-muted-foreground uppercase font-bold">Cost Center</p>
+                                    <p className="text-xs font-bold text-white">{formData.costCenter || 'PENDING'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-[9px] text-muted-foreground uppercase font-bold">Justification</p>
+                                    <p className="text-xs text-white/70 line-clamp-1">{formData.businessPurpose || 'Operational Requirement'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div className="flex items-start gap-3 p-4 bg-accent/5 border border-accent/20 rounded-xl">
                     <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                    <p className="text-xs text-accent/80 leading-relaxed">
+                    <p className="text-[11px] text-white/70 leading-relaxed italic">
                         {isCorporate 
-                            ? "By submitting, your request enters the Enterprise Approval Workflow. Upon internal sign-off, it will be synchronized with network operators."
-                            : "By submitting, your request enters our Coordination Protocol. Operators will review feasibility and submit quotations."}
+                            ? "Commiting this request will initiate the Enterprise Approval Workflow. Upon internal sign-off, mission data will be synchronized with the operator network."
+                            : "Committing this request will initiate the platform's RFQ Exchange protocol. Operators will review feasibility and submit technical bids."}
                     </p>
                 </div>
               </div>
@@ -607,18 +678,19 @@ export function CreateRfqDialog() {
               variant="ghost"
               onClick={handleBack}
               disabled={step === 'ROUTE'}
+              className="text-[10px] font-black uppercase tracking-widest"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
+              Return
             </Button>
             
             {step === 'SUMMARY' ? (
-              <Button type="button" onClick={form.handleSubmit(onSubmit)} className="bg-accent text-accent-foreground hover:bg-accent/90">
-                {isCorporate ? "Submit for Approval" : "Confirm & Submit Request"}
+              <Button type="button" onClick={form.handleSubmit(onSubmit)} className="bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase text-[10px] tracking-widest px-8 h-10 shadow-xl shadow-accent/10">
+                Commit Mission Protocol
               </Button>
             ) : (
-              <Button type="button" onClick={handleNext}>
-                Continue
+              <Button type="button" onClick={handleNext} className="bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase text-[10px] tracking-widest h-10 px-8">
+                Continue Phase
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             )}

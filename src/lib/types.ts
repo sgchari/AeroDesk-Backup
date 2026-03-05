@@ -1,16 +1,6 @@
 export type PlatformRole = 'admin' | 'operator' | 'agency' | 'corporate' | 'individual' | 'hotel';
 export type FirmRole = 'admin' | 'manager' | 'finance' | 'operations' | 'approver' | 'viewer';
 
-export type DashboardSummary = {
-  totalCharters: number;
-  pendingRequests: number;
-  confirmedTrips: number;
-  revenueThisMonth: number;
-  seatRequestsPending: number;
-  accommodationRequestsPending: number;
-  lastUpdated: string;
-};
-
 export type User = {
   id: string;
   email: string;
@@ -59,6 +49,18 @@ export type CharterRFQ = {
   updatedAt: string;
   totalAmount?: number;
   costCenter?: string;
+  businessPurpose?: string;
+  hotelRequired?: boolean;
+  hotelPreferences?: string;
+  autopilotRecommendation?: AutopilotMatch | null;
+};
+
+export type AutopilotMatch = {
+    aircraftType: string;
+    operatorName: string;
+    estimatedPrice: number;
+    duration: string;
+    confidenceScore: number;
 };
 
 export type Operator = {
@@ -81,22 +83,6 @@ export type Operator = {
   updatedAt: string;
 };
 
-export type TravelAgency = {
-    id: string;
-    companyName: string;
-    status: 'Active' | 'Inactive';
-    createdAt: string;
-    updatedAt: string;
-};
-
-export type HotelPartner = {
-    id: string;
-    companyName: string;
-    status: 'Active' | 'Inactive';
-    createdAt: string;
-    updatedAt: string;
-};
-
 export type Aircraft = {
     id: string;
     operatorId: string;
@@ -107,6 +93,7 @@ export type Aircraft = {
     homeBase: string;
     status: 'Available' | 'Under Maintenance' | 'AOG' | 'Restricted';
     exteriorImageUrl?: string;
+    hourlyRate?: number;
     createdAt?: string;
 };
 
@@ -115,19 +102,23 @@ export type EmptyLeg = {
     operatorId: string;
     operatorName?: string;
     aircraftId: string;
+    aircraftName?: string;
+    aircraftType?: string;
     departure: string;
     arrival: string;
     departureTime: string;
+    totalCapacity: number;
     availableSeats: number;
+    basePricePerSeat: number;
     status: string;
     createdAt: string;
-    pricePerSeat?: number;
-    totalCapacity?: number;
-    minSeatsPerRequest?: number;
-    bookingChannelAllowed?: string;
-    pricingModel?: string;
-    aircraftType?: string;
-    estimatedPricePerSeat?: number;
+    pricingModel: 'Fixed' | 'Dynamic';
+    seatPricingStrategy?: PricingTier[];
+};
+
+export type PricingTier = {
+    seatRange: string;
+    price: number;
 };
 
 export type SeatAllocation = {
@@ -137,51 +128,10 @@ export type SeatAllocation = {
     customerId: string;
     customerName: string;
     seatsRequested: number;
-    status: string;
-    createdAt: string;
     totalAmount: number;
-    bookingChannel: string;
-    clientReference?: string;
-};
-
-export type EmptyLegSeatAllocationRequest = {
-    id: string;
-    emptyLegId: string;
-    passengerName?: string;
-    numberOfSeats: number;
-    status: string;
-    passengerNotes?: string;
-    clientReference?: string;
-};
-
-export type SystemAlertSeverity = 'low' | 'medium' | 'high';
-export type SystemAlertType = 'system' | 'operational' | 'security';
-
-export type SystemAlert = {
-    id: string;
-    type: SystemAlertType;
-    message: string;
-    severity: SystemAlertSeverity;
-    timestamp: string;
-    status: 'active' | 'resolved';
-};
-
-export type SystemLog = {
-    id: string;
-    event: string;
-    userId: string;
-    module: string;
-    action: string;
-    timestamp: string;
-};
-
-export type ServiceStatusState = 'Healthy' | 'Warning' | 'Critical';
-
-export type ServiceHealth = {
-    name: string;
-    status: ServiceStatusState;
-    lastChecked: string;
-    latency?: string;
+    bookingChannel: 'direct' | 'agency' | 'corporate';
+    status: 'pending' | 'confirmed' | 'cancelled' | 'payment_pending';
+    createdAt: string;
 };
 
 export type AuditLog = {
@@ -220,8 +170,6 @@ export type RoomCategory = {
     nightlyRate: number;
     description?: string;
     imageUrl?: string;
-    maxOccupancy?: number;
-    beddingType?: string;
 };
 
 export type FeatureFlag = {
@@ -237,6 +185,114 @@ export type PolicyFlag = {
     name: string;
     description: string;
     isEnforced: boolean;
+};
+
+export type AccommodationRequest = {
+    id: string;
+    hotelPartnerId: string;
+    propertyName: string;
+    guestName: string;
+    checkIn: string;
+    checkOut: string;
+    rooms: number;
+    status: 'Pending' | 'Confirmed' | 'Declined' | 'Awaiting Clarification';
+    requesterId: string;
+};
+
+export type TravelAgency = {
+    id: string;
+    companyName: string;
+    status: 'Active' | 'Inactive';
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type HotelPartner = {
+    id: string;
+    companyName: string;
+    status: 'Active' | 'Inactive';
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type SystemAlert = {
+    id: string;
+    type: 'system' | 'operational' | 'security';
+    message: string;
+    severity: 'low' | 'medium' | 'high';
+    timestamp: string;
+    status: 'active' | 'resolved';
+};
+
+export type SystemLog = {
+    id: string;
+    event: string;
+    userId: string;
+    module: string;
+    action: string;
+    timestamp: string;
+};
+
+export type ServiceHealth = {
+    name: string;
+    status: 'Healthy' | 'Warning' | 'Critical';
+    lastChecked: string;
+    latency: string;
+};
+
+export type PassengerManifest = {
+    id: string;
+    charterId: string;
+    status: string;
+    passengers: Passenger[];
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type Passenger = {
+    fullName: string;
+    nationality: string;
+    idNumber: string;
+    idType: string;
+    dob?: string;
+    gender?: string;
+};
+
+export type Invoice = {
+    id: string;
+    relatedEntityId: string;
+    operatorId: string;
+    invoiceNumber: string;
+    totalAmount: number;
+    status: string;
+    bankDetails: string;
+    createdAt: string;
+};
+
+export type Payment = {
+    id: string;
+    relatedEntityId: string;
+    invoiceId: string;
+    utrReference: string;
+    status: string;
+    createdAt: string;
+};
+
+export type ActivityLog = {
+    id: string;
+    entityId: string;
+    actionType: string;
+    performedBy: string;
+    role: string;
+    timestamp: string;
+};
+
+export type Commission = {
+    id: string;
+    relatedEntityId: string;
+    commissionAmount: number;
+    commissionRate: number;
+    status: string;
 };
 
 export type BlogPost = {
@@ -273,75 +329,6 @@ export type BrandAsset = {
     fileSize: string;
 };
 
-export type CrewMember = {
-    id: string;
-    operatorId: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    licenseNumber: string;
-    status: CrewStatus;
-    assignedAircraftRegistration?: string;
-};
-
-export type CrewStatus = 'Available' | 'On Duty' | 'Training' | 'Medical Leave';
-
-export type Passenger = {
-    fullName: string;
-    dob?: string;
-    gender?: string;
-    nationality: string;
-    idType: string;
-    idNumber: string;
-};
-
-export type PassengerManifest = {
-    id: string;
-    charterId: string;
-    status: string;
-    passengers: Passenger[];
-    createdAt: string;
-    updatedAt: string;
-    submittedBy?: string;
-};
-
-export type Invoice = {
-    id: string;
-    charterId?: string;
-    relatedEntityId?: string;
-    operatorId: string;
-    invoiceNumber: string;
-    totalAmount: number;
-    status: string;
-    bankDetails: string;
-    createdAt: string;
-};
-
-export type Payment = {
-    id: string;
-    charterId?: string;
-    relatedEntityId?: string;
-    invoiceId: string;
-    utrReference: string;
-    status: string;
-    createdAt: string;
-    submittedBy?: string;
-    verifiedAt?: string | null;
-};
-
-export type ActivityLog = {
-    id: string;
-    charterId?: string;
-    entityId?: string;
-    actionType: string;
-    performedBy: string;
-    role: string;
-    timestamp: string;
-    previousStatus?: string;
-    newStatus?: string;
-    metadata?: any;
-};
-
 export type PlatformChargeRule = {
     id: string;
     entityType: string;
@@ -355,18 +342,18 @@ export type PlatformChargeRule = {
 export type EntityBillingLedger = {
     id: string;
     relatedTransactionId: string;
+    serviceType: string;
     grossAmount: number;
     platformChargeAmount: number;
     ledgerStatus: string;
-    serviceType: string;
 };
 
 export type PlatformInvoice = {
     id: string;
     entityName: string;
     totalAmount: number;
-    status: string;
     dueDate: string;
+    status: string;
     entityType?: string;
 };
 
@@ -374,44 +361,44 @@ export type CommissionRule = {
     id: string;
     serviceType: string;
     commissionRatePercent: number;
-    isActive: boolean;
     effectiveFrom: string;
+    isActive: boolean;
 };
 
 export type RevenueShareConfig = {
     id: string;
     scopeType: string;
+    serviceType?: string;
     agencySharePercent: number;
     aerodeskSharePercent: number;
     isActive: boolean;
-    serviceType?: string;
 };
 
 export type CommissionLedgerEntry = {
     id: string;
     transactionId: string;
+    entityId: string;
+    serviceType: string;
     bookingChannel: string;
     grossAmount: number;
     agencyCommissionAmount: number;
     aerodeskCommissionAmount: number;
-    status: string;
-    serviceType: string;
+    totalCommission: number;
     agencySharePercent: number;
+    status: string;
     createdAt: string;
-    entityId?: string;
-    totalCommission?: number;
 };
 
 export type SettlementRecord = {
     id: string;
+    entityId: string;
     entityName: string;
     totalAgencyCommission: number;
-    status: string;
     settlementPeriodStart: string;
     settlementPeriodEnd: string;
+    status: string;
+    createdAt: string;
     paymentReference?: string;
-    entityId?: string;
-    createdAt?: string;
 };
 
 export type TaxConfig = {
@@ -419,14 +406,6 @@ export type TaxConfig = {
     serviceType: string;
     taxRatePercent: number;
     sacCode: string;
-    isActive: boolean;
     effectiveFrom: string;
-};
-
-export type Commission = {
-    id: string;
-    relatedEntityId: string;
-    commissionAmount: number;
-    commissionRate: number;
-    status: string;
+    isActive: boolean;
 };
