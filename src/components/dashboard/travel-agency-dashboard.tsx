@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
 import { useMemo } from "react";
 import { LiveRadarDashboardCard } from "@/components/dashboard/shared/live-radar-dashboard-card";
+import { cn } from "@/lib/utils";
 
 export function TravelAgencyDashboard() {
   const firestore = useFirestore();
