@@ -29,6 +29,7 @@ import {
     Sparkles
 } from "lucide-react";
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useCollection, useFirestore } from "@/firebase";
 import type { CharterRFQ, Aircraft, EmptyLeg, SystemAlert, SystemLog, AircraftPosition, AircraftAvailability } from "@/lib/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -150,7 +151,7 @@ export default function OperationsControlCenterPage() {
                                             <TableRow key={rfq.id} className="border-white/5 hover:bg-white/[0.02] group">
                                                 <TableCell className="font-code text-[10px] font-bold text-sky-400 py-3">{rfq.id}</TableCell>
                                                 <TableCell className="text-[11px] font-medium">
-                                                    {rfq.departure.split('(')[0]} → {rfq.arrival.split('(')[0]}
+                                                    {rfq.departure.split('(')[0]} » {rfq.arrival.split('(')[0]}
                                                 </TableCell>
                                                 <TableCell className="text-[10px] text-muted-foreground uppercase font-bold">{rfq.operatorId || 'Pending'}</TableCell>
                                                 <TableCell>
