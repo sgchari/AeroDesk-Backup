@@ -458,3 +458,38 @@ export type TaxConfig = {
     effectiveFrom: string;
     isActive: boolean;
 };
+
+export type AircraftPosition = {
+    id: string;
+    registration: string;
+    aircraftType: string;
+    operator: string;
+    latitude: number;
+    longitude: number;
+    altitude: number;
+    velocity: number;
+    heading: number;
+    timestamp: string;
+    status: 'available' | 'scheduled' | 'inflight';
+};
+
+export type AircraftAvailability = {
+    id: string;
+    registration: string;
+    aircraftType: string;
+    operator: string;
+    currentAirport: string;
+    availableFrom: string;
+    availabilityWindow: "3hours" | "6hours" | "12hours";
+    seats: number;
+};
+
+export type CharterDemandForecast = {
+    id: string;
+    origin: string;
+    destination: string;
+    routeCode: string;
+    predictedDemandScore: number;
+    timeframe: "24hours" | "3days" | "7days" | "30days";
+    aircraftTypeDemand: string[];
+};

@@ -24,7 +24,10 @@ import {
   mockSystemLogs,
   mockAircraft,
   mockCrew,
-  mockSeatAllocations
+  mockSeatAllocations,
+  mockAircraftPositions,
+  mockAircraftAvailability,
+  mockDemandForecast
 } from './data';
 import { User } from './types';
 
@@ -57,7 +60,10 @@ let db: any = {
   aircrafts: deepCopy(mockAircraft),
   crew: deepCopy(mockCrew),
   seatAllocations: deepCopy(mockSeatAllocations),
-  seatAllocationRequests: deepCopy(mockSeatAllocations), // Alias for role consistency
+  seatAllocationRequests: deepCopy(mockSeatAllocations),
+  aircraftPositions: deepCopy(mockAircraftPositions),
+  aircraftAvailability: deepCopy(mockAircraftAvailability),
+  charterDemandForecast: deepCopy(mockDemandForecast),
   readCount: 0
 };
 

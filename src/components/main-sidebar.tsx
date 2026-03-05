@@ -23,7 +23,9 @@ import {
   Radio,
   Target,
   Wand2,
-  Table
+  Table,
+  Radar,
+  Network
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -47,6 +49,9 @@ const NAV_ITEMS: Record<string, any[]> = {
   admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-accent' },
     { href: '/dashboard/admin/occ', label: 'OCC Terminal', icon: Radio, color: 'text-emerald-400 font-bold' },
+    { href: '/dashboard/admin/global-charter-radar', label: 'Charter Radar', icon: Radar, color: 'text-sky-400' },
+    { href: '/dashboard/admin/jet-availability', label: 'Jet Network', icon: Network, color: 'text-amber-400' },
+    { href: '/dashboard/admin/demand-intelligence', label: 'Demand Engine', icon: Target, color: 'text-rose-400' },
     { href: '/dashboard/admin/monitoring', label: 'Network Health', icon: Activity, color: 'text-rose-400' },
     { href: '/dashboard/admin/analytics', label: 'Market Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/admin/intelligence', label: 'Global Insights', icon: Wand2, color: 'text-accent' },
@@ -61,6 +66,7 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/operator/rfq-marketplace', label: 'RFQ Exchange', icon: GanttChartSquare, color: 'text-amber-400' },
     { href: '/dashboard/operator/fleet', label: 'Asset Registry', icon: Plane, color: 'text-slate-400' },
     { href: '/dashboard/operator/empty-legs', label: 'JetSeat Exchange', icon: Zap, color: 'text-accent' },
+    { href: '/dashboard/operator/fleet-intelligence', label: 'Utilization Engine', icon: Target, color: 'text-emerald-400' },
     { href: '/dashboard/operator/analytics', label: 'Utilization Stats', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/operator/intelligence', label: 'Route Intelligence', icon: Wand2, color: 'text-accent' },
     { href: '/dashboard/operator/reports', label: 'Yield Reports', icon: Table, color: 'text-sky-400' },
@@ -166,7 +172,7 @@ export function MainSidebar() {
                 className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors"
               >
                 <LogOut className="h-4 w-4" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Exit Terminal</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] exit-terminal">Exit Terminal</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
