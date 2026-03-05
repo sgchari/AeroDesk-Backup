@@ -14,7 +14,6 @@ import { useUser } from "@/hooks/use-user";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where, limit } from "firebase/firestore";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import { LiveRadarDashboardCard } from "@/components/dashboard/shared/live-radar-dashboard-card";
 
@@ -50,25 +49,51 @@ export function OperatorDashboard() {
   }, [firestore, user]);
   const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, 'aircrafts');
 
-  const emptyLegsQuery = useMemoFirebase(() => {
-    if (!firestore || !user || (firestore as any)._isMock) return null;
-    return query(collection(firestore, 'emptyLegs'), where('operatorId', '==', user.id));
-  }, [firestore, user]);
-  const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
-
   const { data: allSeatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(null, 'seatAllocationRequests');
 
-  const isLoading = isUserLoading || rfqsLoading || aircraftsLoading || emptyLegsLoading || seatRequestsLoading || missionsLoading;
+  const isLoading = isUserLoading || rfqsLoading || aircraftsLoading || seatRequestsLoading || missionsLoading;
+
+  const stats = useMemo(() => {
+    return {
+        pendingRfqs: rfqs?.length || 0,
+        activeMissions: activeMissions.length,
+        seatRequests: allSeatRequests?.filter(r => r.status === 'pendingApproval').length || 0,
+        aircraftAlerts: aircrafts?.filter(a => a.status === 'AOG' || a.status === 'Under Maintenance').length || 0
+    };
+  }, [rfqs, activeMissions, allSeatRequests, aircrafts]);
 
   return (
     <div className="space-y-6">
       <PageHeader title="Operator Command Center" description={`Operational situational awareness for ${user?.company || 'Your Fleet'}.`} />
       
       <StatsGrid>
-        <StatsCard title="Marketplace Demand" href="/dashboard/operator/rfq-marketplace" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingRfqs.toString()} icon={FileText} description="RFQs open for bidding" />
-        <StatsCard title="Active Missions" href="#" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeMissions.toString()} icon={Activity} description="Missions in execution" />
-        <StatsCard title="Seat Allocation Queue" href="/dashboard/operator/seat-requests" value={isLoading ? <Skeleton className="h-6 w-12" /> : (allSeatRequests?.filter(r => r.status === 'pendingApproval').length ?? 0).toString()} icon={Users} description="Time-critical seat leads" />
-        <StatsCard title="Fleet Alerts" href="/dashboard/operator/fleet" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.aircraftAlerts.toString()} icon={AlertTriangle} description="AOG or maintenance events" />
+        <StatsCard 
+            title="Marketplace Demand" 
+            href="/dashboard/operator/rfq-marketplace" 
+            value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.pendingRfqs.toString()} 
+            icon={FileText} 
+            description="RFQs open for bidding" 
+        />
+        <StatsCard 
+            title="Active Missions" 
+            value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.activeMissions.toString()} 
+            icon={Activity} 
+            description="Missions in execution" 
+        />
+        <StatsCard 
+            title="Seat Allocation Queue" 
+            href="/dashboard/operator/seat-requests" 
+            value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.seatRequests.toString()} 
+            icon={Users} 
+            description="Time-critical seat leads" 
+        />
+        <StatsCard 
+            title="Fleet Alerts" 
+            href="/dashboard/operator/fleet" 
+            value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.aircraftAlerts.toString()} 
+            icon={AlertTriangle} 
+            description="AOG or maintenance events" 
+        />
       </StatsGrid>
 
       {liveMissions.length > 0 && (
@@ -167,10 +192,3 @@ export function OperatorDashboard() {
     </div>
   );
 }
-
-const stats = {
-    pendingRfqs: 3,
-    activeMissions: 2,
-    activeEmptyLegs: 1,
-    aircraftAlerts: 0
-};

@@ -4,10 +4,29 @@
 import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 
-// Institutional Dashboard Variants - Consolidated in components/dashboard
+// Shared loading skeleton for all dashboards to ensure layout stability
+function DashboardSkeleton() {
+    return (
+        <div className="space-y-8 p-4 sm:p-8 animate-in fade-in duration-500">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <Skeleton className="h-10 w-64 rounded-lg bg-white/5" />
+                <Skeleton className="h-10 w-32 rounded-lg bg-white/5" />
+            </div>
+            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+                <Skeleton className="h-28 rounded-2xl bg-white/5" />
+                <Skeleton className="h-28 rounded-2xl bg-white/5" />
+                <Skeleton className="h-28 rounded-2xl bg-white/5" />
+                <Skeleton className="h-28 rounded-2xl bg-white/5" />
+            </div>
+            <Skeleton className="h-[400px] w-full rounded-3xl bg-white/5" />
+        </div>
+    )
+}
+
+// Institutional Dashboard Variants - Consistently loaded with ssr: false for map/chart safety
 const AdminDashboard = dynamic(() => import('@/components/dashboard/admin-dashboard').then(mod => mod.AdminDashboard), { 
     ssr: false,
     loading: () => <DashboardSkeleton /> 
@@ -47,7 +66,7 @@ export default function DashboardPage() {
     }
   }, [user, isLoading, error, router]);
 
-  const renderDashboard = () => {
+  const dashboardView = useMemo(() => {
     if (!user) return null;
 
     // Direct dashboard resolution based on platform role
@@ -67,9 +86,13 @@ export default function DashboardPage() {
         case 'Hotel Partner':
           return <HotelDashboard />;
         default:
-          return <div className="p-12 text-center text-muted-foreground italic border-2 border-dashed rounded-2xl opacity-50">Initializing operational context...</div>;
+          return (
+            <div className="flex items-center justify-center min-h-[60vh] p-12 text-center text-muted-foreground italic border-2 border-dashed border-white/5 rounded-2xl opacity-50">
+                Initializing operational context...
+            </div>
+          );
       }
-  };
+  }, [user?.role]);
 
   if (isLoading && !user) {
     return <DashboardSkeleton />;
@@ -77,7 +100,7 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-        <div className="p-8 rounded-2xl border border-destructive bg-destructive/5 text-destructive-foreground">
+        <div className="p-8 rounded-2xl border border-destructive bg-destructive/5 text-destructive-foreground mx-auto max-w-2xl mt-12">
             <h3 className="font-black uppercase tracking-widest text-xs mb-2">Governance Context Error</h3>
             <p className="text-sm opacity-80">There was a problem loading your institutional profile. Details: {error.message}</p>
             <button onClick={() => window.location.reload()} className="mt-4 text-xs font-bold underline">Retry Terminal Connection</button>
@@ -86,26 +109,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="animate-in fade-in duration-700 max-w-full">
-      {renderDashboard()}
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-700 max-w-full">
+      {dashboardView}
     </div>
   );
-}
-
-function DashboardSkeleton() {
-    return (
-        <div className="space-y-8 p-4 sm:p-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <Skeleton className="h-10 w-64 rounded-lg" />
-                <Skeleton className="h-10 w-32 rounded-lg" />
-            </div>
-            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-                <Skeleton className="h-32 rounded-2xl" />
-                <Skeleton className="h-32 rounded-2xl" />
-                <Skeleton className="h-32 rounded-2xl" />
-                <Skeleton className="h-32 rounded-2xl" />
-            </div>
-            <Skeleton className="h-[450px] w-full rounded-3xl" />
-        </div>
-    )
 }

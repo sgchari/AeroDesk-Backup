@@ -1,3 +1,4 @@
+
 import { 
   mockUsers, 
   mockRfqs, 
@@ -23,7 +24,7 @@ import {
   mockCommissionLedger,
   mockSettlementRecords
 } from './data';
-import { User, DashboardSummary } from './types';
+import { User } from './types';
 
 const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
@@ -56,11 +57,17 @@ let db: any = {
   commissionLedger: deepCopy(mockCommissionLedger),
   settlementRecords: deepCopy(mockSettlementRecords),
   reports: [],
-  readCount: 0 // Billing Protection: Monitoring reads per session
+  readCount: 0
 };
 
-const notify = () => listeners.forEach(cb => cb());
 const listeners: Set<() => void> = new Set();
+
+const notify = () => {
+    // Optimization: Batched notification using requestAnimationFrame
+    window.requestAnimationFrame(() => {
+        listeners.forEach(cb => cb());
+    });
+};
 
 const subscribe = (callback: () => void) => {
   listeners.add(callback);
@@ -72,10 +79,9 @@ const subscribe = (callback: () => void) => {
  */
 const resolvePath = (path: string) => {
   const segments = path.split('/');
-  db.readCount++; // Increment read count for every call
+  db.readCount++; 
   
   if (segments[segments.length - 1] === 'dashboardSummary') {
-    // Generate simulated summary based on root data
     return {
       totalCharters: 12,
       pendingRequests: 3,
@@ -87,7 +93,6 @@ const resolvePath = (path: string) => {
     };
   }
   
-  // Basic simulation of subcollections like /corporateTravelDesks/{id}/policyFlags
   if (segments.length > 2 && segments[2] === 'policyFlags') {
       return mockPolicyFlags;
   }
@@ -101,16 +106,16 @@ const resolvePath = (path: string) => {
 
 const getCollection = (path: string, user?: User | null) => {
   let data = resolvePath(path);
-  // Apply mandatory pagination & ordering
   if (Array.isArray(data)) {
-    return data.slice(0, 20); 
+    // Institutional Limit: Preventing over-fetching in simulation
+    return data.slice(0, 50); 
   }
   return data;
 };
 
 const getDoc = (path: string) => {
   const data = resolvePath(path);
-  if (!Array.isArray(data)) return data; // Return summary if path points to it
+  if (!Array.isArray(data)) return data; 
   const segments = path.split('/');
   const id = segments[segments.length - 1];
   return data.find((d: any) => d.id === id) || null;
@@ -126,7 +131,6 @@ export const mockStore = {
     const rootCol = segments[0];
     if (!db[rootCol]) db[rootCol] = [];
     const newDoc = { id: `id-${Date.now()}`, ...data };
-    // Institutional Prepend: Ensure new rules/requests appear at the top
     db[rootCol].unshift(newDoc);
     notify(); 
   },
@@ -135,16 +139,18 @@ export const mockStore = {
     const rootCol = segments[0];
     if (db[rootCol]) {
         const idx = db[rootCol].findIndex((d: any) => d.id === id);
-        if (idx !== -1) db[rootCol][idx] = { ...db[rootCol][idx], ...data };
+        if (idx !== -1) {
+            db[rootCol][idx] = { ...db[rootCol][idx], ...data };
+            notify();
+        }
     }
-    notify(); 
   },
   deleteDoc: (path: string, id: string) => { 
     const segments = path.split('/');
     const rootCol = segments[0];
     if (db[rootCol]) {
         db[rootCol] = db[rootCol].filter((d: any) => d.id !== id);
+        notify(); 
     }
-    notify(); 
   }
 };

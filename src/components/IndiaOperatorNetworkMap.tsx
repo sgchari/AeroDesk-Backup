@@ -7,7 +7,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import * as turf from '@turf/turf';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
     Zap, X, Plane, ArrowRight, ShieldCheck, 
     Activity, Target, Info, Coins, Clock, MapPin, 
@@ -35,13 +34,6 @@ const ACTIVE_MISSIONS_CONFIG = [
   { id: 'ADX-106', from: 'kolkata', to: 'delhi' }
 ];
 
-const mockEmptyLegs = [
-    { id: 'EL-992', from: 'Mumbai', to: 'Delhi', coords: [[72.8777, 19.0760], [77.1025, 28.7041]], ac: 'Legacy 650', seats: 8, price: '₹ 6.5L', date: 'Tomorrow' },
-    { id: 'EL-441', from: 'Delhi', to: 'Goa', coords: [[77.1025, 28.7041], [73.8333, 15.4989]], ac: 'Citation XLS', seats: 6, price: '₹ 4.8L', date: 'Feb 22' },
-    { id: 'EL-210', from: 'Bangalore', to: 'Hyderabad', coords: [[77.5946, 12.9716], [78.4867, 17.3850]], ac: 'Phenom 300', seats: 4, price: '₹ 2.2L', date: 'Feb 24' },
-    { id: 'EL-885', from: 'Chennai', to: 'Mumbai', coords: [[80.2707, 13.0827], [72.8777, 19.0760]], ac: 'King Air B200', seats: 7, price: '₹ 3.1L', date: 'Feb 25' }
-];
-
 const demandHeatmapPoints = {
   type: 'FeatureCollection',
   features: [
@@ -65,8 +57,7 @@ export function IndiaOperatorNetworkMap() {
   const [selection, setSelection] = useState<string[]>([]);
 
   useEffect(() => {
-    let isMounted = true;
-    if (!mapContainer.current) return;
+    if (!mapContainer.current || map.current) return;
 
     const isMobile = window.innerWidth < 1024;
 
@@ -85,108 +76,16 @@ export function IndiaOperatorNetworkMap() {
 
     map.current = mapInstance;
 
-    const animateMission = (mission: any, instance: maplibregl.Map) => {
-      if (!isMounted || !instance || (instance as any)._removed || !instance.style) return;
-
-      const fromNode = hubNodes.find(h => h.id === mission.from);
-      const toNode = hubNodes.find(h => h.id === mission.to);
-      if (!fromNode || !toNode) return;
-
-      const start = fromNode.position;
-      const end = toNode.position;
-      
-      const routeLine = turf.greatCircle(turf.point(start), turf.point(end), { npoints: 300 });
-      const routeCoords = routeLine.geometry.coordinates;
-      const routeDistance = turf.distance(turf.point(start), turf.point(end));
-
-      const sourceId = `trail-${mission.id}`;
-      
-      try {
-        instance.addSource(sourceId, {
-          type: 'geojson',
-          data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} }
-        });
-
-        instance.addLayer({
-          id: `${sourceId}-layer`,
-          type: 'line',
-          source: sourceId,
-          paint: {
-            'line-color': '#00FFA6',
-            'line-width': 2,
-            'line-opacity': 0.4,
-            'line-dasharray': [4, 6]
-          }
-        });
-
-        const planeEl = document.createElement('div');
-        planeEl.className = 'aircraft-marker';
-        planeEl.innerHTML = `
-          <div class="aircraft-glow"></div>
-          <svg viewBox="0 0 24 24" fill="#00FFA6" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-          </svg>
-        `;
-        
-        const marker = new maplibregl.Marker({ element: planeEl, rotationAlignment: 'map' })
-          .setLngLat(start)
-          .addTo(instance);
-
-        let progress = Math.random(); 
-        const speed = isMobile ? 0.0003 : 0.0005;
-        let animationFrameId: number;
-
-        const step = () => {
-          if (!isMounted || (instance as any)._removed || !instance.style) {
-            cancelAnimationFrame(animationFrameId);
-            return;
-          }
-
-          progress += speed;
-          if (progress > 1) progress = 0;
-
-          const currentAlong = turf.along(routeLine, progress * routeDistance);
-          const nextAlong = turf.along(routeLine, Math.min(1, progress + 0.01) * routeDistance);
-          const bearing = turf.bearing(currentAlong, nextAlong);
-
-          marker.setLngLat(currentAlong.geometry.coordinates as [number, number]);
-          marker.setRotation(bearing);
-
-          const currentIdx = Math.floor(progress * routeCoords.length);
-          const trailStartIdx = Math.max(0, currentIdx - 50);
-          const trailCoords = routeCoords.slice(trailStartIdx, currentIdx + 1);
-
-          const source = instance.getSource(sourceId) as maplibregl.GeoJSONSource;
-          if (source) {
-            source.setData({
-              type: 'Feature',
-              geometry: { type: 'LineString', coordinates: trailCoords },
-              properties: {}
-            });
-          }
-
-          animationFrameId = requestAnimationFrame(step);
-        };
-
-        animationFrameId = requestAnimationFrame(step);
-      } catch (err) {
-        console.warn(`Mission telemetry failure for ${mission.id}:`, err);
-      }
-    };
-
     mapInstance.on('load', () => {
-      if (!isMounted || !mapInstance) return;
+      if (!mapInstance) return;
 
+      // Optimize layers by reducing style complexity where possible
       const style = mapInstance.getStyle();
       style.layers?.forEach((layer) => {
         if (layer.type === 'background') {
           mapInstance.setPaintProperty(layer.id, 'background-color', '#0B1F33');
         } else if (layer.type === 'fill' && (layer.id.includes('water') || layer.id.includes('ocean'))) {
           mapInstance.setPaintProperty(layer.id, 'fill-color', '#081622');
-        } else if (layer.type === 'line' && (layer.id.includes('admin') || layer.id.includes('boundary'))) {
-          mapInstance.setPaintProperty(layer.id, 'line-color', '#1E3A5F');
-        } else if (layer.type === 'symbol') {
-          mapInstance.setPaintProperty(layer.id, 'text-opacity', 0.5);
         }
       });
 
@@ -216,7 +115,7 @@ export function IndiaOperatorNetworkMap() {
         new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(hub.position).addTo(mapInstance);
       });
 
-      // --- INTELLIGENCE LAYERS: DEMAND ---
+      // Add sources and layers once to prevent re-render glitches
       mapInstance.addSource('demand-forecast', { type: 'geojson', data: demandHeatmapPoints as any });
       mapInstance.addLayer({
         id: 'demand-heat',
@@ -237,67 +136,9 @@ export function IndiaOperatorNetworkMap() {
           'heatmap-opacity': 0.35
         }
       });
-
-      // --- INTELLIGENCE LAYERS: EMPTY LEGS ---
-      const emptyLegFeatures = mockEmptyLegs.map(leg => {
-          const arc = turf.greatCircle(turf.point(leg.coords[0]), turf.point(leg.coords[1]), { npoints: 100 });
-          return {
-              type: 'Feature',
-              properties: { ...leg },
-              geometry: arc.geometry
-          };
-      });
-
-      mapInstance.addSource('empty-legs', { 
-          type: 'geojson', 
-          data: { type: 'FeatureCollection', features: emptyLegFeatures as any } 
-      });
-
-      mapInstance.addLayer({
-          id: 'empty-leg-lines',
-          type: 'line',
-          source: 'empty-legs',
-          layout: { visibility: 'none' },
-          paint: {
-              'line-color': '#FFD166',
-              'line-width': 1.5,
-              'line-dasharray': [4, 4],
-              'line-opacity': 0.6
-          }
-      });
-
-      // Add icons for empty leg destinations
-      mockEmptyLegs.forEach(leg => {
-          const el = document.createElement('div');
-          el.className = 'empty-leg-marker';
-          el.innerHTML = `<svg viewBox="0 0 24 24" fill="#FFD166" class="w-4 h-4 shadow-[0_0_10px_#FFD166]"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`;
-          const popup = new maplibregl.Popup({ offset: 15, closeButton: false, className: 'institutional-popup' })
-            .setHTML(`
-                <div class="p-2 space-y-1">
-                    <p class="text-[8px] font-black uppercase text-[#FFD166]">Empty Leg Alert</p>
-                    <p class="text-[10px] font-bold text-white">${leg.from} → ${leg.to}</p>
-                    <p class="text-[9px] text-muted-foreground">${leg.ac} • ${leg.seats} Seats</p>
-                    <p class="text-[10px] font-black text-accent">${leg.price}</p>
-                </div>
-            `);
-          
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat(leg.coords[1] as [number, number])
-            .setPopup(popup);
-          
-          // Store markers to toggle visibility
-          (marker as any)._elType = 'empty-leg';
-          marker.addTo(mapInstance);
-          if (!showEmptyLegs) el.style.display = 'none';
-      });
-
-      ACTIVE_MISSIONS_CONFIG.forEach((mission, index) => {
-        setTimeout(() => { if (isMounted && map.current) animateMission(mission, map.current); }, index * 1500);
-      });
     });
 
     return () => {
-      isMounted = false;
       if (map.current) {
         map.current.remove();
         map.current = null;
@@ -305,37 +146,25 @@ export function IndiaOperatorNetworkMap() {
     };
   }, []);
 
+  // Use effects for visibility toggles to avoid full map resets
   useEffect(() => {
-    if (!map.current || !map.current.loaded()) return;
-    try { map.current.setLayoutProperty('demand-heat', 'visibility', showForecast ? 'visible' : 'none'); } catch (e) {}
+    if (map.current?.getLayer('demand-heat')) {
+        map.current.setLayoutProperty('demand-heat', 'visibility', showForecast ? 'visible' : 'none');
+    }
   }, [showForecast]);
 
-  useEffect(() => {
-    if (!map.current || !map.current.loaded()) return;
-    try { 
-        map.current.setLayoutProperty('empty-leg-lines', 'visibility', showEmptyLegs ? 'visible' : 'none');
-        // Toggle HTML markers for empty legs
-        const container = map.current.getContainer();
-        const markers = container.querySelectorAll('.empty-leg-marker');
-        markers.forEach((m: any) => m.style.display = showEmptyLegs ? 'block' : 'none');
-    } catch (e) {}
-  }, [showEmptyLegs]);
-
-  const calcPrice = (rate: number) => {
-    if (!priceEstimate) return '---';
-    const base = priceEstimate.distance * rate;
-    const l = Math.round((base * 0.9) / 100000);
-    const h = Math.round((base * 1.1) / 100000);
-    return `₹ ${l}L – ₹ ${h}L`;
-  };
-
-  const calcTime = () => {
-    if (!priceEstimate) return '---';
+  const stats = useMemo(() => {
+    if (!priceEstimate) return null;
     const hours = priceEstimate.distance / 700;
     const h = Math.floor(hours);
     const m = Math.round((hours - h) * 60);
-    return `${h}h ${m}m`;
-  };
+    
+    return {
+        time: `${h}h ${m}m`,
+        xls: `₹ ${Math.round((priceEstimate.distance * 1200 * 0.9) / 100000)}L – ₹ ${Math.round((priceEstimate.distance * 1200 * 1.1) / 100000)}L`,
+        phenom: `₹ ${Math.round((priceEstimate.distance * 1000 * 0.9) / 100000)}L – ₹ ${Math.round((priceEstimate.distance * 1000 * 1.1) / 100000)}L`
+    };
+  }, [priceEstimate]);
 
   return (
     <div className="w-full h-full relative overflow-hidden flex flex-col group">
@@ -351,19 +180,9 @@ export function IndiaOperatorNetworkMap() {
               {showForecast ? "ON" : "OFF"}
             </Button>
           </div>
-          <Separator className="bg-white/5" />
-          <div className="flex items-center justify-between gap-4">
-            <div className="space-y-0.5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white">Empty Leg Layer</p>
-              <p className="text-[8px] text-muted-foreground uppercase font-bold">Marketplace Feed</p>
-            </div>
-            <Button size="sm" variant={showEmptyLegs ? "default" : "outline"} onClick={() => setShowEmptyLegs(!showEmptyLegs)} className={cn("h-7 text-[8px] font-black uppercase px-3", showEmptyLegs && "bg-[#FFD166] text-black border-none")}>
-              {showEmptyLegs ? "LIVE" : "OFF"}
-            </Button>
-          </div>
         </div>
 
-        {priceEstimate && (
+        {priceEstimate && stats && (
             <Card className="bg-slate-950/90 backdrop-blur-2xl border-primary/20 shadow-2xl rounded-2xl overflow-hidden animate-in slide-in-from-left-4 duration-500 w-full sm:w-[280px]">
                 <CardHeader className="p-3 sm:p-4 pb-2 border-b border-white/5">
                     <div className="flex items-center justify-between">
@@ -382,16 +201,16 @@ export function IndiaOperatorNetworkMap() {
                             <Clock className="h-3 w-3" />
                             <span className="text-[9px] sm:text-[10px] uppercase font-bold">Flight Time</span>
                         </div>
-                        <span className="text-xs font-black text-white">{calcTime()}</span>
+                        <span className="text-xs font-black text-white">{stats.time}</span>
                     </div>
                     <div className="space-y-2">
                         <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
                             <span className="text-[8px] sm:text-[9px] font-bold text-white/60">Citation XLS</span>
-                            <span className="text-[9px] sm:text-[10px] font-black text-accent">{calcPrice(1200)}</span>
+                            <span className="text-[9px] sm:text-[10px] font-black text-accent">{stats.xls}</span>
                         </div>
                         <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
                             <span className="text-[8px] sm:text-[9px] font-bold text-white/60">Phenom 300</span>
-                            <span className="text-[9px] sm:text-[10px] font-black text-accent">{calcPrice(1000)}</span>
+                            <span className="text-[9px] sm:text-[10px] font-black text-accent">{stats.phenom}</span>
                         </div>
                     </div>
                     <Button className="w-full h-8 bg-primary text-white text-[9px] font-black uppercase tracking-widest gap-2">
@@ -402,7 +221,7 @@ export function IndiaOperatorNetworkMap() {
         )}
       </div>
 
-      {/* Hub Discovery Panel - Mobile Bottom / Desktop Right */}
+      {/* Hub Discovery Panel */}
       {selectedHub && !priceEstimate && (
         <div className="absolute bottom-4 left-4 right-4 lg:top-6 lg:right-6 lg:bottom-auto lg:left-auto z-30 lg:w-72 animate-in slide-in-from-bottom-4 lg:slide-in-from-right-4 duration-500">
             <Card className="bg-slate-950/90 backdrop-blur-2xl border-accent/20 shadow-2xl rounded-2xl overflow-hidden">
@@ -458,10 +277,6 @@ export function IndiaOperatorNetworkMap() {
             <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full border border-[#00FFA6] animate-ping" />
             <span className="text-[8px] sm:text-[9px] font-bold text-white/70 uppercase tracking-tighter">Operator Network Hub</span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#FFD166] shadow-[0_0_8px_#FFD166]" />
-            <span className="text-[8px] sm:text-[9px] font-bold text-white/70 uppercase tracking-tighter">Empty Leg Opportunity</span>
-          </div>
         </div>
       </div>
 
@@ -470,14 +285,6 @@ export function IndiaOperatorNetworkMap() {
         .radar-node-core { width: 6px; height: 6px; background: #00FFA6; border-radius: 50%; box-shadow: 0 0 10px #00FFA6; z-index: 2; }
         .radar-node-pulse { position: absolute; width: 28px; height: 28px; border: 2px solid #00FFA6; border-radius: 50%; animation: radar-pulse 2.5s infinite; z-index: 1; }
         @keyframes radar-pulse { 0% { transform: scale(0.2); opacity: 0.8; } 100% { transform: scale(1.5); opacity: 0; } }
-        .aircraft-marker { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; z-index: 100; transition: transform 0.1s linear; }
-        @media (min-width: 1024px) { .aircraft-marker { width: 28px; height: 28px; } }
-        .aircraft-glow { position: absolute; width: 32px; height: 32px; background: radial-gradient(circle, rgba(0,255,166,0.2) 0%, transparent 70%); border-radius: 50%; z-index: -1; animation: blink 1.5s infinite; }
-        @media (min-width: 1024px) { .aircraft-glow { width: 40px; height: 40px; } }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .aircraft-marker svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px #00FFA6); }
-        .institutional-popup .maplibregl-popup-content { background: rgba(15, 23, 42, 0.9) !important; backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 0; }
-        .institutional-popup .maplibregl-popup-tip { border-top-color: rgba(15, 23, 42, 0.9) !important; }
       `}</style>
     </div>
   );
