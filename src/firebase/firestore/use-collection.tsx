@@ -61,7 +61,6 @@ export function useCollection<T = any>(
         }
 
         try {
-            // BILLING PROTECTION: Enforce session limits on simulation reads
             const mockData = mockStore.getCollection(path, user);
             setData(mockData as WithId<T>[]);
         } catch (e: any) {
