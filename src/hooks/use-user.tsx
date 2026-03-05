@@ -3,6 +3,9 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect, useCallback } from 'react';
 import type { User as AppUser } from '@/lib/types';
 import { mockUsers, mockCorporates, mockOperators, mockAgencies, mockHotelPartners } from '@/lib/data';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { initializeFirebase } from '@/firebase';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 interface UserContextType {
   user: AppUser | null;
@@ -19,17 +22,46 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchUser = useCallback(() => {
-    // We remove the 'user' dependency to prevent infinite re-render loops
-    // since this function calls setUser.
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+
+  const fetchUser = useCallback(async () => {
     setLoading(true);
     setError(null);
+
+    // Production Path: Real Firebase Auth
+    if (!isDemoMode) {
+        const auth = getAuth();
+        const firestore = getFirestore();
+        
+        onAuthStateChanged(auth, async (fbUser) => {
+            if (fbUser) {
+                try {
+                    // Fetch extended profile from institutional roles
+                    const userDoc = await getDoc(doc(firestore, 'users', fbUser.uid));
+                    if (userDoc.exists()) {
+                        setUser({ id: fbUser.uid, ...userDoc.data() } as AppUser);
+                    } else {
+                        // Fallback for new auth users without a profile
+                        setUser({ id: fbUser.uid, email: fbUser.email || '', firstName: 'User', role: 'Customer' } as any);
+                    }
+                } catch (e: any) {
+                    console.error("Auth context failed:", e);
+                    setError(e);
+                }
+            } else {
+                setUser(null);
+            }
+            setLoading(false);
+        });
+        return;
+    }
+
+    // Simulation Path: Local Demo Identities
     try {
         const demoUserId = typeof window !== 'undefined' ? localStorage.getItem('demoUserId') : null;
         if (demoUserId) {
             const foundUser = mockUsers.find(u => u.id === demoUserId);
             if (foundUser) {
-                // Institutional Firm Mapping
                 let firmName = foundUser.company || "";
                 
                 if (foundUser.corporateId) {
@@ -51,7 +83,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     company: firmName
                 } as AppUser);
             } else {
-                setError(new Error("Demo session invalid."));
                 localStorage.removeItem('demoUserId');
                 setUser(null);
             }
@@ -63,20 +94,26 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } finally {
         setLoading(false);
     }
-  }, []); // Empty dependency array ensures stable reference and stops recursion
+  }, [isDemoMode]);
 
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
 
   const login = (uid: string) => {
-    localStorage.setItem('demoUserId', uid);
-    fetchUser();
+    if (isDemoMode) {
+        localStorage.setItem('demoUserId', uid);
+        fetchUser();
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem('demoUserId');
-    setUser(null);
+    if (isDemoMode) {
+        localStorage.removeItem('demoUserId');
+        setUser(null);
+    } else {
+        getAuth().signOut();
+    }
   };
 
   const value = { user, isLoading, error, login, logout };

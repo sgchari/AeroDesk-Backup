@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,6 +6,7 @@ import {
   DocumentData,
   FirestoreError,
   CollectionReference,
+  onSnapshot
 } from 'firebase/firestore';
 import { mockStore } from '@/lib/mock-store';
 import { useUser } from '@/hooks/use-user';
@@ -20,8 +20,8 @@ export interface UseCollectionResult<T> {
 }
 
 /**
- * LOW-COST OPTIMIZED Hook
- * Enforces mandatory pagination and disables global scans.
+ * Institutional Hook for managing real-time data collections.
+ * Supports both Production (Firestore) and Simulation (Local Store) modes.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
@@ -35,12 +35,23 @@ export function useCollection<T = any>(
   const isDemoMode = !memoizedTargetRefOrQuery || !memoizedTargetRefOrQuery.firestore?.app || (memoizedTargetRefOrQuery.firestore as any)._isMock;
 
   useEffect(() => {
-    if (!isDemoMode) {
-        setIsLoading(false);
-        return;
+    if (!isDemoMode && memoizedTargetRefOrQuery) {
+      setIsLoading(true);
+      const unsubscribe = onSnapshot(memoizedTargetRefOrQuery, 
+        (snapshot) => {
+          const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<T>));
+          setData(items);
+          setIsLoading(false);
+        },
+        (err) => {
+          setError(err);
+          setIsLoading(false);
+        }
+      );
+      return () => unsubscribe();
     }
     
-    const fetchData = () => {
+    const fetchDemoData = () => {
         if (isUserLoading) return;
 
         const path = demoPath;
@@ -50,7 +61,7 @@ export function useCollection<T = any>(
         }
 
         try {
-            // BILLING PROTECTION: Enforce LIMIT 10 on all collection reads
+            // BILLING PROTECTION: Enforce session limits on simulation reads
             const mockData = mockStore.getCollection(path, user);
             setData(mockData as WithId<T>[]);
         } catch (e: any) {
@@ -60,11 +71,13 @@ export function useCollection<T = any>(
         }
     };
     
-    fetchData();
-    const unsubscribe = mockStore.subscribe(fetchData);
-    return () => unsubscribe();
+    if (isDemoMode) {
+        fetchDemoData();
+        const unsubscribe = mockStore.subscribe(fetchDemoData);
+        return () => unsubscribe();
+    }
 
-  }, [user, isUserLoading, isDemoMode, demoPath]);
+  }, [user, isUserLoading, isDemoMode, demoPath, memoizedTargetRefOrQuery]);
 
   return { data, isLoading, error };
 }

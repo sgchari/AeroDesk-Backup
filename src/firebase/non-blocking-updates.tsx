@@ -1,99 +1,92 @@
-
 'use client';
     
 import {
   CollectionReference,
   DocumentReference,
   SetOptions,
+  setDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc
 } from 'firebase/firestore';
 import { toast } from '@/hooks/use-toast';
 import { mockStore } from '@/lib/mock-store';
 import { UserRole } from '@/lib/types';
 
+const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
 /**
- * In demo mode, this function now interacts with the mock store.
+ * Commits document updates to either the mock store (Demo) or Cloud Firestore (Production).
  */
 export function setDocumentNonBlocking(docRef: DocumentReference, data: any, options: SetOptions) {
-    if (!docRef.path) {
-        toast({
-            title: 'Demo Mode',
-            description: 'This action is disabled in the read-only demo.',
+    if (isDemoMode || (docRef.firestore as any)._isMock) {
+        if (!docRef.path) return;
+        const [collection, docId] = docRef.path.split('/');
+        mockStore.updateDoc(collection, docId, data);
+        toast({ title: 'Demo Data Updated', description: 'Your changes have been saved for this session.' });
+    } else {
+        setDoc(docRef, data, options).catch(err => {
+            console.error("Firestore Write Error:", err);
+            toast({ title: 'Sync Error', description: 'Failed to update institutional record.', variant: 'destructive' });
         });
-        return;
     }
-    const [collection, docId] = docRef.path.split('/');
-    mockStore.updateDoc(collection, docId, data);
-    toast({
-        title: 'Demo Data Updated',
-        description: 'Your changes have been saved for this session.',
-    });
 }
 
-
 /**
- * In demo mode, this function adds a document to the mock store.
+ * Adds a new document to the registry.
  */
 export function addDocumentNonBlocking(colRef: CollectionReference, data: any) {
-  if (!colRef.path) {
-      toast({
-          title: 'Demo Mode',
-          description: 'This action is disabled in the read-only demo.',
-      });
+  if (isDemoMode || (colRef.firestore as any)._isMock) {
+      if (!colRef.path) return Promise.resolve();
+      mockStore.addDoc(colRef.path, data);
+      toast({ title: 'Demo Data Added', description: 'Your new item has been saved for this session.' });
       return Promise.resolve();
+  } else {
+      return addDoc(colRef, data).catch(err => {
+          console.error("Firestore Create Error:", err);
+          toast({ title: 'Persistence Error', description: 'Failed to register new data entry.', variant: 'destructive' });
+      });
   }
-  mockStore.addDoc(colRef.path, data);
-  toast({
-      title: 'Demo Data Added',
-      description: 'Your new item has been saved for this session.',
-  });
-  return Promise.resolve();
 }
 
-
 /**
- * In demo mode, this function updates a document in the mock store.
+ * Updates an existing document in the database.
  */
 export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) {
-    if (!docRef.path) {
-        toast({
-            title: 'Demo Mode',
-            description: 'This action is disabled in the read-only demo.',
-        });
-        return;
-    }
-    const pathSegments = docRef.path.split('/');
-    const collection = pathSegments.length > 2 ? `${pathSegments[0]}/${pathSegments[1]}/${pathSegments[2]}` : pathSegments[0];
-    const docId = pathSegments.length > 2 ? pathSegments[3] : pathSegments[1];
+    if (isDemoMode || (docRef.firestore as any)._isMock) {
+        if (!docRef.path) return;
+        const pathSegments = docRef.path.split('/');
+        const collection = pathSegments.length > 2 ? `${pathSegments[0]}/${pathSegments[1]}/${pathSegments[2]}` : pathSegments[0];
+        const docId = pathSegments.length > 2 ? pathSegments[3] : pathSegments[1];
 
-    mockStore.updateDoc(collection, docId, data);
-    toast({
-        title: 'Demo Data Updated',
-        description: 'Your changes have been saved for this session.',
-    });
+        mockStore.updateDoc(collection, docId, data);
+        toast({ title: 'Demo Data Updated', description: 'Your changes have been saved for this session.' });
+    } else {
+        updateDoc(docRef, data).catch(err => {
+            console.error("Firestore Update Error:", err);
+            toast({ title: 'Registry Sync Error', description: 'Could not synchronize changes with production.', variant: 'destructive' });
+        });
+    }
 }
 
-
 /**
- * In demo mode, this function removes a document from the mock store.
+ * Removes a document from the production or simulation store.
  */
 export function deleteDocumentNonBlocking(docRef: DocumentReference) {
-    if (!docRef.path) {
-        toast({
-            title: 'Demo Mode',
-            description: 'This action is disabled in the read-only demo.',
+    if (isDemoMode || (docRef.firestore as any)._isMock) {
+        if (!docRef.path) return;
+        const pathSegments = docRef.path.split('/');
+        const collection = pathSegments.length > 2 ? `${pathSegments[0]}/${pathSegments[1]}/${pathSegments[2]}` : pathSegments[0];
+        const docId = pathSegments.length > 2 ? pathSegments[3] : pathSegments[1];
+        
+        mockStore.deleteDoc(collection, docId);
+        toast({ title: 'Demo Data Deleted', description: 'The item has been removed for this session.' });
+    } else {
+        deleteDoc(docRef).catch(err => {
+            console.error("Firestore Delete Error:", err);
+            toast({ title: 'Governance Error', description: 'Failed to remove record from production.', variant: 'destructive' });
         });
-        return;
     }
-    const pathSegments = docRef.path.split('/');
-    const collection = pathSegments.length > 2 ? `${pathSegments[0]}/${pathSegments[1]}/${pathSegments[2]}` : pathSegments[0];
-    const docId = pathSegments.length > 2 ? pathSegments[3] : pathSegments[1];
-    
-    mockStore.deleteDoc(collection, docId);
-    toast({
-        title: 'Demo Data Deleted',
-        description: 'The item has been removed for this session.',
-    });
 }
 
 // Special mock function for creating a user in demo mode
@@ -109,33 +102,33 @@ export const createDemoUser = (name: string, email: string, role: UserRole, ctdI
         updatedAt: new Date().toISOString(),
     };
 
-    let collection = 'customers'; // Default
+    let collectionName = 'customers'; 
     switch (role) {
-        case 'Admin': collection = 'platformAdmins'; break;
-        case 'Customer': collection = 'customers'; break;
+        case 'Admin': collectionName = 'platformAdmins'; break;
+        case 'Customer': collectionName = 'customers'; break;
         case 'Operator': 
-            collection = 'operators';
+            collectionName = 'operators';
             newUser.companyName = `${newUser.firstName}'s Company`;
             break;
         case 'Authorized Distributor': 
-            collection = 'distributors';
+            collectionName = 'distributors';
             newUser.companyName = `${newUser.firstName}'s Agency`;
             break;
         case 'Hotel Partner':
-            collection = 'hotelPartners';
+            collectionName = 'hotelPartners';
             newUser.companyName = `${newUser.firstName}'s Hotel`;
             break;
         case 'CTD Admin':
         case 'Corporate Admin':
         case 'Requester':
             if (ctdId) {
-                collection = `corporateTravelDesks/${ctdId}/users`;
+                collectionName = `corporateTravelDesks/${ctdId}/users`;
                 newUser.ctdId = ctdId;
             }
             break;
     }
     
-    mockStore.addDoc(collection, newUser);
+    mockStore.addDoc(collectionName, newUser);
     return newUser;
 };
 

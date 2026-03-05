@@ -1,28 +1,38 @@
-
 'use client';
 
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useEffect, useState } from 'react';
 import { FirebaseProvider } from '@/firebase/provider';
+import { initializeFirebase } from '@/firebase';
 
 interface FirebaseClientProviderProps {
   children: ReactNode;
 }
 
-const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || true;
-
-// In demo mode, we need to provide a mock firestore object that can be identified.
-const mockFirestore = {
-  _isMock: true,
-  app: isDemoMode ? { name: '[DEMO]', automaticDataCollectionEnabled: false } : null,
-};
-
 export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
+  const [sdks, setSdks] = useState<any>(null);
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+
+  useEffect(() => {
+    if (!isDemoMode) {
+      try {
+        const initialized = initializeFirebase();
+        setSdks(initialized);
+      } catch (error) {
+        console.error("Firebase initialization failed:", error);
+      }
+    }
+  }, [isDemoMode]);
+
+  const mockFirestore = {
+    _isMock: true,
+    app: { name: '[DEMO]', automaticDataCollectionEnabled: false },
+  };
+
   const services = {
-    firebaseApp: null,
-    // Provide a mock firestore object in demo mode.
-    firestore: isDemoMode ? (mockFirestore as any) : null,
-    auth: null,
-    storage: null,
+    firebaseApp: sdks?.firebaseApp || null,
+    firestore: isDemoMode ? (mockFirestore as any) : (sdks?.firestore || null),
+    auth: sdks?.auth || null,
+    storage: sdks?.storage || null,
   };
 
   return (
