@@ -115,7 +115,7 @@ export const mockHotelPartners: HotelPartner[] = [
 
 export const mockAlerts: SystemAlert[] = [
     { id: 'al-01', type: 'operational', message: 'No operator response to RFQ-CORP-001 for > 24 hours.', severity: 'medium', timestamp: new Date().toISOString(), status: 'active' },
-    { id: 'al-02', type: 'security', message: 'Repeated login failures detected for user admin@aerodesk.global.', severity: 'high', timestamp: new Date().toISOString(), status: 'active' },
+    { id: 'al-02', type: 'security', message: 'Repeated login failures detected for user admin@aerodesk.global.', severity: 'high', timestamp: new Date().toISOString(), status: 'resolved' },
     { id: 'al-03', type: 'system', message: 'Cloud Function "generateInvoice" execution time exceeded 30s.', severity: 'low', timestamp: new Date().toISOString(), status: 'resolved' },
 ];
 
