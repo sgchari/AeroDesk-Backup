@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -12,7 +13,7 @@ import { LandingHeader } from '@/components/landing-header';
 import { LandingFooter } from '@/components/landing-footer';
 import { useUser } from '@/hooks/use-user';
 import { Badge } from '@/components/ui/badge';
-import { ShieldCheck, Plane, Briefcase, Hotel, Users, User as UserIcon } from 'lucide-react';
+import { ShieldCheck, User as UserIcon } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,19 +21,7 @@ export default function LoginPage() {
 
   const handleDemoLogin = (user: User) => {
     login(user.id);
-    router.push('/dashboard');
-  };
-
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-        case 'Admin': return <ShieldCheck className="h-4 w-4 text-primary" />;
-        case 'Operator': return <Plane className="h-4 w-4 text-accent" />;
-        case 'Travel Agency': return <Briefcase className="h-4 w-4 text-emerald-400" />;
-        case 'CTD Admin':
-        case 'Requester': return <Users className="h-4 w-4 text-sky-400" />;
-        case 'Hotel Partner': return <Hotel className="h-4 w-4 text-rose-400" />;
-        default: return <UserIcon className="h-4 w-4 text-slate-400" />;
-    }
+    router.push('/dashboard/select-role');
   };
 
   return (
@@ -54,37 +43,35 @@ export default function LoginPage() {
         <LandingHeader />
         
         <main className="relative z-10 flex flex-grow flex-col items-center justify-center p-4 sm:p-8">
-          <Card className="w-full max-w-2xl border-white/10 bg-black/30 text-white backdrop-blur-xl shadow-2xl">
+          <Card className="w-full max-w-md border-white/10 bg-black/30 text-white backdrop-blur-xl shadow-2xl">
             <CardHeader className="text-center pb-2">
               <div className="flex justify-center mb-6">
                 <Link href="/">
                   <Logo className="scale-110" />
                 </Link>
               </div>
-              <CardTitle className="text-2xl font-headline font-bold">AeroDesk Simulation Hub</CardTitle>
+              <CardTitle className="text-2xl font-headline font-bold">AeroDesk Terminal Access</CardTitle>
               <CardDescription className="text-white/60 uppercase tracking-widest text-[10px] font-black mt-2">
-                Select an institutional profile to enter the coordination protocol
+                Enter credentials or initialize the institutional demo
               </CardDescription>
             </CardHeader>
             
             <CardContent className="pt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-4">
                 {mockUsers.map(user => (
                   <Button 
                     key={user.id} 
                     variant="outline"
-                    className="h-auto py-4 px-4 bg-white/5 border-white/5 hover:bg-white/10 hover:border-accent/30 transition-all flex flex-col items-start gap-2 group"
+                    className="w-full h-auto py-6 px-6 bg-accent text-accent-foreground border-transparent hover:bg-accent/90 transition-all flex items-center justify-between group rounded-xl"
                     onClick={() => handleDemoLogin(user)}>
-                      <div className="flex items-center justify-between w-full">
-                        <Badge variant="outline" className="text-[8px] font-black uppercase border-white/10 group-hover:border-accent/50 group-hover:text-accent">
-                            {user.role}
+                      <div className="flex flex-col items-start gap-1">
+                        <Badge variant="secondary" className="bg-black/20 text-black border-none text-[8px] font-black uppercase tracking-widest px-2 mb-1">
+                            Demo Super User
                         </Badge>
-                        {getRoleIcon(user.role)}
+                        <p className="text-sm font-black uppercase tracking-wider">Initialize Simulation</p>
+                        <p className="text-[10px] opacity-60 italic lowercase">{user.email}</p>
                       </div>
-                      <div className="text-left">
-                        <p className="text-sm font-bold text-white">{user.firstName} {user.lastName}</p>
-                        <p className="text-[10px] text-white/40 italic">{user.company || 'Direct Platform Access'}</p>
-                      </div>
+                      <ShieldCheck className="h-6 w-6 opacity-40 group-hover:opacity-100 transition-opacity" />
                   </Button>
                 ))}
               </div>
@@ -92,10 +79,10 @@ export default function LoginPage() {
               <div className="mt-8 pt-6 border-t border-white/10 text-center space-y-4">
                 <div className="flex items-center justify-center gap-2 text-[10px] text-white/40 font-bold uppercase tracking-widest">
                     <ShieldCheck className="h-3 w-3 text-primary" />
-                    Secure Simulation Mode Active
+                    Encrypted Protocol Active
                 </div>
-                <p className="text-[11px] text-white/60 leading-relaxed max-w-sm mx-auto">
-                    This is a read-only institutional demo. Registration for live NSOP coordination is currently invitation-only.
+                <p className="text-[11px] text-white/60 leading-relaxed max-w-xs mx-auto">
+                    Institutional access is currently restricted to verified NSOP operators and authorized corporate desks.
                 </p>
               </div>
             </CardContent>
