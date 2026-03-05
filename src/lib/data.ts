@@ -58,6 +58,21 @@ export const mockUsers: User[] = [
       createdAt: "2025-01-01T10:00:00Z", 
       updatedAt: "2025-01-01T10:00:00Z" 
     },
+    { 
+      id: 'demo_super_user', 
+      email: 'demo@aerodesk.global', 
+      firstName: 'Demo', 
+      lastName: 'Super User', 
+      role: 'demo_super_user', 
+      platformRole: 'admin', 
+      firmRole: 'admin',
+      status: 'active', 
+      demoMode: true,
+      allowedRoles: ["customer", "operator", "agency", "corporate", "hotel", "admin"],
+      avatar: 'https://picsum.photos/seed/super/200/200',
+      createdAt: "2025-01-01T10:00:00Z", 
+      updatedAt: "2025-01-01T10:00:00Z" 
+    },
     // WEST ZONE
     { id: 'op-west-01', email: 'rajesh@flyco.aero', firstName: 'Rajesh', lastName: 'Verma', role: 'Operator', platformRole: 'operator', firmRole: 'admin', operatorId: 'op-west-01', status: 'active', avatar: 'https://picsum.photos/seed/opw1/200/200', createdAt: "2025-01-10T09:00:00Z", updatedAt: "2025-01-10T09:00:00Z" },
     { id: 'ag-west-01', email: 'amit@sky-dist.aero', firstName: 'Amit', lastName: 'Patel', role: 'Travel Agency', platformRole: 'agency', firmRole: 'admin', agencyId: 'ag-west-01', status: 'active', avatar: 'https://picsum.photos/seed/agw1/200/200', createdAt: "2025-01-12T16:00:00Z", updatedAt: "2025-01-12T16:00:00Z" },

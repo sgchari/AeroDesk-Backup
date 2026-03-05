@@ -1,4 +1,3 @@
-
 export type PlatformRole = 'admin' | 'operator' | 'agency' | 'corporate' | 'individual' | 'hotel';
 export type FirmRole = 'admin' | 'manager' | 'finance' | 'operations' | 'approver' | 'viewer';
 
@@ -33,6 +32,8 @@ export type User = {
   platformRole: PlatformRole;
   firmRole: FirmRole;
   status: 'active' | 'inactive';
+  demoMode?: boolean;
+  allowedRoles?: string[];
   phoneNumber?: string;
   address?: string;
   avatar?: string;

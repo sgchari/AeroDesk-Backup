@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useUser } from '@/hooks/use-user';
@@ -126,10 +127,14 @@ export default function DashboardPage() {
     if (!isLoading && !user && !error) {
       router.replace('/');
     }
+    // Redirect super user to role selection if no role picked
+    if (!isLoading && user && user.role === 'demo_super_user') {
+        router.replace('/dashboard/select-role');
+    }
   }, [user, isLoading, error, router]);
 
   const renderDashboard = () => {
-    if (!user) return null;
+    if (!user || user.role === 'demo_super_user') return null;
 
     const isRestrictedRole = ['Operator', 'Travel Agency', 'CTD Admin', 'Corporate Admin'].includes(user.role);
     const gstRequirement = isRestrictedRole && user.gstVerificationStatus !== 'verified';
