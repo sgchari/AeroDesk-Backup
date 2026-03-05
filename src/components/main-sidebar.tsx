@@ -18,7 +18,8 @@ import {
   Scale,
   BedDouble,
   Calendar,
-  Clock
+  Clock,
+  Activity
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -40,6 +41,7 @@ import { cn } from '@/lib/utils';
 const NAV_ITEMS: Record<string, any[]> = {
   admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-sky-400' },
+    { href: '/dashboard/admin/monitoring', label: 'Monitoring Center', icon: Activity, color: 'text-rose-400' },
     { href: '/dashboard/admin/analytics', label: 'Platform Intelligence', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/admin/revenue-share', label: 'Revenue Share Engine', icon: Zap, color: 'text-accent' },
     { href: '/dashboard/admin/approvals', label: 'Approvals & Compliance', icon: ShieldCheck, color: 'text-emerald-400' },

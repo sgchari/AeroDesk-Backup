@@ -1,14 +1,11 @@
-
 import { 
   mockUsers, 
   mockRfqs, 
   mockEmptyLegs, 
   mockOperators, 
-  mockAgencies, 
-  mockHotelPartners,
   mockCorporates,
-  mockAircrafts,
-  mockSeatRequests,
+  mockAgencies,
+  mockHotelPartners,
   mockAuditLogs,
   mockAccommodationRequests,
   mockFeatureFlags,
@@ -22,27 +19,22 @@ import {
   mockCommissionRules,
   mockRevenueShareConfigs,
   mockCommissionLedger,
-  mockSettlementRecords
+  mockSettlementRecords,
+  mockAlerts,
+  mockSystemLogs
 } from './data';
 import { User } from './types';
 
 const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
-// Optimized DB Structure matching Scoped Ownership
 let db: any = {
   users: deepCopy(mockUsers),
   operators: deepCopy(mockOperators),
-  distributors: deepCopy(mockAgencies),
-  agencies: deepCopy(mockAgencies),
   corporateTravelDesks: deepCopy(mockCorporates),
-  corporates: deepCopy(mockCorporates),
+  distributors: deepCopy(mockAgencies),
   hotelPartners: deepCopy(mockHotelPartners),
   emptyLegs: deepCopy(mockEmptyLegs),
-  emptyLegFlights: deepCopy(mockEmptyLegs),
-  charterRFQs: deepCopy(mockRfqs),
   charterRequests: deepCopy(mockRfqs),
-  seatAllocations: deepCopy(mockSeatRequests),
-  seatAllocationRequests: deepCopy(mockSeatRequests),
   auditTrails: deepCopy(mockAuditLogs),
   accommodationRequests: deepCopy(mockAccommodationRequests),
   featureFlags: deepCopy(mockFeatureFlags),
@@ -56,17 +48,19 @@ let db: any = {
   revenueShareConfigs: deepCopy(mockRevenueShareConfigs),
   commissionLedger: deepCopy(mockCommissionLedger),
   settlementRecords: deepCopy(mockSettlementRecords),
-  reports: [],
+  alerts: deepCopy(mockAlerts),
+  systemLogs: deepCopy(mockSystemLogs),
   readCount: 0
 };
 
 const listeners: Set<() => void> = new Set();
 
 const notify = () => {
-    // Optimization: Batched notification using requestAnimationFrame
-    window.requestAnimationFrame(() => {
-        listeners.forEach(cb => cb());
-    });
+    if (typeof window !== 'undefined') {
+        window.requestAnimationFrame(() => {
+            listeners.forEach(cb => cb());
+        });
+    }
 };
 
 const subscribe = (callback: () => void) => {
@@ -74,9 +68,6 @@ const subscribe = (callback: () => void) => {
   return () => listeners.delete(callback);
 };
 
-/**
- * Optimized Path Resolver: Simulates subcollections
- */
 const resolvePath = (path: string) => {
   const segments = path.split('/');
   db.readCount++; 
@@ -98,7 +89,7 @@ const resolvePath = (path: string) => {
   }
   
   if (segments.length > 2 && segments[2] === 'users') {
-      return db.users.filter((u: any) => u.ctdId === segments[1] || u.operatorId === segments[1] || u.agencyId === segments[1]);
+      return db.users.filter((u: any) => u.ctdId === segments[1] || u.operatorId === segments[1] || u.agencyId === segments[1] || u.hotelPartnerId === segments[1]);
   }
 
   return (db as any)[segments[0]] || [];
@@ -107,7 +98,6 @@ const resolvePath = (path: string) => {
 const getCollection = (path: string, user?: User | null) => {
   let data = resolvePath(path);
   if (Array.isArray(data)) {
-    // Institutional Limit: Preventing over-fetching in simulation
     return data.slice(0, 50); 
   }
   return data;

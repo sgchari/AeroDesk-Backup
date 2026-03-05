@@ -1,10 +1,8 @@
-
 import type { 
   User, 
   CharterRFQ, 
   EmptyLeg, 
   Aircraft, 
-  Quotation, 
   AuditLog, 
   AccommodationRequest, 
   CorporateTravelDesk, 
@@ -12,6 +10,7 @@ import type {
   RoomCategory, 
   Operator, 
   TravelAgency,
+  HotelPartner,
   FeatureFlag, 
   PolicyFlag, 
   BlogPost, 
@@ -31,9 +30,8 @@ import type {
   CommissionLedgerEntry,
   SettlementRecord,
   TaxConfig,
-  HotelPartner,
-  SeatAllocation,
-  SeatInventoryLog
+  SystemAlert,
+  SystemLog
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -63,50 +61,79 @@ export const mockUsers: User[] = [
 ];
 
 export const mockOperators: Operator[] = [
-    { id: 'op-west-01', companyName: 'FlyCo Charter (West)', nsopLicenseNumber: 'NSOP/FLYCO/2021', officialEmail: 'ops@flyco.aero', registeredAddress: 'Hangar 1, Juhu Aerodrome, Mumbai', contactNumber: '+91 22 2822 2202', profileStatus: 'active', adminUserId: 'op-west-01', status: 'Approved', gstin: '27AAAAA0000A1Z5', stateCode: '27', legalEntityName: 'FlyCo Aviation West Pvt Ltd', city: 'Mumbai', zone: 'West', fleetCount: 12, createdAt: '2025-01-10T09:00:00Z', updatedAt: '2025-01-10T09:00:00Z' },
-    { id: 'op-north-01', companyName: 'Delhi Air Logistics', nsopLicenseNumber: 'NSOP/DAL/2022', officialEmail: 'ops@delhiair.aero', registeredAddress: 'Terminal 1, IGI Airport, Delhi', contactNumber: '+91 11 4455 6677', profileStatus: 'active', adminUserId: 'op-north-01', status: 'Approved', gstin: '07BBBBB1111B1Z2', stateCode: '07', legalEntityName: 'Delhi Air Logistics Pvt Ltd', city: 'Delhi', zone: 'North', fleetCount: 8, createdAt: '2025-01-15T10:00:00Z', updatedAt: '2025-01-15T10:00:00Z' },
-    { id: 'op-south-01', companyName: 'Deccan Charters', nsopLicenseNumber: 'NSOP/DEC/11', officialEmail: 'ops@deccan.aero', registeredAddress: 'HAL Airport Road, Bengaluru', contactNumber: '+91 80 2233 4455', profileStatus: 'active', adminUserId: 'op-south-01', status: 'Approved', gstin: '29DDDDD2222D1Z4', stateCode: '29', legalEntityName: 'Deccan Charters Limited', city: 'Bengaluru', zone: 'South', fleetCount: 15, createdAt: '2025-01-20T09:00:00Z', updatedAt: '2025-01-20T09:00:00Z' }
-];
-
-export const mockAgencies: TravelAgency[] = [
-    { id: 'ag-west-01', companyName: 'Sky Distributors (West)', officialEmail: 'info@skydist.aero', address: 'Suite 405, BKC, Mumbai', contactNumber: '+91 22 4455 6677', adminUserId: 'ag-west-01', gstin: '27CCCCC2222C1Z3', stateCode: '27', legalEntityName: 'Sky Distribution West India', createdAt: '2025-01-12T16:00:00Z', updatedAt: '2025-01-12T16:00:00Z' },
-    { id: 'ag-north-01', companyName: 'Capital Travel Partners', officialEmail: 'ops@capitaltravel.aero', address: 'Connaught Place, Delhi', contactNumber: '+91 11 2233 4455', adminUserId: 'ag-north-01', gstin: '07AAAAA1111A1Z1', stateCode: '07', legalEntityName: 'Capital Travel Partners LLC', createdAt: '2025-01-15T10:00:00Z', updatedAt: '2025-01-15T10:00:00Z' }
+    { 
+        id: 'op-west-01', 
+        companyName: 'FlyCo Charter (West)', 
+        nsopLicenseNumber: 'NSOP/FLYCO/2021', 
+        officialEmail: 'ops@flyco.aero', 
+        registeredAddress: 'Hangar 1, Juhu Aerodrome, Mumbai', 
+        contactNumber: '+91 22 2822 2202', 
+        profileStatus: 'active', 
+        adminUserId: 'op-west-01', 
+        status: 'Approved', 
+        gstin: '27AAAAA0000A1Z5', 
+        stateCode: '27', 
+        legalEntityName: 'FlyCo Aviation West Pvt Ltd', 
+        city: 'Mumbai', 
+        zone: 'West', 
+        fleetCount: 12, 
+        createdAt: '2025-01-10T09:00:00Z', 
+        updatedAt: '2025-01-10T09:00:00Z' 
+    },
 ];
 
 export const mockCorporates: CorporateTravelDesk[] = [
-    { id: 'corp-west-01', companyName: 'Stark Industries', officialEmail: 'travel@stark.corp', address: 'Stark Tower, Mumbai', adminUserId: 'corp-west-01', status: 'Active', gstin: '27DDDDD3333D1Z4', stateCode: '27', legalEntityName: 'Stark Industries West India', createdAt: '2025-01-01T14:00:00Z', updatedAt: '2025-01-01T14:00:00Z' },
-    { id: 'corp-north-01', companyName: 'Bharti Airtel', officialEmail: 'travel@airtel.corp', address: 'Airtel Center, Gurgaon', adminUserId: 'corp-north-01', status: 'Active', gstin: '06AAAAA5555A1Z1', stateCode: '06', legalEntityName: 'Bharti Airtel Limited', createdAt: '2025-01-05T11:00:00Z', updatedAt: '2025-01-05T11:00:00Z' }
+    { 
+        id: 'corp-west-01', 
+        companyName: 'Stark Industries', 
+        status: 'Active', 
+        adminExternalAuthId: 'demo_super_user', 
+        createdAt: '2025-01-01T10:00:00Z',
+        updatedAt: '2025-01-01T10:00:00Z'
+    }
+];
+
+export const mockAgencies: TravelAgency[] = [
+    { 
+        id: 'ag-west-01', 
+        companyName: 'Sky Distributors', 
+        status: 'Active', 
+        createdAt: '2025-01-01T10:00:00Z',
+        updatedAt: '2025-01-01T10:00:00Z'
+    }
 ];
 
 export const mockHotelPartners: HotelPartner[] = [
-    { id: 'hotel-01', companyName: 'Grand Hotels Group', officialEmail: 'partners@grandhotels.com', address: 'Gateway of India, Mumbai', status: 'Approved', createdAt: '2025-01-05T10:00:00Z', updatedAt: '2025-01-05T10:00:00Z', gstin: '27EEEEE4444E1Z1', stateCode: '27', legalEntityName: 'Grand Hospitality Services' }
+    { 
+        id: 'hotel-01', 
+        companyName: 'Grand Hotels Group', 
+        status: 'Active', 
+        createdAt: '2025-01-01T10:00:00Z',
+        updatedAt: '2025-01-01T10:00:00Z'
+    }
 ];
 
-export const mockAircrafts: Aircraft[] = [
-    { id: 'ac-01', operatorId: 'op-west-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'BOM', status: 'Available', utilizationPercent: 72, revenueLostEmptyLegs: 1800000, exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800' },
-    { id: 'ac-02', operatorId: 'op-west-01', name: 'Bombardier Global 6000', type: 'Heavy Jet', registration: 'VT-JSG', paxCapacity: 14, homeBase: 'BOM', status: 'Under Maintenance', utilizationPercent: 45, revenueLostEmptyLegs: 4500000, exteriorImageUrl: 'https://images.unsplash.com/photo-1616193572425-fd11332ec645?q=80&w=800' },
+export const mockAlerts: SystemAlert[] = [
+    { id: 'al-01', type: 'operational', message: 'No operator response to RFQ-CORP-001 for > 24 hours.', severity: 'medium', timestamp: new Date().toISOString(), status: 'active' },
+    { id: 'al-02', type: 'security', message: 'Repeated login failures detected for user admin@aerodesk.global.', severity: 'high', timestamp: new Date().toISOString(), status: 'active' },
+    { id: 'al-03', type: 'system', message: 'Cloud Function "generateInvoice" execution time exceeded 30s.', severity: 'low', timestamp: new Date().toISOString(), status: 'resolved' },
+];
+
+export const mockSystemLogs: SystemLog[] = [
+    { id: 'log-01', event: 'charter_request_created', userId: 'user-123', module: 'charter', action: 'Created RFQ-BOM-DEL', timestamp: new Date().toISOString() },
+    { id: 'log-02', event: 'operator_bid_submitted', userId: 'op-west-01', module: 'marketplace', action: 'Submitted quote for RFQ-BOM-DEL', timestamp: new Date().toISOString() },
 ];
 
 export const mockRfqs: CharterRFQ[] = [
-    { id: 'RFQ-CORP-001', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'AeroDesk User', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', departureTime: '10:00', pax: 5, aircraftType: 'Any Light Jet', status: 'Bidding Open', bidsCount: 2, createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', costCenter: 'STRK-EXEC-25' },
-    { id: 'RFQ-LIVE-001', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'AeroDesk User', tripType: 'Onward', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureDate: '2025-02-20', departureTime: '14:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'enroute', createdAt: '2025-02-18T10:00:00Z', updatedAt: '2025-02-20T12:00:00Z', totalAmount: 1250000, operatorId: 'op-north-01' },
-];
-
-export const mockQuotations: Quotation[] = [
-    { id: 'QUOTE-001', rfqId: 'RFQ-CORP-001', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-01', aircraftName: 'Cessna Citation XLS+', price: 850000, status: 'Submitted', submittedAt: '2025-02-11T09:00:00Z', validUntil: '2025-02-15', operatorRemarks: 'Inclusive of fuel and landing fees.' }
+    { id: 'RFQ-CORP-001', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'AeroDesk User', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', departureTime: '10:00', pax: 5, aircraftType: 'Any Light Jet', status: 'Bidding Open', createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z' },
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
-    { id: 'EL-LIVE-001', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-01', aircraftName: 'VT-FLY', aircraftType: 'Light Jet', departure: 'Mumbai', arrival: 'Delhi', departureTime: '2025-03-10T14:00:00Z', totalCapacity: 8, availableSeats: 6, seatAllocationEnabled: true, pricingModel: 'fixed', pricePerSeat: 45000, minSeatsPerRequest: 1, bookingChannelAllowed: 'both', status: 'live', createdAt: '2025-02-01T10:00:00Z' },
-    { id: 'EL-LIVE-002', operatorId: 'op-north-01', operatorName: 'Delhi Air Logistics', aircraftId: 'ac-03', aircraftName: 'VT-PC', aircraftType: 'Mid-size Jet', departure: 'Delhi', arrival: 'Bengaluru', departureTime: '2025-03-12T10:00:00Z', totalCapacity: 10, availableSeats: 8, seatAllocationEnabled: true, pricingModel: 'fixed', pricePerSeat: 55000, minSeatsPerRequest: 2, bookingChannelAllowed: 'agency', status: 'live', createdAt: '2025-02-05T10:00:00Z' },
-];
-
-export const mockSeatRequests: SeatAllocation[] = [
-    { id: 'SAR-001', flightId: 'EL-LIVE-001', operatorId: 'op-west-01', customerId: 'demo_super_user', agencyId: 'ag-west-01', bookingChannel: 'agency', seatsRequested: 2, pricePerSeat: 45000, totalAmount: 90000, status: 'pendingApproval', paymentStatus: 'pending', passengerName: 'Anil Ambani', clientReference: 'VIP-WEST-01', createdAt: '2025-02-15T10:00:00Z' }
+    { id: 'EL-001', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-01', departure: 'Mumbai', arrival: 'Delhi', departureTime: '2025-03-10T14:00:00Z', availableSeats: 6, status: 'live', createdAt: '2025-02-01T10:00:00Z', pricePerSeat: 45000 },
 ];
 
 export const mockAuditLogs: AuditLog[] = [
-    { id: 'audit-01', actionType: 'PROFILE_UPDATE', entityType: 'Operator', entityId: 'op-west-01', changedBy: 'demo_super_user', timestamp: '2025-02-10T10:30:00Z', user: 'AeroDesk Admin', role: 'Platform Admin', action: 'Updated NSOP Document', details: 'Renewal document uploaded for verification.', targetId: 'op-west-01' },
+    { id: 'audit-01', timestamp: '2025-02-10T10:30:00Z', user: 'AeroDesk Admin', role: 'Platform Admin', action: 'Updated NSOP Document', details: 'Renewal document uploaded for verification.', targetId: 'op-west-01' },
 ];
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
@@ -122,11 +149,11 @@ export const mockPolicyFlags: PolicyFlag[] = [
 ];
 
 export const mockProperties: Property[] = [
-    { id: 'prop-01', hotelPartnerId: 'hotel-01', name: 'The Taj Mahal Palace', city: 'Mumbai', address: 'Colaba, Mumbai', status: 'Active', imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800' },
+    { id: 'prop-01', hotelPartnerId: 'hotel-01', name: 'The Taj Mahal Palace', city: 'Mumbai', status: 'Active', imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800' },
 ];
 
 export const mockRoomCategories: RoomCategory[] = [
-    { id: 'room-01', propertyId: 'prop-01', name: 'Deluxe King Room', maxOccupancy: 2, nightlyRate: 18500, beddingType: 'King' },
+    { id: 'room-01', propertyId: 'prop-01', name: 'Deluxe King Room', nightlyRate: 18500 },
 ];
 
 export const mockTaxConfig: TaxConfig[] = [
@@ -134,7 +161,7 @@ export const mockTaxConfig: TaxConfig[] = [
 ];
 
 export const mockPlatformInvoices: PlatformInvoice[] = [
-    { id: 'PINV-001', entityName: 'FlyCo Charter', entityType: 'Operator', totalAmount: 42500, dueDate: '2025-02-15', status: 'paid' },
+    { id: 'PINV-001', entityName: 'FlyCo Charter', totalAmount: 42500, dueDate: '2025-02-15', status: 'paid' },
 ];
 
 export const mockPlatformChargeRules: PlatformChargeRule[] = [
@@ -154,11 +181,11 @@ export const mockRevenueShareConfigs: RevenueShareConfig[] = [
 ];
 
 export const mockCommissionLedger: CommissionLedgerEntry[] = [
-    { id: 'cle-01', transactionId: 'RFQ-DEMO-004', bookingChannel: 'direct', grossAmount: 850000, totalCommission: 42500, agencyCommissionAmount: 0, aerodeskCommissionAmount: 42500, agencySharePercent: 0, status: 'settled', serviceType: 'charter', createdAt: '2025-02-02T12:00:00Z' },
+    { id: 'cle-01', transactionId: 'RFQ-DEMO-004', bookingChannel: 'direct', grossAmount: 850000, agencyCommissionAmount: 0, aerodeskCommissionAmount: 42500, status: 'settled', serviceType: 'charter', agencySharePercent: 0, createdAt: '2025-02-02T12:00:00Z' },
 ];
 
 export const mockSettlementRecords: SettlementRecord[] = [
-    { id: 'SET-001', entityName: 'FlyCo Charter', settlementPeriodStart: '2025-01-01', settlementPeriodEnd: '2025-01-31', totalAgencyCommission: 0, status: 'paid', paymentReference: 'BATCH-JAN-01' },
+    { id: 'SET-001', entityName: 'FlyCo Charter', settlementPeriodStart: '2025-01-01', settlementPeriodEnd: '2025-01-31', totalAgencyCommission: 0, status: 'paid' },
 ];
 
 export const mockBlogPosts: BlogPost[] = [
