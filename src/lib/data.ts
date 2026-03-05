@@ -35,7 +35,11 @@ import type {
   SeatAllocation,
   AircraftPosition,
   AircraftAvailability,
-  CharterDemandForecast
+  CharterDemandForecast,
+  FlightSegment,
+  RouteDemandHistory,
+  EmptyLegPrediction,
+  FleetOptimizationSuggestion
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -125,9 +129,30 @@ export const mockAircraftAvailability: AircraftAvailability[] = [
 ];
 
 export const mockDemandForecast: CharterDemandForecast[] = [
-    { id: 'df-01', origin: 'Mumbai', destination: 'Goa', routeCode: 'VABB-VOGO', predictedDemandScore: 95, timeframe: '7days', aircraftTypeDemand: ['Phenom 300', 'Citation XLS'] },
-    { id: 'df-02', origin: 'Delhi', destination: 'Dubai', routeCode: 'VIDP-OMDB', predictedDemandScore: 88, timeframe: '7days', aircraftTypeDemand: ['Legacy 650', 'Global 6000'] },
-    { id: 'df-03', origin: 'Bangalore', destination: 'Hyderabad', routeCode: 'VOBL-VOHS', predictedDemandScore: 72, timeframe: '24hours', aircraftTypeDemand: ['King Air B200', 'C90'] },
+    { id: 'df-01', origin: 'Mumbai', destination: 'Goa', routeCode: 'VABB-VOGO', predictedDemandScore: 95, timeframe: '7days', forecastWindow: '7days', aircraftTypeDemand: ['Phenom 300', 'Citation XLS'] },
+    { id: 'df-02', origin: 'Delhi', destination: 'Dubai', routeCode: 'VIDP-OMDB', predictedDemandScore: 88, timeframe: '7days', forecastWindow: '7days', aircraftTypeDemand: ['Legacy 650', 'Global 6000'] },
+    { id: 'df-03', origin: 'Bangalore', destination: 'Hyderabad', routeCode: 'VOBL-VOHS', predictedDemandScore: 72, timeframe: '24hours', forecastWindow: '24hours', aircraftTypeDemand: ['King Air B200', 'C90'] },
+];
+
+export const mockFlightSegments: FlightSegment[] = [
+    { id: 'seg-01', aircraftRegistration: 'VT-FLY', aircraftType: 'Citation XLS', operator: 'FlyCo Charter', originAirport: 'VABB', destinationAirport: 'VIDP', departureTime: '2025-02-10T10:00:00Z', arrivalTime: '2025-02-10T12:15:00Z', flightDurationMinutes: 135 },
+    { id: 'seg-02', aircraftRegistration: 'VT-STK', aircraftType: 'Legacy 650', operator: 'Club One Air', originAirport: 'VIDP', destinationAirport: 'VOGO', departureTime: '2025-02-11T09:00:00Z', arrivalTime: '2025-02-11T11:30:00Z', flightDurationMinutes: 150 },
+];
+
+export const mockRouteDemandHistory: RouteDemandHistory[] = [
+    { id: 'rd-01', route: 'VABB-VOGO', origin: 'Mumbai', destination: 'Goa', monthlyFlightCount: 42, demandScore: 0.82, routeFrequency: 12, weeklyDemandTrend: 'up' },
+    { id: 'rd-02', route: 'VIDP-VABB', origin: 'Delhi', destination: 'Mumbai', monthlyFlightCount: 68, demandScore: 0.94, routeFrequency: 18, weeklyDemandTrend: 'stable' },
+    { id: 'rd-03', route: 'VOBL-VOHS', origin: 'Bangalore', destination: 'Hyderabad', monthlyFlightCount: 25, demandScore: 0.65, routeFrequency: 8, weeklyDemandTrend: 'down' },
+];
+
+export const mockEmptyLegPredictions: EmptyLegPrediction[] = [
+    { id: 'elp-01', aircraft: 'Citation XLS (VT-FLY)', predictedRoute: 'Delhi-Jaipur', probability: 0.88, timeframe: '24hours', reason: 'Common positioning leg post-charter delivery in VIDP' },
+    { id: 'elp-02', aircraft: 'Legacy 650 (VT-STK)', predictedRoute: 'Goa-Mumbai', probability: 0.74, timeframe: '48hours', reason: 'Return repositioning after weekend wedding cluster' },
+];
+
+export const mockFleetOptimizationSuggestions: FleetOptimizationSuggestion[] = [
+    { id: 'fos-01', operator: 'FlyCo Charter', aircraft: 'Phenom 300', recommendation: 'Reposition to Mumbai (VABB)', reason: 'High predicted demand for Mumbai-Goa corridor in next 72h.', expectedYieldIncrease: 18 },
+    { id: 'fos-02', operator: 'Club One Air', aircraft: 'Global 6000', recommendation: 'Increase block availability for Delhi (VIDP)', reason: 'Supply shortage detected for long-haul heavy jet sectors to Dubai.', expectedYieldIncrease: 25 },
 ];
 
 export const mockPressReleases: PressRelease[] = [

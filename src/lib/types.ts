@@ -79,6 +79,7 @@ export type CharterRFQ = {
   autopilotRecommendation?: AutopilotMatch | null;
   catering?: string;
   specialRequirements?: string;
+  pricePrediction?: CharterPricePrediction;
 };
 
 export type AutopilotMatch = {
@@ -492,4 +493,54 @@ export type CharterDemandForecast = {
     predictedDemandScore: number;
     timeframe: "24hours" | "3days" | "7days" | "30days";
     aircraftTypeDemand: string[];
+    forecastWindow?: string;
+};
+
+export type FlightSegment = {
+    id: string;
+    aircraftRegistration: string;
+    aircraftType: string;
+    operator: string;
+    originAirport: string;
+    destinationAirport: string;
+    departureTime: string;
+    arrivalTime: string;
+    flightDurationMinutes: number;
+};
+
+export type RouteDemandHistory = {
+    id: string;
+    route: string;
+    origin: string;
+    destination: string;
+    monthlyFlightCount: number;
+    demandScore: number;
+    routeFrequency?: number;
+    weeklyDemandTrend?: 'up' | 'down' | 'stable';
+};
+
+export type EmptyLegPrediction = {
+    id: string;
+    aircraft: string;
+    predictedRoute: string;
+    probability: number;
+    timeframe: string;
+    reason: string;
+};
+
+export type FleetOptimizationSuggestion = {
+    id: string;
+    operator: string;
+    aircraft: string;
+    recommendation: string;
+    reason: string;
+    expectedYieldIncrease: number;
+};
+
+export type CharterPricePrediction = {
+    route: string;
+    aircraftType: string;
+    predictedPriceMin: number;
+    predictedPriceMax: number;
+    confidenceScore: number;
 };

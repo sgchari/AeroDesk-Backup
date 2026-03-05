@@ -4,8 +4,8 @@ import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useCollection, useUser } from "@/firebase";
-import type { Aircraft } from "@/lib/types";
-import { Activity, Plane, Clock, Target, TrendingUp, AlertCircle, ShieldCheck, Zap } from "lucide-react";
+import type { Aircraft, FleetOptimizationSuggestion } from "@/lib/types";
+import { Activity, Plane, Clock, Target, TrendingUp, AlertCircle, ShieldCheck, Zap, Sparkles, ArrowUpRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { 
@@ -16,9 +16,6 @@ import {
     CartesianGrid, 
     Tooltip, 
     ResponsiveContainer,
-    PieChart,
-    Pie,
-    Cell,
     LineChart,
     Line
 } from 'recharts';
@@ -36,7 +33,8 @@ const MOCK_UTIL_HISTORY = [
 
 export default function FleetIntelligencePage() {
     const { user } = useUser();
-    const { data: fleet, isLoading } = useCollection<Aircraft>(null, user ? `operators/${user.id}/aircrafts` : undefined);
+    const { data: fleet, isLoading: fleetLoading } = useCollection<Aircraft>(null, user ? `operators/${user.id}/aircrafts` : undefined);
+    const { data: suggestions, isLoading: suggestionsLoading } = useCollection<FleetOptimizationSuggestion>(null, 'fleetOptimizationSuggestions');
 
     const stats = useMemo(() => {
         if (!fleet) return { avgUtil: 0, totalHours: 0, aogCount: 0 };
@@ -54,6 +52,8 @@ export default function FleetIntelligencePage() {
             util: 60 + Math.random() * 30
         })) || [];
     }, [fleet]);
+
+    const isLoading = fleetLoading || suggestionsLoading;
 
     return (
         <div className="space-y-6">
@@ -100,6 +100,35 @@ export default function FleetIntelligencePage() {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* AI Optimization Suggestions (NEW) */}
+            <Card className="bg-primary/10 border-accent/20 overflow-hidden relative shadow-2xl">
+                <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-accent/5 blur-[100px] rounded-full pointer-events-none" />
+                <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2 text-white">
+                        <Sparkles className="h-5 w-5 text-accent animate-pulse" />
+                        AI Fleet Optimization Suggestions
+                    </CardTitle>
+                    <CardDescription className="text-xs">Predictive modeling identifying repositioning opportunities to capture surging demand clusters.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {suggestions?.filter(s => s.operator === (user?.company || 'FlyCo Charter')).map(fos => (
+                            <div key={fos.id} className="p-4 rounded-xl bg-black/40 border border-white/5 hover:border-accent/30 transition-all group">
+                                <div className="flex items-center justify-between mb-3">
+                                    <span className="text-[10px] font-black text-accent uppercase tracking-widest">{fos.aircraft}</span>
+                                    <div className="flex items-center gap-2">
+                                        <ArrowUpRight className="h-3 w-3 text-emerald-500" />
+                                        <span className="text-[10px] font-black text-emerald-500">+{fos.expectedYieldIncrease}% YIELD TARGET</span>
+                                    </div>
+                                </div>
+                                <h4 className="text-sm font-bold text-white mb-1">{fos.recommendation}</h4>
+                                <p className="text-[11px] text-muted-foreground italic leading-relaxed">"{fos.reason}"</p>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <Card className="lg:col-span-2 bg-card">
