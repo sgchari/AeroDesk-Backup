@@ -1,9 +1,8 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { EmptyLeg, EmptyLegSeatAllocationRequest, CharterRFQ, CommissionLedgerEntry } from "@/lib/types";
+import type { EmptyLeg, SeatAllocation, CharterRFQ, CommissionLedgerEntry } from "@/lib/types";
 import { Plane, Users, Calendar, GanttChartSquare, FileText, ArrowRight, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
@@ -30,9 +29,9 @@ export function TravelAgencyDashboard() {
 
   const seatRequestsQuery = useMemoFirebase(() => {
     if (!firestore || (firestore as any)._isMock || !user) return null;
-    return query(collection(firestore, 'seatAllocationRequests'), where('requesterExternalAuthId', '==', user.id));
+    return query(collection(firestore, 'seatAllocations'), where('customerId', '==', user.id));
   }, [firestore, user]);
-  const { data: seatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(seatRequestsQuery, 'seatAllocationRequests');
+  const { data: seatRequests, isLoading: seatRequestsLoading } = useCollection<SeatAllocation>(seatRequestsQuery, 'seatAllocations');
   
   const charterRequestsQuery = useMemoFirebase(() => {
     if (!firestore || (firestore as any)._isMock || !user) return null;
@@ -57,15 +56,15 @@ export function TravelAgencyDashboard() {
     
     return {
         availableSeats: emptyLegs?.length ?? 0,
-        pendingSeatRequests: seatRequests?.filter(r => r.status === 'Requested').length ?? 0,
+        pendingSeatRequests: seatRequests?.filter(r => r.status === 'pendingApproval' || r.status === 'Requested').length ?? 0,
         openCharterRequests: charterRequests?.filter(r => ['Bidding Open', 'rfqSubmitted'].includes(r.status)).length ?? 0,
-        activeClientMovements: (charterRequests?.filter(r => ['Confirmed', 'boarding', 'departed', 'arrived'].includes(r.status)).length ?? 0) + (seatRequests?.filter(r => r.status === 'Approved').length ?? 0),
+        activeClientMovements: (charterRequests?.filter(r => ['Confirmed', 'boarding', 'departed', 'arrived'].includes(r.status)).length ?? 0) + (seatRequests?.filter(r => r.status === 'approved' || r.status === 'confirmed').length ?? 0),
         accruedEarnings: accrued > 100000 ? `₹ ${(accrued / 100000).toFixed(1)} L` : `₹ ${accrued.toLocaleString()}`
     };
   }, [emptyLegs, seatRequests, charterRequests, ledger]);
 
   return (
-    <>
+    <div className="space-y-6">
       <PageHeader 
         title="Commercial Command View" 
         description={`Immediate business situational awareness for ${user?.company || 'Your Agency'}.`}
@@ -85,13 +84,13 @@ export function TravelAgencyDashboard() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-2 mt-6">
-        <Card className="bg-card">
-            <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="bg-card border-white/5">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
-                    <CardTitle>Marketplace Discoveries</CardTitle>
-                    <CardDescription>Latest approved empty leg inventory.</CardDescription>
+                    <CardTitle className="text-base font-bold">Marketplace Discoveries</CardTitle>
+                    <CardDescription className="text-xs">Latest approved empty leg inventory.</CardDescription>
                 </div>
-                <Button asChild variant="ghost" size="sm" className="text-accent gap-2">
+                <Button asChild variant="ghost" size="sm" className="text-accent gap-2 text-[10px] font-black uppercase tracking-widest">
                     <Link href="/dashboard/travel-agency/available-seats">Explore Feed <ArrowRight className="h-3 w-3" /></Link>
                 </Button>
             </CardHeader>
@@ -99,18 +98,18 @@ export function TravelAgencyDashboard() {
                 {isLoading ? <Skeleton className="h-40 w-full" /> : (
                 <Table>
                     <TableHeader>
-                    <TableRow>
-                        <TableHead>Route</TableHead>
-                        <TableHead>Asset</TableHead>
-                        <TableHead className="text-center">Seats</TableHead>
+                    <TableRow className="border-white/5 hover:bg-transparent">
+                        <TableHead className="text-[10px] uppercase font-black">Route</TableHead>
+                        <TableHead className="text-[10px] uppercase font-black">Asset</TableHead>
+                        <TableHead className="text-[10px] uppercase font-black text-center">Seats</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
                     {emptyLegs?.slice(0, 5).map((leg: EmptyLeg) => (
-                        <TableRow key={leg.id}>
-                            <TableCell className="font-medium">{leg.departure} - {leg.arrival}</TableCell>
-                            <TableCell className="text-xs">{leg.aircraftName || 'Jet'}</TableCell>
-                            <TableCell className="font-bold text-center">{leg.availableSeats}</TableCell>
+                        <TableRow key={leg.id} className="border-white/5 hover:bg-white/[0.02]">
+                            <TableCell className="py-3 font-medium text-xs text-white">{leg.departure} - {leg.arrival}</TableCell>
+                            <TableCell className="text-[10px] text-muted-foreground uppercase">{leg.aircraftName || 'Jet'}</TableCell>
+                            <TableCell className="font-black text-center text-xs text-accent">{leg.availableSeats}</TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
@@ -119,28 +118,30 @@ export function TravelAgencyDashboard() {
             </CardContent>
         </Card>
 
-        <Card className="bg-card">
-            <CardHeader>
-                <CardTitle>Operational Signal</CardTitle>
-                <CardDescription>Status of your active commercial leads.</CardDescription>
+        <Card className="bg-card border-white/5">
+            <CardHeader className="pb-2">
+                <CardTitle className="text-base font-bold">Operational Signal</CardTitle>
+                <CardDescription className="text-xs">Status of your active commercial leads.</CardDescription>
             </CardHeader>
             <CardContent>
                 {isLoading ? <Skeleton className="h-48 w-full" /> : (
-                    <div className="space-y-4">
-                        {seatRequests?.slice(0, 3).map(req => (
-                            <div key={req.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/10 border border-white/5">
+                    <div className="space-y-3">
+                        {seatRequests && seatRequests.length > 0 ? seatRequests.slice(0, 4).map(req => (
+                            <div key={req.id} className="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold text-accent">{req.clientReference || 'Standard Client'}</p>
-                                    <p className="text-[10px] text-muted-foreground uppercase font-code">{req.emptyLegId}</p>
+                                    <p className="text-xs font-bold text-white">{req.clientReference || 'Standard Client'}</p>
+                                    <p className="text-[9px] text-muted-foreground uppercase font-code tracking-tighter">{req.flightId}</p>
                                 </div>
-                                <Badge variant={req.status === 'Requested' ? 'warning' : 'success'} className="text-[10px] h-5">
+                                <Badge variant="outline" className={cn(
+                                    "text-[9px] h-5 font-black uppercase border-none px-2",
+                                    req.status === 'pendingApproval' || req.status === 'Requested' ? "bg-amber-500/20 text-amber-500" : "bg-emerald-500/20 text-emerald-500"
+                                )}>
                                     {req.status}
                                 </Badge>
                             </div>
-                        ))}
-                        {(!isLoading && (!seatRequests || seatRequests.length === 0)) && (
-                            <div className="text-center py-10">
-                                <p className="text-xs text-muted-foreground">No active leads currently tracked.</p>
+                        )) : (
+                            <div className="text-center py-10 opacity-50">
+                                <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">No active leads identified</p>
                             </div>
                         )}
                     </div>
@@ -148,6 +149,6 @@ export function TravelAgencyDashboard() {
             </CardContent>
         </Card>
       </div>
-    </>
+    </div>
   );
 }

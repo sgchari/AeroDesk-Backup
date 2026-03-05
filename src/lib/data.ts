@@ -31,7 +31,8 @@ import type {
   SettlementRecord,
   TaxConfig,
   SystemAlert,
-  SystemLog
+  SystemLog,
+  SeatAllocation
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -128,30 +129,37 @@ export const mockSystemLogs: SystemLog[] = [
 ];
 
 export const mockRfqs: CharterRFQ[] = [
-    { id: 'RFQ-CORP-001', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', departureTime: '10:00', pax: 5, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', totalAmount: 1250000 },
+    { id: 'RFQ-CORP-001', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', departureTime: '10:00', pax: 5, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', totalAmount: 1250000, bidsCount: 2 },
     { id: 'RFQ-CORP-002', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Pepper Potts', company: 'Stark Industries', tripType: 'Return', departure: 'Bangalore (VOBL)', arrival: 'Goa (VOGO)', departureDate: '2025-03-20', departureTime: '11:30', pax: 3, aircraftType: 'Mid-size Jet', status: 'charterConfirmed', createdAt: '2025-02-12T09:00:00Z', updatedAt: '2025-02-15T14:00:00Z', totalAmount: 850000, operatorId: 'op-west-01' },
     { id: 'RFQ-DEMO-003', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Happy Hogan', company: 'Stark Industries', tripType: 'Onward', departure: 'Delhi (VIDP)', arrival: 'Mumbai (VABB)', departureDate: '2025-02-28', departureTime: '08:00', pax: 2, aircraftType: 'Light Jet', status: 'boarding', createdAt: '2025-02-05T10:00:00Z', updatedAt: '2025-02-28T07:30:00Z', totalAmount: 420000, operatorId: 'op-north-01' },
     { id: 'RFQ-DEMO-004', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Bruce Banner', company: 'Stark Industries', tripType: 'Onward', departure: 'Chennai (VOMM)', arrival: 'Hyderabad (VOHS)', departureDate: '2025-02-01', departureTime: '14:00', pax: 1, aircraftType: 'Turboprop', status: 'tripClosed', createdAt: '2025-01-20T10:00:00Z', updatedAt: '2025-02-02T18:00:00Z', totalAmount: 310000, operatorId: 'op-west-01' },
-    { id: 'RFQ-BIDS-005', customerId: 'user-005', requesterExternalAuthId: 'user-005', customerName: 'Mukesh A.', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'London (LHR)', departureDate: '2025-04-01', departureTime: '22:00', pax: 8, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2025-02-18T10:00:00Z', updatedAt: '2025-02-18T10:00:00Z' },
+    { id: 'RFQ-BIDS-005', customerId: 'user-005', requesterExternalAuthId: 'user-005', customerName: 'Mukesh A.', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'London (LHR)', departureDate: '2025-04-01', departureTime: '22:00', pax: 8, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2025-02-18T10:00:00Z', updatedAt: '2025-02-18T10:00:00Z', bidsCount: 4 },
+    { id: 'RFQ-BIDS-006', customerId: 'user-006', requesterExternalAuthId: 'user-006', customerName: 'Ratan T.', tripType: 'Return', departure: 'Delhi (VIDP)', arrival: 'New York (JFK)', departureDate: '2025-05-10', departureTime: '06:00', pax: 4, aircraftType: 'Ultra Long Range', status: 'Bidding Open', createdAt: '2025-02-20T10:00:00Z', updatedAt: '2025-02-20T10:00:00Z', bidsCount: 1 },
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-001', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-01', aircraftName: 'Citation XLS', aircraftType: 'Light Jet', departure: 'Mumbai', arrival: 'Delhi', departureTime: '2025-03-10T14:00:00Z', totalCapacity: 8, availableSeats: 6, status: 'live', createdAt: '2025-02-01T10:00:00Z', pricePerSeat: 45000, seatAllocationEnabled: true, minSeatsPerRequest: 1, pricingModel: 'Fixed' },
     { id: 'EL-002', operatorId: 'op-north-01', operatorName: 'Club One Air', aircraftId: 'ac-02', aircraftName: 'Legacy 650', aircraftType: 'Heavy Jet', departure: 'Delhi', arrival: 'Dubai', departureTime: '2025-03-12T09:00:00Z', totalCapacity: 13, availableSeats: 13, status: 'live', createdAt: '2025-02-05T10:00:00Z', pricePerSeat: 120000, seatAllocationEnabled: true, minSeatsPerRequest: 2, pricingModel: 'Dynamic' },
     { id: 'EL-003', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-03', aircraftName: 'Phenom 300', aircraftType: 'Light Jet', departure: 'Goa', arrival: 'Mumbai', departureTime: '2025-03-15T18:00:00Z', totalCapacity: 6, availableSeats: 2, status: 'live', createdAt: '2025-02-10T10:00:00Z', pricePerSeat: 35000, seatAllocationEnabled: true, minSeatsPerRequest: 1, pricingModel: 'Fixed' },
+    { id: 'EL-004', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-04', aircraftName: 'Global 6000', aircraftType: 'Heavy Jet', departure: 'Bangalore', arrival: 'Singapore', departureTime: '2025-03-25T10:00:00Z', totalCapacity: 14, availableSeats: 14, status: 'Published', createdAt: '2025-02-15T10:00:00Z', pricePerSeat: 185000, seatAllocationEnabled: true, minSeatsPerRequest: 1, pricingModel: 'Fixed' },
 ];
 
 export const mockAircraft: Aircraft[] = [
-    { id: 'ac-01', operatorId: 'op-west-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'Mumbai (VABB)', status: 'Available', hourlyRate: 180000 },
-    { id: 'ac-02', operatorId: 'op-north-01', name: 'Embraer Legacy 650', type: 'Heavy Jet', registration: 'VT-STK', paxCapacity: 13, homeBase: 'Delhi (VIDP)', status: 'Available', hourlyRate: 450000 },
-    { id: 'ac-03', operatorId: 'op-west-01', name: 'Beechcraft King Air B200', type: 'Turboprop', registration: 'VT-PC', paxCapacity: 7, homeBase: 'Pune (VAPO)', status: 'Under Maintenance', hourlyRate: 95000 },
-    { id: 'ac-04', operatorId: 'op-west-01', name: 'Bombardier Global 6000', type: 'Heavy Jet', registration: 'VT-JSG', paxCapacity: 14, homeBase: 'Mumbai (VABB)', status: 'Available', hourlyRate: 650000 },
+    { id: 'ac-01', operatorId: 'op-west-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'Mumbai (VABB)', status: 'Available', hourlyRate: 180000, exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800' },
+    { id: 'ac-02', operatorId: 'op-north-01', name: 'Embraer Legacy 650', type: 'Heavy Jet', registration: 'VT-STK', paxCapacity: 13, homeBase: 'Delhi (VIDP)', status: 'Available', hourlyRate: 450000, exteriorImageUrl: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=800' },
+    { id: 'ac-03', operatorId: 'op-west-01', name: 'Beechcraft King Air B200', type: 'Turboprop', registration: 'VT-PC', paxCapacity: 7, homeBase: 'Pune (VAPO)', status: 'Under Maintenance', hourlyRate: 95000, exteriorImageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=800' },
+    { id: 'ac-04', operatorId: 'op-west-01', name: 'Bombardier Global 6000', type: 'Heavy Jet', registration: 'VT-JSG', paxCapacity: 14, homeBase: 'Mumbai (VABB)', status: 'Available', hourlyRate: 650000, exteriorImageUrl: 'https://images.unsplash.com/photo-1616193572425-fd11332ec645?q=80&w=800' },
 ];
 
 export const mockCrew: CrewMember[] = [
     { id: 'crew-01', operatorId: 'op-west-01', firstName: 'Rajesh', lastName: 'Khanna', role: 'Captain', status: 'Available', licenseNumber: 'ATPL-4521', assignedAircraftRegistration: 'VT-FLY' },
     { id: 'crew-02', operatorId: 'op-west-01', firstName: 'Vikram', lastName: 'Sethi', role: 'First Officer', status: 'On Duty', licenseNumber: 'CPL-8892', assignedAircraftRegistration: 'VT-JSG' },
     { id: 'crew-03', operatorId: 'op-west-01', firstName: 'Ananya', lastName: 'Roy', role: 'Cabin Crew', status: 'Available', licenseNumber: 'CC-1102', assignedAircraftRegistration: 'FLOAT' },
+];
+
+export const mockSeatAllocations: SeatAllocation[] = [
+    { id: 'SA-001', flightId: 'EL-001', operatorId: 'op-west-01', customerId: 'demo_super_user', customerName: 'Tony Stark', bookingChannel: 'direct', seatsRequested: 2, pricePerSeat: 45000, totalAmount: 90000, status: 'approved', paymentStatus: 'paid', createdAt: '2025-02-15T10:00:00Z', passengers: [{ fullName: 'Tony Stark', nationality: 'USA', idType: 'Passport', idNumber: 'A1234567' }, { fullName: 'Pepper Potts', nationality: 'USA', idType: 'Passport', idNumber: 'B7654321' }] },
+    { id: 'SA-002', flightId: 'EL-003', operatorId: 'op-west-01', customerId: 'ag-west-01', customerName: 'Sky Distributors', bookingChannel: 'agency', seatsRequested: 4, pricePerSeat: 35000, totalAmount: 140000, status: 'pendingApproval', paymentStatus: 'pending', createdAt: '2025-02-18T14:00:00Z', clientReference: 'VIP-CLIENT-LUX', passengers: [] },
 ];
 
 export const mockAuditLogs: AuditLog[] = [

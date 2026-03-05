@@ -29,6 +29,29 @@ export type User = {
   updatedAt: string;
 };
 
+export type RfqStatus = 
+    | 'Draft' 
+    | 'New' 
+    | 'Submitted' 
+    | 'Pending Approval' 
+    | 'Bidding Open' 
+    | 'quoteAccepted' 
+    | 'awaitingManifest' 
+    | 'manifestSubmitted' 
+    | 'manifestApproved' 
+    | 'invoiceIssued' 
+    | 'paymentSubmitted' 
+    | 'paymentConfirmed' 
+    | 'charterConfirmed' 
+    | 'operationalPreparation' 
+    | 'preFlightReady' 
+    | 'boarding' 
+    | 'departed' 
+    | 'arrived' 
+    | 'flightCompleted' 
+    | 'tripClosed' 
+    | 'cancelled';
+
 export type CharterRFQ = {
   id: string;
   customerId: string;
@@ -44,15 +67,18 @@ export type CharterRFQ = {
   departureTime: string;
   pax: number;
   aircraftType: string;
-  status: string;
+  status: RfqStatus | string;
   createdAt: string;
   updatedAt: string;
   totalAmount?: number;
+  bidsCount?: number;
   costCenter?: string;
   businessPurpose?: string;
   hotelRequired?: boolean;
   hotelPreferences?: string;
   autopilotRecommendation?: AutopilotMatch | null;
+  catering?: string;
+  specialRequirements?: string;
 };
 
 export type AutopilotMatch = {
@@ -93,8 +119,10 @@ export type Aircraft = {
     homeBase: string;
     status: 'Available' | 'Under Maintenance' | 'AOG' | 'Restricted';
     exteriorImageUrl?: string;
+    interiorImageUrl?: string;
     hourlyRate?: number;
     createdAt?: string;
+    updatedAt?: string;
 };
 
 export type EmptyLeg = {
@@ -110,10 +138,16 @@ export type EmptyLeg = {
     totalCapacity: number;
     availableSeats: number;
     basePricePerSeat: number;
+    pricePerSeat?: number;
+    estimatedPricePerSeat?: number;
     status: string;
     createdAt: string;
+    updatedAt?: string;
     pricingModel: 'Fixed' | 'Dynamic';
-    seatPricingStrategy?: PricingTier[];
+    seatPricingStrategy?: PricingTier[] | null;
+    seatAllocationEnabled?: boolean;
+    minSeatsPerRequest?: number;
+    bookingChannelAllowed?: 'agency' | 'direct' | 'both';
 };
 
 export type PricingTier = {
@@ -121,17 +155,26 @@ export type PricingTier = {
     price: number;
 };
 
+export type SeatAllocationStatus = 'pendingApproval' | 'approved' | 'rejected' | 'paymentPending' | 'confirmed' | 'cancelled';
+
 export type SeatAllocation = {
     id: string;
     flightId: string;
     operatorId: string;
     customerId: string;
     customerName: string;
-    seatsRequested: number;
-    totalAmount: number;
+    agencyId?: string | null;
     bookingChannel: 'direct' | 'agency' | 'corporate';
-    status: 'pending' | 'confirmed' | 'cancelled' | 'payment_pending';
+    seatsRequested: number;
+    pricePerSeat: number;
+    totalAmount: number;
+    status: SeatAllocationStatus | string;
+    paymentStatus: 'pending' | 'paid' | 'failed';
+    clientReference?: string;
+    passengerNotes?: string;
+    passengers: Passenger[];
     createdAt: string;
+    updatedAt?: string;
 };
 
 export type AuditLog = {
@@ -247,6 +290,7 @@ export type PassengerManifest = {
     passengers: Passenger[];
     createdAt: string;
     updatedAt: string;
+    submittedBy?: string;
 };
 
 export type Passenger = {
@@ -276,15 +320,20 @@ export type Payment = {
     utrReference: string;
     status: string;
     createdAt: string;
+    verifiedAt?: string | null;
 };
 
 export type ActivityLog = {
     id: string;
-    entityId: string;
+    entityId?: string;
+    charterId?: string;
     actionType: string;
     performedBy: string;
     role: string;
     timestamp: string;
+    previousStatus?: string;
+    newStatus?: string;
+    metadata?: any;
 };
 
 export type Commission = {

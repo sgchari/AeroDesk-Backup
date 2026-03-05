@@ -1,11 +1,10 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { CharterRFQ, RfqStatus } from "@/lib/types";
-import { MoreHorizontal, FileText, Clock, CheckCircle, Plane, Hotel, AlertTriangle, ArrowRight, Gavel, XCircle, Users, Armchair, Info } from "lucide-react";
+import { MoreHorizontal, FileText, Clock, CheckCircle, Plane, Hotel, AlertTriangle, ArrowRight, Gavel, XCircle, Users, Armchair, Info, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/use-user";
@@ -16,7 +15,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 
-const getStatusInfo = (status: RfqStatus): { text: string; icon: React.ElementType; className: string } => {
+const getStatusInfo = (status: RfqStatus | string): { text: string; icon: React.ElementType; className: string } => {
     switch (status) {
         case 'Draft':
         case 'New':
@@ -64,7 +63,7 @@ const TripCard = ({ rfq }: { rfq: CharterRFQ }) => {
                         <span className="font-code text-[10px] text-muted-foreground">{rfq.id}</span>
                     </div>
                     <CardTitle className="text-base group-hover:text-accent transition-colors truncate">
-                        {rfq.departure} <ArrowRight className="inline h-3 w-3 mx-1 text-muted-foreground" /> {rfq.arrival}
+                        {rfq.departure.split(' (')[0]} <ArrowRight className="inline h-3 w-3 mx-1 text-muted-foreground" /> {rfq.arrival.split(' (')[0]}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow space-y-3 text-[11px]">
@@ -77,7 +76,7 @@ const TripCard = ({ rfq }: { rfq: CharterRFQ }) => {
                         <span>{rfq.pax} Passengers • {rfq.aircraftType}</span>
                     </div>
                 </CardContent>
-                <CardFooter className="pt-0">
+                <CardFooter className="pt-0 pb-4 px-6">
                     <Badge className={cn("w-full justify-center text-[10px] h-7 font-bold uppercase tracking-wider", statusInfo.className)}>
                         <statusInfo.icon className="mr-1.5 h-3 w-3"/>
                         {statusInfo.text}
@@ -93,7 +92,7 @@ export function CustomerDashboard() {
   const firestore = useFirestore();
 
   const rfqsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || (firestore as any)._isMock || !user) return null;
     return query(collection(firestore, 'charterRequests'), where('customerId', '==', user.id));
   }, [firestore, user]);
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
@@ -101,8 +100,8 @@ export function CustomerDashboard() {
   const isLoading = isUserLoading || rfqsLoading;
 
   return (
-    <>
-      <PageHeader title="My Trips" description="Track your flight requests, view confirmations, and coordinate logistics.">
+    <div className="space-y-6">
+      <PageHeader title="My Terminal" description="Institutional visibility into your flight requests and active coordination.">
         <CreateRfqDialog />
       </PageHeader>
       
@@ -125,12 +124,12 @@ export function CustomerDashboard() {
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-20 border-2 border-dashed rounded-lg bg-card/20">
+                <div className="text-center py-20 border-2 border-dashed rounded-lg bg-card/20 border-white/5 opacity-60">
                     <div className="p-4 bg-muted/20 w-fit mx-auto rounded-full mb-4">
                         <Plane className="h-10 w-10 text-muted-foreground/40"/>
                     </div>
-                    <h3 className="text-lg font-semibold">No active journeys</h3>
-                    <p className="mt-1 text-sm text-muted-foreground max-w-xs mx-auto mb-6">
+                    <h3 className="text-lg font-bold text-white uppercase tracking-widest">No active journeys</h3>
+                    <p className="mt-1 text-xs text-muted-foreground max-w-xs mx-auto mb-6">
                         Your private aviation journey begins here. Request a flight to start the coordination process.
                     </p>
                     <CreateRfqDialog />
@@ -138,6 +137,6 @@ export function CustomerDashboard() {
             )}
         </>
       )}
-    </>
+    </div>
   );
 }

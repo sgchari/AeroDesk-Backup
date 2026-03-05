@@ -23,7 +23,8 @@ import {
   mockAlerts,
   mockSystemLogs,
   mockAircraft,
-  mockCrew
+  mockCrew,
+  mockSeatAllocations
 } from './data';
 import { User } from './types';
 
@@ -37,7 +38,7 @@ let db: any = {
   hotelPartners: deepCopy(mockHotelPartners),
   emptyLegs: deepCopy(mockEmptyLegs),
   charterRequests: deepCopy(mockRfqs),
-  charterRFQs: deepCopy(mockRfqs), // Map consistent naming
+  charterRFQs: deepCopy(mockRfqs), 
   auditTrails: deepCopy(mockAuditLogs),
   accommodationRequests: deepCopy(mockAccommodationRequests),
   featureFlags: deepCopy(mockFeatureFlags),
@@ -55,6 +56,8 @@ let db: any = {
   systemLogs: deepCopy(mockSystemLogs),
   aircrafts: deepCopy(mockAircraft),
   crew: deepCopy(mockCrew),
+  seatAllocations: deepCopy(mockSeatAllocations),
+  seatAllocationRequests: deepCopy(mockSeatAllocations), // Alias for role consistency
   readCount: 0
 };
 
@@ -97,7 +100,6 @@ const resolvePath = (path: string) => {
       return db.users.filter((u: any) => u.ctdId === segments[1] || u.operatorId === segments[1] || u.agencyId === segments[1] || u.hotelPartnerId === segments[1]);
   }
 
-  // Handle nested aircrafts for operators
   if (segments.length > 2 && segments[2] === 'aircrafts') {
       return db.aircrafts.filter((a: any) => a.operatorId === segments[1]);
   }
