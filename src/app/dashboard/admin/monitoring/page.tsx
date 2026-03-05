@@ -4,29 +4,21 @@ import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { useCollection, useFirestore } from "@/firebase";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { SystemAlert, SystemLog, ServiceHealth, ServiceStatusState } from "@/lib/types";
+import type { SystemAlert, SystemLog } from "@/lib/types";
 import { 
     Activity, 
     ShieldCheck, 
-    Zap, 
-    Database, 
-    Cloud, 
-    HardDrive, 
     Users, 
     FileText, 
     GanttChartSquare, 
-    Plane, 
     AlertTriangle, 
-    CheckCircle2, 
     History,
-    RefreshCw,
-    Gauge
+    RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
     AreaChart, 
     Area, 
@@ -34,12 +26,8 @@ import {
     YAxis, 
     CartesianGrid, 
     Tooltip, 
-    ResponsiveContainer,
-    BarChart,
-    Bar,
-    Legend
+    ResponsiveContainer
 } from 'recharts';
-import { cn } from "@/lib/utils";
 import { useState, useMemo, useEffect } from "react";
 import { AlertCenter } from "@/components/dashboard/admin/monitoring/alert-center";
 import { SystemHealthPanel } from "@/components/dashboard/admin/monitoring/system-health-panel";
@@ -57,22 +45,24 @@ const MOCK_TRAFFIC_DATA = [
 
 export default function AdminMonitoringPage() {
     const firestore = useFirestore();
-    const [lastSync, setLastSync] = useState(new Date().toLocaleTimeString());
+    const [lastSync, setLastSync] = useState<string | null>(null);
 
-    const { data: alerts, isLoading: alertsLoading } = useCollection<SystemAlert>(null, 'alerts');
-    const { data: logs, isLoading: logsLoading } = useCollection<SystemLog>(null, 'systemLogs');
+    useEffect(() => {
+        // Defer time setting to client side only to avoid hydration mismatch
+        setLastSync(new Date().toLocaleTimeString());
+    }, []);
+
+    const { data: alerts } = useCollection<SystemAlert>(null, 'alerts');
+    const { data: logs } = useCollection<SystemLog>(null, 'systemLogs');
     const { data: rfqs } = useCollection(null, 'charterRequests');
-    const { data: el } = useCollection(null, 'emptyLegs');
 
     const criticalAlert = useMemo(() => alerts?.find(a => a.severity === 'high' && a.status === 'active'), [alerts]);
 
     const stats = useMemo(() => ({
-        activeUsers: 142, // Simulated live counter
+        activeUsers: 142, 
         requestsToday: rfqs?.length || 0,
         quotesToday: 24,
-        seatBookings: 8,
-        activeOperators: 12,
-        aircraftOnline: 42
+        integrityScore: "99.8%"
     }), [rfqs]);
 
     const handleRefresh = () => {
@@ -105,7 +95,7 @@ export default function AdminMonitoringPage() {
                 <div className="flex items-center gap-4">
                     <div className="text-right hidden sm:block">
                         <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest leading-none mb-1">Telemetry Sync</p>
-                        <p className="text-[10px] font-code text-primary leading-none">{lastSync}</p>
+                        <p className="text-[10px] font-code text-primary leading-none">{lastSync || 'Initializing...'}</p>
                     </div>
                     <Button onClick={handleRefresh} variant="outline" size="sm" className="h-9 gap-2 border-white/10 font-bold uppercase text-[9px] tracking-widest">
                         <RefreshCw className="h-3.5 w-3.5" /> Refresh Hub
@@ -117,7 +107,7 @@ export default function AdminMonitoringPage() {
                 <StatsCard title="Active Network Users" value={stats.activeUsers.toString()} icon={Users} description="Simulated live pulse" />
                 <StatsCard title="Daily Demand (RFQs)" value={stats.requestsToday.toString()} icon={FileText} description="Created in last 24h" />
                 <StatsCard title="Marketplace Bids" value={stats.quotesToday.toString()} icon={GanttChartSquare} description="Submitted by NSOPs" />
-                <StatsCard title="Integrity Score" value="99.8%" icon={ShieldCheck} description="System-wide health" />
+                <StatsCard title="Integrity Score" value={stats.integrityScore} icon={ShieldCheck} description="System-wide health" />
             </StatsGrid>
 
             <div className="grid gap-6 lg:grid-cols-3">
