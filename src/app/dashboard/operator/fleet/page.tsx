@@ -33,18 +33,22 @@ export default function FleetManagementPage() {
   const [editAircraft, setEditAircraft] = useState<Aircraft | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
 
+  // Use operatorId for firm-level asset registry instead of personal userId
+  const effectiveId = user?.operatorId || user?.id;
+
   const aircraftsQuery = useMemoFirebase(() => {
-    if (!firestore || !user || (firestore as any)._isMock) return null;
-    return collection(firestore, 'operators', user.id, 'aircrafts');
-  }, [firestore, user]);
-  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, user ? `operators/${user.id}/aircrafts` : undefined);
+    if (!firestore || !effectiveId || (firestore as any)._isMock) return null;
+    return collection(firestore, 'operators', effectiveId, 'aircrafts');
+  }, [firestore, effectiveId]);
+  
+  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, effectiveId ? `operators/${effectiveId}/aircrafts` : undefined);
 
   const isLoading = isUserLoading || aircraftsLoading;
 
   return (
     <>
       <PageHeader title="Fleet Control" description="Manage your digital aircraft registry, availability states, and technical specifications.">
-        <Button onClick={() => setIsAddOpen(true)} className="bg-accent text-accent-foreground hover:bg-accent/90">
+        <Button onClick={() => setIsAddOpen(true)} className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold uppercase text-[10px] tracking-widest px-6 h-10">
             <PlusCircle className="h-4 w-4 mr-2" />
             Add Asset
         </Button>
@@ -59,7 +63,7 @@ export default function FleetManagementPage() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {aircrafts?.map((ac: Aircraft) => (
-                <Card key={ac.id} className="bg-card flex flex-col group hover:border-accent/30 transition-all overflow-hidden">
+                <Card key={ac.id} className="bg-card flex flex-col group hover:border-accent/30 transition-all overflow-hidden border-white/5">
                     <div className="relative h-44 w-full bg-muted/20">
                         <Image 
                             src={ac.exteriorImageUrl || `https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800`} 
@@ -74,57 +78,59 @@ export default function FleetManagementPage() {
                             </Badge>
                         </div>
                     </div>
-                    <CardHeader className="pb-3 pt-4">
+                    <CardHeader className="pb-3 pt-4 px-5">
                         <div className="flex items-start justify-between">
-                            <div>
+                            <div className="space-y-0.5">
                                 <CardTitle className="text-base font-bold group-hover:text-accent transition-colors">{ac.name}</CardTitle>
-                                <CardDescription className="font-code text-[10px] uppercase tracking-[0.2em] text-accent/60 mt-0.5">{ac.registration}</CardDescription>
+                                <CardDescription className="font-code text-[10px] uppercase tracking-[0.2em] text-accent/60">{ac.registration}</CardDescription>
                             </div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost" className="h-8 w-8 -mt-1 -mr-2">
+                                <Button size="icon" variant="ghost" className="h-8 w-8 -mt-1 -mr-2 hover:bg-white/10">
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Asset Management</DropdownMenuLabel>
-                                <DropdownMenuItem onClick={() => setStatusAircraft(ac)} className="gap-2">
-                                    <Activity className="h-3.5 w-3.5" /> Update Operational Status
+                                <DropdownMenuItem onClick={() => setStatusAircraft(ac)} className="gap-2 text-[11px] font-medium uppercase tracking-widest">
+                                    <Activity className="h-3.5 w-3.5" /> Update Status
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setEditAircraft(ac)} className="gap-2">
-                                    <Settings2 className="h-3.5 w-3.5" /> Edit Specifications
+                                <DropdownMenuItem onClick={() => setEditAircraft(ac)} className="gap-2 text-[11px] font-medium uppercase tracking-widest">
+                                    <Settings2 className="h-3.5 w-3.5" /> Edit Specs
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="gap-2">
+                                <DropdownMenuItem className="gap-2 text-[11px] font-medium uppercase tracking-widest">
                                     <ShieldCheck className="h-3.5 w-3.5" /> Compliance Log
                                 </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
                     </CardHeader>
-                    <CardContent className="flex-grow space-y-4">
+                    <CardContent className="flex-grow space-y-4 px-5">
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="p-2.5 bg-muted/10 border border-white/5 rounded-lg space-y-1">
+                            <div className="p-2.5 bg-white/[0.02] border border-white/5 rounded-lg space-y-1">
                                 <p className="text-[8px] uppercase text-muted-foreground font-black tracking-widest">Asset Class</p>
-                                <p className="font-medium text-xs truncate">{ac.type}</p>
+                                <p className="font-medium text-xs truncate text-white">{ac.type}</p>
                             </div>
-                            <div className="p-2.5 bg-muted/10 border border-white/5 rounded-lg space-y-1">
+                            <div className="p-2.5 bg-white/[0.02] border border-white/5 rounded-lg space-y-1">
                                 <p className="text-[8px] uppercase text-muted-foreground font-black tracking-widest">Home Base</p>
-                                <p className="font-medium text-xs truncate">{ac.homeBase}</p>
+                                <p className="font-medium text-xs truncate text-white">{ac.homeBase.split(' (')[0]}</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                            <Users className="h-3 w-3 text-accent/60" />
-                            <span>Capacity: <span className="text-foreground font-bold">{ac.paxCapacity} PAX</span></span>
+                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground uppercase font-black tracking-widest">
+                            <Users className="h-3.5 w-3.5 text-accent/60" />
+                            <span>Capacity: <span className="text-foreground font-black">{ac.paxCapacity} PAX</span></span>
                         </div>
                     </CardContent>
                 </Card>
             ))}
             
             {(!aircrafts || aircrafts.length === 0) && (
-                <div className="col-span-full text-center py-20 border-2 border-dashed rounded-xl bg-muted/5">
-                    <Plane className="mx-auto h-10 w-10 text-muted-foreground/20 mb-4" />
-                    <p className="text-muted-foreground">Your digital fleet registry is empty.</p>
-                    <Button onClick={() => setIsAddOpen(true)} variant="link" className="text-accent mt-2">Initialize First Asset</Button>
+                <div className="col-span-full text-center py-24 border-2 border-dashed rounded-xl bg-card/20 border-white/5">
+                    <Plane className="mx-auto h-12 w-12 text-muted-foreground/20 mb-4" />
+                    <p className="text-muted-foreground uppercase font-black tracking-[0.2em]">Registry Initializing...</p>
+                    <Button onClick={() => setIsAddOpen(true)} variant="link" className="text-accent mt-2 font-black uppercase text-[10px] tracking-widest">
+                        Initialize First Asset
+                    </Button>
                 </div>
             )}
         </div>

@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +20,9 @@ export function OperatorDashboard() {
   const { user, isLoading: isUserLoading } = useUser();
   const firestore = useFirestore();
 
+  // Use operatorId for organizational data context
+  const effectiveId = user?.operatorId || user?.id;
+
   const rfqsQuery = useMemoFirebase(() => {
     if (!firestore || (firestore as any)._isMock) return null;
     return query(collection(firestore, 'charterRequests'), where('status', 'in', ['Bidding Open', 'New']), limit(5));
@@ -28,9 +30,9 @@ export function OperatorDashboard() {
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
   const activeMissionsQuery = useMemoFirebase(() => {
-    if (!firestore || (firestore as any)._isMock || !user) return null;
-    return query(collection(firestore, 'charterRequests'), where('operatorId', '==', user.id));
-  }, [firestore, user]);
+    if (!firestore || (firestore as any)._isMock || !effectiveId) return null;
+    return query(collection(firestore, 'charterRequests'), where('operatorId', '==', effectiveId));
+  }, [firestore, effectiveId]);
   const { data: rawActiveMissions, isLoading: missionsLoading } = useCollection<CharterRFQ>(activeMissionsQuery, 'charterRequests');
 
   const activeMissions = useMemo(() => {
@@ -44,10 +46,10 @@ export function OperatorDashboard() {
   }, [activeMissions]);
 
   const aircraftsQuery = useMemoFirebase(() => {
-    if (!firestore || (firestore as any)._isMock || !user) return null;
-    return collection(firestore, 'operators', user.id, 'aircrafts');
-  }, [firestore, user]);
-  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, 'aircrafts');
+    if (!firestore || (firestore as any)._isMock || !effectiveId) return null;
+    return collection(firestore, 'operators', effectiveId, 'aircrafts');
+  }, [firestore, effectiveId]);
+  const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, effectiveId ? `operators/${effectiveId}/aircrafts` : undefined);
 
   const { data: allSeatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(null, 'seatAllocationRequests');
 
@@ -101,7 +103,7 @@ export function OperatorDashboard() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="bg-card border-l-4 border-l-accent">
+        <Card className="bg-card border-l-4 border-l-accent shadow-2xl border-white/5">
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                     <div>
@@ -122,17 +124,17 @@ export function OperatorDashboard() {
                                 <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all group">
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-muted-foreground uppercase font-code group-hover:text-accent transition-colors">{mission.id}</p>
-                                        <p className="text-xs font-bold">{mission.departure} → {mission.arrival}</p>
+                                        <p className="text-xs font-bold">{mission.departure.split(' (')[0]} → {mission.arrival.split(' (')[0]}</p>
                                         <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-                                            <span className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" /> {new Date(mission.departureDate).toLocaleDateString()}</span>
-                                            <span className="flex items-center gap-1"><Users className="h-2.5 w-2.5" /> {mission.pax} PAX</span>
+                                            <span className="flex items-center gap-1 font-bold"><Clock className="h-2.5 w-2.5 text-accent/60" /> {new Date(mission.departureDate).toLocaleDateString()}</span>
+                                            <span className="flex items-center gap-1 font-bold"><Users className="h-2.5 w-2.5 text-accent/60" /> {mission.pax} PAX</span>
                                         </div>
                                     </div>
                                     <div className="text-right space-y-2">
                                         <Badge className="bg-blue-500/20 text-blue-400 border-none h-5 text-[9px] font-black uppercase tracking-tighter">
                                             {mission.status}
                                         </Badge>
-                                        <p className="text-[9px] text-accent flex items-center justify-end gap-1 font-bold uppercase tracking-widest">
+                                        <p className="text-[9px] text-accent flex items-center justify-end gap-1 font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
                                             Open Workspace <ArrowRight className="h-2.5 w-2.5" />
                                         </p>
                                     </div>
@@ -149,16 +151,16 @@ export function OperatorDashboard() {
             </CardContent>
         </Card>
 
-        <Card className="bg-card">
+        <Card className="bg-card border-white/5 shadow-2xl">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
-                    <CardTitle className="text-base flex items-center gap-2">
+                    <CardTitle className="text-base flex items-center gap-2 font-bold">
                         <FileText className="h-4 w-4 text-primary" />
                         Marketplace Demand
                     </CardTitle>
                     <CardDescription>New charter requests open for operator bidding.</CardDescription>
                 </div>
-                <Button asChild variant="ghost" size="sm" className="text-accent gap-2 text-[10px] font-black uppercase tracking-widest">
+                <Button asChild variant="ghost" size="sm" className="text-accent gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-white/5">
                     <Link href="/dashboard/operator/rfq-marketplace">Marketplace <ArrowRight className="h-3 w-3" /></Link>
                 </Button>
             </CardHeader>
@@ -176,11 +178,11 @@ export function OperatorDashboard() {
                     {rfqs?.slice(0, 5).map((rfq: CharterRFQ) => (
                         <TableRow key={rfq.id} className="border-white/5 hover:bg-white/[0.02]">
                             <TableCell className="py-3">
-                                <div className="text-xs font-bold">{rfq.departure} to {rfq.arrival}</div>
+                                <div className="text-xs font-bold text-white">{rfq.departure.split(' (')[0]} to {rfq.arrival.split(' (')[0]}</div>
                                 <div className="text-[9px] text-muted-foreground font-code uppercase">{rfq.id}</div>
                             </TableCell>
-                            <TableCell className="text-[10px] font-medium text-primary uppercase">{rfq.aircraftType}</TableCell>
-                            <TableCell className="text-center font-bold text-xs">{rfq.pax}</TableCell>
+                            <TableCell className="text-[10px] font-black text-primary uppercase tracking-tighter">{rfq.aircraftType}</TableCell>
+                            <TableCell className="text-center font-black text-xs text-white">{rfq.pax}</TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
