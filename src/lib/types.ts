@@ -27,13 +27,14 @@ export type User = {
   gstRegisteredAddress?: string;
   createdAt: string;
   updatedAt: string;
+  organizationType?: 'operator' | 'agency' | 'corporate' | 'hotel';
 };
 
 export type OrganizationUser = {
   id: string;
   userId: string;
   organizationId: string;
-  organizationType: 'operator' | 'agency' | 'corporate';
+  organizationType: 'operator' | 'agency' | 'corporate' | 'hotel';
   role: string;
   name: string;
   email: string;

@@ -86,7 +86,7 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/ctd/approvals', label: 'Governance Flow', icon: ShieldCheck, color: 'text-amber-400' },
     { href: '/dashboard/ctd/analytics', label: 'Spend Analysis', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/ctd/reports', label: 'Compliance Audit', icon: Table, color: 'text-sky-400' },
-    { href: '/dashboard/manage-users', label: 'Approvers', icon: UserCog, color: 'text-accent' },
+    { href: '/dashboard/manage-users', label: 'Personnel Control', icon: UserCog, color: 'text-accent' },
   ],
   hotel: [
     { href: '/dashboard', label: 'Property Portal', icon: Home, color: 'text-accent' },
@@ -94,6 +94,7 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/hotel/availability', label: 'Revenue Control', icon: Calendar, color: 'text-emerald-400' },
     { href: '/dashboard/hotel/requests', label: 'Mission Stays', icon: Clock, color: 'text-blue-400' },
     { href: '/dashboard/hotel/analytics', label: 'Yield Stats', icon: BarChart2, color: 'text-fuchsia-400' },
+    { href: '/dashboard/manage-users', label: 'Staff Management', icon: UserCog, color: 'text-accent' },
   ],
   individual: [
     { href: '/dashboard', label: 'My Terminal', icon: Home, color: 'text-accent' },
@@ -117,7 +118,7 @@ export function MainSidebar() {
     
     // Only show "Manage Users" if they are Admin or Manager in their firm
     if (['admin', 'manager'].includes(user?.firmRole || '')) {
-        // Already in individual role lists where appropriate
+        // Keep manage-users items
     } else {
         items = items.filter(i => i.href !== '/dashboard/manage-users');
     }

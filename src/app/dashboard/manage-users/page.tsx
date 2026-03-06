@@ -20,7 +20,11 @@ export default function ManageUsersPage() {
     const firestore = useFirestore();
     const [isAddOpen, setIsAddOpen] = useState(false);
 
-    const orgId = user?.operatorId || user?.agencyId || user?.corporateId || 'NONE';
+    const orgId = user?.operatorId || user?.agencyId || user?.corporateId || user?.hotelPartnerId || 'NONE';
+    const orgType = user?.operatorId ? 'operator' : 
+                    user?.agencyId ? 'agency' : 
+                    user?.corporateId ? 'corporate' : 
+                    user?.hotelPartnerId ? 'hotel' : 'corporate';
 
     const usersQuery = useMemoFirebase(() => {
         if (!firestore || (firestore as any)._isMock || orgId === 'NONE') return null;
@@ -121,7 +125,7 @@ export default function ManageUsersPage() {
                 open={isAddOpen} 
                 onOpenChange={setIsAddOpen} 
                 orgId={orgId}
-                orgType={user?.organizationType || (user?.operatorId ? 'operator' : user?.agencyId ? 'agency' : 'corporate')}
+                orgType={orgType}
             />
         </div>
     );

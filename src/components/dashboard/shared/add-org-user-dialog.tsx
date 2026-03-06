@@ -49,7 +49,7 @@ interface AddOrgUserDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     orgId: string;
-    orgType: 'operator' | 'agency' | 'corporate';
+    orgType: 'operator' | 'agency' | 'corporate' | 'hotel';
 }
 
 export function AddOrgUserDialog({ open, onOpenChange, orgId, orgType }: AddOrgUserDialogProps) {
@@ -94,7 +94,8 @@ export function AddOrgUserDialog({ open, onOpenChange, orgId, orgType }: AddOrgU
   const roles = {
     operator: ['Admin', 'Fleet Manager', 'Operations Controller', 'Finance Manager', 'Crew Manager'],
     agency: ['Agency Admin', 'Booking Agent', 'Accounts Manager'],
-    corporate: ['Corporate Admin', 'Travel Manager', 'Finance Approver']
+    corporate: ['Corporate Admin', 'Travel Manager', 'Finance Approver'],
+    hotel: ['Hotel Admin', 'Property Manager', 'Front Desk Lead', 'Finance Lead']
   }[orgType] || [];
 
   return (
