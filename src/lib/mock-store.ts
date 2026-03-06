@@ -18,7 +18,11 @@ import {
   mockOperationalActivities,
   mockAICharterInsights,
   mockTripCommands,
-  mockCharterPriceIndex
+  mockCharterPriceIndex,
+  mockOrganizationUsers,
+  mockCrewMembers,
+  mockCrewAssignments,
+  mockCrewLogistics
 } from './data';
 import { User } from './types';
 
@@ -46,6 +50,10 @@ let db: any = {
   aiCharterInsights: deepCopy(mockAICharterInsights),
   tripCommand: deepCopy(mockTripCommands),
   charterPriceIndex: deepCopy(mockCharterPriceIndex),
+  organizationUsers: deepCopy(mockOrganizationUsers),
+  crewMembers: deepCopy(mockCrewMembers),
+  crewAssignments: deepCopy(mockCrewAssignments),
+  crewLogistics: deepCopy(mockCrewLogistics),
   readCount: 0
 };
 

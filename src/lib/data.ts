@@ -45,7 +45,10 @@ import type {
   OperationalActivity,
   AICharterInsight,
   TripCommand,
-  CharterPriceIndex
+  CharterPriceIndex,
+  OrganizationUser,
+  CrewAssignment,
+  CrewLogistics
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -74,6 +77,25 @@ export const mockUsers: User[] = [
       createdAt: "2025-01-01T10:00:00Z", 
       updatedAt: "2025-01-01T10:00:00Z" 
     }
+];
+
+export const mockOrganizationUsers: OrganizationUser[] = [
+  { id: 'org-u-01', userId: 'demo_super_user', organizationId: 'op-west-01', organizationType: 'operator', role: 'Admin', name: 'AeroDesk Admin', email: 'demo@aerodesk.global', phone: '+91 90000 00000', status: 'ACTIVE', createdAt: new Date().toISOString() },
+  { id: 'org-u-02', userId: 'u-fm-01', organizationId: 'op-west-01', organizationType: 'operator', role: 'Fleet Manager', name: 'Rajesh Kumar', email: 'rajesh@flyco.aero', phone: '+91 91111 11111', status: 'ACTIVE', createdAt: new Date().toISOString() },
+];
+
+export const mockCrewMembers: CrewMember[] = [
+  { id: 'crw-01', crewId: 'CRW101', operatorId: 'op-west-01', name: 'Captain Vikram Singh', designation: 'Pilot', licenseNumber: 'ATPL-9988', phone: '+91 92222 22222', email: 'vikram@flyco.aero', status: 'ACTIVE' },
+  { id: 'crw-02', crewId: 'CRW102', operatorId: 'op-west-01', name: 'First Officer Ananya', designation: 'Co-Pilot', licenseNumber: 'CPL-4455', phone: '+91 93333 33333', email: 'ananya@flyco.aero', status: 'ACTIVE' },
+  { id: 'crw-03', crewId: 'CRW103', operatorId: 'op-west-01', name: 'Neha Sharma', designation: 'Cabin Crew', licenseNumber: 'SEP-1122', phone: '+91 94444 44444', email: 'neha@flyco.aero', status: 'ACTIVE' },
+];
+
+export const mockCrewAssignments: CrewAssignment[] = [
+  { id: 'asgn-01', assignmentId: 'ASN101', charterRequestId: 'RFQ-CORP-001', aircraftId: 'ac-01', crewMembers: ['CRW101', 'CRW102', 'CRW103'], status: 'ASSIGNED' },
+];
+
+export const mockCrewLogistics: CrewLogistics[] = [
+  { id: 'log-01', logisticsId: 'LOG101', crewId: 'CRW101', tripId: 'RFQ-CORP-001', hotelRequired: true, hotelBookingStatus: 'CONFIRMED', transportRequired: true, transportStatus: 'ARRANGED' },
 ];
 
 export const mockAviationHubs: AviationHub[] = [

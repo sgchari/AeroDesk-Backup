@@ -29,6 +29,51 @@ export type User = {
   updatedAt: string;
 };
 
+export type OrganizationUser = {
+  id: string;
+  userId: string;
+  organizationId: string;
+  organizationType: 'operator' | 'agency' | 'corporate';
+  role: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt: string;
+};
+
+export type CrewMember = {
+  id: string;
+  crewId: string;
+  operatorId: string;
+  name: string;
+  designation: 'Pilot' | 'Co-Pilot' | 'Cabin Crew' | 'Ground Support';
+  licenseNumber: string;
+  phone: string;
+  email: string;
+  status: 'ACTIVE' | 'ON_DUTY' | 'OFF_DUTY' | 'LEAVE';
+};
+
+export type CrewAssignment = {
+  id: string;
+  assignmentId: string;
+  charterRequestId: string;
+  aircraftId: string;
+  crewMembers: string[]; // Array of crewIds
+  status: 'ASSIGNED' | 'CONFIRMED' | 'COMPLETED';
+};
+
+export type CrewLogistics = {
+  id: string;
+  logisticsId: string;
+  crewId: string;
+  tripId: string;
+  hotelRequired: boolean;
+  hotelBookingStatus: 'NOT_REQUIRED' | 'PENDING' | 'CONFIRMED' | 'ARRANGED';
+  transportRequired: boolean;
+  transportStatus: 'NOT_REQUIRED' | 'PENDING' | 'CONFIRMED' | 'ARRANGED';
+};
+
 export type RfqStatus = 
     | 'Draft' 
     | 'New' 

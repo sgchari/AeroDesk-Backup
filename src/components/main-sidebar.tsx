@@ -27,7 +27,9 @@ import {
   Radar,
   Network,
   Command,
-  TrendingUp
+  TrendingUp,
+  UserCog,
+  BriefcaseIcon
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -65,9 +67,9 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/operator/rfq-marketplace', label: 'RFQ Exchange', icon: GanttChartSquare, color: 'text-amber-400' },
     { href: '/dashboard/operator/fleet', label: 'Asset Registry', icon: Plane, color: 'text-slate-400' },
     { href: '/dashboard/operator/empty-legs', label: 'JetSeat Exchange', icon: Zap, color: 'text-accent' },
+    { href: '/dashboard/operator/crew-operations', label: 'Crew & Logistics', icon: Users, color: 'text-sky-400' },
     { href: '/dashboard/operator/fleet-intelligence', label: 'Utilization Engine', icon: Target, color: 'text-emerald-400' },
-    { href: '/dashboard/operator/analytics', label: 'Utilization Stats', icon: BarChart2, color: 'text-fuchsia-400' },
-    { href: '/dashboard/operator/reports', label: 'Yield Reports', icon: Table, color: 'text-sky-400' },
+    { href: '/dashboard/manage-users', label: 'Personnel', icon: UserCog, color: 'text-amber-400' },
     { href: '/dashboard/operator/profile', label: 'Firm Identity', icon: Building, color: 'text-accent' },
   ],
   agency: [
@@ -76,6 +78,7 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/travel-agency/charter-requests', label: 'Client Missions', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/travel-agency/analytics', label: 'Sales Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/travel-agency/revenue-share', label: 'Commission Ledger', icon: Coins, color: 'text-accent' },
+    { href: '/dashboard/manage-users', label: 'Team', icon: UserCog, color: 'text-amber-400' },
   ],
   corporate: [
     { href: '/dashboard', label: 'Travel Desk', icon: Home, color: 'text-accent' },
@@ -83,6 +86,7 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/ctd/approvals', label: 'Governance Flow', icon: ShieldCheck, color: 'text-amber-400' },
     { href: '/dashboard/ctd/analytics', label: 'Spend Analysis', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/ctd/reports', label: 'Compliance Audit', icon: Table, color: 'text-sky-400' },
+    { href: '/dashboard/manage-users', label: 'Approvers', icon: UserCog, color: 'text-accent' },
   ],
   hotel: [
     { href: '/dashboard', label: 'Property Portal', icon: Home, color: 'text-accent' },
@@ -108,7 +112,18 @@ export function MainSidebar() {
   const { isMobile, setOpenMobile } = useSidebar();
 
   const platformRole = user?.platformRole || 'individual';
-  const currentNavItems = useMemo(() => NAV_ITEMS[platformRole] || [], [platformRole]);
+  const currentNavItems = useMemo(() => {
+    let items = NAV_ITEMS[platformRole] || [];
+    
+    // Only show "Manage Users" if they are Admin or Manager in their firm
+    if (['admin', 'manager'].includes(user?.firmRole || '')) {
+        // Already in individual role lists where appropriate
+    } else {
+        items = items.filter(i => i.href !== '/dashboard/manage-users');
+    }
+    
+    return items;
+  }, [platformRole, user]);
 
   const handleLinkClick = () => {
     if (isMobile) setOpenMobile(false);
