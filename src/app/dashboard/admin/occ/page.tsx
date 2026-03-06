@@ -19,7 +19,8 @@ import {
     Coins,
     Globe,
     Network,
-    MousePointer2
+    MousePointer2,
+    TrendingUp
 } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useCollection } from "@/firebase";
@@ -132,7 +133,8 @@ export default function OperationsControlCenterPage() {
                 <Card className="bg-accent/5 border-accent/20">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-xs font-black uppercase text-accent flex items-center gap-2">
-                            <ShieldCheck className="h-4 w-4" /> Compliance Guard
+                            <ShieldCheck className="h-4 w-4 text-accent" />
+                            Compliance Guard
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -146,7 +148,8 @@ export default function OperationsControlCenterPage() {
                 <Card className="bg-black/20 border-white/5">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-xs font-black uppercase text-white flex items-center gap-2">
-                            <Globe className="h-4 w-4" /> Global Positioning
+                            <Globe className="h-4 w-4 text-white" />
+                            Global Positioning
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
