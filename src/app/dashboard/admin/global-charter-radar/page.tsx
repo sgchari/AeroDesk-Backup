@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCollection, useFirestore } from "@/firebase";
+import { useCollection } from "@/firebase";
 import type { AircraftPosition, Aircraft } from "@/lib/types";
-import { Radar, Plane, Globe, Activity, Clock, ShieldCheck, RefreshCw, Layers } from "lucide-react";
+import { Radar, Activity, RefreshCw, Layers, Plane, MapPin, Wind } from "lucide-react";
 import dynamic from 'next/dynamic';
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 // --- DYNAMIC MAP IMPORT ---
@@ -21,9 +20,7 @@ const RadarSurfaceMap = dynamic(() => import('./radar-surface-map').then(mod => 
 });
 
 export default function GlobalCharterRadarPage() {
-    const firestore = useFirestore();
     const [mounted, setMounted] = useState(false);
-    const [showHeatmap, setShowHeatmap] = useState(false);
     const [lastUpdate, setLastUpdate] = useState<string | null>(null);
 
     useEffect(() => {
@@ -36,7 +33,6 @@ export default function GlobalCharterRadarPage() {
 
     const filteredPositions = useMemo(() => {
         if (!positions || !aircraftRegistry) return [];
-        // Only show aircraft verified in our registry
         const registrations = new Set(aircraftRegistry.map(a => a.registration));
         return positions.filter(p => registrations.has(p.registration));
     }, [positions, aircraftRegistry]);
@@ -71,33 +67,32 @@ export default function GlobalCharterRadarPage() {
             </PageHeader>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* --- STATS SECTOR --- */}
                 <div className="lg:col-span-1 space-y-4">
                     <Card className="bg-card border-l-4 border-l-emerald-500">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs uppercase text-muted-foreground">Available Assets</CardTitle>
+                            <CardTitle className="text-[10px] uppercase text-muted-foreground font-black tracking-widest">Available Assets</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-3xl font-black text-white">{stats.ready}</div>
-                            <p className="text-[10px] text-emerald-500 uppercase font-bold mt-1">Ground Ready</p>
+                            <p className="text-[10px] text-emerald-500 uppercase font-bold mt-1 tracking-tighter">Ground Ready</p>
                         </CardContent>
                     </Card>
                     <Card className="bg-card border-l-4 border-l-rose-500">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs uppercase text-muted-foreground">Live Missions</CardTitle>
+                            <CardTitle className="text-[10px] uppercase text-muted-foreground font-black tracking-widest">Live Missions</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-3xl font-black text-white">{stats.active}</div>
-                            <p className="text-[10px] text-rose-500 uppercase font-bold mt-1">Active Air-time</p>
+                            <p className="text-[10px] text-rose-500 uppercase font-bold mt-1 tracking-tighter">Active Air-time</p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-card border-l-4 border-l-amber-500">
+                    <Card className="bg-card border-l-4 border-l-sky-500">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs uppercase text-muted-foreground">Scheduled Tech</CardTitle>
+                            <CardTitle className="text-[10px] uppercase text-muted-foreground font-black tracking-widest">Scheduled Tech</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-3xl font-black text-white">{stats.scheduled}</div>
-                            <p className="text-[10px] text-amber-500 uppercase font-bold mt-1">Confirmed Blocks</p>
+                            <p className="text-[10px] text-sky-500 uppercase font-bold mt-1 tracking-tighter">Confirmed Blocks</p>
                         </CardContent>
                     </Card>
 
@@ -105,35 +100,32 @@ export default function GlobalCharterRadarPage() {
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm flex items-center gap-2">
                                 <Layers className="h-4 w-4 text-primary" />
-                                Radar Layers
+                                <span className="font-bold text-white uppercase text-[10px] tracking-widest">Radar Controls</span>
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3 pt-2">
-                            <div className="flex items-center justify-between p-2 rounded bg-black/40 border border-white/5">
-                                <span className="text-[10px] font-bold text-white">Demand Heatmap</span>
-                                <Button 
-                                    size="sm" 
-                                    variant={showHeatmap ? "default" : "outline"} 
-                                    onClick={() => setShowHeatmap(!showHeatmap)}
-                                    className="h-6 text-[8px] font-black"
-                                >
-                                    {showHeatmap ? "ON" : "OFF"}
-                                </Button>
+                            <div className="p-3 bg-black/40 border border-white/5 rounded-lg space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[9px] font-bold text-muted-foreground uppercase">Data Origin</span>
+                                    <Badge variant="outline" className="text-[8px] h-4 border-accent/20 text-accent">ADS-B GRID</Badge>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[9px] font-bold text-muted-foreground uppercase">Refresh Latency</span>
+                                    <span className="text-[9px] font-code text-white">120s</span>
+                                </div>
                             </div>
-                            <div className="p-3 bg-muted/20 rounded-lg italic text-[9px] text-muted-foreground">
-                                * Data ingested via OpenSky Network protocol. 5-minute latency window active.
-                            </div>
+                            <p className="text-[9px] text-muted-foreground leading-relaxed italic opacity-60">
+                                * Telemetry synchronized via OpenSky protocol. Position accuracy +/- 10m.
+                            </p>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* --- MAP SECTOR --- */}
                 <div className="lg:col-span-3 h-[600px] relative">
-                    <RadarSurfaceMap positions={filteredPositions} showHeatmap={showHeatmap} />
+                    <RadarSurfaceMap positions={filteredPositions} showHeatmap={false} />
                 </div>
             </div>
 
-            {/* --- TELEMETRY LOG --- */}
             <Card className="bg-card">
                 <CardHeader>
                     <CardTitle className="text-sm flex items-center gap-2">
@@ -144,29 +136,32 @@ export default function GlobalCharterRadarPage() {
                 <CardContent className="p-0">
                     <div className="max-h-[300px] overflow-y-auto px-6 pb-6">
                         <table className="w-full text-left text-[10px]">
-                            <thead className="sticky top-0 bg-card z-10">
-                                <tr className="border-b border-white/5">
-                                    <th className="py-3 uppercase text-muted-foreground font-black">Registration</th>
-                                    <th className="py-3 uppercase text-muted-foreground font-black">Asset Class</th>
-                                    <th className="py-3 uppercase text-muted-foreground font-black">Altitude</th>
-                                    <th className="py-3 uppercase text-muted-foreground font-black">Velocity</th>
-                                    <th className="py-3 uppercase text-muted-foreground font-black text-right">Status</th>
+                            <thead className="sticky top-0 bg-card z-10 border-b border-white/5">
+                                <tr>
+                                    <th className="py-3 uppercase text-muted-foreground font-black tracking-widest">Registration</th>
+                                    <th className="py-3 uppercase text-muted-foreground font-black tracking-widest">Asset Class</th>
+                                    <th className="py-3 uppercase text-muted-foreground font-black tracking-widest">Altitude</th>
+                                    <th className="py-3 uppercase text-muted-foreground font-black tracking-widest">Velocity</th>
+                                    <th className="py-3 uppercase text-muted-foreground font-black tracking-widest text-right">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredPositions.map(p => (
-                                    <tr key={p.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                                    <tr key={p.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
                                         <td className="py-3 font-bold text-sky-400 font-code">{p.registration}</td>
-                                        <td className="py-3 text-white uppercase">{p.aircraftType}</td>
-                                        <td className="py-3 text-muted-foreground font-code">{p.altitude.toLocaleString()} FT</td>
+                                        <td className="py-3 text-white uppercase font-medium">{p.aircraftType}</td>
+                                        <td className="py-3 text-muted-foreground font-code flex items-center gap-1.5">
+                                            <Wind className="h-2.5 w-2.5 text-white/20" />
+                                            {p.altitude.toLocaleString()} FT
+                                        </td>
                                         <td className="py-3 text-muted-foreground font-code">{p.velocity} KT</td>
                                         <td className="py-3 text-right">
                                             <Badge className={cn(
                                                 "text-[8px] h-4 font-black uppercase tracking-tighter border-none",
-                                                p.status === 'inflight' ? 'bg-rose-500 text-white' : 
-                                                p.status === 'available' ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-black'
+                                                p.status === 'inflight' ? 'bg-rose-500 text-white animate-pulse' : 
+                                                p.status === 'available' ? 'bg-emerald-500 text-white' : 'bg-sky-500 text-white'
                                             )}>
-                                                {p.status}
+                                                {p.status === 'inflight' ? 'IN FLIGHT' : p.status.toUpperCase()}
                                             </Badge>
                                         </td>
                                     </tr>

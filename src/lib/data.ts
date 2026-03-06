@@ -120,13 +120,14 @@ export const mockAircraft: Aircraft[] = [
 
 export const mockAircraftPositions: AircraftPosition[] = [
     { id: 'pos-01', registration: 'VT-FLY', aircraftType: 'Citation XLS+', operator: 'FlyCo Charter', latitude: 19.0760, longitude: 72.8777, altitude: 0, velocity: 0, heading: 0, status: 'available', timestamp: new Date().toISOString() },
-    { id: 'pos-02', registration: 'VT-STK', aircraftType: 'Legacy 650', latitude: 28.6139, longitude: 77.2090, altitude: 35000, velocity: 450, heading: 180, status: 'inflight', operator: 'Club One Air', timestamp: new Date().toISOString() },
-    { id: 'pos-03', registration: 'VT-JSG', aircraftType: 'Global 6000', latitude: 12.9716, longitude: 77.5946, altitude: 12000, velocity: 320, heading: 45, status: 'scheduled', operator: 'FlyCo Charter', timestamp: new Date().toISOString() },
+    { id: 'pos-02', registration: 'VT-STK', aircraftType: 'Legacy 650', operator: 'Club One Air', latitude: 28.6139, longitude: 77.2090, altitude: 35000, velocity: 450, heading: 180, status: 'inflight', timestamp: new Date().toISOString() },
+    { id: 'pos-03', registration: 'VT-JSG', aircraftType: 'Global 6000', operator: 'FlyCo Charter', latitude: 12.9716, longitude: 77.5946, altitude: 12000, velocity: 320, heading: 45, status: 'scheduled', timestamp: new Date().toISOString() },
 ];
 
 export const mockAircraftAvailability: AircraftAvailability[] = [
     { id: 'av-01', registration: 'VT-FLY', aircraftType: 'Citation XLS+', operator: 'FlyCo Charter', currentAirport: 'VABB', availableFrom: new Date().toISOString(), availabilityWindow: '3hours', seats: 8 },
     { id: 'av-02', registration: 'VT-PC', aircraftType: 'King Air B200', operator: 'FlyCo Charter', currentAirport: 'VAPO', availableFrom: new Date(Date.now() + 4 * 3600000).toISOString(), availabilityWindow: '6hours', seats: 7 },
+    { id: 'av-03', registration: 'VT-STK', aircraftType: 'Legacy 650', operator: 'Club One Air', currentAirport: 'VIDP', availableFrom: new Date(Date.now() + 10 * 3600000).toISOString(), availabilityWindow: '12hours', seats: 13 },
 ];
 
 export const mockDemandForecast: CharterDemandForecast[] = [

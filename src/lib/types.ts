@@ -472,6 +472,8 @@ export type AircraftPosition = {
     heading: number;
     timestamp: string;
     status: 'available' | 'scheduled' | 'inflight';
+    originAirport?: string;
+    destinationAirport?: string;
 };
 
 export type AircraftAvailability = {
@@ -483,6 +485,7 @@ export type AircraftAvailability = {
     availableFrom: string;
     availabilityWindow: "3hours" | "6hours" | "12hours";
     seats: number;
+    rangeKm?: number;
 };
 
 export type CharterDemandForecast = {

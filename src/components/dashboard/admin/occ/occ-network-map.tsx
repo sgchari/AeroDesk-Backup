@@ -1,26 +1,22 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useMemo } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import type { AviationHub, CharterRFQ, EmptyLeg, FlightSegment } from '@/lib/types';
+import type { AviationHub, CharterRFQ, EmptyLeg, AircraftPosition, AircraftAvailability } from '@/lib/types';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { 
-    MapPin, 
-    Flame, 
-    Zap, 
-    Activity, 
-    Plane, 
-    Clock, 
-    Info, 
-    ShieldCheck, 
-    GanttChartSquare,
     Layers,
-    Target
+    Radar,
+    Network,
+    MapPin,
+    Flame,
+    Zap,
+    Plane
 } from 'lucide-react';
 
 export function OCCNetworkMap() {
@@ -31,18 +27,17 @@ export function OCCNetworkMap() {
   const [layers, setLayers] = useState({
     hubs: true,
     demand: true,
-    emptyLegs: true
+    emptyLegs: true,
+    radar: true,
+    availability: false
   });
 
   // --- DATA SUBSCRIPTIONS ---
-  const hubsQuery = useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? null : null, [firestore]);
-  const { data: hubs } = useCollection<AviationHub>(hubsQuery, 'aviationHubs');
-  
-  const rfqsQuery = useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? null : null, [firestore]);
-  const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
-
-  const legsQuery = useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? null : null, [firestore]);
-  const { data: legs } = useCollection<EmptyLeg>(legsQuery, 'emptyLegs');
+  const { data: hubs } = useCollection<AviationHub>(null, 'aviationHubs');
+  const { data: rfqs } = useCollection<CharterRFQ>(null, 'charterRequests');
+  const { data: legs } = useCollection<EmptyLeg>(null, 'emptyLegs');
+  const { data: positions } = useCollection<AircraftPosition>(null, 'aircraftPositions');
+  const { data: availability } = useCollection<AircraftAvailability>(null, 'aircraftAvailability');
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -64,33 +59,30 @@ export function OCCNetworkMap() {
       mapInstance.addSource('hubs', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
       mapInstance.addSource('demand-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
       mapInstance.addSource('corridors', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      mapInstance.addSource('radar-positions', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      mapInstance.addSource('availability-nodes', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
 
-      // Add Heatmap Layer
+      // Demand Heatmap
       mapInstance.addLayer({
         id: 'demand-heat',
         type: 'heatmap',
         source: 'demand-heatmap',
+        layout: { visibility: layers.demand ? 'visible' : 'none' },
         paint: {
           'heatmap-weight': ['get', 'intensity'],
           'heatmap-intensity': 1,
-          'heatmap-color': [
-            'interpolate', ['linear'], ['heatmap-density'],
-            0, 'rgba(0, 0, 255, 0)',
-            0.2, 'rgba(65, 105, 225, 0.4)',
-            0.5, 'rgba(255, 165, 0, 0.6)',
-            0.8, 'rgba(255, 69, 0, 0.8)',
-            1, 'rgba(255, 0, 0, 1)'
-          ],
+          'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(0,0,255,0)', 0.5, 'rgba(255,165,0,0.6)', 1, 'rgba(255,0,0,1)'],
           'heatmap-radius': 40,
           'heatmap-opacity': 0.4
         }
       });
 
-      // Add Corridor Layer
+      // Corridor Arcs
       mapInstance.addLayer({
         id: 'corridor-lines',
         type: 'line',
         source: 'corridors',
+        layout: { visibility: layers.emptyLegs ? 'visible' : 'none' },
         paint: {
           'line-color': '#D4AF37',
           'line-width': 2,
@@ -99,17 +91,54 @@ export function OCCNetworkMap() {
         }
       });
 
-      // Add Hub Circle Layer (Dynamic Projection)
+      // Hubs
       mapInstance.addLayer({
         id: 'hub-points',
         type: 'circle',
         source: 'hubs',
+        layout: { visibility: layers.hubs ? 'visible' : 'none' },
         paint: {
           'circle-radius': 6,
           'circle-color': '#00FFA6',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#FFFFFF',
           'circle-opacity': 0.8
+        }
+      });
+
+      // Radar Positions (Live)
+      mapInstance.addLayer({
+        id: 'radar-points',
+        type: 'symbol',
+        source: 'radar-positions',
+        layout: { 
+            visibility: layers.radar ? 'visible' : 'none',
+            'icon-image': 'airport',
+            'icon-size': 1.2,
+            'icon-rotate': ['get', 'heading'],
+            'text-field': ['get', 'reg'],
+            'text-offset': [0, 1.2],
+            'text-size': 8,
+            'text-font': ['Open Sans Bold']
+        },
+        paint: {
+            'icon-color': ['match', ['get', 'status'], 'inflight', '#F43F5E', 'available', '#10B981', '#3B82F6'],
+            'text-color': '#FFFFFF'
+        }
+      });
+
+      // Availability Nodes
+      mapInstance.addLayer({
+        id: 'availability-points',
+        type: 'circle',
+        source: 'availability-nodes',
+        layout: { visibility: layers.availability ? 'visible' : 'none' },
+        paint: {
+            'circle-radius': 10,
+            'circle-color': ['match', ['get', 'window'], '3hours', '#10B981', '6hours', '#3B82F6', '#F59E0B'],
+            'circle-opacity': 0.3,
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#FFFFFF'
         }
       });
     });
@@ -122,127 +151,83 @@ export function OCCNetworkMap() {
     };
   }, []);
 
-  // Sync Hubs
+  // Sync Data Logic
   useEffect(() => {
-    if (!map.current || !hubs || !map.current.isStyleLoaded()) return;
-    const features = hubs.map(hub => ({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [hub.longitude, hub.latitude] },
-      properties: { name: hub.city, icao: hub.icao }
-    }));
-    (map.current.getSource('hubs') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features } as any);
-  }, [hubs]);
+    if (!map.current || !map.current.isStyleLoaded()) return;
 
-  // Sync Demand Heatmap
-  useEffect(() => {
-    if (!map.current || !rfqs || !map.current.isStyleLoaded()) return;
-    
-    // Simulate intensity based on destination clusters
-    const destinationMap: Record<string, number> = {};
-    rfqs.forEach(r => {
-        const dest = r.arrival.split(' (')[0];
-        destinationMap[dest] = (destinationMap[dest] || 0) + 1;
-    });
+    if (hubs) {
+        const hubFeatures = hubs.map(h => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [h.longitude, h.latitude] }, properties: { city: h.city } }));
+        (map.current.getSource('hubs') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features: hubFeatures } as any);
+    }
 
-    const features = hubs?.filter(h => destinationMap[h.city]).map(hub => ({
-        type: 'Feature',
-        geometry: { type: 'Point', coordinates: [hub.longitude, hub.latitude] },
-        properties: { intensity: (destinationMap[hub.city] || 1) / 5 }
-    })) || [];
+    if (positions) {
+        const radarFeatures = positions.map(p => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [p.longitude, p.latitude] }, properties: { reg: p.registration, heading: p.heading, status: p.status } }));
+        (map.current.getSource('radar-positions') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features: radarFeatures } as any);
+    }
 
-    (map.current.getSource('demand-heatmap') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features } as any);
-  }, [rfqs, hubs]);
+    if (availability) {
+        const availFeatures = availability.map(a => {
+            const hub = hubs?.find(h => h.icao === a.currentAirport);
+            if (!hub) return null;
+            return { type: 'Feature', geometry: { type: 'Point', coordinates: [hub.longitude, hub.latitude] }, properties: { window: a.availabilityWindow } };
+        }).filter(f => !!f);
+        (map.current.getSource('availability-nodes') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features: availFeatures } as any);
+    }
+  }, [hubs, positions, availability]);
 
-  // Sync Corridors
-  useEffect(() => {
-    if (!map.current || !legs || !hubs || !map.current.isStyleLoaded()) return;
-
-    const features: any[] = [];
-    legs.forEach(leg => {
-        const start = hubs.find(h => leg.departure.includes(h.city));
-        const end = hubs.find(h => leg.arrival.includes(h.city));
-        if (start && end) {
-            features.push({
-                type: 'Feature',
-                geometry: {
-                    type: 'LineString',
-                    coordinates: [
-                        [start.longitude, start.latitude],
-                        [end.longitude, end.latitude]
-                    ]
-                }
-            });
-        }
-    });
-
-    (map.current.getSource('corridors') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features } as any);
-  }, [legs, hubs]);
-
-  // Handle Layer Visibility
+  // Layer Visibility Effect
   useEffect(() => {
     if (!map.current || !map.current.isStyleLoaded()) return;
     map.current.setLayoutProperty('hub-points', 'visibility', layers.hubs ? 'visible' : 'none');
     map.current.setLayoutProperty('demand-heat', 'visibility', layers.demand ? 'visible' : 'none');
     map.current.setLayoutProperty('corridor-lines', 'visibility', layers.emptyLegs ? 'visible' : 'none');
+    map.current.setLayoutProperty('radar-points', 'visibility', layers.radar ? 'visible' : 'none');
+    map.current.setLayoutProperty('availability-points', 'visibility', layers.availability ? 'visible' : 'none');
   }, [layers]);
 
   return (
     <div className="w-full h-full relative group">
         <div ref={mapContainer} className="w-full h-full" />
         
-        {/* Layer Controls */}
         <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
             <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-4 shadow-2xl min-w-[200px]">
                 <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2">
                     <span className="text-[10px] font-black uppercase tracking-widest text-white flex items-center gap-2">
                         <Layers className="h-3 w-3 text-accent" />
-                        Radar Layers
+                        Radar Controls
                     </span>
                 </div>
                 
                 <div className="flex items-center justify-between gap-4">
-                    <Label htmlFor="hubs-toggle" className="text-[9px] uppercase font-bold text-white/70">Operator Hubs</Label>
-                    <Switch 
-                        id="hubs-toggle" 
-                        checked={layers.hubs} 
-                        onCheckedChange={(v) => setLayers(l => ({ ...l, hubs: v }))} 
-                    />
+                    <Label htmlFor="radar-toggle" className="text-[9px] uppercase font-bold text-white/70">Global Radar</Label>
+                    <Switch id="radar-toggle" checked={layers.radar} onCheckedChange={(v) => setLayers(l => ({ ...l, radar: v }))} />
+                </div>
+
+                <div className="flex items-center justify-between gap-4">
+                    <Label htmlFor="avail-toggle" className="text-[9px] uppercase font-bold text-white/70">Availability Grid</Label>
+                    <Switch id="avail-toggle" checked={layers.availability} onCheckedChange={(v) => setLayers(l => ({ ...l, availability: v }))} />
                 </div>
 
                 <div className="flex items-center justify-between gap-4">
                     <Label htmlFor="demand-toggle" className="text-[9px] uppercase font-bold text-white/70">Demand Heatmap</Label>
-                    <Switch 
-                        id="demand-toggle" 
-                        checked={layers.demand} 
-                        onCheckedChange={(v) => setLayers(l => ({ ...l, demand: v }))} 
-                    />
-                </div>
-
-                <div className="flex items-center justify-between gap-4">
-                    <Label htmlFor="legs-toggle" className="text-[9px] uppercase font-bold text-white/70">Empty Corridors</Label>
-                    <Switch 
-                        id="legs-toggle" 
-                        checked={layers.emptyLegs} 
-                        onCheckedChange={(v) => setLayers(l => ({ ...l, emptyLegs: v }))} 
-                    />
+                    <Switch id="demand-toggle" checked={layers.demand} onCheckedChange={(v) => setLayers(l => ({ ...l, demand: v }))} />
                 </div>
             </div>
         </div>
 
-        {/* Dynamic Legend */}
         <div className="absolute bottom-4 left-4 z-20 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-3 shadow-2xl">
             <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[#00FFA6]" />
-                    <span className="text-[8px] uppercase font-black text-white/60">Verified NSOP Hub</span>
+                    <div className="w-2 h-2 rounded-full bg-[#10B981]" />
+                    <span className="text-[8px] uppercase font-black text-white/60 tracking-widest">Ground Ready</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-0.5 bg-[#D4AF37] border-t border-dashed" />
-                    <span className="text-[8px] uppercase font-black text-white/60">Empty Leg Corridor</span>
+                    <div className="w-2 h-2 rounded-full bg-[#F43F5E]" />
+                    <span className="text-[8px] uppercase font-black text-white/60 tracking-widest">Active Mission</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-sm bg-rose-500/40" />
-                    <span className="text-[8px] uppercase font-black text-white/60">High Demand Cluster</span>
+                    <div className="w-2 h-2 rounded-full bg-[#3B82F6]" />
+                    <span className="text-[8px] uppercase font-black text-white/60 tracking-widest">Scheduled Tech</span>
                 </div>
             </div>
         </div>
