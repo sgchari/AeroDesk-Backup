@@ -24,6 +24,7 @@ function DashboardSkeleton() {
     )
 }
 
+// Dynamically load dashboards to prevent massive initial compilation hang
 const AdminDashboard = dynamic(() => import('@/components/dashboard/admin-dashboard').then(mod => mod.AdminDashboard), { ssr: false, loading: () => <DashboardSkeleton /> });
 const OperatorDashboard = dynamic(() => import('@/components/dashboard/operator-dashboard').then(mod => mod.OperatorDashboard), { ssr: false, loading: () => <DashboardSkeleton /> });
 const CTDDashboard = dynamic(() => import('@/components/dashboard/ctd-dashboard').then(mod => mod.CTDDashboard), { ssr: false, loading: () => <DashboardSkeleton /> });
@@ -54,29 +55,33 @@ export default function DashboardPage() {
   const dashboardView = useMemo(() => {
     if (!user || isLoading) return null;
 
-    switch (user.role) {
-        case 'Customer':
-        case 'Requester':
-          return <CustomerGateway />;
-        case 'Operator':
-          return <OperatorDashboard />;
-        case 'Admin':
-          return <AdminDashboard />;
-        case 'CTD Admin':
-        case 'Corporate Admin':
-          return <CTDDashboard />;
-        case 'Travel Agency':
-          return <TravelAgencyDashboard />;
-        case 'Hotel Partner':
-          return <HotelDashboard />;
-        default:
-          return (
-            <div className="flex items-center justify-center min-h-[60vh] p-12 text-center text-muted-foreground italic border-2 border-dashed border-white/5 rounded-2xl opacity-50">
-                Synchronizing operational environment...
-            </div>
-          );
-      }
-  }, [user?.role, isLoading]);
+    const role = user.role;
+
+    if (role === 'Customer' || role === 'Requester') {
+        return <CustomerGateway />;
+    }
+    if (role === 'Operator') {
+        return <OperatorDashboard />;
+    }
+    if (role === 'Admin') {
+        return <AdminDashboard />;
+    }
+    if (role === 'CTD Admin' || role === 'Corporate Admin') {
+        return <CTDDashboard />;
+    }
+    if (role === 'Travel Agency' || role === 'Authorized Distributor') {
+        return <TravelAgencyDashboard />;
+    }
+    if (role === 'Hotel Partner') {
+        return <HotelDashboard />;
+    }
+
+    return (
+        <div className="flex items-center justify-center min-h-[60vh] p-12 text-center text-muted-foreground italic border-2 border-dashed border-white/5 rounded-2xl opacity-50">
+            Synchronizing operational environment for role: {role}...
+        </div>
+    );
+  }, [user, isLoading]);
 
   if (isLoading && !user) return <DashboardSkeleton />;
 
