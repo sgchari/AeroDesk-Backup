@@ -42,7 +42,10 @@ import type {
   FleetOptimizationSuggestion,
   AviationHub,
   EmptyLegSeatListing,
-  OperationalActivity
+  OperationalActivity,
+  AICharterInsight,
+  TripCommand,
+  CharterPriceIndex
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -74,24 +77,36 @@ export const mockUsers: User[] = [
 ];
 
 export const mockAviationHubs: AviationHub[] = [
-  { id: 'hub-01', icao: "VIDP", airportName: "Indira Gandhi Intl", city: "Delhi", latitude: 28.5562, longitude: 77.1000 },
-  { id: 'hub-02', icao: "VABB", airportName: "Chhatrapati Shivaji Intl", city: "Mumbai", latitude: 19.0896, longitude: 72.8656 },
-  { id: 'hub-03', icao: "VOBL", airportName: "Kempegowda Intl", city: "Bengaluru", latitude: 13.1986, longitude: 77.7066 },
-  { id: 'hub-04', icao: "VOHS", airportName: "Rajiv Gandhi Intl", city: "Hyderabad", latitude: 17.2403, longitude: 78.4294 },
-  { id: 'hub-05', icao: "VOMM", airportName: "Chennai Intl", city: "Chennai", latitude: 12.9941, longitude: 80.1709 },
-  { id: 'hub-06', icao: "VECC", airportName: "Netaji Subhash Chandra Bose Intl", city: "Kolkata", latitude: 22.6547, longitude: 88.4467 },
-  { id: 'hub-07', icao: "VAAH", airportName: "Sardar Vallabhbhai Patel Intl", city: "Ahmedabad", latitude: 23.0734, longitude: 72.6266 },
-  { id: 'hub-08', icao: "VOGO", airportName: "Dabolim Airport", city: "Goa", latitude: 15.3808, longitude: 73.8314 },
+  { id: 'hub-01', icao: "VIDP", airportName: "Indira Gandhi Intl", city: "Delhi", latitude: 28.5562, longitude: 77.1000, operatorCount: 4, fleetSize: 12 },
+  { id: 'hub-02', icao: "VABB", airportName: "Chhatrapati Shivaji Intl", city: "Mumbai", latitude: 19.0896, longitude: 72.8656, operatorCount: 5, fleetSize: 18 },
+  { id: 'hub-03', icao: "VOBL", airportName: "Kempegowda Intl", city: "Bengaluru", latitude: 13.1986, longitude: 77.7066, operatorCount: 3, fleetSize: 8 },
+  { id: 'hub-04', icao: "VOHS", airportName: "Rajiv Gandhi Intl", city: "Hyderabad", latitude: 17.2403, longitude: 78.4294, operatorCount: 2, fleetSize: 6 },
 ];
 
 export const mockOperationalActivities: OperationalActivity[] = [
     { id: 'act-01', type: 'rfq_created', message: 'New Heavy Jet RFQ created: Mumbai to London', timestamp: new Date().toISOString(), entityId: 'RFQ-CORP-001', actor: 'Tony Stark' },
     { id: 'act-02', type: 'empty_leg_published', message: 'Empty Leg Published: Delhi to Jaipur', timestamp: new Date(Date.now() - 3600000).toISOString(), entityId: 'EL-001', actor: 'FlyCo Charter' },
     { id: 'act-03', type: 'quote_accepted', message: 'Technical Bid Accepted for Mission ADX-104', timestamp: new Date(Date.now() - 7200000).toISOString(), entityId: 'ADX-104', actor: 'Pepper Potts' },
+    { id: 'act-04', type: 'seat_booked', message: 'Institutional Seat Confirmation: EL-001 Sector', timestamp: new Date(Date.now() - 10800000).toISOString(), entityId: 'ST-ALLOC-92', actor: 'Sky Distributors' },
+];
+
+export const mockAICharterInsights: AICharterInsight[] = [
+    { id: 'ai-01', route: 'VABB-VIDP', aircraftRecommendation: 'Phenom 300', estimatedPriceMin: 680000, estimatedPriceMax: 740000, demandScore: 0.92, recommendation: 'High demand expected next 48 hours' },
+    { id: 'ai-02', route: 'VIDP-VOGO', aircraftRecommendation: 'Citation XLS', estimatedPriceMin: 850000, estimatedPriceMax: 920000, demandScore: 0.85, recommendation: 'Cluster demand identified for weekend sector' },
 ];
 
 export const mockEmptyLegSeatListings: EmptyLegSeatListing[] = [
-    { id: 'seat-ls-01', flightId: 'EL-001', aircraft: 'Citation XLS', origin: 'VIDP', destination: 'VIJP', departureTime: '2025-03-10T10:00:00Z', seatCapacity: 6, seatsRemaining: 4, seatPrice: 20000, operatorId: 'op-west-01' },
+    { id: 'EL102', flightId: 'EL102', aircraft: 'Citation XLS', origin: 'VIDP', destination: 'VIJP', departureTime: '2025-03-10T10:00:00Z', seatCapacity: 6, seatsRemaining: 4, seatPrice: 20000, operatorId: 'op-west-01', status: 'ACTIVE' },
+    { id: 'EL105', flightId: 'EL105', aircraft: 'Legacy 650', origin: 'VABB', destination: 'VOHS', departureTime: '2025-03-12T14:30:00Z', seatCapacity: 12, seatsRemaining: 10, seatPrice: 35000, operatorId: 'op-west-01', status: 'ACTIVE' },
+];
+
+export const mockTripCommands: TripCommand[] = [
+    { id: 'TRP102', customerId: 'demo_super_user', origin: 'Mumbai (VABB)', destination: 'Delhi (VIDP)', aircraft: 'Phenom 300', passengers: 5, charterBookingId: 'RFQ-CORP-001', hotelBookingId: 'HB201', transportBookingId: 'TRN102', status: 'CONFIRMED', departureTime: '2025-03-15T10:00:00Z' },
+];
+
+export const mockCharterPriceIndex: CharterPriceIndex[] = [
+    { id: 'cpi-01', route: 'VABB-VOGO', aircraftCategory: 'LightJet', averagePrice: 710000, priceChangePercent: 6, demandIndex: 0.92, lastUpdated: new Date().toISOString() },
+    { id: 'cpi-02', route: 'VIDP-VABB', aircraftCategory: 'MidsizeJet', averagePrice: 950000, priceChangePercent: -2, demandIndex: 0.78, lastUpdated: new Date().toISOString() },
 ];
 
 export const mockAircraftPositions: AircraftPosition[] = [
@@ -101,13 +116,13 @@ export const mockAircraftPositions: AircraftPosition[] = [
 ];
 
 export const mockAircraftAvailability: AircraftAvailability[] = [
-    { id: 'av-01', registration: 'VT-FLY', aircraftType: 'Citation XLS+', operator: 'FlyCo Charter', currentAirport: 'VABB', availableFrom: new Date().toISOString(), availabilityWindow: '3hours', seats: 8 },
-    { id: 'av-02', registration: 'VT-PC', aircraftType: 'King Air B200', operator: 'FlyCo Charter', currentAirport: 'VAPO', availableFrom: new Date(Date.now() + 4 * 3600000).toISOString(), availabilityWindow: '6hours', seats: 7 },
+    { id: 'av-01', registration: 'VT-FLY', aircraftType: 'Citation XLS+', operator: 'FlyCo Charter', currentAirport: 'VABB', availableFrom: new Date().toISOString(), availabilityWindow: '3hours', seats: 8, rangeKm: 3200 },
+    { id: 'av-02', registration: 'VT-PC', aircraftType: 'King Air B200', operator: 'FlyCo Charter', currentAirport: 'VAPO', availableFrom: new Date(Date.now() + 4 * 3600000).toISOString(), availabilityWindow: '6hours', seats: 7, rangeKm: 2400 },
 ];
 
 export const mockDemandForecast: CharterDemandForecast[] = [
-    { id: 'df-01', origin: 'Mumbai', destination: 'Goa', routeCode: 'VABB-VOGO', predictedDemandScore: 95, timeframe: '7days', aircraftTypeDemand: ['Phenom 300', 'Citation XLS'] },
-    { id: 'df-02', origin: 'Delhi', destination: 'Dubai', routeCode: 'VIDP-OMDB', predictedDemandScore: 88, timeframe: '7days', aircraftTypeDemand: ['Legacy 650', 'Global 6000'] },
+    { id: 'df-01', origin: 'Mumbai', destination: 'Goa', routeCode: 'VABB-VOGO', predictedDemandScore: 95, timeframe: '7days', aircraftTypeDemand: ['Phenom 300', 'Citation XLS'], forecastWindow: '7days' },
+    { id: 'df-02', origin: 'Delhi', destination: 'Dubai', routeCode: 'VIDP-OMDB', predictedDemandScore: 88, timeframe: '7days', aircraftTypeDemand: ['Legacy 650', 'Global 6000'], forecastWindow: '7days' },
 ];
 
 export const mockBlogPosts: BlogPost[] = [

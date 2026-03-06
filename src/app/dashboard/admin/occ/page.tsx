@@ -17,12 +17,16 @@ import {
     ShieldCheck, 
     RefreshCw,
     Coins,
-    Globe
+    Globe,
+    Network,
+    MousePointer2
 } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useCollection } from "@/firebase";
-import type { CharterRFQ, AircraftPosition, AircraftAvailability, EmptyLeg, OperationalActivity } from "@/lib/types";
+import type { CharterRFQ, AircraftPosition, AircraftAvailability, EmptyLeg, OperationalActivity, CharterPriceIndex } from "@/lib/types";
 import { OperationalFeed } from "@/components/dashboard/admin/occ/operational-feed";
+import { AIIntelligenceHub } from '@/components/dashboard/admin/occ/ai-intelligence-hub';
+import Link from 'next/link';
 
 const OCCNetworkMap = dynamic(() => import('@/components/dashboard/admin/occ/occ-network-map').then(mod => mod.OCCNetworkMap), { 
     ssr: false,
@@ -44,12 +48,14 @@ export default function OperationsControlCenterPage() {
     const { data: availability } = useCollection<AircraftAvailability>(null, 'aircraftAvailability');
     const { data: legs } = useCollection<EmptyLeg>(null, 'emptyLegs');
     const { data: activities } = useCollection<OperationalActivity>(null, 'operationalActivities');
+    const { data: cpi } = useCollection<CharterPriceIndex>(null, 'charterPriceIndex');
 
     const stats = useMemo(() => ({
         activeCharters: positions?.filter(p => p.status === 'inflight').length || 0,
         availableJets: availability?.length || 0,
         predictedEmptyLegs: legs?.filter(l => l.status === 'live').length || 0,
-    }), [positions, availability, legs]);
+        seatBookings: activities?.filter(a => a.type === 'seat_booked').length || 0
+    }), [positions, availability, legs, activities]);
 
     const handleRefresh = () => {
         setLastSync(new Date().toLocaleTimeString());
@@ -61,7 +67,7 @@ export default function OperationsControlCenterPage() {
         <div className="space-y-6">
             <PageHeader 
                 title="AeroDesk OCC Terminal" 
-                description="Institutional Operations Control Center. Real-time situational awareness, predictive intelligence, and global data audit."
+                description="Institutional Operations Control Center. Real-time situational awareness, AI advisory, and global data audit."
             >
                 <div className="flex items-center gap-4">
                     <div className="text-right hidden sm:block">
@@ -78,8 +84,11 @@ export default function OperationsControlCenterPage() {
                 <StatsCard title="Active Charters" value={stats.activeCharters.toString()} icon={Radar} description="Missions in flight" />
                 <StatsCard title="Available Jets" value={stats.availableJets.toString()} icon={Plane} description="Ready nodes" />
                 <StatsCard title="Predicted Empty Legs" value={stats.predictedEmptyLegs.toString()} icon={Zap} description="AI identified" />
-                <StatsCard title="Platform Volume" value="₹ 4.2 Cr" icon={Coins} description="Gross MTD" />
+                <StatsCard title="Seat Exchange Activity" value={stats.seatBookings.toString()} icon={Activity} description="Allocations today" />
             </StatsGrid>
+
+            {/* --- AI INTELLIGENCE HUB (NEW) --- */}
+            <AIIntelligenceHub />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* --- SECTOR 1: INTELLIGENCE MAP --- */}
@@ -89,13 +98,13 @@ export default function OperationsControlCenterPage() {
 
                 {/* --- SECTOR 2: OPERATIONAL FEED --- */}
                 <div className="lg:col-span-4 space-y-6">
-                    <Card className="bg-card h-full flex flex-col border-white/5">
-                        <CardHeader className="pb-2 border-b border-white/5">
+                    <Card className="bg-card h-full flex flex-col border-white/5 shadow-2xl">
+                        <CardHeader className="pb-2 border-b border-white/5 bg-black/20">
                             <CardTitle className="text-sm flex items-center gap-2">
                                 <History className="h-4 w-4 text-accent" />
-                                Institutional Activity Feed
+                                Operational Signal Stream
                             </CardTitle>
-                            <CardDescription className="text-[10px] uppercase">Real-time platform signals and coordination events.</CardDescription>
+                            <CardDescription className="text-[10px] uppercase font-bold tracking-tighter">Real-time institutional coordination logs.</CardDescription>
                         </CardHeader>
                         <CardContent className="p-0 flex-1 overflow-hidden">
                             <OperationalFeed activities={activities || []} />
@@ -104,9 +113,10 @@ export default function OperationsControlCenterPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* --- CHARTER PRICE INDEX PREVIEW --- */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-8">
                 <Card className="bg-primary/5 border-primary/20">
-                    <CardHeader>
+                    <CardHeader className="pb-2">
                         <CardTitle className="text-xs font-black uppercase text-primary flex items-center gap-2">
                             <Target className="h-4 w-4" /> AI Demand Advisor
                         </CardTitle>
@@ -120,7 +130,7 @@ export default function OperationsControlCenterPage() {
                 </Card>
 
                 <Card className="bg-accent/5 border-accent/20">
-                    <CardHeader>
+                    <CardHeader className="pb-2">
                         <CardTitle className="text-xs font-black uppercase text-accent flex items-center gap-2">
                             <ShieldCheck className="h-4 w-4" /> Compliance Guard
                         </CardTitle>
@@ -134,7 +144,7 @@ export default function OperationsControlCenterPage() {
                 </Card>
 
                 <Card className="bg-black/20 border-white/5">
-                    <CardHeader>
+                    <CardHeader className="pb-2">
                         <CardTitle className="text-xs font-black uppercase text-white flex items-center gap-2">
                             <Globe className="h-4 w-4" /> Global Positioning
                         </CardTitle>
@@ -154,6 +164,22 @@ export default function OperationsControlCenterPage() {
                         </div>
                     </CardContent>
                 </Card>
+            </div>
+
+            {/* --- QUICK ACCESS UTILITIES --- */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
+                <Button asChild variant="outline" className="h-12 bg-white/[0.02] border-white/10 hover:bg-sky-500/10 hover:border-sky-500/30 text-[10px] font-black uppercase tracking-widest gap-2 transition-all">
+                    <Link href="/dashboard/admin/global-radar"><Radar className="h-4 w-4 text-sky-400" /> Access Global Radar</Link>
+                </Button>
+                <Button asChild variant="outline" className="h-12 bg-white/[0.02] border-white/10 hover:bg-amber-500/10 hover:border-amber-500/30 text-[10px] font-black uppercase tracking-widest gap-2 transition-all">
+                    <Link href="/dashboard/admin/jet-availability"><Network className="h-4 w-4 text-amber-400" /> Availability Matrix</Link>
+                </Button>
+                <Button asChild variant="outline" className="h-12 bg-white/[0.02] border-white/10 hover:bg-accent/10 hover:border-accent/30 text-[10px] font-black uppercase tracking-widest gap-2 transition-all">
+                    <Link href="/dashboard/admin/cpi"><TrendingUp className="h-4 w-4 text-accent" /> Price Index (CPI)</Link>
+                </Button>
+                <Button asChild variant="outline" className="h-12 bg-white/[0.02] border-white/10 hover:bg-primary/10 hover:border-primary/30 text-[10px] font-black uppercase tracking-widest gap-2 transition-all">
+                    <Link href="/dashboard/admin/audit-trail"><History className="h-4 w-4 text-primary" /> Immutable Audit</Link>
+                </Button>
             </div>
         </div>
     );

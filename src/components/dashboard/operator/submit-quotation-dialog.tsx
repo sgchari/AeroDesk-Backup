@@ -34,8 +34,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
 import { useCollection, useFirestore, addDocumentNonBlocking, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
-import type { CharterRFQ, Aircraft } from '@/lib/types';
-import { Sparkles, ShieldCheck, AlertCircle, Info } from 'lucide-react';
+import type { CharterRFQ, Aircraft, AICharterInsight } from '@/lib/types';
+import { Sparkles, ShieldCheck, Info, TrendingUp, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const quoteSchema = z.object({
@@ -64,6 +64,14 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
   }, [firestore, user]);
 
   const { data: fleet } = useCollection<Aircraft>(fleetQuery, user ? `operators/${user.id}/aircrafts` : undefined);
+
+  // AI ADVISORY DATA
+  const { data: aiInsights } = useCollection<AICharterInsight>(
+      useMemoFirebase(() => null, []), 
+      'aiCharterInsights'
+  );
+  
+  const currentInsight = aiInsights?.find(i => rfq?.departure.includes(i.route.split('-')[0]) && rfq?.arrival.includes(i.route.split('-')[1]));
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
@@ -118,25 +126,37 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
         </DialogHeader>
 
         {/* --- AI ADVISORY LAYER (Institutional Assistance) --- */}
-        <div className="p-4 rounded-xl bg-primary/10 border border-primary/30 relative overflow-hidden group mb-2">
-            <div className="absolute top-0 right-0 p-2 opacity-10"><Sparkles className="h-12 w-12" /></div>
+        <div className="p-4 rounded-xl bg-accent/5 border border-accent/20 relative overflow-hidden group mb-2">
+            <div className="absolute top-0 right-0 p-2 opacity-5"><Sparkles className="h-12 w-12" /></div>
             <div className="flex items-center gap-2 mb-3">
-                <Badge className="bg-primary text-white text-[8px] font-black uppercase h-4 px-1.5">AI Advisor</Badge>
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Market Alignment Suggestion</span>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                    <p className="text-[9px] font-black uppercase text-muted-foreground">Optimal Asset</p>
-                    <p className="text-xs font-bold text-foreground">Phenom 300 / XLS</p>
+                <div className="p-1.5 bg-accent/10 rounded-lg">
+                    <Zap className="h-3.5 w-3.5 text-accent animate-pulse" />
                 </div>
-                <div className="space-y-1 text-right">
-                    <p className="text-[9px] font-black uppercase text-muted-foreground">Suggested Yield</p>
-                    <p className="text-xs font-black text-accent">₹ 6,80,000 – ₹ 7,40,000</p>
+                <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-accent">AeroDesk AI Insight</p>
+                    <p className="text-[8px] text-muted-foreground uppercase font-bold">Predictive Market Alignment</p>
                 </div>
             </div>
-            <p className="text-[9px] text-muted-foreground italic mt-3 flex items-center gap-1.5">
-                <Info className="h-3 w-3" /> Predictive estimate based on route distance and current fleet density.
-            </p>
+            
+            {currentInsight ? (
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <p className="text-[9px] font-black uppercase text-muted-foreground">Optimal Asset Match</p>
+                        <p className="text-xs font-bold text-foreground">{currentInsight.aircraftRecommendation}</p>
+                    </div>
+                    <div className="space-y-1 text-right">
+                        <p className="text-[9px] font-black uppercase text-muted-foreground">Estimated Yield Range</p>
+                        <p className="text-xs font-black text-accent">₹ {currentInsight.estimatedPriceMin.toLocaleString()} – ₹ {currentInsight.estimatedPriceMax.toLocaleString()}</p>
+                    </div>
+                    <div className="col-span-2 pt-2 border-t border-white/5">
+                        <p className="text-[10px] text-muted-foreground italic leading-relaxed">
+                            "{currentInsight.recommendation}"
+                        </p>
+                    </div>
+                </div>
+            ) : (
+                <p className="text-[10px] text-muted-foreground italic">AI modeling complete. Standard pricing protocols advised for this sector.</p>
+            )}
         </div>
 
         <Form {...form}>
@@ -200,7 +220,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                 <FormItem>
                   <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Operational Inclusions</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Fuel, landing fees, and standard catering included. Ground handling subject to additional dispatch fees." {...field} className="bg-muted/20 h-24" />
+                    <Textarea placeholder="Fuel, landing fees, and standard catering included..." {...field} className="bg-muted/20 h-24" />
                   </FormControl>
                 </FormItem>
               )}
@@ -209,7 +229,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
             <div className="p-3 rounded-lg border border-white/5 bg-white/[0.02] flex items-start gap-3">
                 <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                 <p className="text-[10px] text-muted-foreground leading-relaxed italic">
-                    By submitting, you certify airworthiness and crew legality for this mission profile. AeroDesk facilitates coordination only.
+                    Operators retain final control over pricing. AeroDesk AI insights are provided for coordination assistance only.
                 </p>
             </div>
 

@@ -555,6 +555,8 @@ export type AviationHub = {
   city: string;
   latitude: number;
   longitude: number;
+  operatorCount?: number;
+  fleetSize?: number;
 };
 
 export type EmptyLegSeatListing = {
@@ -568,6 +570,7 @@ export type EmptyLegSeatListing = {
     seatsRemaining: number;
     seatPrice: number;
     operatorId: string;
+    status: 'ACTIVE' | 'CLOSED' | 'CANCELLED';
 };
 
 export type OperationalActivity = {
@@ -577,4 +580,38 @@ export type OperationalActivity = {
     timestamp: string;
     entityId: string;
     actor: string;
+};
+
+export type AICharterInsight = {
+    id: string;
+    route: string;
+    aircraftRecommendation: string;
+    estimatedPriceMin: number;
+    estimatedPriceMax: number;
+    demandScore: number;
+    recommendation: string;
+};
+
+export type TripCommand = {
+    id: string;
+    customerId: string;
+    origin: string;
+    destination: string;
+    aircraft: string;
+    passengers: number;
+    charterBookingId?: string;
+    hotelBookingId?: string;
+    transportBookingId?: string;
+    status: 'CONFIRMED' | 'ONGOING' | 'COMPLETED' | 'CANCELLED';
+    departureTime: string;
+};
+
+export type CharterPriceIndex = {
+    id: string;
+    route: string;
+    aircraftCategory: string;
+    averagePrice: number;
+    priceChangePercent: number;
+    demandIndex: number;
+    lastUpdated: string;
 };

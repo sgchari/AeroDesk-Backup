@@ -25,7 +25,9 @@ import {
   Wand2,
   Table,
   Radar,
-  Network
+  Network,
+  Command,
+  TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -49,12 +51,9 @@ const NAV_ITEMS: Record<string, any[]> = {
   admin: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-accent' },
     { href: '/dashboard/admin/occ', label: 'OCC Terminal', icon: Radio, color: 'text-emerald-400 font-bold' },
-    { href: '/dashboard/admin/global-charter-radar', label: 'Charter Radar', icon: Radar, color: 'text-sky-400' },
-    { href: '/dashboard/admin/jet-availability', label: 'Jet Network', icon: Network, color: 'text-amber-400' },
-    { href: '/dashboard/admin/demand-intelligence', label: 'Demand Engine', icon: Target, color: 'text-rose-400' },
+    { href: '/dashboard/admin/global-radar', label: 'Global Radar', icon: Radar, color: 'text-sky-400' },
+    { href: '/dashboard/admin/cpi', label: 'Price Index (CPI)', icon: TrendingUp, color: 'text-accent' },
     { href: '/dashboard/admin/monitoring', label: 'Network Health', icon: Activity, color: 'text-rose-400' },
-    { href: '/dashboard/admin/analytics', label: 'Market Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
-    { href: '/dashboard/admin/intelligence', label: 'Global Insights', icon: Wand2, color: 'text-accent' },
     { href: '/dashboard/admin/revenue-share', label: 'Yield Engine', icon: Zap, color: 'text-accent' },
     { href: '/dashboard/admin/users', label: 'Identity Governance', icon: Users, color: 'text-violet-400' },
     { href: '/dashboard/admin/operators', label: 'NSOP Registry', icon: Plane, color: 'text-sky-400' },
@@ -68,7 +67,6 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/operator/empty-legs', label: 'JetSeat Exchange', icon: Zap, color: 'text-accent' },
     { href: '/dashboard/operator/fleet-intelligence', label: 'Utilization Engine', icon: Target, color: 'text-emerald-400' },
     { href: '/dashboard/operator/analytics', label: 'Utilization Stats', icon: BarChart2, color: 'text-fuchsia-400' },
-    { href: '/dashboard/operator/intelligence', label: 'Route Intelligence', icon: Wand2, color: 'text-accent' },
     { href: '/dashboard/operator/reports', label: 'Yield Reports', icon: Table, color: 'text-sky-400' },
     { href: '/dashboard/operator/profile', label: 'Firm Identity', icon: Building, color: 'text-accent' },
   ],
@@ -77,16 +75,13 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/travel-agency/available-seats', label: 'Seat Inventory', icon: Armchair, color: 'text-emerald-400' },
     { href: '/dashboard/travel-agency/charter-requests', label: 'Client Missions', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/travel-agency/analytics', label: 'Sales Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
-    { href: '/dashboard/travel-agency/intelligence', label: 'Market Trends', icon: Wand2, color: 'text-accent' },
     { href: '/dashboard/travel-agency/revenue-share', label: 'Commission Ledger', icon: Coins, color: 'text-accent' },
-    { href: '/dashboard/travel-agency/reports', label: 'Audit Records', icon: Table, color: 'text-sky-400' },
   ],
   corporate: [
     { href: '/dashboard', label: 'Travel Desk', icon: Home, color: 'text-accent' },
     { href: '/dashboard/ctd/requests', label: 'Employee Demand', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/ctd/approvals', label: 'Governance Flow', icon: ShieldCheck, color: 'text-amber-400' },
     { href: '/dashboard/ctd/analytics', label: 'Spend Analysis', icon: BarChart2, color: 'text-fuchsia-400' },
-    { href: '/dashboard/ctd/intelligence', label: 'Cost Insights', icon: Wand2, color: 'text-accent' },
     { href: '/dashboard/ctd/reports', label: 'Compliance Audit', icon: Table, color: 'text-sky-400' },
   ],
   hotel: [
@@ -95,11 +90,10 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/hotel/availability', label: 'Revenue Control', icon: Calendar, color: 'text-emerald-400' },
     { href: '/dashboard/hotel/requests', label: 'Mission Stays', icon: Clock, color: 'text-blue-400' },
     { href: '/dashboard/hotel/analytics', label: 'Yield Stats', icon: BarChart2, color: 'text-fuchsia-400' },
-    { href: '/dashboard/hotel/intelligence', label: 'Demand Signals', icon: Wand2, color: 'text-accent' },
-    { href: '/dashboard/hotel/reports', label: 'Financial Audit', icon: Table, color: 'text-sky-400' },
   ],
   individual: [
     { href: '/dashboard', label: 'My Terminal', icon: Home, color: 'text-accent' },
+    { href: '/dashboard/customer/trip-command', label: 'Trip Command', icon: Command, color: 'text-emerald-400 font-bold' },
     { href: '/dashboard/charter-rfq', label: 'Active Missions', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/customer/empty-legs', label: 'JetSeat Exchange', icon: Armchair, color: 'text-emerald-400' },
     { href: '/dashboard/customer/analytics', label: 'Journey Analytics', icon: BarChart2, color: 'text-fuchsia-400' },

@@ -17,7 +17,7 @@ export function AIIntelligenceHub() {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Route Profitability & Demand */}
-            <Card className="lg:col-span-2 bg-card border-accent/20">
+            <Card className="lg:col-span-2 bg-card border-accent/20 shadow-2xl">
                 <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                         <div>
@@ -25,9 +25,9 @@ export function AIIntelligenceHub() {
                                 <TrendingUp className="h-4 w-4" />
                                 Route Profitability Analysis
                             </CardTitle>
-                            <CardDescription className="text-[10px] uppercase">GTV and Demand Score correlation by sector.</CardDescription>
+                            <CardDescription className="text-[10px] uppercase font-bold tracking-tighter">Yield and Demand Score correlation by sector.</CardDescription>
                         </div>
-                        <Badge variant="outline" className="bg-accent/5 border-accent/20 text-accent font-code text-[9px]">WAREHOUSE SYNC: ACTIVE</Badge>
+                        <Badge variant="outline" className="bg-accent/5 border-accent/20 text-accent font-code text-[9px]">ENGINE: ACTIVE</Badge>
                     </div>
                 </CardHeader>
                 <CardContent className="h-[300px] pt-4">
@@ -45,20 +45,20 @@ export function AIIntelligenceHub() {
             </Card>
 
             {/* Empty Leg Prediction Monitor */}
-            <Card className="bg-card">
+            <Card className="bg-card border-white/5">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
                         <Zap className="h-4 w-4" />
                         Empty Leg Prediction
                     </CardTitle>
-                    <CardDescription className="text-[10px] uppercase">Repositioning detection probability.</CardDescription>
+                    <CardDescription className="text-[10px] uppercase font-bold tracking-tighter">Repositioning probability audit.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4 pt-4">
                     {predictions?.map(pred => (
-                        <div key={pred.id} className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-2 group">
+                        <div key={pred.id} className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-2 group hover:bg-white/[0.04] transition-all">
                             <div className="flex items-center justify-between">
                                 <span className="text-[10px] font-bold text-white uppercase">{pred.predictedRoute}</span>
-                                <Badge className="bg-blue-500/20 text-blue-400 border-none h-4 text-[8px] font-black">{Math.round(pred.probability * 100)}% PROB</Badge>
+                                <Badge className="bg-blue-500/20 text-blue-400 border-none h-4 text-[8px] font-black uppercase">{Math.round(pred.probability * 100)}% PROB</span>
                             </div>
                             <p className="text-[9px] text-muted-foreground italic leading-tight">"{pred.reason}"</p>
                             <div className="flex items-center justify-between pt-1">
@@ -70,15 +70,19 @@ export function AIIntelligenceHub() {
                 </CardContent>
             </Card>
 
-            {/* Fleet Optimization Panel */}
-            <Card className="lg:col-span-3 bg-primary/10 border-primary/20 overflow-hidden relative">
+            {/* Fleet Optimization Recommendations */}
+            <Card className="lg:col-span-3 bg-primary/10 border-primary/20 overflow-hidden relative group">
                 <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
                 <CardHeader>
-                    <CardTitle className="text-base flex items-center gap-2 text-white">
-                        <Target className="h-5 w-5 text-primary animate-pulse" />
-                        AI Fleet Optimization Recommendations
-                    </CardTitle>
-                    <CardDescription className="text-xs">Predictive asset allocation to capture emerging regional demand clusters.</CardDescription>
+                    <div className="flex items-center gap-2">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                            <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+                        </div>
+                        <div>
+                            <CardTitle className="text-base font-black uppercase tracking-widest text-white">AI Fleet Optimization Recommendations</CardTitle>
+                            <CardDescription className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Predictive asset allocation to capture surging demand clusters.</CardDescription>
+                        </div>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -88,7 +92,7 @@ export function AIIntelligenceHub() {
                                     <Badge variant="outline" className="text-[9px] uppercase font-black border-primary/20 text-primary">{fos.operator}</Badge>
                                     <div className="flex items-center gap-2">
                                         <ArrowUpRight className="h-4 w-4 text-emerald-500" />
-                                        <span className="text-xs font-black text-emerald-500">+{fos.expectedYieldIncrease}% YIELD</span>
+                                        <span className="text-xs font-black text-emerald-500">+{fos.expectedYieldIncrease}% YIELD TARGET</span>
                                     </div>
                                 </div>
                                 <div className="space-y-1">

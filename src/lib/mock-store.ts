@@ -15,7 +15,10 @@ import {
   mockAircraftAvailability,
   mockDemandForecast,
   mockEmptyLegSeatListings,
-  mockOperationalActivities
+  mockOperationalActivities,
+  mockAICharterInsights,
+  mockTripCommands,
+  mockCharterPriceIndex
 } from './data';
 import { User } from './types';
 
@@ -40,6 +43,9 @@ let db: any = {
   charterDemandForecast: deepCopy(mockDemandForecast),
   emptyLegSeatListings: deepCopy(mockEmptyLegSeatListings),
   operationalActivities: deepCopy(mockOperationalActivities),
+  aiCharterInsights: deepCopy(mockAICharterInsights),
+  tripCommand: deepCopy(mockTripCommands),
+  charterPriceIndex: deepCopy(mockCharterPriceIndex),
   readCount: 0
 };
 
