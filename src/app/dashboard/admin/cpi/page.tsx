@@ -20,6 +20,7 @@ import {
     BarChart,
     Bar
 } from 'recharts';
+import { cn } from "@/lib/utils";
 
 const MOCK_HISTORICAL = [
     { day: 'Mon', index: 0.85 },
