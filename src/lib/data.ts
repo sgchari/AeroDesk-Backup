@@ -70,7 +70,7 @@ export const mockUsers: User[] = [
       status: 'active', 
       demoMode: true,
       allowedRoles: ["customer", "operator", "agency", "corporate", "hotel", "admin"],
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      avatar: 'https://picsum.photos/seed/aerodesk-super-user/256/256',
       createdAt: "2025-01-01T10:00:00Z", 
       updatedAt: "2025-01-01T10:00:00Z" 
     }
