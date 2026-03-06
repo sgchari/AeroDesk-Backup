@@ -27,7 +27,7 @@ export function AIIntelligenceHub() {
                             </CardTitle>
                             <CardDescription className="text-[10px] uppercase font-bold tracking-tighter">Yield and Demand Score correlation by sector.</CardDescription>
                         </div>
-                        <Badge variant="outline" className="bg-accent/5 border-accent/20 text-accent font-code text-[9px]">ENGINE: ACTIVE</Badge>
+                        <Badge variant="outline" className="bg-accent/5 border-accent/20 text-accent font-code text-[10px]">ENGINE: ACTIVE</Badge>
                     </div>
                 </CardHeader>
                 <CardContent className="h-[300px] pt-4">
@@ -58,7 +58,7 @@ export function AIIntelligenceHub() {
                         <div key={pred.id} className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-2 group hover:bg-white/[0.04] transition-all">
                             <div className="flex items-center justify-between">
                                 <span className="text-[10px] font-bold text-white uppercase">{pred.predictedRoute}</span>
-                                <Badge className="bg-blue-500/20 text-blue-400 border-none h-4 text-[8px] font-black uppercase">{Math.round(pred.probability * 100)}% PROB</span>
+                                <Badge className="bg-blue-500/20 text-blue-400 border-none h-4 text-[8px] font-black uppercase">{Math.round(pred.probability * 100)}% PROB</Badge>
                             </div>
                             <p className="text-[9px] text-muted-foreground italic leading-tight">"{pred.reason}"</p>
                             <div className="flex items-center justify-between pt-1">
