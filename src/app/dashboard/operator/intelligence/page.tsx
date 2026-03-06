@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCollection, useUser } from "@/firebase";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { 
     Activity, 
     Sparkles, 
@@ -161,7 +162,7 @@ export default function OperatorIntelligencePage() {
                         </CardTitle>
                         <CardDescription>Top demand routes across the AeroDesk network (30-day window).</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-[350px]">
                         {isLoading ? <Skeleton className="h-full w-full" /> : (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={demand || []}>
@@ -198,7 +199,7 @@ export default function OperatorIntelligencePage() {
                                     </div>
                                     <div className="flex items-center justify-between pt-2 border-t border-white/5">
                                         <div className="space-y-0.5">
-                                            <p className="text-[8px] uppercase text-muted-foreground font-black">Est. Seat Yield</p>
+                                            <p className="text-[8px] uppercase font-black text-muted-foreground font-black">Est. Seat Yield</p>
                                             <p className="text-xs font-black text-accent">₹ {(opp.potentialSeatRevenue / 100000).toFixed(1)} L</p>
                                         </div>
                                         <Button size="sm" variant="outline" className="h-7 text-[8px] font-black uppercase tracking-widest border-primary/20 hover:bg-primary/10">Publish Seats</Button>
