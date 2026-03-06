@@ -70,11 +70,8 @@ export function useDoc<T = any>(
         const fetchDemoData = () => {
             if (!mountedRef.current) return;
             try {
-                const docData = mockStore.getDoc(path);
-                setData(prev => {
-                    if (JSON.stringify(prev) === JSON.stringify(docData)) return prev;
-                    return docData as WithId<T> | null;
-                });
+                const docData = mockStore.getDoc(path) as WithId<T> | null;
+                setData(docData);
             } catch (e: any) {
                 setError(e);
             } finally {

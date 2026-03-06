@@ -32,6 +32,7 @@ export function useCollection<T = any>(
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   const { user, isLoading: isUserLoading } = useUser();
   const mountedRef = useRef(true);
+  const lastUpdateRef = useRef<number>(0);
   
   const isDemoMode = !memoizedTargetRefOrQuery || !memoizedTargetRefOrQuery.firestore?.app || (memoizedTargetRefOrQuery.firestore as any)._isMock;
 
@@ -59,30 +60,26 @@ export function useCollection<T = any>(
       return () => unsubscribe();
     }
     
-    const fetchDemoData = () => {
-        if (isUserLoading || !mountedRef.current) return;
-
-        const path = demoPath;
-        if (!path) {
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            const mockData = mockStore.getCollection(path, user);
-            // Only update if data changed to prevent infinite render loops in simulation
-            setData(prev => {
-                if (JSON.stringify(prev) === JSON.stringify(mockData)) return prev;
-                return mockData as WithId<T>[];
-            });
-        } catch (e: any) {
-            setError(e);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    
     if (isDemoMode) {
+        const fetchDemoData = () => {
+            if (isUserLoading || !mountedRef.current) return;
+
+            const path = demoPath;
+            if (!path) {
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                const mockData = mockStore.getCollection(path, user) as WithId<T>[];
+                setData(mockData);
+            } catch (e: any) {
+                setError(e);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         fetchDemoData();
         const unsubscribe = mockStore.subscribe(fetchDemoData);
         return () => unsubscribe();

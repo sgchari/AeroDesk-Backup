@@ -26,27 +26,31 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
+  // Persistent role detection
   useEffect(() => {
-    const saved = localStorage.getItem('activeDemoRole');
-    if (saved) setActiveDemoRole(saved);
+    if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('activeDemoRole');
+        if (saved) setActiveDemoRole(saved);
+    }
   }, []);
 
-  const fetchUser = useCallback(async () => {
-    if (!isDemoMode) return; // Handled by effect listener
+  const fetchUser = useCallback(async (roleKeyOverride?: string) => {
+    if (!isDemoMode) return;
 
     setLoading(true);
     setError(null);
 
     try {
         const demoUserId = typeof window !== 'undefined' ? localStorage.getItem('demoUserId') : null;
+        const currentRoleKey = roleKeyOverride || (typeof window !== 'undefined' ? localStorage.getItem('activeDemoRole') : null);
+        
         if (demoUserId) {
-            let foundUser = mockUsers.find(u => u.id === demoUserId);
+            const foundUser = mockUsers.find(u => u.id === demoUserId);
             if (foundUser) {
-                let found = JSON.parse(JSON.stringify(foundUser)); // Deep copy
-                let firmName = found.company || "";
+                let mappedUser = { ...foundUser };
                 
-                // Demo Super User Logic
-                if (found.role === 'demo_super_user' && activeDemoRole) {
+                // Demo Super User Mapping Logic
+                if (mappedUser.role === 'demo_super_user' && currentRoleKey) {
                     const mapping: Record<string, {role: string, platform: PlatformRole, firmIds: any}> = {
                         'customer': { role: 'Customer', platform: 'individual', firmIds: {} },
                         'operator': { role: 'Operator', platform: 'operator', firmIds: { operatorId: 'op-west-01' } },
@@ -55,10 +59,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
                         'hotel': { role: 'Hotel Partner', platform: 'hotel', firmIds: { hotelPartnerId: 'hotel-01' } },
                         'admin': { role: 'Admin', platform: 'admin', firmIds: {} },
                     };
-                    const mapped = mapping[activeDemoRole];
+                    const mapped = mapping[currentRoleKey];
                     if (mapped) {
-                        found = {
-                            ...found,
+                        mappedUser = {
+                            ...mappedUser,
                             role: mapped.role,
                             platformRole: mapped.platform,
                             ...mapped.firmIds
@@ -66,24 +70,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     }
                 }
 
-                if (found.corporateId) {
-                    const ctd = mockCorporates.find(d => d.id === found.corporateId);
-                    firmName = ctd?.companyName || "Stark Industries";
-                } else if (found.operatorId) {
-                    const op = mockOperators.find(o => o.id === found.operatorId);
-                    firmName = op?.companyName || "FlyCo Charter";
-                } else if (found.agencyId) {
-                    const ag = mockAgencies.find(a => a.id === found.agencyId);
-                    firmName = ag?.companyName || "Sky Distributors";
-                } else if (found.hotelPartnerId) {
-                    const hotel = mockHotelPartners.find(h => h.id === found.hotelPartnerId);
-                    firmName = hotel?.companyName || "Grand Hotels Group";
+                // Firm Name Enrichment
+                let firmName = mappedUser.company || "";
+                if (mappedUser.corporateId) {
+                    firmName = mockCorporates.find(d => d.id === mappedUser.corporateId)?.companyName || "Stark Industries";
+                } else if (mappedUser.operatorId) {
+                    firmName = mockOperators.find(o => o.id === mappedUser.operatorId)?.companyName || "FlyCo Charter";
+                } else if (mappedUser.agencyId) {
+                    firmName = mockAgencies.find(a => a.id === mappedUser.agencyId)?.companyName || "Sky Distributors";
+                } else if (mappedUser.hotelPartnerId) {
+                    firmName = mockHotelPartners.find(h => h.id === mappedUser.hotelPartnerId)?.companyName || "Grand Hotels Group";
                 }
 
-                setUser({
-                    ...found,
-                    company: firmName
-                } as AppUser);
+                setUser({ ...mappedUser, company: firmName } as AppUser);
             } else {
                 localStorage.removeItem('demoUserId');
                 setUser(null);
@@ -92,11 +91,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
             setUser(null);
         }
     } catch(e: any) {
+        console.error("Simulation User Error:", e);
         setError(e);
     } finally {
         setLoading(false);
     }
-  }, [isDemoMode, activeDemoRole]);
+  }, [isDemoMode]);
 
   useEffect(() => {
     if (isDemoMode) {
@@ -133,7 +133,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         unsubscribe();
         authListenerAttached.current = false;
     };
-  }, [isDemoMode]);
+  }, [isDemoMode, fetchUser]);
 
   const login = (uid: string) => {
     if (isDemoMode) {
@@ -154,11 +154,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   const setDemoRole = (roleKey: string) => {
-    setActiveDemoRole(roleKey);
     localStorage.setItem('activeDemoRole', roleKey);
+    setActiveDemoRole(roleKey);
+    fetchUser(roleKey); // Immediate re-fetch with new context
   };
 
-  const value = { user, isLoading, error, login, logout, setDemoRole };
+  const value = React.useMemo(() => ({ 
+    user, isLoading, error, login, logout, setDemoRole 
+  }), [user, isLoading, error, fetchUser]);
 
   return (
     <UserContext.Provider value={value}>

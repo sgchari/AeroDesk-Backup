@@ -46,6 +46,7 @@ export default function DashboardPage() {
       return;
     }
     
+    // Redirect unconfigured super users immediately
     if (user && user.role === 'demo_super_user' && !user.platformRole) {
         isRedirecting.current = true;
         router.replace('/dashboard/select-role');
@@ -54,6 +55,11 @@ export default function DashboardPage() {
 
   const dashboardView = useMemo(() => {
     if (!user || isLoading) return null;
+
+    // Guard against transitional super user role before mapping
+    if (user.role === 'demo_super_user' && !user.platformRole) {
+        return <DashboardSkeleton />;
+    }
 
     const role = user.role;
 
