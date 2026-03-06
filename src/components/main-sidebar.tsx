@@ -29,7 +29,8 @@ import {
   Command,
   TrendingUp,
   UserCog,
-  BriefcaseIcon
+  BriefcaseIcon,
+  Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -65,6 +66,7 @@ const NAV_ITEMS: Record<string, any[]> = {
   operator: [
     { href: '/dashboard', label: 'Fleet Console', icon: Home, color: 'text-accent' },
     { href: '/dashboard/operator/rfq-marketplace', label: 'RFQ Exchange', icon: GanttChartSquare, color: 'text-amber-400' },
+    { href: '/dashboard/operator/intelligence', label: 'Operator Intelligence', icon: Sparkles, color: 'text-accent' },
     { href: '/dashboard/operator/fleet', label: 'Asset Registry', icon: Plane, color: 'text-slate-400' },
     { href: '/dashboard/operator/empty-legs', label: 'JetSeat Exchange', icon: Zap, color: 'text-accent' },
     { href: '/dashboard/operator/crew-operations', label: 'Crew & Logistics', icon: Users, color: 'text-sky-400' },

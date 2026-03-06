@@ -43,6 +43,68 @@ export type OrganizationUser = {
   createdAt: string;
 };
 
+export type FleetUtilization = {
+  id: string;
+  operatorId: string;
+  aircraftId: string;
+  aircraftType: string;
+  registration: string;
+  flightsLast30Days: number;
+  totalFlightHours: number;
+  utilizationPercentage: number;
+  idleHours: number;
+  lastUpdated: string;
+};
+
+export type CharterDemandAnalytics = {
+  id: string;
+  route: string;
+  origin: string;
+  destination: string;
+  totalRequestsLast30Days: number;
+  confirmedCharters: number;
+  demandScore: number;
+};
+
+export type EmptyLegOpportunity = {
+  id: string;
+  aircraftId: string;
+  registration: string;
+  currentCity: string;
+  recommendedRoute: string;
+  demandScore: number;
+  potentialSeatRevenue: number;
+  seatsAvailable: number;
+};
+
+export type AircraftPositioningInsight = {
+  id: string;
+  operatorId: string;
+  aircraftId: string;
+  registration: string;
+  aircraftType: string;
+  recommendedBase: string;
+  reason: string;
+  demandScore: number;
+};
+
+export type CharterPriceBenchmark = {
+  id: string;
+  route: string;
+  aircraftCategory: string;
+  avgPrice: number;
+  minPrice: number;
+  maxPrice: number;
+};
+
+export type RevenueForecast = {
+  id: string;
+  operatorId: string;
+  route: string;
+  projectedDemandNext7Days: number;
+  estimatedRevenueOpportunity: number;
+};
+
 export type CrewMember = {
   id: string;
   crewId: string;
@@ -53,6 +115,7 @@ export type CrewMember = {
   phone: string;
   email: string;
   status: 'ACTIVE' | 'ON_DUTY' | 'OFF_DUTY' | 'LEAVE';
+  assignedAircraftRegistration?: string;
 };
 
 export type CrewAssignment = {
@@ -154,6 +217,9 @@ export type Operator = {
   fleetCount?: number;
   createdAt: string;
   updatedAt: string;
+  officailEmail?: string;
+  contactPersonName?: string;
+  fleetSize?: number;
 };
 
 export type Aircraft = {
@@ -660,4 +726,18 @@ export type CharterPriceIndex = {
     priceChangePercent: number;
     demandIndex: number;
     lastUpdated: string;
+};
+
+export type Quotation = {
+  id: string;
+  rfqId: string;
+  operatorId: string;
+  operatorName: string;
+  aircraftId: string;
+  aircraftName: string;
+  price: number;
+  status: string;
+  submittedAt: string;
+  validUntil: string;
+  operatorRemarks?: string;
 };

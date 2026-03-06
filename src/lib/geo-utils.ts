@@ -22,14 +22,8 @@ export const hubGeographics: Record<string, GeoCoord & { type: 'backbone' | 'ope
     'Cochin': { lat: 9.9312, lng: 76.2673, type: 'operator', label: 'Coastal Corridor', operators: 1, partners: 3 },
 };
 
-/**
- * SVG Path for India Mainland (Projected for 1000x1000 coordinate system)
- */
 export const indiaPath = "M310,230 L320,210 L350,200 L380,220 L410,190 L450,180 L480,120 L550,110 L620,130 L680,110 L720,140 L750,180 L780,210 L820,230 L850,300 L880,350 L850,420 L820,480 L780,550 L750,620 L720,680 L680,750 L650,820 L620,880 L580,920 L520,950 L480,920 L420,880 L380,820 L350,750 L320,680 L280,620 L250,550 L220,480 L180,420 L150,350 L120,300 L150,250 L180,220 L220,250 L250,280 L280,250 Z";
 
-/**
- * Projected hub coordinates for SVG views (1000x1000 system)
- */
 export const hubCoordinates: Record<string, { x: number, y: number }> = {
     'Delhi': { x: 420, y: 280 },
     'Mumbai': { x: 320, y: 580 },
@@ -44,10 +38,6 @@ export const hubCoordinates: Record<string, { x: number, y: number }> = {
     'Cochin': { x: 420, y: 920 },
 };
 
-/**
- * Validated India Mainland GeoJSON (Optimized for platform performance).
- * This MultiPolygon definition provides a high-fidelity silhouette of the mainland.
- */
 export const indiaGeoJson: any = {
   "type": "FeatureCollection",
   "features": [

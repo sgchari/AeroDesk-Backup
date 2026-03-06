@@ -47,7 +47,13 @@ import type {
   OrganizationUser,
   CrewAssignment,
   CrewLogistics,
-  Quotation
+  Quotation,
+  FleetUtilization,
+  CharterDemandAnalytics,
+  EmptyLegOpportunity,
+  AircraftPositioningInsight,
+  CharterPriceBenchmark,
+  RevenueForecast
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -109,6 +115,37 @@ export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-CORP-001', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', company: 'Stark Industries', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', departureTime: '10:00', pax: 5, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', totalAmount: 1250000, bidsCount: 2, costCenter: 'EXEC-HQ' },
     { id: 'RFQ-IND-002', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', tripType: 'Return', departure: 'Delhi (VIDP)', arrival: 'Goa (VOGO)', departureDate: '2025-03-20', departureTime: '11:30', pax: 4, aircraftType: 'Light Jet', status: 'manifestApproved', createdAt: '2025-02-12T14:00:00Z', updatedAt: '2025-02-15T09:00:00Z', totalAmount: 850000, bidsCount: 1, operatorId: 'op-west-01' },
     { id: 'RFQ-LIVE-003', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', company: 'Stark Industries', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Mumbai (VABB)', departureDate: '2025-03-06', departureTime: '09:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'live', createdAt: '2025-03-01T10:00:00Z', updatedAt: '2025-03-06T09:00:00Z', totalAmount: 620000, operatorId: 'op-west-01' },
+];
+
+export const mockFleetUtilization: FleetUtilization[] = [
+  { id: 'util-01', operatorId: 'op-west-01', aircraftId: 'ac-01', aircraftType: 'Cessna Citation XLS+', registration: 'VT-FLY', flightsLast30Days: 18, totalFlightHours: 72, utilizationPercentage: 68, idleHours: 34, lastUpdated: new Date().toISOString() },
+  { id: 'util-02', operatorId: 'op-west-01', aircraftId: 'ac-02', aircraftType: 'Embraer Legacy 650', registration: 'VT-STK', flightsLast30Days: 12, totalFlightHours: 92, utilizationPercentage: 88, idleHours: 12, lastUpdated: new Date().toISOString() },
+  { id: 'util-03', operatorId: 'op-west-01', aircraftId: 'ac-03', aircraftType: 'King Air B200', registration: 'VT-JSG', flightsLast30Days: 6, totalFlightHours: 32, utilizationPercentage: 42, idleHours: 58, lastUpdated: new Date().toISOString() },
+];
+
+export const mockCharterDemandAnalytics: CharterDemandAnalytics[] = [
+  { id: 'da-01', route: 'Mumbai-Goa', origin: 'VABB', destination: 'VOGO', totalRequestsLast30Days: 42, confirmedCharters: 19, demandScore: 87 },
+  { id: 'da-02', route: 'Delhi-Jaipur', origin: 'VIDP', destination: 'VIJP', totalRequestsLast30Days: 28, confirmedCharters: 12, demandScore: 72 },
+  { id: 'da-03', route: 'Bangalore-Hyderabad', origin: 'VOBL', destination: 'VOHS', totalRequestsLast30Days: 35, confirmedCharters: 15, demandScore: 81 },
+];
+
+export const mockEmptyLegOpportunities: EmptyLegOpportunity[] = [
+  { id: 'elo-01', aircraftId: 'ac-01', registration: 'VT-FLY', currentCity: 'Mumbai', recommendedRoute: 'Mumbai-Delhi', demandScore: 72, potentialSeatRevenue: 280000, seatsAvailable: 8 },
+  { id: 'elo-02', aircraftId: 'ac-03', registration: 'VT-JSG', currentCity: 'Goa', recommendedRoute: 'Goa-Mumbai', demandScore: 85, potentialSeatRevenue: 180000, seatsAvailable: 6 },
+];
+
+export const mockAircraftPositioningInsights: AircraftPositioningInsight[] = [
+  { id: 'api-01', operatorId: 'op-west-01', aircraftId: 'ac-01', registration: 'VT-FLY', aircraftType: 'Cessna Citation XLS+', recommendedBase: 'Goa', reason: 'High charter demand next 72 hours', demandScore: 81 },
+];
+
+export const mockCharterPriceBenchmark: CharterPriceBenchmark[] = [
+  { id: 'cpb-01', route: 'Mumbai-Goa', aircraftCategory: 'Light Jet', avgPrice: 710000, minPrice: 680000, maxPrice: 750000 },
+  { id: 'cpb-02', route: 'Delhi-Jaipur', aircraftCategory: 'Light Jet', avgPrice: 420000, minPrice: 380000, maxPrice: 450000 },
+];
+
+export const mockRevenueForecast: RevenueForecast[] = [
+  { id: 'rf-01', operatorId: 'op-west-01', route: 'Bangalore-Hyderabad', projectedDemandNext7Days: 12, estimatedRevenueOpportunity: 4200000 },
+  { id: 'rf-02', operatorId: 'op-west-01', route: 'Mumbai-Goa', projectedDemandNext7Days: 8, estimatedRevenueOpportunity: 5600000 },
 ];
 
 export const mockQuotations: Quotation[] = [

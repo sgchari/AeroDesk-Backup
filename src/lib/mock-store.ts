@@ -38,7 +38,13 @@ import {
   mockTaxConfigs,
   mockRouteDemandHistory,
   mockEmptyLegPredictions,
-  mockFleetOptimizationSuggestions
+  mockFleetOptimizationSuggestions,
+  mockFleetUtilization,
+  mockCharterDemandAnalytics,
+  mockEmptyLegOpportunities,
+  mockAircraftPositioningInsights,
+  mockCharterPriceBenchmark,
+  mockRevenueForecast
 } from './data';
 import { User } from './types';
 
@@ -86,6 +92,12 @@ let db: any = {
   routeDemandHistory: deepCopy(mockRouteDemandHistory),
   emptyLegPredictions: deepCopy(mockEmptyLegPredictions),
   fleetOptimizationSuggestions: deepCopy(mockFleetOptimizationSuggestions),
+  fleetUtilization: deepCopy(mockFleetUtilization),
+  charterDemandAnalytics: deepCopy(mockCharterDemandAnalytics),
+  emptyLegOpportunities: deepCopy(mockEmptyLegOpportunities),
+  aircraftPositioningInsights: deepCopy(mockAircraftPositioningInsights),
+  charterPriceBenchmark: deepCopy(mockCharterPriceBenchmark),
+  revenueForecast: deepCopy(mockRevenueForecast),
   readCount: 0
 };
 
