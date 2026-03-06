@@ -44,7 +44,11 @@ import {
   mockEmptyLegOpportunities,
   mockAircraftPositioningInsights,
   mockCharterPriceBenchmark,
-  mockRevenueForecast
+  mockRevenueForecast,
+  mockBlogPosts,
+  mockPressReleases,
+  mockMediaMentions,
+  mockBrandAssets
 } from './data';
 import { User } from './types';
 
@@ -98,6 +102,10 @@ let db: any = {
   aircraftPositioningInsights: deepCopy(mockAircraftPositioningInsights),
   charterPriceBenchmark: deepCopy(mockCharterPriceBenchmark),
   revenueForecast: deepCopy(mockRevenueForecast),
+  blogPosts: deepCopy(mockBlogPosts),
+  pressReleases: deepCopy(mockPressReleases),
+  mediaMentions: deepCopy(mockMediaMentions),
+  brandAssets: deepCopy(mockBrandAssets),
   readCount: 0
 };
 

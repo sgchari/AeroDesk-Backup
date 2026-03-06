@@ -273,10 +273,53 @@ export const mockTaxConfigs: TaxConfig[] = [
     { id: 'tc-01', serviceType: 'charter', taxRatePercent: 18, sacCode: '9964', effectiveFrom: '2025-01-01', isActive: true },
 ];
 
-export const mockProperties: Property[] = [];
-export const mockRoomCategories: RoomCategory[] = [];
-export const mockAccommodationRequests: AccommodationRequest[] = [];
-export const mockPressReleases: PressRelease[] = [];
-export const mockMediaMentions: MediaMention[] = [];
-export const mockBrandAssets: BrandAsset[] = [];
-export const mockBlogPosts: BlogPost[] = [];
+export const mockProperties: Property[] = [
+    { id: 'prop-01', hotelPartnerId: 'hotel-01', name: 'The Taj Mahal Palace', city: 'Mumbai', status: 'Active', imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800', propertyType: 'Luxury Hotel' },
+    { id: 'prop-02', hotelPartnerId: 'hotel-01', name: 'The Oberoi', city: 'Delhi', status: 'Active', imageUrl: 'https://images.unsplash.com/photo-1551882547-ff43c61f3c33?q=80&w=800', propertyType: 'Luxury Hotel' },
+];
+
+export const mockRoomCategories: RoomCategory[] = [
+    { id: 'room-01', propertyId: 'prop-01', name: 'Presidential Suite', nightlyRate: 150000, description: 'Panoramic harbor views with 24-hour butler service.', imageUrl: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800' },
+];
+
+export const mockAccommodationRequests: AccommodationRequest[] = [
+    { id: 'ACC-001', hotelPartnerId: 'hotel-01', propertyName: 'The Taj Mahal Palace', guestName: 'Tony Stark', checkIn: '2025-03-20', checkOut: '2025-03-22', rooms: 1, status: 'Confirmed', requesterId: 'demo_super_user' },
+];
+
+export const mockBlogPosts: BlogPost[] = [
+    { id: 'intel-001', title: "The 2025 Indian NSOP Governance Mandate", excerpt: "Analyzing the digital transformation requirements for non-scheduled operators in the upcoming fiscal year.", category: "Private Aviation", author: "AeroDesk Research", date: "2025-02-15", imageUrl: "https://images.unsplash.com/photo-1566212775038-532d06eda485?q=80&w=1080" },
+    { id: 'intel-002', title: "Optimizing Positioning Flights for Institutional Yield", excerpt: "How real-time ADS-B telemetry is reshaping the empty leg marketplace across metro corridors.", category: "Empty Leg Insights", author: "Capt. Vikram Singh", date: "2025-02-10", imageUrl: "https://images.unsplash.com/photo-1758837573876-63871cc70fd6?q=80&w=1080" },
+    { id: 'intel-003', title: "The Rise of Corporate Jet Seat Exchanges", excerpt: "Why enterprise travel desks are shifting from full charters to allocatable seat models for regional missions.", category: "Market Trends", author: "Meera Kapoor", date: "2025-02-05", imageUrl: "https://images.unsplash.com/photo-1616142387171-fadb42551e7a?q=80&w=1080" },
+    { id: 'intel-004', title: "Sustainable Aviation Fuel: Challenges for Indian NSOPs", excerpt: "Evaluating the infrastructure readiness for SAF adoption in the primary metropolitan hubs.", category: "Market Trends", author: "AeroDesk Research", date: "2025-01-28", imageUrl: "https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?q=80&w=1080" },
+    { id: 'intel-005', title: "Ultra-Long Range Fleet Trends in South Asia", excerpt: "Tracking the deployment of Global 7500 and G700 assets within the Indian institutional network.", category: "Private Aviation", author: "Capt. Vikram Singh", date: "2025-01-20", imageUrl: "https://images.unsplash.com/photo-1768346564233-d71f37bd19b6?q=80&w=1080" },
+    { id: 'intel-006', title: "Digitizing the Passenger Manifest Protocol", excerpt: "How unified digital identities are accelerating terminal clearance for VIP missions.", category: "Corporate Travel", author: "Meera Kapoor", date: "2025-01-12", imageUrl: "https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?q=80&w=1080" },
+    { id: 'intel-007', title: "Hospitality Synchronization: The Arrival Factor", excerpt: "The commercial impact of automated room-ready protocols for private jet arrivals.", category: "Market Trends", author: "AeroDesk Research", date: "2025-01-05", imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1080" },
+    { id: 'intel-008', title: "Regional Hub Expansion: Beyond the Metros", excerpt: "Identifying the emerging high-growth charter nodes in Tier-2 Indian cities.", category: "Market Trends", author: "AeroDesk Research", date: "2024-12-28", imageUrl: "https://images.unsplash.com/photo-1573108724029-4c46571d6490?q=80&w=1080" },
+    { id: 'intel-009', title: "Cybersecurity in Mission Control Environments", excerpt: "Protecting institutional telemetry and client data from emerging sophisticated threats.", category: "Private Aviation", author: "Meera Kapoor", date: "2024-12-15", imageUrl: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1080" },
+    { id: 'intel-010', title: "The Economic Impact of Fractional Ownership", excerpt: "Predicting the shift in asset financing models for the Indian aviation corridor by 2030.", category: "Market Trends", author: "AeroDesk Research", date: "2024-12-01", imageUrl: "https://images.unsplash.com/photo-1692128236852-af552fda49f0?q=80&w=1080" },
+];
+
+export const mockPressReleases: PressRelease[] = [
+    { id: 'pr-001', title: "AeroDesk Announces National Hub Synchronization", description: "Integration of primary metropolitan hubs into the unified coordination grid is complete.", date: "2025-02-20", category: "Milestone" },
+    { id: 'pr-002', title: "Strategic Partnership with Global ADS-B Network", description: "Real-time telemetry layer now active across the AeroDesk Global Radar module.", date: "2025-02-12", category: "Technology" },
+    { id: 'pr-003', title: "AeroDesk Launches AI Charter Autopilot", description: "Predictive decision-support engine now available for verified NSOP operators.", date: "2025-01-30", category: "Product" },
+    { id: 'pr-004', title: "Expanding the Hospitality Network to London and Dubai", description: "Institutional stay coordination now live for international long-haul corridors.", date: "2025-01-15", category: "Expansion" },
+    { id: 'pr-005', title: "Series A Funding Round Finalized", description: "AeroDesk secures growth capital to accelerate digital aviation infrastructure development.", date: "2024-12-20", category: "Corporate" },
+    { id: 'pr-006', title: "Verified Operator Network Exceeds 40 Carriers", description: "AeroDesk now represents the largest liquid fleet registry in the South Asian region.", date: "2024-12-05", category: "Network" },
+];
+
+export const mockMediaMentions: MediaMention[] = [
+    { id: 'mm-001', publication: "Forbes India", title: "AeroDesk: Digitizing the Skies", snippet: "The platform is becoming the digital backbone for India's fragmented private aviation sector.", date: "2025-02-18" },
+    { id: 'mm-002', publication: "Economic Times", title: "Corporate Demand for Charters Surges 15%", snippet: "AeroDesk reports a significant shift toward institutional jet seat exchanges.", date: "2025-02-05" },
+    { id: 'mm-003', publication: "Business Standard", title: "The Zero-Risk Model of Aviation Infrastructure", snippet: "How AeroDesk is streamlining coordination without handling client funds.", date: "2025-01-22" },
+    { id: 'mm-004', publication: "Aviation Week", title: "Telemetry and Transparency in NSOP Operations", snippet: "AeroDesk's live radar module sets a new standard for operational visibility.", date: "2025-01-10" },
+];
+
+export const mockBrandAssets: BrandAsset[] = [
+    { id: 'ba-001', title: "AeroDesk Core Logo Set", type: "Vector Graphics", imageUrl: "https://images.unsplash.com/photo-1711919600878-b5d9e77d3357?q=80&w=1080", fileSize: "4.2 MB" },
+    { id: 'ba-002', title: "Premium Fleet Photography", type: "High-Res Image", imageUrl: "https://images.unsplash.com/photo-1616193572425-fd11332ec645?q=80&w=1080", fileSize: "12.8 MB" },
+    { id: 'ba-003', title: "Platform Interface Mockups", type: "Digital Asset", imageUrl: "https://images.unsplash.com/photo-1761813409462-9329c23c7541?q=80&w=1080", fileSize: "8.5 MB" },
+    { id: 'ba-004', title: "Citation XLS+ Exterior", type: "Fleet Media", imageUrl: "https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800", fileSize: "5.1 MB" },
+    { id: 'ba-005', title: "Legacy 650 Hangar Shot", type: "Fleet Media", imageUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080", fileSize: "9.3 MB" },
+    { id: 'ba-006', title: "Institutional Dashboard View", type: "UI Graphics", imageUrl: "https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=1080", fileSize: "3.7 MB" },
+];
