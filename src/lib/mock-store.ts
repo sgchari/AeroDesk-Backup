@@ -14,7 +14,6 @@ import {
   mockAircraftPositions,
   mockAircraftAvailability,
   mockDemandForecast,
-  mockEmptyLegSeatListings,
   mockOperationalActivities,
   mockAICharterInsights,
   mockTripCommands,
@@ -22,7 +21,24 @@ import {
   mockOrganizationUsers,
   mockCrewMembers,
   mockCrewAssignments,
-  mockCrewLogistics
+  mockCrewLogistics,
+  mockQuotations,
+  mockSeatAllocations,
+  mockInvoices,
+  mockPayments,
+  mockPassengerManifests,
+  mockProperties,
+  mockRoomCategories,
+  mockAccommodationRequests,
+  mockPlatformChargeRules,
+  mockCommissionRules,
+  mockRevenueShareConfigs,
+  mockCommissionLedger,
+  mockSettlementRecords,
+  mockTaxConfigs,
+  mockRouteDemandHistory,
+  mockEmptyLegPredictions,
+  mockFleetOptimizationSuggestions
 } from './data';
 import { User } from './types';
 
@@ -37,6 +53,11 @@ let db: any = {
   emptyLegs: deepCopy(mockEmptyLegs),
   charterRequests: deepCopy(mockRfqs),
   charterRFQs: deepCopy(mockRfqs), 
+  quotations: deepCopy(mockQuotations),
+  seatAllocations: deepCopy(mockSeatAllocations),
+  invoices: deepCopy(mockInvoices),
+  payments: deepCopy(mockPayments),
+  passengerManifests: deepCopy(mockPassengerManifests),
   auditTrails: deepCopy(mockAuditLogs),
   alerts: deepCopy(mockAlerts),
   systemLogs: deepCopy(mockSystemLogs),
@@ -45,7 +66,6 @@ let db: any = {
   aircraftPositions: deepCopy(mockAircraftPositions),
   aircraftAvailability: deepCopy(mockAircraftAvailability),
   charterDemandForecast: deepCopy(mockDemandForecast),
-  emptyLegSeatListings: deepCopy(mockEmptyLegSeatListings),
   operationalActivities: deepCopy(mockOperationalActivities),
   aiCharterInsights: deepCopy(mockAICharterInsights),
   tripCommand: deepCopy(mockTripCommands),
@@ -54,6 +74,18 @@ let db: any = {
   crewMembers: deepCopy(mockCrewMembers),
   crewAssignments: deepCopy(mockCrewAssignments),
   crewLogistics: deepCopy(mockCrewLogistics),
+  properties: deepCopy(mockProperties),
+  roomCategories: deepCopy(mockRoomCategories),
+  accommodationRequests: deepCopy(mockAccommodationRequests),
+  platformChargeRules: deepCopy(mockPlatformChargeRules),
+  commissionRules: deepCopy(mockCommissionRules),
+  revenueShareConfigs: deepCopy(mockRevenueShareConfigs),
+  commissionLedger: deepCopy(mockCommissionLedger),
+  settlementRecords: deepCopy(mockSettlementRecords),
+  taxConfig: deepCopy(mockTaxConfigs),
+  routeDemandHistory: deepCopy(mockRouteDemandHistory),
+  emptyLegPredictions: deepCopy(mockEmptyLegPredictions),
+  fleetOptimizationSuggestions: deepCopy(mockFleetOptimizationSuggestions),
   readCount: 0
 };
 
@@ -88,12 +120,17 @@ const resolvePath = (path: string) => {
     };
   }
   
-  if (segments.length > 2 && segments[2] === 'users') {
+  // Handle nested subcollections
+  if (segments.length > 2 && segments[segments.length - 1] === 'users') {
       return db.users.filter((u: any) => u.ctdId === segments[1] || u.operatorId === segments[1] || u.agencyId === segments[1] || u.hotelPartnerId === segments[1]);
   }
 
-  if (segments.length > 2 && segments[2] === 'aircrafts') {
+  if (segments.length > 2 && segments[segments.length - 1] === 'aircrafts') {
       return db.aircrafts.filter((a: any) => a.operatorId === segments[1]);
+  }
+
+  if (segments.length > 2 && segments[segments.length - 1] === 'quotations') {
+      return db.quotations.filter((q: any) => q.rfqId === segments[1]);
   }
 
   return (db as any)[segments[0]] || [];
