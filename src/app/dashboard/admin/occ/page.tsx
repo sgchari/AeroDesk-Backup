@@ -8,36 +8,22 @@ import { Button } from "@/components/ui/button";
 import { StatsGrid } from "@/components/dashboard/shared/stats-grid";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { 
-    Radio, 
+    Radar, 
     Plane, 
-    ShieldCheck, 
     Zap, 
     Target, 
-    Activity, 
-    AlertTriangle, 
     History, 
-    GanttChartSquare, 
-    Users, 
-    Clock, 
-    Coins,
+    Activity, 
+    ShieldCheck, 
     RefreshCw,
-    Search,
-    Globe,
-    Radar,
-    Network,
-    Database,
-    Sparkles
+    Coins,
+    Globe
 } from "lucide-react";
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
-import { useCollection, useFirestore } from "@/firebase";
-import type { CharterRFQ, Aircraft, EmptyLeg, SystemAlert, SystemLog, AircraftPosition, AircraftAvailability, EmptyLegPrediction } from "@/lib/types";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AIIntelligenceHub } from "@/components/dashboard/admin/occ/ai-intelligence-hub";
+import { useCollection } from "@/firebase";
+import type { CharterRFQ, AircraftPosition, AircraftAvailability, EmptyLeg, OperationalActivity } from "@/lib/types";
+import { OperationalFeed } from "@/components/dashboard/admin/occ/operational-feed";
 
-// --- DYNAMIC IMPORTS ---
 const OCCNetworkMap = dynamic(() => import('@/components/dashboard/admin/occ/occ-network-map').then(mod => mod.OCCNetworkMap), { 
     ssr: false,
     loading: () => <div className="w-full h-full bg-slate-900/50 animate-pulse rounded-3xl border border-white/5 flex items-center justify-center">
@@ -46,28 +32,25 @@ const OCCNetworkMap = dynamic(() => import('@/components/dashboard/admin/occ/occ
 });
 
 export default function OperationsControlCenterPage() {
-    const firestore = useFirestore();
     const [mounted, setMounted] = useState(false);
-    const [lastSync, setLastSync] = useState<string | null>(null);
+    const [lastSync, setLastSync] = useState(new Date().toLocaleTimeString());
 
     useEffect(() => {
         setMounted(true);
-        setLastSync(new Date().toLocaleTimeString());
     }, []);
 
     // --- DATA SUBSCRIPTIONS ---
-    const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(null, 'charterRequests');
-    const { data: fleet, isLoading: fleetLoading } = useCollection<Aircraft>(null, 'aircrafts');
     const { data: positions } = useCollection<AircraftPosition>(null, 'aircraftPositions');
     const { data: availability } = useCollection<AircraftAvailability>(null, 'aircraftAvailability');
-    const { data: logs } = useCollection<SystemLog>(null, 'systemLogs');
-    const { data: elPredictions } = useCollection<EmptyLegPrediction>(null, 'emptyLegPredictions');
+    const { data: legs } = useCollection<EmptyLeg>(null, 'emptyLegs');
+    const { data: activities } = useCollection<OperationalActivity>(null, 'operationalActivities');
 
-    const isLoading = rfqsLoading || fleetLoading;
+    const stats = useMemo(() => ({
+        activeCharters: positions?.filter(p => p.status === 'inflight').length || 0,
+        availableJets: availability?.length || 0,
+        predictedEmptyLegs: legs?.filter(l => l.status === 'live').length || 0,
+    }), [positions, availability, legs]);
 
-    // --- COMPUTED ANALYTICS ---
-    const activeMissions = useMemo(() => rfqs?.filter(r => ['departed', 'live', 'enroute', 'boarding'].includes(r.status)) || [], [rfqs]);
-    
     const handleRefresh = () => {
         setLastSync(new Date().toLocaleTimeString());
     };
@@ -77,198 +60,100 @@ export default function OperationsControlCenterPage() {
     return (
         <div className="space-y-6">
             <PageHeader 
-                title="AeroDesk OCC" 
-                description="Institutional Operations Control Center. Real-time situational awareness, predictive AI matching, and global data audit."
+                title="AeroDesk OCC Terminal" 
+                description="Institutional Operations Control Center. Real-time situational awareness, predictive intelligence, and global data audit."
             >
                 <div className="flex items-center gap-4">
                     <div className="text-right hidden sm:block">
-                        <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest leading-none mb-1">Radar Sync</p>
-                        <p className="text-[10px] font-code text-emerald-400 leading-none">{lastSync || 'Initializing...'}</p>
+                        <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest leading-none mb-1">Grid Sync</p>
+                        <p className="text-[10px] font-code text-emerald-400 leading-none">{lastSync}</p>
                     </div>
                     <Button onClick={handleRefresh} variant="outline" size="sm" className="h-9 gap-2 border-emerald-500/20 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/10 font-bold text-[9px] tracking-widest uppercase">
-                        <RefreshCw className="h-3.5 w-3.5" /> Re-Scan Grid
+                        <RefreshCw className="h-3.5 w-3.5" /> Force Scan
                     </Button>
                 </div>
             </PageHeader>
 
             <StatsGrid>
-                <StatsCard title="Active Charters" value={activeMissions.length.toString()} icon={Radar} description="Missions in flight" />
-                <StatsCard title="Available Jets" value={availability?.length.toString() || '0'} icon={Plane} description="Fleet ready nodes" />
-                <StatsCard title="Empty Leg Predictions" value={elPredictions?.length.toString() || '0'} icon={Zap} description="AI identified repositioning" />
-                <StatsCard title="Network Demand" value={rfqs?.length.toString() || '0'} icon={Target} description="Total institutional leads" />
+                <StatsCard title="Active Charters" value={stats.activeCharters.toString()} icon={Radar} description="Missions in flight" />
+                <StatsCard title="Available Jets" value={stats.availableJets.toString()} icon={Plane} description="Ready nodes" />
+                <StatsCard title="Predicted Empty Legs" value={stats.predictedEmptyLegs.toString()} icon={Zap} description="AI identified" />
+                <StatsCard title="Platform Volume" value="₹ 4.2 Cr" icon={Coins} description="Gross MTD" />
             </StatsGrid>
 
-            {/* --- AI INTELLIGENCE LAYER --- */}
-            <AIIntelligenceHub />
-
-            {/* --- CENTRAL COMMAND GRID --- */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                {/* --- SECTOR 1: MAP COMMAND (LEFT/CENTER) --- */}
-                <div className="lg:col-span-8 space-y-6">
-                    <Card className="bg-card border-white/5 overflow-hidden shadow-2xl">
-                        <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle className="text-sm flex items-center gap-2">
-                                    <Globe className="h-4 w-4 text-emerald-400" />
-                                    National Aviation Intelligence Map
-                                </CardTitle>
-                                <CardDescription className="text-[10px] uppercase">Geospatial demand heatmaps and empty-leg corridor analytics.</CardDescription>
-                            </div>
-                            <div className="flex gap-2">
-                                <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-400 bg-emerald-500/5">ICAO ALIGNED</Badge>
-                                <Badge variant="outline" className="text-[8px] border-amber-500/30 text-amber-400 bg-amber-500/5">AI HEATMAP</Badge>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <div className="aspect-[16/9] lg:aspect-[21/9] w-full relative">
-                                <OCCNetworkMap />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* --- CHARTER STATUS PANEL --- */}
-                    <Card className="bg-card border-white/5">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-sm flex items-center gap-2">
-                                <GanttChartSquare className="h-4 w-4 text-sky-400" />
-                                Institutional Charter Registry
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="border-white/5">
-                                            <TableHead className="text-[9px] uppercase font-black">Mission ID</TableHead>
-                                            <TableHead className="text-[9px] uppercase font-black">Sector</TableHead>
-                                            <TableHead className="text-[9px] uppercase font-black">Operator</TableHead>
-                                            <TableHead className="text-[9px] uppercase font-black">Status</TableHead>
-                                            <TableHead className="text-right text-[9px] uppercase font-black pr-6">AI Confidence</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {rfqs?.slice(0, 6).map((rfq) => (
-                                            <TableRow key={rfq.id} className="border-white/5 hover:bg-white/[0.02] group">
-                                                <TableCell className="font-code text-[10px] font-bold text-sky-400 py-3">{rfq.id}</TableCell>
-                                                <TableCell className="text-[11px] font-medium">
-                                                    {rfq.departure.split('(')[0]} » {rfq.arrival.split('(')[0]}
-                                                </TableCell>
-                                                <TableCell className="text-[10px] text-muted-foreground uppercase font-bold">{rfq.operatorId || 'Pending'}</TableCell>
-                                                <TableCell>
-                                                    <Badge className={cn(
-                                                        "text-[8px] h-4 px-1.5 uppercase font-black border-none",
-                                                        ['live', 'departed', 'arrived'].includes(rfq.status) ? 'bg-emerald-500 text-white animate-pulse' : 'bg-white/10 text-muted-foreground'
-                                                    )}>
-                                                        {rfq.status}
-                                                    </Badge>
-                                                </TableCell>
-                                                <td className="text-right pr-6">
-                                                    <div className="flex items-center justify-end gap-2">
-                                                        <span className="text-[10px] font-black text-emerald-500">92%</span>
-                                                        <Sparkles className="h-3 w-3 text-accent animate-pulse" />
-                                                    </div>
-                                                </td>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </div>
-                        </CardContent>
-                    </Card>
+                {/* --- SECTOR 1: INTELLIGENCE MAP --- */}
+                <div className="lg:col-span-8 h-[600px] relative">
+                    <OCCNetworkMap />
                 </div>
 
-                {/* --- SECTOR 2: INTELLIGENCE & HEALTH (RIGHT) --- */}
+                {/* --- SECTOR 2: OPERATIONAL FEED --- */}
                 <div className="lg:col-span-4 space-y-6">
-                    
-                    {/* SYSTEM VITALITY */}
-                    <Card className="bg-card border-white/5">
+                    <Card className="bg-card h-full flex flex-col border-white/5">
                         <CardHeader className="pb-2 border-b border-white/5">
                             <CardTitle className="text-sm flex items-center gap-2">
-                                <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                                Infrastructure Integrity
+                                <History className="h-4 w-4 text-accent" />
+                                Institutional Activity Feed
                             </CardTitle>
+                            <CardDescription className="text-[10px] uppercase">Real-time platform signals and coordination events.</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-3 pt-4">
-                            {[
-                                { name: 'ADS-B Ingestion', status: 'Active' },
-                                { name: 'Heatmap Processing', status: 'Healthy' },
-                                { name: 'Segment Detection', status: 'Healthy' },
-                                { name: 'Price Prediction', status: 'Active' }
-                            ].map((service, idx) => (
-                                <div key={idx} className="flex items-center justify-between text-[10px]">
-                                    <span className="font-bold text-muted-foreground uppercase">{service.name}</span>
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-black text-[8px] uppercase">{service.status}</span>
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                    </div>
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-
-                    {/* REVENUE MONITOR */}
-                    <Card className="bg-accent/5 border-accent/20 shadow-xl">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-sm flex items-center gap-2">
-                                <Coins className="h-4 w-4 text-accent" />
-                                Platform Revenue Pulse
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4 pt-2">
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="p-3 rounded-xl bg-black/40 border border-white/5 text-center">
-                                    <p className="text-[8px] uppercase font-black text-muted-foreground mb-1">GTV (MTD)</p>
-                                    <p className="text-lg font-black text-white">₹ 4.2 Cr</p>
-                                </div>
-                                <div className="p-3 rounded-xl bg-black/40 border border-white/5 text-center">
-                                    <p className="text-[8px] uppercase font-black text-muted-foreground mb-1">Fees Capture</p>
-                                    <p className="text-lg font-black text-accent">₹ 28.5 L</p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* ACTIVITY STREAM */}
-                    <Card className="bg-card border-white/5">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-sm flex items-center gap-2">
-                                <History className="h-4 w-4 text-muted-foreground" />
-                                Operational Signal Stream
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <div className="max-h-[300px] overflow-y-auto px-6 pb-6 space-y-4">
-                                {logs?.slice(0, 8).map((log) => (
-                                    <div key={log.id} className="relative pl-4 border-l border-white/5 space-y-1">
-                                        <div className="absolute left-[-4px] top-1 w-2 h-2 rounded-full bg-emerald-500/40" />
-                                        <p className="text-[10px] font-bold text-white uppercase">{log.event.replace('_', ' ')}</p>
-                                        <p className="text-[9px] text-muted-foreground leading-tight italic">"{log.action}"</p>
-                                        <p className="text-[8px] text-muted-foreground/60 uppercase font-code">
-                                            {new Date(log.timestamp).toLocaleTimeString()}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
+                        <CardContent className="p-0 flex-1 overflow-hidden">
+                            <OperationalFeed activities={activities || []} />
                         </CardContent>
                     </Card>
                 </div>
             </div>
 
-            {/* --- QUICK COMMAND ACTIONS --- */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
-                <Button asChild variant="outline" className="h-12 bg-white/[0.02] border-white/10 hover:bg-sky-500/10 hover:border-sky-500/30 text-[10px] font-black uppercase tracking-widest gap-2 transition-all">
-                    <Link href="/dashboard/admin/global-charter-radar"><Radar className="h-4 w-4 text-sky-400" /> Access Global Radar</Link>
-                </Button>
-                <Button asChild variant="outline" className="h-12 bg-white/[0.02] border-white/10 hover:bg-amber-500/10 hover:border-amber-500/30 text-[10px] font-black uppercase tracking-widest gap-2 transition-all">
-                    <Link href="/dashboard/admin/jet-availability"><Network className="h-4 w-4 text-amber-400" /> Availability Matrix</Link>
-                </Button>
-                <Button asChild variant="outline" className="h-12 bg-white/[0.02] border-white/10 hover:bg-rose-500/10 hover:border-rose-500/30 text-[10px] font-black uppercase tracking-widest gap-2 transition-all">
-                    <Link href="/dashboard/admin/demand-intelligence"><Target className="h-4 w-4 text-rose-400" /> Demand Hotmapping</Link>
-                </Button>
-                <Button asChild variant="outline" className="h-12 bg-white/[0.02] border-white/10 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-[10px] font-black uppercase tracking-widest gap-2 transition-all">
-                    <Link href="/dashboard/admin/audit-trail"><ShieldCheck className="h-4 w-4 text-emerald-400" /> Compliance Audit</Link>
-                </Button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="bg-primary/5 border-primary/20">
+                    <CardHeader>
+                        <CardTitle className="text-xs font-black uppercase text-primary flex items-center gap-2">
+                            <Target className="h-4 w-4" /> AI Demand Advisor
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <p className="text-[11px] text-muted-foreground leading-relaxed italic">
+                            "High-yield cluster identified for BOM-GOI sector. Suggest prioritizing heavy-jet positionings for the next 72h."
+                        </p>
+                        <Badge variant="outline" className="text-[8px] font-black border-primary/20 text-primary">CONFIDENCE: 92%</Badge>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-accent/5 border-accent/20">
+                    <CardHeader>
+                        <CardTitle className="text-xs font-black uppercase text-accent flex items-center gap-2">
+                            <ShieldCheck className="h-4 w-4" /> Compliance Guard
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <p className="text-[11px] text-muted-foreground leading-relaxed italic">
+                            "All active missions are currently synchronized with operator NSOP certificates. 0 alerts flagged in current dispatch cycle."
+                        </p>
+                        <Badge variant="outline" className="text-[8px] font-black border-accent/20 text-accent">SYSTEM: SECURE</Badge>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-black/20 border-white/5">
+                    <CardHeader>
+                        <CardTitle className="text-xs font-black uppercase text-white flex items-center gap-2">
+                            <Globe className="h-4 w-4" /> Global Positioning
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <div className="flex items-center justify-between text-[10px]">
+                            <span className="text-muted-foreground">VABB Hub</span>
+                            <span className="font-bold text-emerald-500">OPERATIONAL</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px]">
+                            <span className="text-muted-foreground">VIDP Hub</span>
+                            <span className="font-bold text-emerald-500">OPERATIONAL</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px]">
+                            <span className="text-muted-foreground">OMDB (Dubai)</span>
+                            <span className="font-bold text-blue-400">HIGH TRAFFIC</span>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

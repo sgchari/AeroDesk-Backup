@@ -35,7 +35,8 @@ import { useUser } from '@/hooks/use-user';
 import { useCollection, useFirestore, addDocumentNonBlocking, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import type { CharterRFQ, Aircraft } from '@/lib/types';
-import { SystemAdvisory } from './system-advisory';
+import { Sparkles, ShieldCheck, AlertCircle, Info } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 const quoteSchema = z.object({
   aircraftId: z.string().min(1, 'Please select an aircraft.'),
@@ -97,8 +98,8 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
     });
 
     toast({
-      title: 'Quotation Submitted',
-      description: `Your bid for ${rfq.id} has been published to the marketplace queue.`,
+      title: 'Quotation Published',
+      description: `Your institutional bid for ${rfq.id} has been published.`,
     });
     onOpenChange(false);
     form.reset();
@@ -108,21 +109,35 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>Submit Charter Quotation</DialogTitle>
+          <DialogTitle>Mission Quotation Terminal</DialogTitle>
           <DialogDescription>
-            Publishing an institutional bid for {rfq.departure} to {rfq.arrival}.
+            Publishing technical bid for {rfq.departure} » {rfq.arrival}.
           </DialogDescription>
         </DialogHeader>
 
-        {selectedAircraft && selectedAircraft.status !== 'Available' && (
-            <SystemAdvisory 
-                level="WARNING"
-                title="Operational Conflict"
-                message={`The selected aircraft (${selectedAircraft.registration}) is currently marked as ${selectedAircraft.status}. Ensure maintenance clearance before mission start.`}
-            />
-        )}
+        {/* --- AI ADVISORY LAYER (Institutional Assistance) --- */}
+        <div className="p-4 rounded-xl bg-primary/10 border border-primary/30 relative overflow-hidden group mb-2">
+            <div className="absolute top-0 right-0 p-2 opacity-10"><Sparkles className="h-12 w-12" /></div>
+            <div className="flex items-center gap-2 mb-3">
+                <Badge className="bg-primary text-white text-[8px] font-black uppercase h-4 px-1.5">AI Advisor</Badge>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Market Alignment Suggestion</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                    <p className="text-[9px] font-black uppercase text-muted-foreground">Optimal Asset</p>
+                    <p className="text-xs font-bold text-foreground">Phenom 300 / XLS</p>
+                </div>
+                <div className="space-y-1 text-right">
+                    <p className="text-[9px] font-black uppercase text-muted-foreground">Suggested Yield</p>
+                    <p className="text-xs font-black text-accent">₹ 6,80,000 – ₹ 7,40,000</p>
+                </div>
+            </div>
+            <p className="text-[9px] text-muted-foreground italic mt-3 flex items-center gap-1.5">
+                <Info className="h-3 w-3" /> Predictive estimate based on route distance and current fleet density.
+            </p>
+        </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
@@ -131,16 +146,16 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
               name="aircraftId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Assign Fleet Asset</FormLabel>
+                  <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Deploy Fleet Asset</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-muted/20">
                         <SelectValue placeholder="Choose an aircraft" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {fleet?.map(ac => (
-                        <SelectItem key={ac.id} value={ac.id}>{ac.name} ({ac.registration}) - {ac.status}</SelectItem>
+                        <SelectItem key={ac.id} value={ac.id}>{ac.name} ({ac.registration}) — {ac.status}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -155,9 +170,9 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                     name="quotedPrice"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Total Mission Price (INR)</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Gross Quote (INR)</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="0.00" {...field} />
+                            <Input type="number" placeholder="0.00" {...field} className="bg-muted/20" />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -168,10 +183,11 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                     name="validUntil"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Quote Validity</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Validity Limit</FormLabel>
                         <FormControl>
-                            <Input type="date" {...field} />
+                            <Input type="date" {...field} className="bg-muted/20" />
                         </FormControl>
+                        <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -182,17 +198,24 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
               name="remarks"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Operational Notes / Inclusions</FormLabel>
+                  <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Operational Inclusions</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Fuel, crew stays, landing fees included. Ground handling subject to additional cost." {...field} />
+                    <Textarea placeholder="Fuel, landing fees, and standard catering included. Ground handling subject to additional dispatch fees." {...field} className="bg-muted/20 h-24" />
                   </FormControl>
                 </FormItem>
               )}
             />
 
+            <div className="p-3 rounded-lg border border-white/5 bg-white/[0.02] flex items-start gap-3">
+                <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                <p className="text-[10px] text-muted-foreground leading-relaxed italic">
+                    By submitting, you certify airworthiness and crew legality for this mission profile. AeroDesk facilitates coordination only.
+                </p>
+            </div>
+
             <DialogFooter className="pt-4">
-                <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button type="submit" disabled={form.formState.isSubmitting} className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold">
+                <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} className="text-[10px] font-black uppercase tracking-widest">Cancel</Button>
+                <Button type="submit" disabled={form.formState.isSubmitting} className="bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase text-[10px] tracking-widest px-8 h-10 shadow-xl shadow-accent/10">
                     Publish Institutional Bid
                 </Button>
             </DialogFooter>

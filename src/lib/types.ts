@@ -556,3 +556,25 @@ export type AviationHub = {
   latitude: number;
   longitude: number;
 };
+
+export type EmptyLegSeatListing = {
+    id: string;
+    flightId: string;
+    aircraft: string;
+    origin: string;
+    destination: string;
+    departureTime: string;
+    seatCapacity: number;
+    seatsRemaining: number;
+    seatPrice: number;
+    operatorId: string;
+};
+
+export type OperationalActivity = {
+    id: string;
+    type: 'rfq_created' | 'quote_accepted' | 'empty_leg_published' | 'seat_booked';
+    message: string;
+    timestamp: string;
+    entityId: string;
+    actor: string;
+};
