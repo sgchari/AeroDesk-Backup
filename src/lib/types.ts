@@ -544,3 +544,12 @@ export type CharterPricePrediction = {
     predictedPriceMax: number;
     confidenceScore: number;
 };
+
+export type AviationHub = {
+  id: string;
+  icao: string;
+  airportName: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+};

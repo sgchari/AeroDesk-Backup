@@ -31,7 +31,7 @@ import {
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useCollection, useFirestore } from "@/firebase";
-import type { CharterRFQ, Aircraft, EmptyLeg, SystemAlert, SystemLog, AircraftPosition, AircraftAvailability } from "@/lib/types";
+import type { CharterRFQ, Aircraft, EmptyLeg, SystemAlert, SystemLog, AircraftPosition, AircraftAvailability, EmptyLegPrediction } from "@/lib/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -61,6 +61,7 @@ export default function OperationsControlCenterPage() {
     const { data: positions } = useCollection<AircraftPosition>(null, 'aircraftPositions');
     const { data: availability } = useCollection<AircraftAvailability>(null, 'aircraftAvailability');
     const { data: logs } = useCollection<SystemLog>(null, 'systemLogs');
+    const { data: elPredictions } = useCollection<EmptyLegPrediction>(null, 'emptyLegPredictions');
 
     const isLoading = rfqsLoading || fleetLoading;
 
@@ -91,13 +92,13 @@ export default function OperationsControlCenterPage() {
             </PageHeader>
 
             <StatsGrid>
-                <StatsCard title="Global Radar" value={positions?.length.toString() || '0'} icon={Radar} description="Verified assets online" href="/dashboard/admin/global-charter-radar" />
-                <StatsCard title="Ready to Depart" value={availability?.length.toString() || '0'} icon={Clock} description="0-12h availability" href="/dashboard/admin/jet-availability" />
-                <StatsCard title="Data Warehouse" value="LIVE" icon={Database} description="BigQuery sync active" />
-                <StatsCard title="Network Demand" value={rfqs?.length.toString() || '0'} icon={Target} description="Total institutional leads" href="/dashboard/admin/demand-intelligence" />
+                <StatsCard title="Active Charters" value={activeMissions.length.toString()} icon={Radar} description="Missions in flight" />
+                <StatsCard title="Available Jets" value={availability?.length.toString() || '0'} icon={Plane} description="Fleet ready nodes" />
+                <StatsCard title="Empty Leg Predictions" value={elPredictions?.length.toString() || '0'} icon={Zap} description="AI identified repositioning" />
+                <StatsCard title="Network Demand" value={rfqs?.length.toString() || '0'} icon={Target} description="Total institutional leads" />
             </StatsGrid>
 
-            {/* --- AI INTELLIGENCE LAYER (NEW) --- */}
+            {/* --- AI INTELLIGENCE LAYER --- */}
             <AIIntelligenceHub />
 
             {/* --- CENTRAL COMMAND GRID --- */}
@@ -112,11 +113,11 @@ export default function OperationsControlCenterPage() {
                                     <Globe className="h-4 w-4 text-emerald-400" />
                                     National Aviation Intelligence Map
                                 </CardTitle>
-                                <CardDescription className="text-[10px] uppercase">Curved route arcs and real-time telemetry overlays.</CardDescription>
+                                <CardDescription className="text-[10px] uppercase">Geospatial demand heatmaps and empty-leg corridor analytics.</CardDescription>
                             </div>
                             <div className="flex gap-2">
-                                <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-400 bg-emerald-500/5">LIVE SIGNALS</Badge>
-                                <Badge variant="outline" className="text-[8px] border-amber-500/30 text-amber-400 bg-amber-500/5">AI AUTOPILOT</Badge>
+                                <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-400 bg-emerald-500/5">ICAO ALIGNED</Badge>
+                                <Badge variant="outline" className="text-[8px] border-amber-500/30 text-amber-400 bg-amber-500/5">AI HEATMAP</Badge>
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">
@@ -190,8 +191,8 @@ export default function OperationsControlCenterPage() {
                         </CardHeader>
                         <CardContent className="space-y-3 pt-4">
                             {[
-                                { name: 'BigQuery Streaming', status: 'Active' },
-                                { name: 'AI Training Pipeline', status: 'Healthy' },
+                                { name: 'ADS-B Ingestion', status: 'Active' },
+                                { name: 'Heatmap Processing', status: 'Healthy' },
                                 { name: 'Segment Detection', status: 'Healthy' },
                                 { name: 'Price Prediction', status: 'Active' }
                             ].map((service, idx) => (

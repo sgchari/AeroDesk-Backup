@@ -39,7 +39,8 @@ import type {
   FlightSegment,
   RouteDemandHistory,
   EmptyLegPrediction,
-  FleetOptimizationSuggestion
+  FleetOptimizationSuggestion,
+  AviationHub
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -234,4 +235,15 @@ export const mockCrew: CrewMember[] = [
 
 export const mockSeatAllocations: SeatAllocation[] = [
     { id: 'seat-01', flightId: 'EL-001', operatorId: 'op-west-01', customerId: 'demo_super_user', customerName: 'Tony Stark', bookingChannel: 'direct', seatsRequested: 2, pricePerSeat: 45000, totalAmount: 90000, status: 'confirmed', paymentStatus: 'paid', passengers: [], createdAt: '2025-02-05T10:00:00Z' },
+];
+
+export const mockAviationHubs: AviationHub[] = [
+  { id: 'hub-01', icao: "VIDP", airportName: "Indira Gandhi Intl", city: "Delhi", latitude: 28.5562, longitude: 77.1000 },
+  { id: 'hub-02', icao: "VABB", airportName: "Chhatrapati Shivaji Intl", city: "Mumbai", latitude: 19.0896, longitude: 72.8656 },
+  { id: 'hub-03', icao: "VOBL", airportName: "Kempegowda Intl", city: "Bengaluru", latitude: 13.1986, longitude: 77.7066 },
+  { id: 'hub-04', icao: "VOHS", airportName: "Rajiv Gandhi Intl", city: "Hyderabad", latitude: 17.2403, longitude: 78.4294 },
+  { id: 'hub-05', icao: "VOMM", airportName: "Chennai Intl", city: "Chennai", latitude: 12.9941, longitude: 80.1709 },
+  { id: 'hub-06', icao: "VECC", airportName: "Netaji Subhash Chandra Bose Intl", city: "Kolkata", latitude: 22.6547, longitude: 88.4467 },
+  { id: 'hub-07', icao: "VAAH", airportName: "Sardar Vallabhbhai Patel Intl", city: "Ahmedabad", latitude: 23.0734, longitude: 72.6266 },
+  { id: 'hub-08', icao: "VOGO", airportName: "Dabolim Airport", city: "Goa", latitude: 15.3808, longitude: 73.8314 },
 ];

@@ -31,7 +31,8 @@ import {
   mockFlightSegments,
   mockRouteDemandHistory,
   mockEmptyLegPredictions,
-  mockFleetOptimizationSuggestions
+  mockFleetOptimizationSuggestions,
+  mockAviationHubs
 } from './data';
 import { User } from './types';
 
@@ -72,6 +73,7 @@ let db: any = {
   routeDemandHistory: deepCopy(mockRouteDemandHistory),
   emptyLegPredictions: deepCopy(mockEmptyLegPredictions),
   fleetOptimizationSuggestions: deepCopy(mockFleetOptimizationSuggestions),
+  aviationHubs: deepCopy(mockAviationHubs),
   readCount: 0
 };
 

@@ -4,25 +4,45 @@ import React, { useRef, useEffect, useState, useMemo } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { cn } from '@/lib/utils';
-
-// --- INSTITUTIONAL ASSETS ---
-const hubs = [
-  { city: 'Delhi', pos: [77.1025, 28.7041], status: 'backbone' },
-  { city: 'Mumbai', pos: [72.8777, 19.0760], status: 'backbone' },
-  { city: 'Bengaluru', pos: [77.5946, 12.9716], status: 'hub' },
-  { city: 'Hyderabad', pos: [78.4867, 17.3850], status: 'hub' },
-  { city: 'Kolkata', pos: [88.3639, 22.5726], status: 'hub' },
-  { city: 'Chennai', pos: [80.2707, 13.0827], status: 'hub' },
-];
-
-const activeMissions = [
-    { id: 'ADX-402', from: [72.8777, 19.0760], to: [77.1025, 28.7041], aircraft: 'Legacy 650' },
-    { id: 'ADX-112', from: [77.5946, 12.9716], to: [72.8777, 19.0760], aircraft: 'Phenom 300' },
-];
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import type { AviationHub, CharterRFQ, EmptyLeg, FlightSegment } from '@/lib/types';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { 
+    MapPin, 
+    Flame, 
+    Zap, 
+    Activity, 
+    Plane, 
+    Clock, 
+    Info, 
+    ShieldCheck, 
+    GanttChartSquare,
+    Layers,
+    Target
+} from 'lucide-react';
 
 export function OCCNetworkMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
+  const firestore = useFirestore();
+
+  const [layers, setLayers] = useState({
+    hubs: true,
+    demand: true,
+    emptyLegs: true
+  });
+
+  // --- DATA SUBSCRIPTIONS ---
+  const hubsQuery = useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? null : null, [firestore]);
+  const { data: hubs } = useCollection<AviationHub>(hubsQuery, 'aviationHubs');
+  
+  const rfqsQuery = useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? null : null, [firestore]);
+  const { data: rfqs } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
+
+  const legsQuery = useMemoFirebase(() => (firestore && !(firestore as any)._isMock) ? null : null, [firestore]);
+  const { data: legs } = useCollection<EmptyLeg>(legsQuery, 'emptyLegs');
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -33,75 +53,64 @@ export function OCCNetworkMap() {
       center: [78.9629, 22.5937],
       zoom: 4.2,
       minZoom: 3,
-      maxZoom: 8,
+      maxZoom: 10,
       attributionControl: false,
-      scrollZoom: false,
-      dragPan: true,
     });
 
     map.current = mapInstance;
 
     mapInstance.on('load', () => {
-      if (!map.current) return;
+      // Add Sources
+      mapInstance.addSource('hubs', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      mapInstance.addSource('demand-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      mapInstance.addSource('corridors', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
 
-      // --- OPERATOR HUB NODES ---
-      hubs.forEach(hub => {
-        const el = document.createElement('div');
-        el.className = 'radar-node';
-        el.innerHTML = `
-            <div class="radar-pulse"></div>
-            <div class="radar-core"></div>
-            <div class="radar-label">${hub.city}</div>
-        `;
-        new maplibregl.Marker({ element: el }).setLngLat(hub.pos as [number, number]).addTo(mapInstance);
+      // Add Heatmap Layer
+      mapInstance.addLayer({
+        id: 'demand-heat',
+        type: 'heatmap',
+        source: 'demand-heatmap',
+        paint: {
+          'heatmap-weight': ['get', 'intensity'],
+          'heatmap-intensity': 1,
+          'heatmap-color': [
+            'interpolate', ['linear'], ['heatmap-density'],
+            0, 'rgba(0, 0, 255, 0)',
+            0.2, 'rgba(65, 105, 225, 0.4)',
+            0.5, 'rgba(255, 165, 0, 0.6)',
+            0.8, 'rgba(255, 69, 0, 0.8)',
+            1, 'rgba(255, 0, 0, 1)'
+          ],
+          'heatmap-radius': 40,
+          'heatmap-opacity': 0.4
+        }
       });
 
-      // --- ACTIVE MISSION TELEMETRY ---
-      activeMissions.forEach((mission) => {
-        const routeId = `route-${mission.id}`;
-        
-        mapInstance.addSource(routeId, {
-            'type': 'geojson',
-            'data': {
-                'type': 'Feature',
-                'properties': {},
-                'geometry': {
-                    'type': 'LineString',
-                    'coordinates': [mission.from, mission.to]
-                }
-            }
-        });
+      // Add Corridor Layer
+      mapInstance.addLayer({
+        id: 'corridor-lines',
+        type: 'line',
+        source: 'corridors',
+        paint: {
+          'line-color': '#D4AF37',
+          'line-width': 2,
+          'line-dasharray': [4, 4],
+          'line-opacity': 0.6
+        }
+      });
 
-        mapInstance.addLayer({
-            'id': routeId,
-            'type': 'line',
-            'source': routeId,
-            'layout': { 'line-join': 'round', 'line-cap': 'round' },
-            'paint': {
-                'line-color': '#0EA5E9',
-                'line-width': 1.5,
-                'line-dasharray': [4, 4],
-                'line-opacity': 0.4
-            }
-        });
-
-        // Pulse Marker for Flight
-        const planeEl = document.createElement('div');
-        planeEl.className = 'flight-marker';
-        planeEl.innerHTML = `
-            <div class="flight-pulse"></div>
-            <div class="flight-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; transform: rotate(45deg);"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3.5c-.5-.5-2.5 0-4 1.5L13.5 8.5 5.3 6.7c-1.1-.2-2.1.5-2.4 1.5l-.4 1.3c-.2.7.3 1.4 1 1.6l7.4 2.1-3.1 3.1-3.3-.6c-.6-.1-1.3.2-1.6.8l-.4 1.1c-.2.7.3 1.4 1 1.6l4 .8 1.6 4c.2.7.9 1.2 1.6 1l1.1-.4c.6-.3.9-1 .8-1.6l-.6-3.3 3.1-3.1 2.1 7.4c.2.7.9 1.2 1.6 1l1.3-.4c1.1-.3 1.7-1.3 1.5-2.4z"/></svg>
-            </div>
-            <div class="flight-id">${mission.id}</div>
-        `;
-        
-        const midPoint: [number, number] = [
-            (mission.from[0] + mission.to[0]) / 2,
-            (mission.from[1] + mission.to[1]) / 2
-        ];
-        
-        new maplibregl.Marker({ element: planeEl }).setLngLat(midPoint).addTo(mapInstance);
+      // Add Hub Circle Layer (Dynamic Projection)
+      mapInstance.addLayer({
+        id: 'hub-points',
+        type: 'circle',
+        source: 'hubs',
+        paint: {
+          'circle-radius': 6,
+          'circle-color': '#00FFA6',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#FFFFFF',
+          'circle-opacity': 0.8
+        }
       });
     });
 
@@ -113,24 +122,130 @@ export function OCCNetworkMap() {
     };
   }, []);
 
+  // Sync Hubs
+  useEffect(() => {
+    if (!map.current || !hubs || !map.current.isStyleLoaded()) return;
+    const features = hubs.map(hub => ({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [hub.longitude, hub.latitude] },
+      properties: { name: hub.city, icao: hub.icao }
+    }));
+    (map.current.getSource('hubs') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features } as any);
+  }, [hubs]);
+
+  // Sync Demand Heatmap
+  useEffect(() => {
+    if (!map.current || !rfqs || !map.current.isStyleLoaded()) return;
+    
+    // Simulate intensity based on destination clusters
+    const destinationMap: Record<string, number> = {};
+    rfqs.forEach(r => {
+        const dest = r.arrival.split(' (')[0];
+        destinationMap[dest] = (destinationMap[dest] || 0) + 1;
+    });
+
+    const features = hubs?.filter(h => destinationMap[h.city]).map(hub => ({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [hub.longitude, hub.latitude] },
+        properties: { intensity: (destinationMap[hub.city] || 1) / 5 }
+    })) || [];
+
+    (map.current.getSource('demand-heatmap') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features } as any);
+  }, [rfqs, hubs]);
+
+  // Sync Corridors
+  useEffect(() => {
+    if (!map.current || !legs || !hubs || !map.current.isStyleLoaded()) return;
+
+    const features: any[] = [];
+    legs.forEach(leg => {
+        const start = hubs.find(h => leg.departure.includes(h.city));
+        const end = hubs.find(h => leg.arrival.includes(h.city));
+        if (start && end) {
+            features.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: [
+                        [start.longitude, start.latitude],
+                        [end.longitude, end.latitude]
+                    ]
+                }
+            });
+        }
+    });
+
+    (map.current.getSource('corridors') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features } as any);
+  }, [legs, hubs]);
+
+  // Handle Layer Visibility
+  useEffect(() => {
+    if (!map.current || !map.current.isStyleLoaded()) return;
+    map.current.setLayoutProperty('hub-points', 'visibility', layers.hubs ? 'visible' : 'none');
+    map.current.setLayoutProperty('demand-heat', 'visibility', layers.demand ? 'visible' : 'none');
+    map.current.setLayoutProperty('corridor-lines', 'visibility', layers.emptyLegs ? 'visible' : 'none');
+  }, [layers]);
+
   return (
     <div className="w-full h-full relative group">
         <div ref={mapContainer} className="w-full h-full" />
         
-        <style jsx global>{`
-            .radar-node { position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
-            .radar-core { width: 6px; height: 6px; background: #00FFA6; border-radius: 50%; box-shadow: 0 0 10px #00FFA6; }
-            .radar-pulse { position: absolute; width: 24px; height: 24px; border: 2px solid #00FFA6; border-radius: 50%; animation: radar-ping 3s infinite; }
-            .radar-label { position: absolute; top: 100%; margin-top: 4px; font-size: 8px; font-weight: 900; color: #00FFA6; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6; }
-            
-            .flight-marker { position: relative; display: flex; flex-direction: column; align-items: center; }
-            .flight-icon { width: 20px; height: 20px; background: #0EA5E9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 0 15px rgba(14, 165, 233, 0.6); border: 1px solid rgba(255,255,255,0.2); }
-            .flight-pulse { position: absolute; width: 30px; height: 30px; background: rgba(14, 165, 233, 0.2); border-radius: 50%; animation: flight-glow 2s infinite; }
-            .flight-id { margin-top: 4px; font-family: monospace; font-size: 8px; font-weight: bold; color: #0EA5E9; background: rgba(0,0,0,0.6); padding: 1px 4px; border-radius: 4px; }
+        {/* Layer Controls */}
+        <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+            <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-4 shadow-2xl min-w-[200px]">
+                <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white flex items-center gap-2">
+                        <Layers className="h-3 w-3 text-accent" />
+                        Radar Layers
+                    </span>
+                </div>
+                
+                <div className="flex items-center justify-between gap-4">
+                    <Label htmlFor="hubs-toggle" className="text-[9px] uppercase font-bold text-white/70">Operator Hubs</Label>
+                    <Switch 
+                        id="hubs-toggle" 
+                        checked={layers.hubs} 
+                        onCheckedChange={(v) => setLayers(l => ({ ...l, hubs: v }))} 
+                    />
+                </div>
 
-            @keyframes radar-ping { 0% { transform: scale(0.2); opacity: 0.8; } 100% { transform: scale(1.5); opacity: 0; } }
-            @keyframes flight-glow { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.4); opacity: 0; } }
-        `}</style>
+                <div className="flex items-center justify-between gap-4">
+                    <Label htmlFor="demand-toggle" className="text-[9px] uppercase font-bold text-white/70">Demand Heatmap</Label>
+                    <Switch 
+                        id="demand-toggle" 
+                        checked={layers.demand} 
+                        onCheckedChange={(v) => setLayers(l => ({ ...l, demand: v }))} 
+                    />
+                </div>
+
+                <div className="flex items-center justify-between gap-4">
+                    <Label htmlFor="legs-toggle" className="text-[9px] uppercase font-bold text-white/70">Empty Corridors</Label>
+                    <Switch 
+                        id="legs-toggle" 
+                        checked={layers.emptyLegs} 
+                        onCheckedChange={(v) => setLayers(l => ({ ...l, emptyLegs: v }))} 
+                    />
+                </div>
+            </div>
+        </div>
+
+        {/* Dynamic Legend */}
+        <div className="absolute bottom-4 left-4 z-20 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-3 shadow-2xl">
+            <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-[#00FFA6]" />
+                    <span className="text-[8px] uppercase font-black text-white/60">Verified NSOP Hub</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-0.5 bg-[#D4AF37] border-t border-dashed" />
+                    <span className="text-[8px] uppercase font-black text-white/60">Empty Leg Corridor</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-sm bg-rose-500/40" />
+                    <span className="text-[8px] uppercase font-black text-white/60">High Demand Cluster</span>
+                </div>
+            </div>
+        </div>
     </div>
   );
 }
