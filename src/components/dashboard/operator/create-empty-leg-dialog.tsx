@@ -38,6 +38,8 @@ import type { Aircraft, PricingTier } from '@/lib/types';
 import { SystemAdvisory } from './system-advisory';
 import { cn } from '@/lib/utils';
 import { Plus, Trash2, Zap, ShieldCheck, Armchair } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
 
 const primeDestinations = [
     "Agra (AGR)", "Ahmedabad (AMD)", "Amritsar (ATQ)", "Aurangabad (IXU)", "Bagdogra (IXB)",
