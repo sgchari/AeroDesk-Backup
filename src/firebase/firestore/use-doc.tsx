@@ -1,4 +1,3 @@
-
 'use client';
     
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -9,6 +8,7 @@ import {
   onSnapshot
 } from 'firebase/firestore';
 import { mockStore } from '@/lib/mock-store';
+import { useUser } from '@/hooks/use-user';
 
 /** Utility type to add an 'id' field to a given type T. */
 type WithId<T> = T & { id: string };
@@ -31,6 +31,8 @@ export function useDoc<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   
+  const { isLoading: isUserLoading } = useUser();
+  
   const mountedRef = useRef(true);
   const prevDataStringRef = useRef<string>('');
   
@@ -43,6 +45,9 @@ export function useDoc<T = any>(
 
   const fetchDemoData = useCallback(() => {
     if (!mountedRef.current || !demoPath) return;
+    
+    if (isUserLoading) return;
+
     try {
         const docData = mockStore.getDoc(demoPath) as WithId<T> | null;
         const currentString = JSON.stringify(docData);
@@ -55,14 +60,17 @@ export function useDoc<T = any>(
         if (mountedRef.current) setError(e);
     } finally {
         if (mountedRef.current) {
-            setIsLoading(prev => prev ? false : prev);
+            setIsLoading(false);
         }
     }
-  }, [demoPath]);
+  }, [demoPath, isUserLoading]);
 
   useEffect(() => {
+    if (mountedRef.current) {
+        setIsLoading(true);
+    }
+
     if (!isDemoMode && memoizedDocRef) {
-      setIsLoading(true);
       const unsubscribe = onSnapshot(memoizedDocRef, 
         (docSnap) => {
           if (!mountedRef.current) return;
@@ -90,10 +98,14 @@ export function useDoc<T = any>(
 
     if (isDemoMode && demoPath) {
         fetchDemoData();
-        const unsubscribe = mockStore.subscribe(fetchDemoData);
+        const unsubscribe = mockStore.subscribe(() => {
+            fetchDemoData();
+        });
         return () => unsubscribe();
     } else {
-        setIsLoading(false);
+        if (mountedRef.current) {
+            setIsLoading(false);
+        }
     }
 
   }, [isDemoMode, demoPath, memoizedDocRef, fetchDemoData]);

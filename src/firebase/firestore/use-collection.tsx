@@ -21,7 +21,7 @@ export interface UseCollectionResult<T> {
 
 /**
  * Institutional Hook for managing real-time data collections.
- * Optimized with deep equality checks to prevent re-render storms.
+ * Optimized with deep equality checks and robust loading state management.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
@@ -30,6 +30,8 @@ export function useCollection<T = any>(
   const [data, setData] = useState<WithId<T>[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
+  
+  // Destructure from useUser (imported from @/hooks/use-user)
   const { user, isLoading: isUserLoading } = useUser();
   
   const mountedRef = useRef(true);
@@ -43,7 +45,10 @@ export function useCollection<T = any>(
   }, []);
 
   const fetchDemoData = useCallback(() => {
-    if (isUserLoading || !mountedRef.current || !demoPath) return;
+    if (!mountedRef.current || !demoPath) return;
+    
+    // Defer fetching until user identity is stable
+    if (isUserLoading) return;
 
     try {
         const mockData = mockStore.getCollection(demoPath, user) as WithId<T>[];
@@ -63,13 +68,16 @@ export function useCollection<T = any>(
   }, [demoPath, user, isUserLoading]);
 
   useEffect(() => {
+    // Re-initialize loading state on critical dependency shifts to ensure freshness
+    if (mountedRef.current) {
+        setIsLoading(true);
+    }
+
     if (!isDemoMode && memoizedTargetRefOrQuery) {
-      setIsLoading(true);
       const unsubscribe = onSnapshot(memoizedTargetRefOrQuery, 
         (snapshot) => {
           if (!mountedRef.current) return;
           const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<T>));
-          
           const currentString = JSON.stringify(items);
           if (currentString !== prevDataStringRef.current) {
             setData(items);
@@ -87,11 +95,20 @@ export function useCollection<T = any>(
     }
     
     if (isDemoMode && demoPath) {
+        // Initial fetch call
         fetchDemoData();
-        const unsubscribe = mockStore.subscribe(fetchDemoData);
+        
+        // Subscription to institutional mock store changes
+        const unsubscribe = mockStore.subscribe(() => {
+            fetchDemoData();
+        });
+        
         return () => unsubscribe();
     } else {
-        setIsLoading(false);
+        // Resolve loading state for invalid or pending queries
+        if (mountedRef.current) {
+            setIsLoading(false);
+        }
     }
 
   }, [isDemoMode, demoPath, memoizedTargetRefOrQuery, fetchDemoData]);
