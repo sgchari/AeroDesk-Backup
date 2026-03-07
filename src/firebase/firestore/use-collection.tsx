@@ -21,7 +21,7 @@ export interface UseCollectionResult<T> {
 
 /**
  * Institutional Hook for managing real-time data collections.
- * Optimized to prevent redundant re-renders and hydration mismatches.
+ * Optimized with deep-change detection to prevent re-render storms.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
@@ -31,8 +31,9 @@ export function useCollection<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   const { user, isLoading: isUserLoading } = useUser();
+  
   const mountedRef = useRef(true);
-  const lastUpdateRef = useRef<number>(0);
+  const prevDataStringRef = useRef<string>('');
   
   const isDemoMode = !memoizedTargetRefOrQuery || !memoizedTargetRefOrQuery.firestore?.app || (memoizedTargetRefOrQuery.firestore as any)._isMock;
 
@@ -48,7 +49,12 @@ export function useCollection<T = any>(
         (snapshot) => {
           if (!mountedRef.current) return;
           const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<T>));
-          setData(items);
+          
+          const currentString = JSON.stringify(items);
+          if (currentString !== prevDataStringRef.current) {
+            setData(items);
+            prevDataStringRef.current = currentString;
+          }
           setIsLoading(false);
         },
         (err) => {
@@ -72,11 +78,16 @@ export function useCollection<T = any>(
 
             try {
                 const mockData = mockStore.getCollection(path, user) as WithId<T>[];
-                setData(mockData);
+                const currentString = JSON.stringify(mockData);
+                
+                if (currentString !== prevDataStringRef.current) {
+                    setData(mockData);
+                    prevDataStringRef.current = currentString;
+                }
             } catch (e: any) {
-                setError(e);
+                if (mountedRef.current) setError(e);
             } finally {
-                setIsLoading(false);
+                if (mountedRef.current) setIsLoading(false);
             }
         };
 

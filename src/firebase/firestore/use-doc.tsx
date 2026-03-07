@@ -29,7 +29,9 @@ export function useDoc<T = any>(
   const [data, setData] = useState<WithId<T> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
+  
   const mountedRef = useRef(true);
+  const prevDataStringRef = useRef<string>('');
   
   const isDemoMode = !memoizedDocRef || !memoizedDocRef.firestore?.app || (memoizedDocRef.firestore as any)._isMock;
 
@@ -45,9 +47,15 @@ export function useDoc<T = any>(
         (docSnap) => {
           if (!mountedRef.current) return;
           if (docSnap.exists()) {
-            setData({ id: docSnap.id, ...docSnap.data() } as WithId<T>);
+            const item = { id: docSnap.id, ...docSnap.data() } as WithId<T>;
+            const currentString = JSON.stringify(item);
+            if (currentString !== prevDataStringRef.current) {
+                setData(item);
+                prevDataStringRef.current = currentString;
+            }
           } else {
             setData(null);
+            prevDataStringRef.current = 'null';
           }
           setIsLoading(false);
         },
@@ -71,11 +79,16 @@ export function useDoc<T = any>(
             if (!mountedRef.current) return;
             try {
                 const docData = mockStore.getDoc(path) as WithId<T> | null;
-                setData(docData);
+                const currentString = JSON.stringify(docData);
+                
+                if (currentString !== prevDataStringRef.current) {
+                    setData(docData);
+                    prevDataStringRef.current = currentString;
+                }
             } catch (e: any) {
-                setError(e);
+                if (mountedRef.current) setError(e);
             } finally {
-                setIsLoading(false);
+                if (mountedRef.current) setIsLoading(false);
             }
         };
         

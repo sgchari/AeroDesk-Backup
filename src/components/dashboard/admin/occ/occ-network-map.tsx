@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { cn } from '@/lib/utils';
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection } from '@/firebase';
 import type { AviationHub, CharterRFQ, EmptyLeg, AircraftPosition, AircraftAvailability, CharterDemandForecast } from '@/lib/types';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -23,6 +23,7 @@ import {
 export function OCCNetworkMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
+  const [mounted, setMounted] = useState(false);
   const [layers, setLayers] = useState({
     hubs: true,
     demand: true,
@@ -40,7 +41,11 @@ export function OCCNetworkMap() {
   const { data: forecasts } = useCollection<CharterDemandForecast>(null, 'charterDemandForecast');
 
   useEffect(() => {
-    if (!mapContainer.current || map.current) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || !mapContainer.current || map.current) return;
 
     const mapInstance = new maplibregl.Map({
       container: mapContainer.current,
@@ -138,7 +143,7 @@ export function OCCNetworkMap() {
             map.current = null;
         }
     };
-  }, []);
+  }, [mounted]);
 
   // --- DATA SYNC TO GEOJSON SOURCES ---
   useEffect(() => {
@@ -150,7 +155,15 @@ export function OCCNetworkMap() {
     }
 
     if (forecasts) {
-        const features = forecasts.map(f => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [72.8 + Math.random(), 19.0 + Math.random()] }, properties: { intensity: f.predictedDemandScore / 100 } }));
+        // Use consistent grid points for demand heatmap instead of random ones to prevent re-render loops
+        const features = forecasts.map((f, i) => ({ 
+            type: 'Feature', 
+            geometry: { 
+                type: 'Point', 
+                coordinates: [72.8 + (i * 0.5), 19.0 + (i * 0.5)] 
+            }, 
+            properties: { intensity: f.predictedDemandScore / 100 } 
+        }));
         (map.current.getSource('demand-heatmap') as maplibregl.GeoJSONSource).setData({ type: 'FeatureCollection', features } as any);
     }
 
@@ -177,6 +190,8 @@ export function OCCNetworkMap() {
     map.current.setLayoutProperty('radar-points', 'visibility', layers.radar ? 'visible' : 'none');
     map.current.setLayoutProperty('availability-points', 'visibility', layers.availability ? 'visible' : 'none');
   }, [layers]);
+
+  if (!mounted) return <div className="w-full h-full bg-slate-900/50 rounded-2xl border border-white/5 animate-pulse" />;
 
   return (
     <div className="w-full h-full relative group">
