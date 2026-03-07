@@ -4,6 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Check, Clock, ShieldCheck, CreditCard, Plane } from 'lucide-react';
 import type { SeatRequestStatus } from '@/lib/types';
+import { Badge } from '@/components/ui/badge';
 
 const steps = [
     { id: 'REQUEST_SUBMITTED', label: 'Request Submitted', icon: Clock },
