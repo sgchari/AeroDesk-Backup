@@ -99,7 +99,7 @@ export default function AvailableJetSeatsPage() {
     }, [firestore]);
     const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
-    const availableLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved' || leg.status === 'Published');
+    const availableLegs = allEmptyLegs?.filter(leg => leg.status === 'Approved' || leg.status === 'Published' || leg.status === 'live');
 
     return (
         <div className="space-y-10">

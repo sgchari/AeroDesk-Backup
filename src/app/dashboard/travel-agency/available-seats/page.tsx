@@ -102,14 +102,15 @@ export default function AvailableSeatsPage() {
 
   const emptyLegsQuery = useMemoFirebase(() => {
     if (!firestore || (firestore as any)._isMock) return null;
-    return query(collection(firestore, 'emptyLegs'), where('status', '==', 'live'));
+    return query(collection(firestore, 'emptyLegs'));
   }, [firestore]);
   
   const { data: allEmptyLegs, isLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
   
   const filteredLegs = allEmptyLegs?.filter(leg => 
-    leg.departure.toLowerCase().includes(search.toLowerCase()) || 
-    leg.arrival.toLowerCase().includes(search.toLowerCase())
+    (leg.status === 'live' || leg.status === 'Published' || leg.status === 'Approved') &&
+    (leg.departure.toLowerCase().includes(search.toLowerCase()) || 
+    leg.arrival.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
