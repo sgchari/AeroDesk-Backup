@@ -70,7 +70,7 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
                 </div>
             </CardContent>
             <Separator className="bg-white/5 mx-6" />
-            <CardFooter className="pb-6 pt-4 px-6 gap-3">
+            <CardFooter className="pb-6 pt-4 px-6 gap-3 flex">
                 <Button 
                     variant="outline" 
                     size="icon" 
@@ -79,7 +79,10 @@ const EmptyLegCard = ({ leg }: { leg: EmptyLeg }) => {
                 >
                     <Share2 className="h-4 w-4" />
                 </Button>
-                <Button className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase text-[10px] tracking-[0.1em] h-10 shadow-xl shadow-accent/5" onClick={() => handleRequestSeats(leg.id)}>
+                <Button 
+                    className="flex-1 min-h-10 h-auto py-2 bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase text-[9px] tracking-tighter shadow-xl shadow-accent/5 whitespace-normal leading-tight px-3" 
+                    onClick={() => handleRequestSeats(leg.id)}
+                >
                     Request Seat Access
                 </Button>
             </CardFooter>

@@ -84,7 +84,10 @@ const OpportunityCard = ({ leg, onAction }: { leg: EmptyLeg, onAction: () => voi
                 >
                     <Share2 className="h-4 w-4" />
                 </Button>
-                <Button onClick={onAction} className="flex-1 h-10 text-[10px] bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-[0.1em] shadow-xl shadow-accent/5">
+                <Button 
+                    onClick={onAction} 
+                    className="flex-1 min-h-10 h-auto py-2 text-[9px] bg-accent text-accent-foreground hover:bg-accent/90 font-black uppercase tracking-tighter shadow-xl shadow-accent/5 whitespace-normal leading-tight px-3"
+                >
                     Request Seat Allocation
                 </Button>
             </CardFooter>
