@@ -1,8 +1,9 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { CharterRFQ, Aircraft, EmptyLegSeatAllocationRequest, EmptyLeg } from "@/lib/types";
+import type { CharterRFQ, Aircraft, EmptyLegSeatAllocationRequest } from "@/lib/types";
 import { FileText, Plane, AlertTriangle, Users, ArrowRight, Activity, CheckCircle2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
@@ -20,7 +21,6 @@ export function OperatorDashboard() {
   const { user, isLoading: isUserLoading } = useUser();
   const firestore = useFirestore();
 
-  // Use operatorId for organizational data context
   const effectiveId = user?.operatorId || user?.id;
 
   const rfqsQuery = useMemoFirebase(() => {
@@ -37,12 +37,12 @@ export function OperatorDashboard() {
 
   const activeMissions = useMemo(() => {
     return rawActiveMissions?.filter(m => 
-        !['Draft', 'New', 'Bidding Open', 'Cancelled'].includes(m.status)
+        m && m.status && !['Draft', 'New', 'Bidding Open', 'Cancelled'].includes(m.status)
     ) || [];
   }, [rawActiveMissions]);
 
   const liveMissions = useMemo(() => {
-    return activeMissions.filter(m => ['departed', 'live', 'enroute', 'arrived'].includes(m.status));
+    return activeMissions.filter(m => m && m.status && ['departed', 'live', 'enroute', 'arrived'].includes(m.status));
   }, [activeMissions]);
 
   const aircraftsQuery = useMemoFirebase(() => {
@@ -57,10 +57,10 @@ export function OperatorDashboard() {
 
   const stats = useMemo(() => {
     return {
-        pendingRfqs: rfqs?.length || 0,
+        pendingRfqs: rfqs?.filter(r => r && r.status === 'Bidding Open').length || 0,
         activeMissions: activeMissions.length,
-        seatRequests: allSeatRequests?.filter(r => r.status === 'pendingApproval').length || 0,
-        aircraftAlerts: aircrafts?.filter(a => a.status === 'AOG' || a.status === 'Under Maintenance').length || 0
+        seatRequests: allSeatRequests?.filter(r => r && r.status === 'pendingApproval').length || 0,
+        aircraftAlerts: aircrafts?.filter(a => a && (a.status === 'AOG' || a.status === 'Under Maintenance')).length || 0
     };
   }, [rfqs, activeMissions, allSeatRequests, aircrafts]);
 
@@ -107,11 +107,11 @@ export function OperatorDashboard() {
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="text-base flex items-center gap-2">
+                        <CardTitle className="text-base flex items-center gap-2 font-bold">
                             <Activity className="h-4 w-4 text-accent" />
                             Mission Execution Queue
                         </CardTitle>
-                        <CardDescription>Missions requiring manifest review, invoicing, or operational updates.</CardDescription>
+                        <CardDescription className="text-xs">Missions requiring manifest review, invoicing, or operational updates.</CardDescription>
                     </div>
                     <Badge variant="outline" className="bg-accent/10 border-accent/20 text-accent font-black text-[9px] uppercase">Compliance Phase</Badge>
                 </div>
@@ -119,14 +119,14 @@ export function OperatorDashboard() {
             <CardContent>
                 {isLoading ? <Skeleton className="h-48 w-full" /> : (
                     <div className="space-y-3">
-                        {activeMissions && activeMissions.length > 0 ? activeMissions.map(mission => (
+                        {activeMissions && activeMissions.length > 0 ? activeMissions.slice(0, 5).map(mission => (
                             <Link key={mission.id} href={`/dashboard/charter/${mission.id}`} className="block">
-                                <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all group">
+                                <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] border border-white/5 hover:border-accent/30 transition-all group">
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-muted-foreground uppercase font-code group-hover:text-accent transition-colors">{mission.id}</p>
-                                        <p className="text-xs font-bold">{mission.departure.split(' (')[0]} → {mission.arrival.split(' (')[0]}</p>
+                                        <p className="text-xs font-bold">{mission.departure ? mission.departure.split(' (')[0] : 'TBD'} → {mission.arrival ? mission.arrival.split(' (')[0] : 'TBD'}</p>
                                         <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-                                            <span className="flex items-center gap-1 font-bold"><Clock className="h-2.5 w-2.5 text-accent/60" /> {new Date(mission.departureDate).toLocaleDateString()}</span>
+                                            <span className="flex items-center gap-1 font-bold"><Clock className="h-2.5 w-2.5 text-accent/60" /> {mission.departureDate ? new Date(mission.departureDate).toLocaleDateString() : 'TBD'}</span>
                                             <span className="flex items-center gap-1 font-bold"><Users className="h-2.5 w-2.5 text-accent/60" /> {mission.pax} PAX</span>
                                         </div>
                                     </div>
@@ -158,7 +158,7 @@ export function OperatorDashboard() {
                         <FileText className="h-4 w-4 text-primary" />
                         Marketplace Demand
                     </CardTitle>
-                    <CardDescription>New charter requests open for operator bidding.</CardDescription>
+                    <CardDescription className="text-xs">New charter requests open for operator bidding.</CardDescription>
                 </div>
                 <Button asChild variant="ghost" size="sm" className="text-accent gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-white/5">
                     <Link href="/dashboard/operator/rfq-marketplace">Marketplace <ArrowRight className="h-3 w-3" /></Link>
@@ -175,7 +175,7 @@ export function OperatorDashboard() {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {rfqs?.slice(0, 5).map((rfq: CharterRFQ) => (
+                    {rfqs?.filter(r => r && r.departure && r.arrival).slice(0, 5).map((rfq: CharterRFQ) => (
                         <TableRow key={rfq.id} className="border-white/5 hover:bg-white/[0.02]">
                             <TableCell className="py-3">
                                 <div className="text-xs font-bold text-white">{rfq.departure.split(' (')[0]} to {rfq.arrival.split(' (')[0]}</div>

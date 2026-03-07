@@ -1,3 +1,4 @@
+
 import { 
   mockUsers, 
   mockRfqs, 
@@ -187,6 +188,8 @@ export const mockStore = {
   getReadCount: () => db.readCount,
   addDoc: (path: string, data: any) => { 
     const segments = path.split('/');
+    // Fix: If it's a nested subcollection path, we should ideally handle it,
+    // but for the mock simulation, we map technical bid submissions to the root 'quotations'
     const rootCol = segments[0];
     if (!db[rootCol]) db[rootCol] = [];
     const newDoc = { id: `id-${Date.now()}`, ...data };

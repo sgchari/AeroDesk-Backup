@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -33,9 +34,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
 import { useCollection, useFirestore, addDocumentNonBlocking, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
 import type { CharterRFQ, Aircraft, AICharterInsight } from '@/lib/types';
-import { Sparkles, ShieldCheck, Info, TrendingUp, Zap } from 'lucide-react';
+import { Sparkles, ShieldCheck, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const quoteSchema = z.object({
@@ -65,13 +66,12 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
 
   const { data: fleet } = useCollection<Aircraft>(fleetQuery, user ? `operators/${user.id}/aircrafts` : undefined);
 
-  // AI ADVISORY DATA
   const { data: aiInsights } = useCollection<AICharterInsight>(
       useMemoFirebase(() => null, []), 
       'aiCharterInsights'
   );
   
-  const currentInsight = aiInsights?.find(i => rfq?.departure.includes(i.route.split('-')[0]) && rfq?.arrival.includes(i.route.split('-')[1]));
+  const currentInsight = aiInsights?.find(i => rfq && rfq.departure && rfq.arrival && rfq.departure.includes(i.route.split('-')[0]) && rfq.arrival.includes(i.route.split('-')[1]));
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
@@ -88,9 +88,10 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
   const onSubmit = (data: QuoteFormValues) => {
     if (!user || !rfq || !firestore) return;
 
+    // Fix: Use correct collection path to avoid polluting the RFQ array
     const quotesRef = (firestore as any)._isMock
-        ? { path: `charterRFQs/${rfq.id}/quotations` } as any
-        : collection(firestore, 'charterRFQs', rfq.id, 'quotations');
+        ? { path: 'quotations' } as any
+        : collection(firestore, 'quotations');
     
     addDocumentNonBlocking(quotesRef, {
         rfqId: rfq.id,
@@ -125,7 +126,6 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
           </DialogDescription>
         </DialogHeader>
 
-        {/* --- AI ADVISORY LAYER (Institutional Assistance) --- */}
         <div className="p-4 rounded-xl bg-accent/5 border border-accent/20 relative overflow-hidden group mb-2">
             <div className="absolute top-0 right-0 p-2 opacity-5"><Sparkles className="h-12 w-12" /></div>
             <div className="flex items-center gap-2 mb-3">
@@ -169,7 +169,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                   <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Deploy Fleet Asset</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-muted/20">
+                      <SelectTrigger className="bg-muted/20 text-xs">
                         <SelectValue placeholder="Choose an aircraft" />
                       </SelectTrigger>
                     </FormControl>
@@ -192,7 +192,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                         <FormItem>
                         <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Gross Quote (INR)</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="0.00" {...field} className="bg-muted/20" />
+                            <Input type="number" placeholder="0.00" {...field} className="bg-muted/20 text-xs" />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -205,7 +205,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                         <FormItem>
                         <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Validity Limit</FormLabel>
                         <FormControl>
-                            <Input type="date" {...field} className="bg-muted/20" />
+                            <Input type="date" {...field} className="bg-muted/20 text-xs" />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -220,7 +220,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                 <FormItem>
                   <FormLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Operational Inclusions</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Fuel, landing fees, and standard catering included..." {...field} className="bg-muted/20 h-24" />
+                    <Textarea placeholder="Fuel, landing fees, and standard catering included..." {...field} className="bg-muted/20 h-24 text-xs" />
                   </FormControl>
                 </FormItem>
               )}
@@ -229,7 +229,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
             <div className="p-3 rounded-lg border border-white/5 bg-white/[0.02] flex items-start gap-3">
                 <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                 <p className="text-[10px] text-muted-foreground leading-relaxed italic">
-                    Operators retain final control over pricing. AeroDesk AI insights are provided for coordination assistance only.
+                    Operators retain final control over pricing. bid submission initiates an immutable coordination thread.
                 </p>
             </div>
 

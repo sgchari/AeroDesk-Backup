@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,20 +32,27 @@ export default function RfqMarketplacePage() {
   const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
   const filteredRfqs = useMemo(() => {
-    return rfqs?.filter(r => 
-        (r.status === 'Bidding Open' || r.status === 'New') && (
+    if (!rfqs) return [];
+    return rfqs.filter(r => {
+        // Defensive check: Ensure the object is a valid RFQ with routing data
+        if (!r || !r.status || !r.departure || !r.arrival) return false;
+        
+        const isLiveDemand = r.status === 'Bidding Open' || r.status === 'New';
+        const matchesSearch = 
             r.departure.toLowerCase().includes(search.toLowerCase()) || 
             r.arrival.toLowerCase().includes(search.toLowerCase()) ||
-            r.id.toLowerCase().includes(search.toLowerCase())
-        )
-    );
+            r.id.toLowerCase().includes(search.toLowerCase());
+            
+        return isLiveDemand && matchesSearch;
+    });
   }, [rfqs, search]);
 
   const stats = useMemo(() => {
-    const total = rfqs?.length || 0;
-    const won = rfqs?.filter(r => ['charterConfirmed', 'boarding', 'departed', 'arrived', 'flightCompleted', 'tripClosed'].includes(r.status)).length || 0;
-    const lost = rfqs?.filter(r => r.status === 'Closed' || r.status === 'cancelled').length || 0;
-    const active = filteredRfqs?.length || 0;
+    if (!rfqs) return { active: 0, won: 0, lost: 0, conversion: "0.0" };
+    const total = rfqs.length || 0;
+    const won = rfqs.filter(r => r && ['charterConfirmed', 'boarding', 'departed', 'arrived', 'flightCompleted', 'tripClosed'].includes(r.status)).length || 0;
+    const lost = rfqs.filter(r => r && (r.status === 'Closed' || r.status === 'cancelled')).length || 0;
+    const active = filteredRfqs.length || 0;
     const conversion = total > 0 ? ((won / total) * 100).toFixed(1) : "0.0";
 
     return { active, won, lost, conversion };
@@ -144,10 +152,10 @@ export default function RfqMarketplacePage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                             <DropdownMenuLabel>Marketplace Controls</DropdownMenuLabel>
-                                            <DropdownMenuItem onClick={() => setSelectedRfq(rfq)} className="gap-2">
+                                            <DropdownMenuItem onClick={() => setSelectedRfq(rfq)} className="gap-2 text-xs">
                                                 <Gavel className="h-3.5 w-3.5 text-accent" /> Publish Technical Bid
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem className="text-destructive gap-2">
+                                            <DropdownMenuItem className="text-destructive gap-2 text-xs">
                                                 <XCircle className="h-3.5 w-3.5" /> Decline Lead
                                             </DropdownMenuItem>
                                             </DropdownMenuContent>
