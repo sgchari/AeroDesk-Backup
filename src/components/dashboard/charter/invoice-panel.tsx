@@ -9,25 +9,31 @@ import { Label } from '@/components/ui/label';
 import { FileText, Download, Upload, ShieldCheck, CreditCard } from 'lucide-react';
 import { useFirestore, addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
-import type { CharterRFQ, Invoice } from '@/lib/types';
+import type { CharterRFQ, Invoice, SeatAllocationRequest } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 
-export function InvoicePanel({ charter, invoice, userRole }: { charter: CharterRFQ, invoice?: Invoice, userRole?: string }) {
+export function InvoicePanel({ charter, invoice, userRole }: { charter: CharterRFQ | SeatAllocationRequest, invoice?: Invoice, userRole?: string }) {
     const firestore = useFirestore();
     const { toast } = useToast();
     
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState(charter.totalAmount || 0);
     const [invoiceNum, setInvoiceNum] = useState(`INV-${Date.now().toString().slice(-6)}`);
 
     const isOperator = userRole === 'Operator';
     const isCustomer = userRole === 'Customer' || userRole === 'Requester';
-    const canIssue = isOperator && charter.status === 'manifestApproved';
+    
+    const status = (charter as CharterRFQ).status || (charter as SeatAllocationRequest).requestStatus;
+    const canIssue = isOperator && (status === 'manifestApproved' || status === 'APPROVED');
 
     const handleIssueInvoice = () => {
         if (!firestore) return;
 
+        const isSeat = !!(charter as SeatAllocationRequest).requestId;
+        const collection = isSeat ? 'seatAllocationRequests' : 'charterRequests';
+        const newStatus = isSeat ? 'WAITING_PAYMENT' : 'invoiceIssued';
+
         const invoiceData = {
-            charterId: charter.id,
+            relatedEntityId: charter.id,
             operatorId: charter.operatorId || 'demo-op',
             invoiceNumber: invoiceNum,
             totalAmount: amount,
@@ -37,15 +43,17 @@ export function InvoicePanel({ charter, invoice, userRole }: { charter: CharterR
         };
 
         addDocumentNonBlocking({ path: 'invoices' } as any, invoiceData);
-        updateDocumentNonBlocking({ path: `charterRequests/${charter.id}` } as any, { status: 'invoiceIssued' });
+        updateDocumentNonBlocking({ path: `${collection}/${charter.id}` } as any, { 
+            ...(isSeat ? { requestStatus: newStatus } : { status: newStatus }) 
+        });
 
         addDocumentNonBlocking({ path: 'activityLogs' } as any, {
-            charterId: charter.id,
+            entityId: charter.id,
             actionType: 'INVOICE_ISSUED',
             performedBy: 'Operator Finance',
             role: 'Operator',
-            previousStatus: 'manifestApproved',
-            newStatus: 'invoiceIssued',
+            previousStatus: status,
+            newStatus: newStatus,
             timestamp: new Date().toISOString()
         });
 
@@ -72,14 +80,14 @@ export function InvoicePanel({ charter, invoice, userRole }: { charter: CharterR
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <Label className="text-[10px]">Invoice Reference</Label>
-                                <Input value={invoiceNum} onChange={(e) => setInvoiceNum(e.target.value)} className="h-8 text-xs" />
+                                <Input value={invoiceNum} onChange={(e) => setInvoiceNum(e.target.value)} className="h-8 text-xs bg-muted/20" />
                             </div>
                             <div className="space-y-1">
-                                <Label className="text-[10px]">Total Mission Cost (INR)</Label>
-                                <Input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="h-8 text-xs" />
+                                <Label className="text-[10px]">Total Coordination Value (INR)</Label>
+                                <Input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="h-8 text-xs bg-muted/20" />
                             </div>
                         </div>
-                        <Button onClick={handleIssueInvoice} className="w-full bg-accent text-accent-foreground h-9 text-[10px] font-black uppercase tracking-widest">
+                        <Button onClick={handleIssueInvoice} className="w-full bg-accent text-accent-foreground h-9 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-accent/5">
                             Initialize & Issue Invoice
                         </Button>
                     </div>
@@ -100,13 +108,13 @@ export function InvoicePanel({ charter, invoice, userRole }: { charter: CharterR
                             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                                 <ShieldCheck className="h-3 w-3 text-accent" /> Institutional Bank Details
                             </p>
-                            <p className="text-xs font-mono text-foreground leading-relaxed">
+                            <p className="text-xs font-mono text-foreground leading-relaxed whitespace-pre-wrap">
                                 {invoice.bankDetails}
                             </p>
                         </div>
 
                         {isCustomer && (
-                            <Button variant="outline" className="w-full h-9 text-[10px] font-bold uppercase gap-2 border-white/10">
+                            <Button variant="outline" className="w-full h-9 text-[10px] font-bold uppercase gap-2 border-white/10 hover:bg-accent/5">
                                 <Download className="h-3.5 w-3.5" /> Download Pro-Forma Invoice (PDF)
                             </Button>
                         )}

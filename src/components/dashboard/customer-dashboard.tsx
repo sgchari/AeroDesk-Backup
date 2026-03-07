@@ -181,8 +181,10 @@ export function CustomerDashboard() {
                                             <span>{new Date(req.createdAt).toLocaleDateString()}</span>
                                         </div>
                                     </div>
-                                    <Button variant="link" className="p-0 h-auto text-[10px] font-black uppercase tracking-widest text-accent group-hover:text-white transition-colors">
-                                        Audit Progress <ArrowRight className="h-3 w-3 ml-1.5 transition-transform group-hover:translate-x-1" />
+                                    <Button asChild variant="link" className="p-0 h-auto text-[10px] font-black uppercase tracking-widest text-accent group-hover:text-white transition-colors">
+                                        <Link href={`/dashboard/customer/seat-execution/${req.id}`}>
+                                            Audit Progress <ArrowRight className="h-3 w-3 ml-1.5 transition-transform group-hover:translate-x-1" />
+                                        </Link>
                                     </Button>
                                 </CardContent>
                             </Card>
