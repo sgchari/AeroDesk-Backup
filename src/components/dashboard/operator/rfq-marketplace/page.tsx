@@ -1,3 +1,4 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +12,7 @@ import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SubmitQuotationDialog } from "@/components/dashboard/operator/submit-quotation-dialog";
 import { SystemAdvisory } from "@/components/dashboard/operator/system-advisory";
 import Link from 'next/link';
@@ -28,13 +29,20 @@ export default function RfqMarketplacePage() {
   
   const { data: rfqs, isLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
-  const filteredRfqs = rfqs?.filter(r => 
-    (r.status === 'Bidding Open' || r.status === 'New') && (
-        r.departure.toLowerCase().includes(search.toLowerCase()) || 
-        r.arrival.toLowerCase().includes(search.toLowerCase()) ||
-        r.id.toLowerCase().includes(search.toLowerCase())
-    )
-  );
+  const filteredRfqs = useMemo(() => {
+    if (!rfqs) return [];
+    return rfqs.filter(r => {
+        if (!r || !r.status || !r.departure || !r.arrival) return false;
+        
+        const isLive = r.status === 'Bidding Open' || r.status === 'New';
+        const matchesSearch = 
+            r.departure.toLowerCase().includes(search.toLowerCase()) || 
+            r.arrival.toLowerCase().includes(search.toLowerCase()) ||
+            r.id.toLowerCase().includes(search.toLowerCase());
+            
+        return isLive && matchesSearch;
+    });
+  }, [rfqs, search]);
 
   return (
     <>

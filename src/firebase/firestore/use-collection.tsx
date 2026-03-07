@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Query,
   DocumentData,
@@ -21,7 +22,7 @@ export interface UseCollectionResult<T> {
 
 /**
  * Institutional Hook for managing real-time data collections.
- * Optimized with deep-change detection to prevent re-render storms.
+ * Optimized with referential stability and deep equality checks.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
@@ -41,6 +42,26 @@ export function useCollection<T = any>(
     mountedRef.current = true;
     return () => { mountedRef.current = false; };
   }, []);
+
+  const fetchDemoData = useCallback(() => {
+    if (isUserLoading || !mountedRef.current || !demoPath) return;
+
+    try {
+        const mockData = mockStore.getCollection(demoPath, user) as WithId<T>[];
+        const currentString = JSON.stringify(mockData);
+        
+        if (currentString !== prevDataStringRef.current) {
+            setData(mockData);
+            prevDataStringRef.current = currentString;
+        }
+    } catch (e: any) {
+        if (mountedRef.current) setError(e);
+    } finally {
+        if (mountedRef.current) {
+            setIsLoading(prev => prev ? false : prev);
+        }
+    }
+  }, [demoPath, user, isUserLoading]);
 
   useEffect(() => {
     if (!isDemoMode && memoizedTargetRefOrQuery) {
@@ -66,37 +87,15 @@ export function useCollection<T = any>(
       return () => unsubscribe();
     }
     
-    if (isDemoMode) {
-        const fetchDemoData = () => {
-            if (isUserLoading || !mountedRef.current) return;
-
-            const path = demoPath;
-            if (!path) {
-                setIsLoading(false);
-                return;
-            }
-
-            try {
-                const mockData = mockStore.getCollection(path, user) as WithId<T>[];
-                const currentString = JSON.stringify(mockData);
-                
-                if (currentString !== prevDataStringRef.current) {
-                    setData(mockData);
-                    prevDataStringRef.current = currentString;
-                }
-            } catch (e: any) {
-                if (mountedRef.current) setError(e);
-            } finally {
-                if (mountedRef.current) setIsLoading(false);
-            }
-        };
-
+    if (isDemoMode && demoPath) {
         fetchDemoData();
         const unsubscribe = mockStore.subscribe(fetchDemoData);
         return () => unsubscribe();
+    } else {
+        setIsLoading(false);
     }
 
-  }, [user, isUserLoading, isDemoMode, demoPath, memoizedTargetRefOrQuery]);
+  }, [isDemoMode, demoPath, memoizedTargetRefOrQuery, fetchDemoData]);
 
   return { data, isLoading, error };
 }

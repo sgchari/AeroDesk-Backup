@@ -1,12 +1,21 @@
+
 'use client';
 
-import React, { type ReactNode, useEffect, useState } from 'react';
+import React, { type ReactNode, useEffect, useState, useMemo } from 'react';
 import { FirebaseProvider } from '@/firebase/provider';
 import { initializeFirebase } from '@/firebase';
 
 interface FirebaseClientProviderProps {
   children: ReactNode;
 }
+
+/**
+ * Static mock instance to prevent re-render loops in consumers.
+ */
+const MOCK_FIRESTORE = {
+  _isMock: true,
+  app: { name: '[DEMO]', automaticDataCollectionEnabled: false },
+};
 
 export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
   const [sdks, setSdks] = useState<any>(null);
@@ -23,17 +32,15 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
     }
   }, [isDemoMode]);
 
-  const mockFirestore = {
-    _isMock: true,
-    app: { name: '[DEMO]', automaticDataCollectionEnabled: false },
-  };
-
-  const services = {
+  /**
+   * Memoized services object to maintain referential integrity.
+   */
+  const services = useMemo(() => ({
     firebaseApp: sdks?.firebaseApp || null,
-    firestore: isDemoMode ? (mockFirestore as any) : (sdks?.firestore || null),
+    firestore: isDemoMode ? (MOCK_FIRESTORE as any) : (sdks?.firestore || null),
     auth: sdks?.auth || null,
     storage: sdks?.storage || null,
-  };
+  }), [sdks, isDemoMode]);
 
   return (
     <FirebaseProvider

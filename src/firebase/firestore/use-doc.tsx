@@ -1,6 +1,7 @@
+
 'use client';
     
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   DocumentReference,
   DocumentData,
@@ -40,6 +41,25 @@ export function useDoc<T = any>(
     return () => { mountedRef.current = false; };
   }, []);
 
+  const fetchDemoData = useCallback(() => {
+    if (!mountedRef.current || !demoPath) return;
+    try {
+        const docData = mockStore.getDoc(demoPath) as WithId<T> | null;
+        const currentString = JSON.stringify(docData);
+        
+        if (currentString !== prevDataStringRef.current) {
+            setData(docData);
+            prevDataStringRef.current = currentString;
+        }
+    } catch (e: any) {
+        if (mountedRef.current) setError(e);
+    } finally {
+        if (mountedRef.current) {
+            setIsLoading(prev => prev ? false : prev);
+        }
+    }
+  }, [demoPath]);
+
   useEffect(() => {
     if (!isDemoMode && memoizedDocRef) {
       setIsLoading(true);
@@ -68,36 +88,15 @@ export function useDoc<T = any>(
       return () => unsubscribe();
     }
 
-    if (isDemoMode) {
-        const path = demoPath;
-        if (!path) {
-            setIsLoading(false);
-            return;
-        }
-        
-        const fetchDemoData = () => {
-            if (!mountedRef.current) return;
-            try {
-                const docData = mockStore.getDoc(path) as WithId<T> | null;
-                const currentString = JSON.stringify(docData);
-                
-                if (currentString !== prevDataStringRef.current) {
-                    setData(docData);
-                    prevDataStringRef.current = currentString;
-                }
-            } catch (e: any) {
-                if (mountedRef.current) setError(e);
-            } finally {
-                if (mountedRef.current) setIsLoading(false);
-            }
-        };
-        
+    if (isDemoMode && demoPath) {
         fetchDemoData();
         const unsubscribe = mockStore.subscribe(fetchDemoData);
         return () => unsubscribe();
+    } else {
+        setIsLoading(false);
     }
 
-  }, [memoizedDocRef, isDemoMode, demoPath]);
+  }, [isDemoMode, demoPath, memoizedDocRef, fetchDemoData]);
 
   return { data, isLoading, error };
 }

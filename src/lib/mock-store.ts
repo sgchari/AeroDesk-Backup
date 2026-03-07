@@ -119,18 +119,43 @@ let db: any = {
 };
 
 const listeners: Set<() => void> = new Set();
+let isPendingNotification = false;
 
+/**
+ * Institutional debounced notification engine.
+ * Prevents re-render storms during high-frequency operational updates.
+ */
 const notify = () => {
+    if (isPendingNotification) return;
+    isPendingNotification = true;
+
     if (typeof window !== 'undefined') {
         window.requestAnimationFrame(() => {
             listeners.forEach(cb => cb());
+            isPendingNotification = false;
         });
+    } else {
+        isPendingNotification = false;
     }
 };
 
 const subscribe = (callback: () => void) => {
   listeners.add(callback);
   return () => listeners.delete(callback);
+};
+
+/**
+ * Maps subcollection paths to their root institutional entities.
+ */
+const getRootCollection = (path: string): string => {
+    const segments = path.split('/');
+    if (segments.includes('aircrafts')) return 'aircrafts';
+    if (segments.includes('users')) return 'users';
+    if (segments.includes('charterRequests') || segments.includes('charterRFQs')) return 'charterRequests';
+    if (segments.includes('quotations')) return 'quotations';
+    if (segments.includes('seatAllocations')) return 'seatAllocations';
+    if (segments.includes('policyFlags')) return 'policyFlags';
+    return segments[0];
 };
 
 const resolvePath = (path: string) => {
@@ -149,7 +174,7 @@ const resolvePath = (path: string) => {
     };
   }
   
-  // Handle nested subcollections
+  // Handle nested subcollections for reading
   if (segments.length > 2 && segments[segments.length - 1] === 'users') {
       return db.users.filter((u: any) => u.ctdId === segments[1] || u.operatorId === segments[1] || u.agencyId === segments[1] || u.hotelPartnerId === segments[1]);
   }
@@ -168,7 +193,7 @@ const resolvePath = (path: string) => {
 const getCollection = (path: string, user?: User | null) => {
   let data = resolvePath(path);
   if (Array.isArray(data)) {
-    return data.slice(0, 50); 
+    return data.slice(0, 100); // Increased slice for enterprise visibility
   }
   return data;
 };
@@ -187,18 +212,14 @@ export const mockStore = {
   getDoc,
   getReadCount: () => db.readCount,
   addDoc: (path: string, data: any) => { 
-    const segments = path.split('/');
-    // Fix: If it's a nested subcollection path, we should ideally handle it,
-    // but for the mock simulation, we map technical bid submissions to the root 'quotations'
-    const rootCol = segments[0];
+    const rootCol = getRootCollection(path);
     if (!db[rootCol]) db[rootCol] = [];
-    const newDoc = { id: `id-${Date.now()}`, ...data };
+    const newDoc = { id: `id-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, ...data };
     db[rootCol].unshift(newDoc);
     notify(); 
   },
   updateDoc: (path: string, id: string, data: any) => { 
-    const segments = path.split('/');
-    const rootCol = segments[0];
+    const rootCol = getRootCollection(path);
     if (db[rootCol]) {
         const idx = db[rootCol].findIndex((d: any) => d.id === id);
         if (idx !== -1) {
@@ -208,8 +229,7 @@ export const mockStore = {
     }
   },
   deleteDoc: (path: string, id: string) => { 
-    const segments = path.split('/');
-    const rootCol = segments[0];
+    const rootCol = getRootCollection(path);
     if (db[rootCol]) {
         db[rootCol] = db[rootCol].filter((d: any) => d.id !== id);
         notify(); 
