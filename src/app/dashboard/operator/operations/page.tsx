@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { useUser } from "@/hooks/use-user";
 import type { Aircraft, CharterRFQ, CrewMember, SystemAlert, OperationalActivity } from "@/lib/types";
@@ -43,7 +44,7 @@ export default function OperatorOperationsCenterPage() {
     const opFleet = useMemo(() => fleet?.filter(a => a.operatorId === opId) || [], [fleet, opId]);
     const opRfqs = useMemo(() => rfqs?.filter(r => r.status === 'Bidding Open' || r.status === 'New') || [], [rfqs]);
     const opCrew = useMemo(() => crew?.filter(c => c.operatorId === opId) || [], [crew, opId]);
-    const activeMissions = useMemo(() => rfqs?.filter(r => r.operatorId === opId && ['Confirmed', 'boarding', 'departed', 'live', 'enroute'].includes(r.status)) || [], [rfqs, opId]);
+    const activeMissions = useMemo(() => rfqs?.filter(r => r.operatorId === opId && ['Confirmed', 'boarding', 'departed', 'live', 'enroute', 'arrived'].includes(r.status)) || [], [rfqs, opId]);
 
     const getStatusColor = (status: string) => {
         switch (status) {
