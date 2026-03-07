@@ -53,7 +53,11 @@ import type {
   EmptyLegOpportunity,
   AircraftPositioningInsight,
   CharterPriceBenchmark,
-  RevenueForecast
+  RevenueForecast,
+  AircraftMaintenance,
+  MaintenanceSchedule,
+  DefectReport,
+  MaintenanceWorkOrder
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -76,7 +80,7 @@ export const mockUsers: User[] = [
       status: 'active', 
       demoMode: true,
       allowedRoles: ["customer", "operator", "agency", "corporate", "hotel", "admin"],
-      avatar: 'https://storage.googleapis.com/source.unsplash.com/random/256x256?face',
+      avatar: 'https://picsum.photos/seed/user1/256/256',
       createdAt: "2025-01-01T10:00:00Z", 
       updatedAt: "2025-01-01T10:00:00Z" 
     }
@@ -105,15 +109,15 @@ export const mockOrganizationUsers: OrganizationUser[] = [
 ];
 
 export const mockAircraft: Aircraft[] = [
-    { id: 'ac-01', operatorId: 'op-west-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'Mumbai (VABB)', status: 'Available', hourlyRate: 180000, exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800' },
-    { id: 'ac-02', operatorId: 'op-west-01', name: 'Embraer Legacy 650', type: 'Heavy Jet', registration: 'VT-STK', paxCapacity: 13, homeBase: 'Mumbai (VABB)', status: 'Available', hourlyRate: 450000, exteriorImageUrl: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080' },
-    { id: 'ac-03', operatorId: 'op-west-01', name: 'Beechcraft King Air B200', type: 'Turboprop', registration: 'VT-JSG', paxCapacity: 7, homeBase: 'Mumbai (VABB)', status: 'Under Maintenance', hourlyRate: 95000, exteriorImageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=800' },
+    { id: 'ac-01', operatorId: 'op-west-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'Mumbai (VABB)', status: 'AVAILABLE', hourlyRate: 180000, exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800', location: 'Mumbai' },
+    { id: 'ac-02', operatorId: 'op-west-01', name: 'Embraer Legacy 650', type: 'Heavy Jet', registration: 'VT-STK', paxCapacity: 13, homeBase: 'Mumbai (VABB)', status: 'AVAILABLE', hourlyRate: 450000, exteriorImageUrl: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080', location: 'Delhi' },
+    { id: 'ac-03', operatorId: 'op-west-01', name: 'Beechcraft King Air B200', type: 'Turboprop', registration: 'VT-JSG', paxCapacity: 7, homeBase: 'Mumbai (VABB)', status: 'MAINTENANCE', hourlyRate: 95000, exteriorImageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=800', location: 'Mumbai' },
 ];
 
 export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-CORP-001', customerId: 'u-corp-01', requesterExternalAuthId: 'u-corp-01', customerName: 'Bruce Wayne', company: 'Wayne Enterprises', tripType: 'Onward', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureDate: '2025-03-15', departureTime: '10:00', pax: 5, aircraftType: 'Heavy Jet', status: 'Bidding Open', createdAt: '2025-02-10T10:00:00Z', updatedAt: '2025-02-10T10:00:00Z', bidsCount: 2 },
-    { id: 'RFQ-IND-002', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', tripType: 'Return', departure: 'Delhi (VIDP)', arrival: 'Goa (VOGO)', departureDate: '2025-03-20', departureTime: '11:30', pax: 4, aircraftType: 'Light Jet', status: 'charterConfirmed', operatorId: 'op-west-01', createdAt: '2025-02-12T14:00:00Z', updatedAt: '2025-02-15T09:00:00Z', totalAmount: 850000 },
-    { id: 'RFQ-LIVE-003', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Mumbai (VABB)', departureDate: '2025-03-06', departureTime: '09:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'live', operatorId: 'op-west-01', createdAt: '2025-03-01T10:00:00Z', updatedAt: '2025-03-06T09:00:00Z', totalAmount: 620000 },
+    { id: 'RFQ-IND-002', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', tripType: 'Return', departure: 'Delhi (VIDP)', arrival: 'Goa (VOGO)', departureDate: '2025-03-20', departureTime: '11:30', pax: 4, aircraftType: 'Light Jet', status: 'charterConfirmed', operatorId: 'op-west-01', createdAt: '2025-02-12T14:00:00Z', updatedAt: '2025-02-15T09:00:00Z', totalAmount: 850000, aircraftId: 'ac-01' },
+    { id: 'RFQ-LIVE-003', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Mumbai (VABB)', departureDate: '2025-03-06', departureTime: '09:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'live', operatorId: 'op-west-01', createdAt: '2025-03-01T10:00:00Z', updatedAt: '2025-03-06T09:00:00Z', totalAmount: 620000, aircraftId: 'ac-02' },
 ];
 
 export const mockFleetUtilization: FleetUtilization[] = [
@@ -242,6 +246,8 @@ export const mockAuditLogs: AuditLog[] = [
 
 export const mockAlerts: SystemAlert[] = [
     { id: 'al-01', type: 'operational', message: 'No operator response to RFQ-CORP-001 for > 24 hours.', severity: 'medium', timestamp: new Date().toISOString(), status: 'active' },
+    { id: 'al-02', type: 'maintenance', message: 'VT-JSG: A-Check due in 48 hours.', severity: 'high', timestamp: new Date().toISOString(), status: 'active' },
+    { id: 'al-03', type: 'crew', message: 'Captain Vikram Singh approaching FDTL limit.', severity: 'medium', timestamp: new Date().toISOString(), status: 'active' },
 ];
 
 export const mockSystemLogs: SystemLog[] = [
@@ -284,6 +290,25 @@ export const mockRoomCategories: RoomCategory[] = [
 
 export const mockAccommodationRequests: AccommodationRequest[] = [
     { id: 'ACC-001', hotelPartnerId: 'hotel-01', propertyName: 'The Taj Mahal Palace', guestName: 'Tony Stark', checkIn: '2025-03-20', checkOut: '2025-03-22', rooms: 1, status: 'Confirmed', requesterId: 'demo_super_user' },
+];
+
+export const mockAircraftMaintenance: AircraftMaintenance[] = [
+  { id: 'mnt-01', aircraftId: 'ac-03', operatorId: 'op-west-01', lastMaintenanceDate: '2024-12-15T10:00:00Z', maintenanceType: 'Inspection', nextMaintenanceDueHours: 1250, status: 'IN_PROGRESS' },
+  { id: 'mnt-02', aircraftId: 'ac-01', operatorId: 'op-west-01', lastMaintenanceDate: '2025-01-20T10:00:00Z', maintenanceType: 'A-Check', nextMaintenanceDueHours: 1500, status: 'SCHEDULED' },
+];
+
+export const mockMaintenanceSchedule: MaintenanceSchedule[] = [
+  { id: 'sch-01', maintenanceId: 'mnt-01', aircraftId: 'ac-03', maintenanceType: 'Annual Inspection', scheduledDate: new Date().toISOString(), maintenanceFacility: 'Mumbai MRO', status: 'SCHEDULED' },
+  { id: 'sch-02', maintenanceId: 'mnt-02', aircraftId: 'ac-01', maintenanceType: 'A-Check', scheduledDate: new Date(Date.now() + 172800000).toISOString(), maintenanceFacility: 'Delhi Engineering', status: 'SCHEDULED' },
+];
+
+export const mockDefectReports: DefectReport[] = [
+  { id: 'df-01', aircraftId: 'ac-03', reportedBy: 'Captain Vikram Singh', issueDescription: 'Hydraulic pressure sensor lag detected in left gear assembly.', priority: 'HIGH', status: 'OPEN', reportedAt: new Date().toISOString() },
+  { id: 'df-02', aircraftId: 'ac-01', reportedBy: 'Ananya Sharma', issueDescription: 'Cabin reading light above 2A malfunctioning.', priority: 'LOW', status: 'RESOLVED', reportedAt: new Date(Date.now() - 86400000).toISOString() },
+];
+
+export const mockMaintenanceWorkOrders: MaintenanceWorkOrder[] = [
+  { id: 'wo-01', aircraftId: 'ac-03', taskDescription: 'Hydraulic Sensor Replacement & Calibration', engineerName: 'Rahul Sharma', startTime: new Date().toISOString(), status: 'IN_PROGRESS' },
 ];
 
 export const mockBlogPosts: BlogPost[] = [

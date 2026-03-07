@@ -30,7 +30,8 @@ import {
   TrendingUp,
   UserCog,
   BriefcaseIcon,
-  Sparkles
+  Sparkles,
+  Wrench
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -64,13 +65,14 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/admin/billing', label: 'Settlement Hub', icon: CreditCard, color: 'text-green-400' },
   ],
   operator: [
-    { href: '/dashboard', label: 'Fleet Console', icon: Home, color: 'text-accent' },
+    { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-accent' },
+    { href: '/dashboard/operator/operations', label: 'Operations Center', icon: Radio, color: 'text-emerald-400 font-bold' },
     { href: '/dashboard/operator/rfq-marketplace', label: 'RFQ Exchange', icon: GanttChartSquare, color: 'text-amber-400' },
-    { href: '/dashboard/operator/intelligence', label: 'Operator Intelligence', icon: Sparkles, color: 'text-accent' },
+    { href: '/dashboard/operator/intelligence', label: 'Yield Intelligence', icon: Sparkles, color: 'text-accent' },
     { href: '/dashboard/operator/fleet', label: 'Asset Registry', icon: Plane, color: 'text-slate-400' },
+    { href: '/dashboard/operator/maintenance', label: 'Maintenance (MRO)', icon: Wrench, color: 'text-rose-400' },
     { href: '/dashboard/operator/empty-legs', label: 'JetSeat Exchange', icon: Zap, color: 'text-accent' },
     { href: '/dashboard/operator/crew-operations', label: 'Crew & Logistics', icon: Users, color: 'text-sky-400' },
-    { href: '/dashboard/operator/fleet-intelligence', label: 'Utilization Engine', icon: Target, color: 'text-emerald-400' },
     { href: '/dashboard/manage-users', label: 'Personnel', icon: UserCog, color: 'text-amber-400' },
     { href: '/dashboard/operator/profile', label: 'Firm Identity', icon: Building, color: 'text-accent' },
   ],

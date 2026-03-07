@@ -48,7 +48,11 @@ import {
   mockBlogPosts,
   mockPressReleases,
   mockMediaMentions,
-  mockBrandAssets
+  mockBrandAssets,
+  mockAircraftMaintenance,
+  mockMaintenanceSchedule,
+  mockDefectReports,
+  mockMaintenanceWorkOrders
 } from './data';
 import { User } from './types';
 
@@ -106,6 +110,10 @@ let db: any = {
   pressReleases: deepCopy(mockPressReleases),
   mediaMentions: deepCopy(mockMediaMentions),
   brandAssets: deepCopy(mockBrandAssets),
+  aircraftMaintenance: deepCopy(mockAircraftMaintenance),
+  maintenanceSchedule: deepCopy(mockMaintenanceSchedule),
+  defectReports: deepCopy(mockDefectReports),
+  maintenanceWorkOrders: deepCopy(mockMaintenanceWorkOrders),
   readCount: 0
 };
 

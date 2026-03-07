@@ -114,7 +114,7 @@ export type CrewMember = {
   licenseNumber: string;
   phone: string;
   email: string;
-  status: 'ACTIVE' | 'ON_DUTY' | 'OFF_DUTY' | 'LEAVE';
+  status: 'ACTIVE' | 'ON_DUTY' | 'OFF_DUTY' | 'LEAVE' | 'AVAILABLE';
   assignedAircraftRegistration?: string;
 };
 
@@ -159,7 +159,8 @@ export type RfqStatus =
     | 'arrived' 
     | 'flightCompleted' 
     | 'tripClosed' 
-    | 'cancelled';
+    | 'cancelled'
+    | 'SCHEDULED';
 
 export type CharterRFQ = {
   id: string;
@@ -189,6 +190,7 @@ export type CharterRFQ = {
   catering?: string;
   specialRequirements?: string;
   pricePrediction?: CharterPricePrediction;
+  aircraftId?: string;
 };
 
 export type AutopilotMatch = {
@@ -222,6 +224,8 @@ export type Operator = {
   fleetSize?: number;
 };
 
+export type AircraftStatus = 'Available' | 'Under Maintenance' | 'AOG' | 'Restricted' | 'AVAILABLE' | 'IN_CHARTER' | 'MAINTENANCE' | 'MAINTENANCE_DUE';
+
 export type Aircraft = {
     id: string;
     operatorId: string;
@@ -230,12 +234,13 @@ export type Aircraft = {
     registration: string;
     paxCapacity: number;
     homeBase: string;
-    status: 'Available' | 'Under Maintenance' | 'AOG' | 'Restricted';
+    status: AircraftStatus;
     exteriorImageUrl?: string;
     interiorImageUrl?: string;
     hourlyRate?: number;
     createdAt?: string;
     updatedAt?: string;
+    location?: string;
 };
 
 export type EmptyLeg = {
@@ -373,9 +378,9 @@ export type HotelPartner = {
 
 export type SystemAlert = {
     id: string;
-    type: 'system' | 'operational' | 'security';
+    type: 'system' | 'operational' | 'security' | 'maintenance' | 'crew' | 'charter';
     message: string;
-    severity: 'low' | 'medium' | 'high';
+    severity: 'low' | 'medium' | 'high' | 'critical';
     timestamp: string;
     status: 'active' | 'resolved';
 };
@@ -740,4 +745,44 @@ export type Quotation = {
   submittedAt: string;
   validUntil: string;
   operatorRemarks?: string;
+};
+
+export type AircraftMaintenance = {
+  id: string;
+  aircraftId: string;
+  operatorId: string;
+  lastMaintenanceDate: string;
+  maintenanceType: 'A-Check' | 'Inspection' | 'Component Replacement' | 'Service Bulletin';
+  nextMaintenanceDueHours: number;
+  status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED';
+};
+
+export type MaintenanceSchedule = {
+  id: string;
+  maintenanceId: string;
+  aircraftId: string;
+  maintenanceType: string;
+  scheduledDate: string;
+  maintenanceFacility: string;
+  status: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
+};
+
+export type DefectReport = {
+  id: string;
+  aircraftId: string;
+  reportedBy: string;
+  issueDescription: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status: 'OPEN' | 'IN_REPAIR' | 'RESOLVED';
+  reportedAt: string;
+};
+
+export type MaintenanceWorkOrder = {
+  id: string;
+  aircraftId: string;
+  taskDescription: string;
+  engineerName: string;
+  startTime: string;
+  completionTime?: string;
+  status: 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
 };
