@@ -56,7 +56,10 @@ import {
   mockSeatAllocationRequests,
   mockSeatInvoices,
   mockSeatPayments,
-  mockFlightPassengerManifests
+  mockFlightPassengerManifests,
+  mockSeatReservations,
+  mockOperatorPaymentDetails,
+  mockNotifications
 } from './data';
 import { User } from './types';
 
@@ -77,6 +80,9 @@ let db: any = {
   seatInvoices: deepCopy(mockSeatInvoices),
   seatPayments: deepCopy(mockSeatPayments),
   flightPassengerManifests: deepCopy(mockFlightPassengerManifests),
+  seatReservations: deepCopy(mockSeatReservations),
+  operatorPaymentDetails: deepCopy(mockOperatorPaymentDetails),
+  notifications: deepCopy(mockNotifications),
   invoices: deepCopy(mockInvoices),
   payments: deepCopy(mockPayments),
   passengerManifests: deepCopy(mockPassengerManifests),

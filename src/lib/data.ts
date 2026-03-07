@@ -61,7 +61,10 @@ import type {
   SeatAllocationRequest,
   SeatInvoice,
   SeatPayment,
-  FlightPassengerManifest
+  FlightPassengerManifest,
+  SeatReservation,
+  OperatorPaymentDetails,
+  DashboardNotification
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -124,22 +127,6 @@ export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-LIVE-003', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Mumbai (VABB)', departureDate: '2025-03-06', departureTime: '09:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'live', operatorId: 'op-west-01', createdAt: '2025-03-01T10:00:00Z', updatedAt: '2025-03-06T09:00:00Z', totalAmount: 620000, aircraftId: 'ac-02' },
 ];
 
-export const mockSeatAllocationRequests: SeatAllocationRequest[] = [
-  { id: 'sr-01', requestId: 'SR102', flightId: 'EL-001', operatorId: 'op-west-01', requesterId: 'demo_super_user', requesterName: 'Tony Stark', requesterType: 'individual', origin: 'VABB', destination: 'VIDP', seatsRequested: 2, passengers: [{ fullName: 'Tony Stark', idType: 'Passport', idNumber: 'Z1234567', nationality: 'Indian' }, { fullName: 'Pepper Potts', idType: 'Passport', idNumber: 'Z7654321', nationality: 'Indian' }], requestStatus: 'PENDING_OPERATOR_APPROVAL', totalAmount: 90000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-];
-
-export const mockSeatInvoices: SeatInvoice[] = [
-  { id: 'sinv-01', invoiceId: 'INV102', requestId: 'SR102', operatorId: 'op-west-01', totalSeats: 2, seatPrice: 45000, totalAmount: 90000, currency: 'INR', invoiceStatus: 'ISSUED', paymentMode: 'OFFLINE_TRANSFER', createdAt: new Date().toISOString() },
-];
-
-export const mockSeatPayments: SeatPayment[] = [
-  { id: 'spay-01', paymentId: 'PAY102', invoiceId: 'INV102', requestId: 'SR102', paymentMethod: 'Bank Transfer', paymentReference: 'UTR9218273', paymentStatus: 'PENDING_VERIFICATION', createdAt: new Date().toISOString() },
-];
-
-export const mockFlightPassengerManifests: FlightPassengerManifest[] = [
-  { id: 'man-01', flightId: 'EL-001', passengers: [{ name: 'Tony Stark', requestId: 'SR102', seatNumber: '1A' }, { name: 'Pepper Potts', requestId: 'SR102', seatNumber: '1B' }], lastUpdated: new Date().toISOString() },
-];
-
 export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-001', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-01', aircraftName: 'Citation XLS+', aircraftType: 'Light Jet', departure: 'Mumbai (VABB)', arrival: 'Delhi (VIDP)', departureTime: '2025-03-10T14:00:00Z', totalCapacity: 8, availableSeats: 6, status: 'live', createdAt: '2025-02-01T10:00:00Z', pricePerSeat: 45000, seatAllocationEnabled: true, minSeatsPerRequest: 1, pricingModel: 'Fixed', bookingChannelAllowed: 'both' },
     { id: 'EL-002', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-02', aircraftName: 'Legacy 650', aircraftType: 'Heavy Jet', departure: 'Delhi (VIDP)', arrival: 'Dubai (DXB)', departureTime: '2025-03-12T09:00:00Z', totalCapacity: 13, availableSeats: 10, status: 'live', createdAt: '2025-02-05T11:00:00Z', pricePerSeat: 120000, seatAllocationEnabled: true, minSeatsPerRequest: 2, pricingModel: 'Fixed', bookingChannelAllowed: 'both' },
@@ -148,6 +135,32 @@ export const mockEmptyLegs: EmptyLeg[] = [
     { id: 'EL-005', operatorId: 'op-north-01', operatorName: 'Club One Air', aircraftId: 'ac-ext-02', aircraftName: 'Phenom 300', aircraftType: 'Light Jet', departure: 'Delhi (VIDP)', arrival: 'Jaipur (VIJP)', departureTime: '2025-03-20T11:00:00Z', totalCapacity: 6, availableSeats: 6, status: 'live', createdAt: '2025-02-20T10:00:00Z', pricePerSeat: 25000, seatAllocationEnabled: true, minSeatsPerRequest: 1, pricingModel: 'Fixed', bookingChannelAllowed: 'both' },
     { id: 'EL-006', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-02', aircraftName: 'Legacy 650', aircraftType: 'Heavy Jet', departure: 'London (LHR)', arrival: 'Delhi (VIDP)', departureTime: '2025-03-25T22:00:00Z', totalCapacity: 13, availableSeats: 13, status: 'live', createdAt: '2025-02-25T14:00:00Z', pricePerSeat: 280000, seatAllocationEnabled: true, minSeatsPerRequest: 1, pricingModel: 'Fixed', bookingChannelAllowed: 'both' },
 ];
+
+export const mockSeatAllocationRequests: SeatAllocationRequest[] = [
+  { id: 'sr-01', requestId: 'SR102', flightId: 'EL-001', operatorId: 'op-west-01', requesterId: 'demo_super_user', requesterName: 'Tony Stark', requesterType: 'individual', origin: 'VABB', destination: 'VIDP', seatsRequested: 2, passengers: [{ fullName: 'Tony Stark', idType: 'Passport', idNumber: 'Z1234567', nationality: 'Indian' }, { fullName: 'Pepper Potts', idType: 'Passport', idNumber: 'Z7654321', nationality: 'Indian' }], requestStatus: 'PENDING_OPERATOR_APPROVAL', totalAmount: 90000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+];
+
+export const mockSeatInvoices: SeatInvoice[] = [
+  { id: 'sinv-01', invoiceId: 'INV102', requestId: 'SR102', operatorId: 'op-west-01', seatsBooked: 2, seatPrice: 45000, totalAmount: 90000, currency: 'INR', invoiceStatus: 'ISSUED', createdAt: new Date().toISOString() },
+];
+
+export const mockOperatorPaymentDetails: OperatorPaymentDetails[] = [
+  { id: 'pd-01', operatorId: 'op-west-01', bankName: 'HDFC Bank', accountName: 'FlyCo Aviation West Pvt Ltd', accountNumber: '50200012345678', ifscCode: 'HDFC0001234', paymentModes: ['NEFT', 'IMPS', 'RTGS'] },
+];
+
+export const mockSeatPayments: SeatPayment[] = [
+  { id: 'spay-01', paymentId: 'PAY102', invoiceId: 'INV102', requestId: 'SR102', paymentMethod: 'Bank Transfer', paymentReference: 'UTR9218273', paymentStatus: 'PENDING_VERIFICATION', submittedAt: new Date().toISOString(), createdAt: new Date().toISOString() },
+];
+
+export const mockFlightPassengerManifests: FlightPassengerManifest[] = [
+  { id: 'man-01', flightId: 'EL-001', passengers: [{ name: 'Tony Stark', requestId: 'SR102', seatNumber: '1A' }, { name: 'Pepper Potts', requestId: 'SR102', seatNumber: '1B' }], lastUpdated: new Date().toISOString() },
+];
+
+export const mockNotifications: DashboardNotification[] = [
+  { id: 'nt-01', notificationId: 'NT102', userId: 'demo_super_user', type: 'SEAT_REQUEST_APPROVED', message: 'Your jet seat request has been approved. Please proceed to payment.', read: false, createdAt: new Date().toISOString() },
+];
+
+export const mockSeatReservations: SeatReservation[] = [];
 
 export const mockSeatAllocations: SeatAllocation[] = [
     { id: 'ST-001', flightId: 'EL-001', operatorId: 'op-west-01', customerId: 'u-cust-01', customerName: 'Rajesh Khanna', bookingChannel: 'agency', seatsRequested: 2, pricePerSeat: 45000, totalAmount: 90000, status: 'pendingApproval', paymentStatus: 'pending', passengers: [{ fullName: 'Rajesh Khanna', nationality: 'Indian', idNumber: 'Z1234567', idType: 'Passport' }], createdAt: '2025-03-01T10:00:00Z' },

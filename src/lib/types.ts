@@ -50,6 +50,7 @@ export type SeatRequestStatus =
   | 'PENDING_OPERATOR_APPROVAL'
   | 'APPROVED'
   | 'WAITING_PAYMENT'
+  | 'PAYMENT_SUBMITTED'
   | 'PAYMENT_CONFIRMED'
   | 'CONFIRMED'
   | 'REJECTED'
@@ -58,6 +59,7 @@ export type SeatRequestStatus =
 export type SeatAllocationRequest = {
   id: string;
   requestId: string;
+  reservationId?: string;
   flightId: string;
   operatorId: string;
   requesterId: string;
@@ -74,18 +76,38 @@ export type SeatAllocationRequest = {
   totalAmount?: number;
 };
 
+export type SeatReservation = {
+  id: string;
+  reservationId: string;
+  flightId: string;
+  userId: string;
+  seatsReserved: number;
+  reservationStatus: 'ACTIVE' | 'EXPIRED' | 'CONFIRMED';
+  lockExpiresAt: string;
+};
+
 export type SeatInvoice = {
   id: string;
   invoiceId: string;
   requestId: string;
   operatorId: string;
-  totalSeats: number;
+  seatsBooked: number;
   seatPrice: number;
   totalAmount: number;
   currency: 'INR';
   invoiceStatus: 'ISSUED' | 'PAID' | 'CANCELLED';
   paymentMode: 'OFFLINE_TRANSFER';
   createdAt: string;
+};
+
+export type OperatorPaymentDetails = {
+  id: string;
+  operatorId: string;
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+  ifscCode: string;
+  paymentModes: string[];
 };
 
 export type SeatPayment = {
@@ -97,6 +119,7 @@ export type SeatPayment = {
   paymentReference: string;
   paymentProofUrl?: string;
   paymentStatus: 'PENDING_VERIFICATION' | 'VERIFIED' | 'REJECTED';
+  submittedAt: string;
   createdAt: string;
 };
 
@@ -109,6 +132,16 @@ export type FlightPassengerManifest = {
     requestId: string;
   }>;
   lastUpdated: string;
+};
+
+export type DashboardNotification = {
+  id: string;
+  notificationId: string;
+  userId: string;
+  type: 'SEAT_REQUEST_SUBMITTED' | 'SEAT_REQUEST_APPROVED' | 'SEAT_REQUEST_REJECTED' | 'INVOICE_ISSUED' | 'PAYMENT_SUBMITTED' | 'SEAT_CONFIRMED';
+  message: string;
+  read: boolean;
+  createdAt: string;
 };
 
 // --- END SEAT ALLOCATION WORKFLOW TYPES ---
