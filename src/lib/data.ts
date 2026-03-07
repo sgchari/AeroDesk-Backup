@@ -57,7 +57,11 @@ import type {
   AircraftMaintenance,
   MaintenanceSchedule,
   DefectReport,
-  MaintenanceWorkOrder
+  MaintenanceWorkOrder,
+  SeatAllocationRequest,
+  SeatInvoice,
+  SeatPayment,
+  FlightPassengerManifest
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -111,7 +115,7 @@ export const mockOrganizationUsers: OrganizationUser[] = [
 export const mockAircraft: Aircraft[] = [
     { id: 'ac-01', operatorId: 'op-west-01', name: 'Cessna Citation XLS+', type: 'Light Jet', registration: 'VT-FLY', paxCapacity: 8, homeBase: 'Mumbai (VABB)', status: 'AVAILABLE', hourlyRate: 180000, exteriorImageUrl: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800', location: 'Mumbai' },
     { id: 'ac-02', operatorId: 'op-west-01', name: 'Embraer Legacy 650', type: 'Heavy Jet', registration: 'VT-STK', paxCapacity: 13, homeBase: 'Mumbai (VABB)', status: 'AVAILABLE', hourlyRate: 450000, exteriorImageUrl: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080', location: 'Delhi' },
-    { id: 'ac-03', operatorId: 'op-west-01', name: 'Beechcraft King Air B200', type: 'Turboprop', registration: 'VT-JSG', paxCapacity: 7, homeBase: 'Mumbai (VABB)', status: 'MAINTENANCE', hourlyRate: 95000, exteriorImageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=800', location: 'Mumbai' },
+    { id: 'ac-03', operatorId: 'op-west-01', name: 'Beechcraft King Air B200', type: 'Turboprop', registration: 'VT-JSG', paxCapacity: 7, homeBase: 'Mumbai (VABB)', status: 'MAINTENANCE', hourlyRate: 95000, exteriorImageUrl: 'https://images.unsplash.com/photo-1544099858-75fe7a84ce88?q=80&w=2070&auto=format&fit=crop', location: 'Mumbai' },
 ];
 
 export const mockRfqs: CharterRFQ[] = [
@@ -120,39 +124,20 @@ export const mockRfqs: CharterRFQ[] = [
     { id: 'RFQ-LIVE-003', customerId: 'demo_super_user', requesterExternalAuthId: 'demo_super_user', customerName: 'Tony Stark', tripType: 'Onward', departure: 'Bengaluru (VOBL)', arrival: 'Mumbai (VABB)', departureDate: '2025-03-06', departureTime: '09:00', pax: 2, aircraftType: 'Mid-size Jet', status: 'live', operatorId: 'op-west-01', createdAt: '2025-03-01T10:00:00Z', updatedAt: '2025-03-06T09:00:00Z', totalAmount: 620000, aircraftId: 'ac-02' },
 ];
 
-export const mockFleetUtilization: FleetUtilization[] = [
-  { id: 'util-01', operatorId: 'op-west-01', aircraftId: 'ac-01', aircraftType: 'Cessna Citation XLS+', registration: 'VT-FLY', flightsLast30Days: 18, totalFlightHours: 72, utilizationPercentage: 68, idleHours: 34, lastUpdated: new Date().toISOString() },
-  { id: 'util-02', operatorId: 'op-west-01', aircraftId: 'ac-02', aircraftType: 'Embraer Legacy 650', registration: 'VT-STK', flightsLast30Days: 12, totalFlightHours: 92, utilizationPercentage: 88, idleHours: 12, lastUpdated: new Date().toISOString() },
-  { id: 'util-03', operatorId: 'op-west-01', aircraftId: 'ac-03', aircraftType: 'King Air B200', registration: 'VT-JSG', flightsLast30Days: 6, totalFlightHours: 32, utilizationPercentage: 42, idleHours: 58, lastUpdated: new Date().toISOString() },
+export const mockSeatAllocationRequests: SeatAllocationRequest[] = [
+  { id: 'sr-01', requestId: 'SR102', flightId: 'EL-001', operatorId: 'op-west-01', requesterId: 'demo_super_user', requesterName: 'Tony Stark', requesterType: 'individual', origin: 'VABB', destination: 'VIDP', seatsRequested: 2, passengers: [{ fullName: 'Tony Stark', idType: 'Passport', idNumber: 'Z1234567', nationality: 'Indian' }, { fullName: 'Pepper Potts', idType: 'Passport', idNumber: 'Z7654321', nationality: 'Indian' }], requestStatus: 'PENDING_OPERATOR_APPROVAL', totalAmount: 90000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
 ];
 
-export const mockCharterDemandAnalytics: CharterDemandAnalytics[] = [
-  { id: 'da-01', route: 'Mumbai-Goa', origin: 'VABB', destination: 'VOGO', totalRequestsLast30Days: 42, confirmedCharters: 19, demandScore: 87 },
-  { id: 'da-02', route: 'Delhi-Jaipur', origin: 'VIDP', destination: 'VIJP', totalRequestsLast30Days: 28, confirmedCharters: 12, demandScore: 72 },
-  { id: 'da-03', route: 'Bangalore-Hyderabad', origin: 'VOBL', destination: 'VOHS', totalRequestsLast30Days: 35, confirmedCharters: 15, demandScore: 81 },
+export const mockSeatInvoices: SeatInvoice[] = [
+  { id: 'sinv-01', invoiceId: 'INV102', requestId: 'SR102', operatorId: 'op-west-01', totalSeats: 2, seatPrice: 45000, totalAmount: 90000, currency: 'INR', invoiceStatus: 'ISSUED', paymentMode: 'OFFLINE_TRANSFER', createdAt: new Date().toISOString() },
 ];
 
-export const mockEmptyLegOpportunities: EmptyLegOpportunity[] = [
-  { id: 'elo-01', aircraftId: 'ac-01', registration: 'VT-FLY', currentCity: 'Mumbai', recommendedRoute: 'Mumbai-Delhi', demandScore: 72, potentialSeatRevenue: 280000, seatsAvailable: 8 },
-  { id: 'elo-02', aircraftId: 'ac-03', registration: 'VT-JSG', currentCity: 'Goa', recommendedRoute: 'Goa-Mumbai', demandScore: 85, potentialSeatRevenue: 180000, seatsAvailable: 6 },
+export const mockSeatPayments: SeatPayment[] = [
+  { id: 'spay-01', paymentId: 'PAY102', invoiceId: 'INV102', requestId: 'SR102', paymentMethod: 'Bank Transfer', paymentReference: 'UTR9218273', paymentStatus: 'PENDING_VERIFICATION', createdAt: new Date().toISOString() },
 ];
 
-export const mockAircraftPositioningInsights: AircraftPositioningInsight[] = [
-  { id: 'api-01', operatorId: 'op-west-01', aircraftId: 'ac-01', registration: 'VT-FLY', aircraftType: 'Cessna Citation XLS+', recommendedBase: 'Goa', reason: 'High charter demand next 72 hours', demandScore: 81 },
-];
-
-export const mockCharterPriceBenchmark: CharterPriceBenchmark[] = [
-  { id: 'cpb-01', route: 'Mumbai-Goa', aircraftCategory: 'Light Jet', avgPrice: 710000, minPrice: 680000, maxPrice: 750000 },
-  { id: 'cpb-02', route: 'Delhi-Jaipur', aircraftCategory: 'Light Jet', avgPrice: 420000, minPrice: 380000, maxPrice: 450000 },
-];
-
-export const mockRevenueForecast: RevenueForecast[] = [
-  { id: 'rf-01', operatorId: 'op-west-01', route: 'Bangalore-Hyderabad', projectedDemandNext7Days: 12, estimatedRevenueOpportunity: 4200000 },
-  { id: 'rf-02', operatorId: 'op-west-01', route: 'Mumbai-Goa', projectedDemandNext7Days: 8, estimatedRevenueOpportunity: 5600000 },
-];
-
-export const mockQuotations: Quotation[] = [
-    { id: 'QO-001', rfqId: 'RFQ-CORP-001', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-02', aircraftName: 'Legacy 650', price: 1250000, status: 'Submitted', submittedAt: new Date().toISOString(), validUntil: '2025-03-10' },
+export const mockFlightPassengerManifests: FlightPassengerManifest[] = [
+  { id: 'man-01', flightId: 'EL-001', passengers: [{ name: 'Tony Stark', requestId: 'SR102', seatNumber: '1A' }, { name: 'Pepper Potts', requestId: 'SR102', seatNumber: '1B' }], lastUpdated: new Date().toISOString() },
 ];
 
 export const mockEmptyLegs: EmptyLeg[] = [
@@ -352,4 +337,34 @@ export const mockBrandAssets: BrandAsset[] = [
     { id: 'ba-004', title: "Citation XLS+ Exterior", type: "Fleet Media", imageUrl: "https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800", fileSize: "5.1 MB" },
     { id: 'ba-005', title: "Legacy 650 Hangar Shot", type: "Fleet Media", imageUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1080", fileSize: "9.3 MB" },
     { id: 'ba-006', title: "Institutional Dashboard View", type: "UI Graphics", imageUrl: "https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=1080", fileSize: "3.7 MB" },
+];
+
+export const mockQuotations: Quotation[] = [
+  { id: 'q-01', rfqId: 'RFQ-CORP-001', operatorId: 'op-west-01', operatorName: 'FlyCo Charter', aircraftId: 'ac-01', aircraftName: 'Citation XLS+', price: 1250000, status: 'Submitted', submittedAt: new Date().toISOString(), validUntil: '2025-03-10' },
+];
+
+export const mockFleetUtilization: FleetUtilization[] = [
+  { id: 'util-01', operatorId: 'op-west-01', aircraftId: 'ac-01', aircraftType: 'Light Jet', registration: 'VT-FLY', flightsLast30Days: 12, totalFlightHours: 45, utilizationPercentage: 72, idleHours: 12, lastUpdated: new Date().toISOString() },
+  { id: 'util-02', operatorId: 'op-west-01', aircraftId: 'ac-02', aircraftType: 'Heavy Jet', registration: 'VT-STK', flightsLast30Days: 8, totalFlightHours: 58, utilizationPercentage: 88, idleHours: 5, lastUpdated: new Date().toISOString() },
+];
+
+export const mockCharterDemandAnalytics: CharterDemandAnalytics[] = [
+  { id: 'da-01', route: 'BOM-DEL', origin: 'Mumbai', destination: 'Delhi', totalRequestsLast30Days: 45, confirmedCharters: 12, demandScore: 92 },
+  { id: 'da-02', route: 'DEL-DXB', origin: 'Delhi', destination: 'Dubai', totalRequestsLast30Days: 28, confirmedCharters: 8, demandScore: 85 },
+];
+
+export const mockEmptyLegOpportunities: EmptyLegOpportunity[] = [
+  { id: 'elo-01', aircraftId: 'ac-01', registration: 'VT-FLY', currentCity: 'Mumbai', recommendedRoute: 'Delhi', demandScore: 95, potentialSeatRevenue: 240000, seatsAvailable: 8 },
+];
+
+export const mockAircraftPositioningInsights: AircraftPositioningInsight[] = [
+  { id: 'api-01', operatorId: 'op-west-01', aircraftId: 'ac-01', registration: 'VT-FLY', aircraftType: 'Light Jet', recommendedBase: 'Delhi', reason: 'High demand cluster detected in North Zone', demandScore: 88 },
+];
+
+export const mockCharterPriceBenchmark: CharterPriceBenchmark[] = [
+  { id: 'cpb-01', route: 'VABB-VIDP', aircraftCategory: 'LightJet', avgPrice: 710000, minPrice: 650000, maxPrice: 800000 },
+];
+
+export const mockRevenueForecast: RevenueForecast[] = [
+  { id: 'revf-01', operatorId: 'op-west-01', route: 'BOM-DEL', projectedDemandNext7Days: 15, estimatedRevenueOpportunity: 4200000 },
 ];

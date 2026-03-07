@@ -1,4 +1,3 @@
-
 import { 
   mockUsers, 
   mockRfqs, 
@@ -53,7 +52,11 @@ import {
   mockAircraftMaintenance,
   mockMaintenanceSchedule,
   mockDefectReports,
-  mockMaintenanceWorkOrders
+  mockMaintenanceWorkOrders,
+  mockSeatAllocationRequests,
+  mockSeatInvoices,
+  mockSeatPayments,
+  mockFlightPassengerManifests
 } from './data';
 import { User } from './types';
 
@@ -70,6 +73,10 @@ let db: any = {
   charterRFQs: deepCopy(mockRfqs), 
   quotations: deepCopy(mockQuotations),
   seatAllocations: deepCopy(mockSeatAllocations),
+  seatAllocationRequests: deepCopy(mockSeatAllocationRequests),
+  seatInvoices: deepCopy(mockSeatInvoices),
+  seatPayments: deepCopy(mockSeatPayments),
+  flightPassengerManifests: deepCopy(mockFlightPassengerManifests),
   invoices: deepCopy(mockInvoices),
   payments: deepCopy(mockPayments),
   passengerManifests: deepCopy(mockPassengerManifests),
@@ -121,10 +128,6 @@ let db: any = {
 const listeners: Set<() => void> = new Set();
 let isPendingNotification = false;
 
-/**
- * Institutional debounced notification engine.
- * Prevents re-render storms during high-frequency operational updates.
- */
 const notify = () => {
     if (isPendingNotification) return;
     isPendingNotification = true;
@@ -144,9 +147,6 @@ const subscribe = (callback: () => void) => {
   return () => listeners.delete(callback);
 };
 
-/**
- * Maps subcollection paths to their root institutional entities.
- */
 const getRootCollection = (path: string): string => {
     const segments = path.split('/');
     if (segments.includes('aircrafts')) return 'aircrafts';
@@ -154,6 +154,7 @@ const getRootCollection = (path: string): string => {
     if (segments.includes('charterRequests') || segments.includes('charterRFQs')) return 'charterRequests';
     if (segments.includes('quotations')) return 'quotations';
     if (segments.includes('seatAllocations')) return 'seatAllocations';
+    if (segments.includes('seatAllocationRequests')) return 'seatAllocationRequests';
     if (segments.includes('policyFlags')) return 'policyFlags';
     return segments[0];
 };
@@ -174,7 +175,6 @@ const resolvePath = (path: string) => {
     };
   }
   
-  // Handle nested subcollections for reading
   if (segments.length > 2 && segments[segments.length - 1] === 'users') {
       return db.users.filter((u: any) => u.ctdId === segments[1] || u.operatorId === segments[1] || u.agencyId === segments[1] || u.hotelPartnerId === segments[1]);
   }
@@ -193,7 +193,7 @@ const resolvePath = (path: string) => {
 const getCollection = (path: string, user?: User | null) => {
   let data = resolvePath(path);
   if (Array.isArray(data)) {
-    return data.slice(0, 100); // Increased slice for enterprise visibility
+    return data.slice(0, 100); 
   }
   return data;
 };

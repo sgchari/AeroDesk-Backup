@@ -43,6 +43,76 @@ export type OrganizationUser = {
   createdAt: string;
 };
 
+// --- SEAT ALLOCATION WORKFLOW TYPES ---
+
+export type SeatRequestStatus = 
+  | 'REQUEST_SUBMITTED'
+  | 'PENDING_OPERATOR_APPROVAL'
+  | 'APPROVED'
+  | 'WAITING_PAYMENT'
+  | 'PAYMENT_CONFIRMED'
+  | 'CONFIRMED'
+  | 'REJECTED'
+  | 'COMPLETED';
+
+export type SeatAllocationRequest = {
+  id: string;
+  requestId: string;
+  flightId: string;
+  operatorId: string;
+  requesterId: string;
+  requesterName: string;
+  requesterType: 'travelAgency' | 'corporate' | 'individual';
+  origin: string;
+  destination: string;
+  seatsRequested: number;
+  passengers: Passenger[];
+  requestStatus: SeatRequestStatus;
+  rejectionReason?: 'SOLD_OUT' | 'AIRCRAFT_AOG' | 'MISSION_NOT_AVAILABLE' | 'OPERATIONAL_CONSTRAINTS';
+  createdAt: string;
+  updatedAt: string;
+  totalAmount?: number;
+};
+
+export type SeatInvoice = {
+  id: string;
+  invoiceId: string;
+  requestId: string;
+  operatorId: string;
+  totalSeats: number;
+  seatPrice: number;
+  totalAmount: number;
+  currency: 'INR';
+  invoiceStatus: 'ISSUED' | 'PAID' | 'CANCELLED';
+  paymentMode: 'OFFLINE_TRANSFER';
+  createdAt: string;
+};
+
+export type SeatPayment = {
+  id: string;
+  paymentId: string;
+  invoiceId: string;
+  requestId: string;
+  paymentMethod: string;
+  paymentReference: string;
+  paymentProofUrl?: string;
+  paymentStatus: 'PENDING_VERIFICATION' | 'VERIFIED' | 'REJECTED';
+  createdAt: string;
+};
+
+export type FlightPassengerManifest = {
+  id: string;
+  flightId: string;
+  passengers: Array<{
+    name: string;
+    seatNumber?: string;
+    requestId: string;
+  }>;
+  lastUpdated: string;
+};
+
+// --- END SEAT ALLOCATION WORKFLOW TYPES ---
+
 export type FleetUtilization = {
   id: string;
   operatorId: string;
@@ -110,12 +180,13 @@ export type CrewMember = {
   crewId: string;
   operatorId: string;
   name: string;
-  designation: 'Pilot' | 'Co-Pilot' | 'Cabin Crew' | 'Ground Support';
+  designation: 'Pilot' | 'Co-Pilot' | 'Cabin Crew' | 'Ground Support' | string;
   licenseNumber: string;
   phone: string;
   email: string;
   status: 'ACTIVE' | 'ON_DUTY' | 'OFF_DUTY' | 'LEAVE' | 'AVAILABLE';
   assignedAircraftRegistration?: string;
+  role?: string;
 };
 
 export type CrewAssignment = {
