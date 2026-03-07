@@ -70,13 +70,13 @@ export function LiveTrackingMap({ origin, destination }: LiveTrackingMapProps) {
                 <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} stroke="rgba(14,165,233,0.2)" strokeWidth="2" strokeDasharray="4,4" />
 
                 <g>
-                    <circle cx={from.x} cy={from.y} r="4" fill="#0EA5E9" className="opacity-50" />
-                    <circle cx={to.x} cy={to.y} r="4" fill="#F43F5E" className="opacity-50" />
+                    <circle cx={from.x} cy={from.y} r="10" fill="#0EA5E9" className="opacity-50" />
+                    <circle cx={to.x} cy={to.y} r="10" fill="#F43F5E" className="opacity-50" />
                 </g>
 
                 <g transform={`translate(${currentX}, ${currentY}) rotate(${angle})`}>
-                    <circle r="12" fill="rgba(14,165,233,0.15)" className="animate-ping" />
-                    <path d="M15 12L3 20V4L15 12Z" fill="#0EA5E9" transform="translate(-9, -12) scale(0.8)" className="drop-shadow-[0_0_8px_#0EA5E9]" />
+                    <circle r="30" fill="rgba(14,165,233,0.2)" className="animate-ping" />
+                    <path d="M15 12L3 20V4L15 12Z" fill="#0EA5E9" transform="translate(-12, -16) scale(1.8)" className="drop-shadow-[0_0_12px_#0EA5E9]" />
                 </g>
             </svg>
         </div>
