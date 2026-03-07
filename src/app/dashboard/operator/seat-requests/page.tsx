@@ -63,13 +63,16 @@ export default function SeatRequestsPage() {
 
   const filteredRequests = useMemo(() => {
     if (!allRequests) return [];
-    if (activeTab === 'pending') return allRequests.filter(r => r.requestStatus === 'PENDING_OPERATOR_APPROVAL' || r.requestStatus === 'REQUEST_SUBMITTED');
-    if (activeTab === 'approved') return allRequests.filter(r => r.requestStatus === 'APPROVED');
-    if (activeTab === 'payment') return allRequests.filter(r => r.requestStatus === 'WAITING_PAYMENT' || r.requestStatus === 'PAYMENT_CONFIRMED');
-    if (activeTab === 'confirmed') return allRequests.filter(r => r.requestStatus === 'CONFIRMED' || r.requestStatus === 'COMPLETED');
-    if (activeTab === 'rejected') return allRequests.filter(r => r.requestStatus === 'REJECTED');
-    return allRequests;
-  }, [allRequests, activeTab]);
+    // Ensure we only show requests for the current operator in simulation mode
+    const opRequests = allRequests.filter(r => r.operatorId === opId);
+    
+    if (activeTab === 'pending') return opRequests.filter(r => r.requestStatus === 'PENDING_OPERATOR_APPROVAL' || r.requestStatus === 'REQUEST_SUBMITTED');
+    if (activeTab === 'approved') return opRequests.filter(r => r.requestStatus === 'APPROVED');
+    if (activeTab === 'payment') return opRequests.filter(r => r.requestStatus === 'WAITING_PAYMENT' || r.requestStatus === 'PAYMENT_CONFIRMED');
+    if (activeTab === 'confirmed') return opRequests.filter(r => r.requestStatus === 'CONFIRMED' || r.requestStatus === 'COMPLETED');
+    if (activeTab === 'rejected') return opRequests.filter(r => r.requestStatus === 'REJECTED');
+    return opRequests;
+  }, [allRequests, activeTab, opId]);
 
   return (
     <div className="space-y-6">

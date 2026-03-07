@@ -3,7 +3,7 @@
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { CharterRFQ, Aircraft, EmptyLegSeatAllocationRequest } from "@/lib/types";
+import type { CharterRFQ, Aircraft, SeatAllocationRequest } from "@/lib/types";
 import { FileText, Plane, AlertTriangle, Users, ArrowRight, Activity, CheckCircle2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
@@ -51,18 +51,19 @@ export function OperatorDashboard() {
   }, [firestore, effectiveId]);
   const { data: aircrafts, isLoading: aircraftsLoading } = useCollection<Aircraft>(aircraftsQuery, effectiveId ? `operators/${effectiveId}/aircrafts` : undefined);
 
-  const { data: allSeatRequests, isLoading: seatRequestsLoading } = useCollection<EmptyLegSeatAllocationRequest>(null, 'seatAllocationRequests');
+  const { data: allSeatRequests, isLoading: seatRequestsLoading } = useCollection<SeatAllocationRequest>(null, 'seatAllocationRequests');
 
   const isLoading = isUserLoading || rfqsLoading || aircraftsLoading || seatRequestsLoading || missionsLoading;
 
   const stats = useMemo(() => {
+    const operatorSeatRequests = allSeatRequests?.filter(r => r && r.operatorId === effectiveId) || [];
     return {
         pendingRfqs: rfqs?.filter(r => r && r.status === 'Bidding Open').length || 0,
         activeMissions: activeMissions.length,
-        seatRequests: allSeatRequests?.filter(r => r && r.status === 'pendingApproval').length || 0,
+        seatRequests: operatorSeatRequests.filter(r => r.requestStatus === 'PENDING_OPERATOR_APPROVAL' || r.requestStatus === 'REQUEST_SUBMITTED').length,
         aircraftAlerts: aircrafts?.filter(a => a && (a.status === 'AOG' || a.status === 'Under Maintenance')).length || 0
     };
-  }, [rfqs, activeMissions, allSeatRequests, aircrafts]);
+  }, [rfqs, activeMissions, allSeatRequests, aircrafts, effectiveId]);
 
   return (
     <div className="space-y-6">

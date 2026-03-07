@@ -1,10 +1,11 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { CharterRFQ, RfqStatus } from "@/lib/types";
-import { MoreHorizontal, FileText, Clock, CheckCircle, Plane, Hotel, AlertTriangle, ArrowRight, Gavel, XCircle, Users, Armchair, Info, ShieldCheck } from "lucide-react";
+import type { CharterRFQ, RfqStatus, SeatAllocationRequest } from "@/lib/types";
+import { MoreHorizontal, FileText, Clock, CheckCircle, Plane, Hotel, AlertTriangle, ArrowRight, Gavel, XCircle, Users, Armchair, Info, ShieldCheck, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/use-user";
@@ -97,10 +98,16 @@ export function CustomerDashboard() {
   }, [firestore, user]);
   const { data: rfqs, isLoading: rfqsLoading } = useCollection<CharterRFQ>(rfqsQuery, 'charterRequests');
 
-  const isLoading = isUserLoading || rfqsLoading;
+  const { data: seatRequests, isLoading: seatRequestsLoading } = useCollection<SeatAllocationRequest>(null, 'seatAllocationRequests');
+
+  const isLoading = isUserLoading || rfqsLoading || seatRequestsLoading;
+
+  const mySeatRequests = React.useMemo(() => {
+    return seatRequests?.filter(r => r.requesterId === user?.id) || [];
+  }, [seatRequests, user?.id]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       <PageHeader title="My Terminal" description="Institutional visibility into your flight requests and active coordination.">
         <CreateRfqDialog />
       </PageHeader>
@@ -113,29 +120,81 @@ export function CustomerDashboard() {
             <Skeleton className="h-64 w-full" />
         </div>
       ) : (
-        <>
-            {rfqs && rfqs.length > 0 ? (
-                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {rfqs.map(rfq => (
-                        <TripCard 
-                            key={rfq.id} 
-                            rfq={rfq} 
-                        />
-                    ))}
+        <div className="space-y-12">
+            {/* --- CHARTER MISSIONS --- */}
+            <section className="space-y-6">
+                <div className="flex items-center justify-between px-1">
+                    <h3 className="text-lg font-black uppercase tracking-widest text-white flex items-center gap-2">
+                        <FileText className="h-5 w-5 text-accent" />
+                        Charter Missions
+                    </h3>
+                    <Badge variant="outline" className="border-white/10 text-[10px] font-bold">{rfqs?.length || 0} TOTAL</Badge>
                 </div>
-            ) : (
-                <div className="text-center py-20 border-2 border-dashed rounded-lg bg-card/20 border-white/5 opacity-60">
-                    <div className="p-4 bg-muted/20 w-fit mx-auto rounded-full mb-4">
-                        <Plane className="h-10 w-10 text-muted-foreground/40"/>
+                {rfqs && rfqs.length > 0 ? (
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {rfqs.map(rfq => (
+                            <TripCard 
+                                key={rfq.id} 
+                                rfq={rfq} 
+                            />
+                        ))}
                     </div>
-                    <h3 className="text-lg font-bold text-white uppercase tracking-widest">No active journeys</h3>
-                    <p className="mt-1 text-xs text-muted-foreground max-w-xs mx-auto mb-6">
-                        Your private aviation journey begins here. Request a flight to start the coordination process.
-                    </p>
-                    <CreateRfqDialog />
+                ) : (
+                    <div className="text-center py-16 border-2 border-dashed rounded-2xl bg-card/20 border-white/5 opacity-60">
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">No active charter missions</p>
+                    </div>
+                )}
+            </section>
+
+            {/* --- JET SEAT REQUESTS --- */}
+            <section className="space-y-6">
+                <div className="flex items-center justify-between px-1">
+                    <h3 className="text-lg font-black uppercase tracking-widest text-white flex items-center gap-2">
+                        <Armchair className="h-5 w-5 text-accent" />
+                        Jet Seat Exchange leads
+                    </h3>
+                    <Badge variant="outline" className="border-white/10 text-[10px] font-bold">{mySeatRequests.length} ACTIVE</Badge>
                 </div>
-            )}
-        </>
+                {mySeatRequests.length > 0 ? (
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {mySeatRequests.map(req => (
+                            <Card key={req.id} className="bg-card border-white/5 hover:border-accent/30 transition-all overflow-hidden group">
+                                <CardHeader className="pb-3 pt-5">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Badge variant="outline" className="text-[8px] uppercase tracking-widest font-black border-accent/20 text-accent">LEAD ID: {req.requestId}</Badge>
+                                        <Badge className="bg-blue-500/20 text-blue-400 border-none h-5 text-[8px] font-black uppercase px-2">
+                                            {req.requestStatus.replace(/_/g, ' ')}
+                                        </Badge>
+                                    </div>
+                                    <CardTitle className="text-base group-hover:text-accent transition-colors">
+                                        {req.origin} → {req.destination}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-3 pb-5">
+                                    <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                                        <div className="flex items-center gap-2">
+                                            <Users className="h-3.5 w-3.5 text-accent/60" />
+                                            <span>{req.seatsRequested} Seats Allocated</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Clock className="h-3.5 w-3.5 text-accent/60" />
+                                            <span>{new Date(req.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+                                    <Button variant="link" className="p-0 h-auto text-[10px] font-black uppercase tracking-widest text-accent group-hover:text-white transition-colors">
+                                        Audit Progress <ArrowRight className="h-3 w-3 ml-1.5 transition-transform group-hover:translate-x-1" />
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-16 border-2 border-dashed rounded-2xl bg-card/20 border-white/5 opacity-60">
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">No active jet seat leads</p>
+                    </div>
+                )}
+            </section>
+        </div>
       )}
     </div>
   );

@@ -1,8 +1,9 @@
+
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { EmptyLeg, SeatAllocation, CharterRFQ, CommissionLedgerEntry } from "@/lib/types";
+import type { EmptyLeg, SeatAllocationRequest, CharterRFQ, CommissionLedgerEntry } from "@/lib/types";
 import { Plane, Users, Calendar, GanttChartSquare, FileText, ArrowRight, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
@@ -28,11 +29,7 @@ export function TravelAgencyDashboard() {
   }, [firestore]);
   const { data: emptyLegs, isLoading: emptyLegsLoading } = useCollection<EmptyLeg>(emptyLegsQuery, 'emptyLegs');
 
-  const seatRequestsQuery = useMemoFirebase(() => {
-    if (!firestore || (firestore as any)._isMock || !user) return null;
-    return query(collection(firestore, 'seatAllocations'), where('customerId', '==', user.id));
-  }, [firestore, user]);
-  const { data: seatRequests, isLoading: seatRequestsLoading } = useCollection<SeatAllocation>(seatRequestsQuery, 'seatAllocations');
+  const { data: seatRequests, isLoading: seatRequestsLoading } = useCollection<SeatAllocationRequest>(null, 'seatAllocationRequests');
   
   const charterRequestsQuery = useMemoFirebase(() => {
     if (!firestore || (firestore as any)._isMock || !user) return null;
@@ -54,15 +51,16 @@ export function TravelAgencyDashboard() {
 
   const stats = useMemo(() => {
     const accrued = ledger?.filter(l => l.status === 'pending').reduce((acc, l) => acc + l.agencyCommissionAmount, 0) || 0;
+    const agencySeatRequests = seatRequests?.filter(r => r.requesterId === user?.id) || [];
     
     return {
         availableSeats: emptyLegs?.length ?? 0,
-        pendingSeatRequests: seatRequests?.filter(r => r.status === 'pendingApproval' || r.status === 'Requested').length ?? 0,
+        pendingSeatRequests: agencySeatRequests.filter(r => r.requestStatus === 'PENDING_OPERATOR_APPROVAL' || r.requestStatus === 'REQUEST_SUBMITTED').length,
         openCharterRequests: charterRequests?.filter(r => ['Bidding Open', 'rfqSubmitted'].includes(r.status)).length ?? 0,
-        activeClientMovements: (charterRequests?.filter(r => ['Confirmed', 'boarding', 'departed', 'arrived'].includes(r.status)).length ?? 0) + (seatRequests?.filter(r => r.status === 'approved' || r.status === 'confirmed').length ?? 0),
+        activeClientMovements: (charterRequests?.filter(r => ['Confirmed', 'boarding', 'departed', 'arrived'].includes(r.status)).length ?? 0) + (agencySeatRequests.filter(r => r.requestStatus === 'CONFIRMED' || r.requestStatus === 'COMPLETED').length),
         accruedEarnings: accrued > 100000 ? `₹ ${(accrued / 100000).toFixed(1)} L` : `₹ ${accrued.toLocaleString()}`
     };
-  }, [emptyLegs, seatRequests, charterRequests, ledger]);
+  }, [emptyLegs, seatRequests, charterRequests, ledger, user]);
 
   return (
     <div className="space-y-6">
@@ -127,17 +125,17 @@ export function TravelAgencyDashboard() {
             <CardContent>
                 {isLoading ? <Skeleton className="h-48 w-full" /> : (
                     <div className="space-y-3">
-                        {seatRequests && seatRequests.length > 0 ? seatRequests.slice(0, 4).map(req => (
+                        {seatRequests && seatRequests.filter(r => r.requesterId === user?.id).length > 0 ? seatRequests.filter(r => r.requesterId === user?.id).slice(0, 4).map(req => (
                             <div key={req.id} className="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-bold text-white">{req.clientReference || 'Standard Client'}</p>
-                                    <p className="text-[9px] text-muted-foreground uppercase font-code tracking-tighter">{req.flightId}</p>
+                                    <p className="text-xs font-bold text-white">{req.requestId}</p>
+                                    <p className="text-[9px] text-muted-foreground uppercase font-code tracking-tighter">{req.origin} → {req.destination}</p>
                                 </div>
                                 <Badge variant="outline" className={cn(
                                     "text-[9px] h-5 font-black uppercase border-none px-2",
-                                    req.status === 'pendingApproval' || req.status === 'Requested' ? "bg-amber-500/20 text-amber-500" : "bg-emerald-500/20 text-emerald-500"
+                                    req.requestStatus === 'PENDING_OPERATOR_APPROVAL' || req.requestStatus === 'REQUEST_SUBMITTED' ? "bg-amber-500/20 text-amber-500" : "bg-emerald-500/20 text-emerald-500"
                                 )}>
-                                    {req.status}
+                                    {req.requestStatus.replace(/_/g, ' ')}
                                 </Badge>
                             </div>
                         )) : (
