@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -22,7 +21,7 @@ export interface UseCollectionResult<T> {
 
 /**
  * Institutional Hook for managing real-time data collections.
- * Optimized with referential stability and deep equality checks.
+ * Optimized with deep equality checks to prevent re-render storms.
  */
 export function useCollection<T = any>(
     memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
@@ -58,7 +57,7 @@ export function useCollection<T = any>(
         if (mountedRef.current) setError(e);
     } finally {
         if (mountedRef.current) {
-            setIsLoading(prev => prev ? false : prev);
+            setIsLoading(false);
         }
     }
   }, [demoPath, user, isUserLoading]);

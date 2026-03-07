@@ -22,7 +22,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [activeDemoRole, setActiveDemoRole] = useState<string | null>(null);
+  
   const authListenerAttached = useRef(false);
+  const prevUserStringRef = useRef<string>('');
 
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
@@ -82,13 +84,21 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     firmName = mockHotelPartners.find(h => h.id === mappedUser.hotelPartnerId)?.companyName || "Grand Hotels Group";
                 }
 
-                setUser({ ...mappedUser, company: firmName } as AppUser);
+                const finalUser = { ...mappedUser, company: firmName } as AppUser;
+                const userString = JSON.stringify(finalUser);
+                
+                if (userString !== prevUserStringRef.current) {
+                    setUser(finalUser);
+                    prevUserStringRef.current = userString;
+                }
             } else {
                 localStorage.removeItem('demoUserId');
                 setUser(null);
+                prevUserStringRef.current = 'null';
             }
         } else {
             setUser(null);
+            prevUserStringRef.current = 'null';
         }
     } catch(e: any) {
         console.error("Simulation User Error:", e);
@@ -116,7 +126,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
             try {
                 const userDoc = await getDoc(doc(firestore, 'users', fbUser.uid));
                 if (userDoc.exists()) {
-                    setUser({ id: fbUser.uid, ...userDoc.data() } as AppUser);
+                    const userData = { id: fbUser.uid, ...userDoc.data() } as AppUser;
+                    setUser(userData);
                 } else {
                     setUser({ id: fbUser.uid, email: fbUser.email || '', firstName: 'User', role: 'Customer' } as any);
                 }
@@ -148,6 +159,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem('activeDemoRole');
         setActiveDemoRole(null);
         setUser(null);
+        prevUserStringRef.current = 'null';
     } else {
         getAuth().signOut();
     }
@@ -156,12 +168,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const setDemoRole = (roleKey: string) => {
     localStorage.setItem('activeDemoRole', roleKey);
     setActiveDemoRole(roleKey);
-    fetchUser(roleKey); // Immediate re-fetch with new context
+    fetchUser(roleKey); 
   };
 
   const value = React.useMemo(() => ({ 
     user, isLoading, error, login, logout, setDemoRole 
-  }), [user, isLoading, error, fetchUser]);
+  }), [user, isLoading, error]);
 
   return (
     <UserContext.Provider value={value}>

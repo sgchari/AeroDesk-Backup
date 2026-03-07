@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -54,28 +53,39 @@ interface SubmitQuotationDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotationDialogProps) {
+/**
+ * Institutional technical bid terminal.
+ * Wrapped in memo to prevent unnecessary re-renders during marketplace updates.
+ */
+export const SubmitQuotationDialog = memo(function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotationDialogProps) {
   const { toast } = useToast();
   const { user } = useUser();
   const firestore = useFirestore();
 
-  const fleetQuery = useMemoFirebase(() => {
-    if (!firestore || (firestore as any)._isMock || !user) return null;
-    return collection(firestore, 'operators', user.id, 'aircrafts');
-  }, [firestore, user]);
+  const fleetId = user?.operatorId || user?.id;
 
-  const { data: fleet } = useCollection<Aircraft>(fleetQuery, user ? `operators/${user.id}/aircrafts` : undefined);
+  const fleetQuery = useMemoFirebase(() => {
+    if (!firestore || (firestore as any)._isMock || !fleetId) return null;
+    return collection(firestore, 'operators', fleetId, 'aircrafts');
+  }, [firestore, fleetId]);
+
+  const { data: fleet } = useCollection<Aircraft>(fleetQuery, fleetId ? `operators/${fleetId}/aircrafts` : undefined);
 
   const { data: aiInsights } = useCollection<AICharterInsight>(
       useMemoFirebase(() => null, []), 
       'aiCharterInsights'
   );
   
-  const currentInsight = aiInsights?.find(i => rfq && rfq.departure && rfq.arrival && rfq.departure.includes(i.route.split('-')[0]) && rfq.arrival.includes(i.route.split('-')[1]));
+  const currentInsight = aiInsights?.find(i => 
+    rfq && rfq.departure && rfq.arrival && 
+    rfq.departure.toLowerCase().includes(i.route.split('-')[0].toLowerCase()) && 
+    rfq.arrival.toLowerCase().includes(i.route.split('-')[1].toLowerCase())
+  );
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
     defaultValues: {
+      aircraftId: '',
       quotedPrice: 0,
       validUntil: new Date(Date.now() + 86400000).toISOString().split('T')[0],
       remarks: '',
@@ -88,17 +98,17 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
   const onSubmit = (data: QuoteFormValues) => {
     if (!user || !rfq || !firestore) return;
 
-    // Fix: Use correct collection path to avoid polluting the RFQ array
     const quotesRef = (firestore as any)._isMock
         ? { path: 'quotations' } as any
         : collection(firestore, 'quotations');
     
     addDocumentNonBlocking(quotesRef, {
         rfqId: rfq.id,
-        operatorId: user.id,
+        operatorId: fleetId,
         operatorName: user.company || user.firstName,
         aircraftId: data.aircraftId,
         aircraftName: selectedAircraft?.name || 'Selected Jet',
+        aircraftType: selectedAircraft?.type || 'Light Jet',
         price: data.quotedPrice,
         status: 'Submitted',
         submittedAt: new Date().toISOString(),
@@ -139,7 +149,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
             </div>
             
             {currentInsight ? (
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 animate-in fade-in duration-500">
                     <div className="space-y-1">
                         <p className="text-[9px] font-black uppercase text-muted-foreground">Optimal Asset Match</p>
                         <p className="text-xs font-bold text-foreground">{currentInsight.aircraftRecommendation}</p>
@@ -177,6 +187,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
                       {fleet?.map(ac => (
                         <SelectItem key={ac.id} value={ac.id}>{ac.name} ({ac.registration}) — {ac.status}</SelectItem>
                       ))}
+                      {(!fleet || fleet.length === 0) && <SelectItem value="none" disabled>No available fleet nodes</SelectItem>}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -229,7 +240,7 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
             <div className="p-3 rounded-lg border border-white/5 bg-white/[0.02] flex items-start gap-3">
                 <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                 <p className="text-[10px] text-muted-foreground leading-relaxed italic">
-                    Operators retain final control over pricing. bid submission initiates an immutable coordination thread.
+                    Operators retain final control over pricing. Bid submission initiates an immutable coordination thread.
                 </p>
             </div>
 
@@ -244,4 +255,4 @@ export function SubmitQuotationDialog({ rfq, open, onOpenChange }: SubmitQuotati
       </DialogContent>
     </Dialog>
   );
-}
+});
