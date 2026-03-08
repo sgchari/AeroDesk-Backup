@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useMemo } from 'react';
@@ -24,7 +23,8 @@ import {
     ArrowLeft,
     Coins,
     Hotel,
-    ShieldCheck
+    ShieldCheck,
+    Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CharterRFQ, EmptyLegSeatAllocationRequest, AccommodationRequest, PassengerManifest, Invoice, Payment, ActivityLog, Commission } from '@/lib/types';
@@ -33,6 +33,7 @@ import { InvoicePanel } from '@/components/dashboard/charter/invoice-panel';
 import { PaymentPanel } from '@/components/dashboard/charter/payment-panel';
 import { OperationalPanel } from '@/components/dashboard/charter/operational-panel';
 import { StatusTimeline } from '@/components/dashboard/charter/status-timeline';
+import { LiveTrackingMap } from '@/components/dashboard/charter/live-tracking-map';
 
 export default function AgencyExecutionPage() {
     const { id } = useParams();
@@ -74,6 +75,8 @@ export default function AgencyExecutionPage() {
         return `Stay: ${entity.propertyName || 'Property TBD'}`;
     };
 
+    const isLive = type === 'charter' && ['departed', 'arrived', 'live', 'enroute'].includes(entity.status);
+
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-4 mb-2">
@@ -104,6 +107,28 @@ export default function AgencyExecutionPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
+                    {/* LIVE TRACKING AT TOP IF ACTIVE */}
+                    {isLive && (
+                        <div className="space-y-3 animate-in fade-in slide-in-from-top-4 duration-1000">
+                            <div className="flex items-center gap-2 px-1">
+                                <Zap className="h-4 w-4 text-accent fill-accent animate-pulse" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">Live Mission Signal Active</span>
+                            </div>
+                            <LiveTrackingMap 
+                                origin={entity.departure} 
+                                destination={entity.arrival} 
+                            />
+                        </div>
+                    )}
+
+                    {/* Operational Panel (Controls & Status) */}
+                    {type === 'charter' && (
+                        <OperationalPanel 
+                            charter={entity} 
+                            userRole={user?.role} 
+                        />
+                    )}
+
                     {/* Multi-Service Panels */}
                     {type === 'charter' && (
                         <ManifestPanel 
@@ -125,13 +150,6 @@ export default function AgencyExecutionPage() {
                         payment={activePayment} 
                         userRole={user?.role} 
                     />
-
-                    {type === 'charter' && (
-                        <OperationalPanel 
-                            charter={entity} 
-                            userRole={user?.role} 
-                        />
-                    )}
 
                     {/* Commission Visibility for Agencies */}
                     {activeCommission && (

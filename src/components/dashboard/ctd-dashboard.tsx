@@ -16,7 +16,8 @@ import {
     BarChart3,
     Activity,
     Armchair,
-    Clock
+    Clock,
+    CheckCircle2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
@@ -95,23 +96,28 @@ export function CTDDashboard() {
     return allSeatRequests?.filter(r => r.requesterId === user?.id) || [];
   }, [allSeatRequests, user?.id]);
 
-  const liveMissions = useMemo(() => {
-    return rfqs?.filter(m => ['departed', 'live', 'enroute', 'arrived'].includes(m.status)) || [];
-  }, [rfqs]);
-
-  const stats = useMemo(() => {
+  const { activeMissions, liveMissions, stats } = useMemo(() => {
     const totalSpendVal = rfqs?.reduce((acc, r) => acc + (r.totalAmount || 0), 0) || 0;
     const personnelCount = allUsers?.filter(u => u.company === user?.company).length || 0;
     const activePolicies = policies?.filter(p => p.isEnforced).length || 0;
 
+    const live = rfqs?.filter(m => ['departed', 'live', 'enroute', 'arrived'].includes(m.status as string)) || [];
+    
+    const activeStatuses = ['charterConfirmed', 'operationalPreparation', 'preFlightReady', 'boarding', 'departed', 'live', 'enroute', 'arrived', 'flightCompleted'];
+    const active = rfqs?.filter(m => activeStatuses.includes(m.status as string)) || [];
+
     return {
-        pendingInternal: rfqs?.filter(r => r.status === 'Pending Approval').length ?? 0,
-        activeBids: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
-        confirmedTrips: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
-        totalSpend: totalSpendVal > 100000 ? `₹ ${(totalSpendVal / 100000).toFixed(1)} L` : `₹ ${totalSpendVal.toLocaleString()}`, 
-        activeTravelers: personnelCount.toString(), 
-        policyFlags: activePolicies.toString(),
-        activeSeatLeads: mySeatRequests.length.toString()
+        activeMissions: active,
+        liveMissions: live,
+        stats: {
+            pendingInternal: rfqs?.filter(r => r.status === 'Pending Approval').length ?? 0,
+            activeBids: rfqs?.filter(r => r.status === 'Bidding Open').length ?? 0,
+            confirmedTrips: rfqs?.filter(r => r.status === 'Confirmed').length ?? 0,
+            totalSpend: totalSpendVal > 100000 ? `₹ ${(totalSpendVal / 100000).toFixed(1)} L` : `₹ ${totalSpendVal.toLocaleString()}`, 
+            activeTravelers: personnelCount.toString(), 
+            policyFlags: activePolicies.toString(),
+            activeSeatLeads: mySeatRequests.length.toString()
+        }
     };
   }, [rfqs, allUsers, policies, user, mySeatRequests]);
 
@@ -217,7 +223,7 @@ export function CTDDashboard() {
             </CardContent>
         </Card>
 
-        <Card className="bg-card">
+        <Card className="bg-card border-white/5 shadow-2xl">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Plane className="h-4 w-4 text-accent" />
@@ -226,32 +232,45 @@ export function CTDDashboard() {
                 <CardDescription>Movement status for active missions.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="p-4 rounded-xl bg-accent/5 border border-accent/20 space-y-3 group hover:bg-accent/10 transition-colors">
-                    <div className="flex items-center justify-between gap-2">
-                        <p className="text-[10px] font-black text-accent uppercase tracking-widest truncate">MISSION: RFQ-CORP-002</p>
-                        <Badge variant="default" className="h-5 text-[8px] bg-green-500 font-black shrink-0 whitespace-nowrap px-2">EN ROUTE</Badge>
+                {activeMissions.length > 0 ? (
+                    activeMissions.slice(0, 3).map(mission => (
+                        <Link key={mission.id} href={`/dashboard/charter/${mission.id}`} className="block">
+                            <div className="p-4 rounded-xl bg-accent/5 border border-accent/20 space-y-3 group hover:bg-accent/10 transition-colors">
+                                <div className="flex items-center justify-between gap-2">
+                                    <p className="text-[10px] font-black text-accent uppercase tracking-widest truncate">MISSION: {mission.id}</p>
+                                    <Badge className={cn(
+                                        "h-5 text-[8px] font-black shrink-0 whitespace-nowrap px-2 uppercase border-none",
+                                        ['departed', 'live', 'enroute'].includes(mission.status) ? "bg-green-500 animate-pulse text-white" : "bg-blue-500/20 text-blue-400"
+                                    )}>
+                                        {mission.status.replace(/_/g, ' ')}
+                                    </Badge>
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="flex items-center justify-between text-xs font-medium">
+                                        <span className="text-white group-hover:text-accent transition-colors">{mission.departure.split(' (')[0]} → {mission.arrival.split(' (')[0]}</span>
+                                        <span className="text-muted-foreground">{mission.pax} Pax • {mission.aircraftType}</span>
+                                    </div>
+                                    {['departed', 'live', 'enroute', 'boarding'].includes(mission.status) && (
+                                        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
+                                            <div 
+                                                className="h-full bg-accent transition-all duration-1000" 
+                                                style={{ 
+                                                    width: mission.status === 'boarding' ? '15%' : mission.status === 'departed' ? '45%' : '75%',
+                                                    boxShadow: '0 0 8px hsl(var(--accent))'
+                                                }} 
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </Link>
+                    ))
+                ) : (
+                    <div className="text-center py-10 border border-dashed rounded-xl border-white/10 opacity-50">
+                        <CheckCircle2 className="h-8 w-8 mx-auto text-muted-foreground/20 mb-2" />
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">No Active Missions</p>
                     </div>
-                    <div className="space-y-1">
-                        <div className="flex items-center justify-between text-xs font-medium">
-                            <span>DEL → LHR</span>
-                            <span className="text-muted-foreground">5 Pax • Mid-size Jet</span>
-                        </div>
-                        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-accent w-[65%] shadow-[0_0_8px_hsl(var(--accent))]" />
-                        </div>
-                    </div>
-                </div>
-                
-                <div className="p-4 rounded-xl bg-muted/10 border border-white/5 space-y-3 opacity-60">
-                    <div className="flex items-center justify-between gap-2">
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest truncate">MISSION: RFQ-CONF-002</p>
-                        <Badge variant="outline" className="h-5 text-[8px] font-black shrink-0 whitespace-nowrap px-2">SCHEDULED</Badge>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                        <span>BLR → GOI</span>
-                        <span className="text-[10px]">Aug 15, 11:30</span>
-                    </div>
-                </div>
+                )}
 
                 <Button asChild variant="outline" className="w-full h-9 text-[10px] font-bold uppercase tracking-widest border-white/5 hover:bg-white/5 mt-2">
                     <Link href="/dashboard/ctd/requests">Review Full Queue</Link>

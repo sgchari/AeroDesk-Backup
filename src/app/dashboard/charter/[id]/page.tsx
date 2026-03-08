@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -22,7 +21,8 @@ import {
     History,
     AlertCircle,
     ChevronRight,
-    ArrowLeft
+    ArrowLeft,
+    Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { collection, query, where, orderBy } from 'firebase/firestore';
@@ -32,6 +32,7 @@ import { InvoicePanel } from '@/components/dashboard/charter/invoice-panel';
 import { PaymentPanel } from '@/components/dashboard/charter/payment-panel';
 import { OperationalPanel } from '@/components/dashboard/charter/operational-panel';
 import { StatusTimeline } from '@/components/dashboard/charter/status-timeline';
+import { LiveTrackingMap } from '@/components/dashboard/charter/live-tracking-map';
 
 export default function CharterExecutionPage() {
     const { id } = useParams();
@@ -71,6 +72,8 @@ export default function CharterExecutionPage() {
     if (charterLoading) return <div className="p-8 space-y-4"><Skeleton className="h-12 w-1/3"/><Skeleton className="h-64 w-full"/></div>;
     if (!charter) return <div className="p-8 text-center">Charter mission not found.</div>;
 
+    const isLive = ['departed', 'arrived', 'live', 'enroute'].includes(charter.status);
+
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-4 mb-2">
@@ -94,7 +97,27 @@ export default function CharterExecutionPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
-                    {/* Primary Workflow Panels */}
+                    {/* LIVE TRACKING AT TOP IF ACTIVE */}
+                    {isLive && (
+                        <div className="space-y-3 animate-in fade-in slide-in-from-top-4 duration-1000">
+                            <div className="flex items-center gap-2 px-1">
+                                <Zap className="h-4 w-4 text-accent fill-accent animate-pulse" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">Live Mission Signal Active</span>
+                            </div>
+                            <LiveTrackingMap 
+                                origin={charter.departure} 
+                                destination={charter.arrival} 
+                            />
+                        </div>
+                    )}
+
+                    {/* Operational Panel (Controls & Status) */}
+                    <OperationalPanel 
+                        charter={charter} 
+                        userRole={user?.role} 
+                    />
+
+                    {/* Secondary Workflow Panels */}
                     <ManifestPanel 
                         charter={charter} 
                         manifest={activeManifest} 
@@ -111,11 +134,6 @@ export default function CharterExecutionPage() {
                         charter={charter} 
                         invoice={activeInvoice}
                         payment={activePayment} 
-                        userRole={user?.role} 
-                    />
-
-                    <OperationalPanel 
-                        charter={charter} 
                         userRole={user?.role} 
                     />
                 </div>
