@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -215,12 +216,16 @@ export function CreateRfqDialog() {
   };
 
   const onSubmit = (data: RfqFormValues) => {
-    if (!user || !firestore) {
-      toast({ title: 'Error', description: 'Action unavailable.', variant: 'destructive'});
+    if (!user) {
+      toast({ title: 'Error', description: 'Institutional session not active.', variant: 'destructive'});
       return;
     }
 
-    const rfqCollectionRef = collection(firestore, 'charterRequests');
+    const isMock = !firestore || (firestore as any)._isMock;
+    const rfqCollectionRef = isMock
+        ? { path: 'charterRequests' } as any
+        : collection(firestore!, 'charterRequests');
+
     const status = isCorporate ? 'Pending Approval' : 'Bidding Open';
 
     addDocumentNonBlocking(rfqCollectionRef, {

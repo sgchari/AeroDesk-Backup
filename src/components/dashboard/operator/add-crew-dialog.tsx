@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -72,11 +73,12 @@ export function AddCrewDialog({ open, onOpenChange }: { open: boolean; onOpenCha
   });
 
   const onSubmit = (data: CrewFormValues) => {
-    if (!user || !firestore) return;
+    if (!user) return;
 
-    const crewCollectionRef = (firestore as any)._isMock
+    const isMock = !firestore || (firestore as any)._isMock;
+    const crewCollectionRef = isMock
         ? { path: 'crew' } as any
-        : collection(firestore, 'crew');
+        : collection(firestore!, 'crew');
     
     const assignedAc = fleet?.find(a => a.id === data.assignedAircraftId);
 

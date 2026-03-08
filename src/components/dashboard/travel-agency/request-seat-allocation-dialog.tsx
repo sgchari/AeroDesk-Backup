@@ -77,15 +77,15 @@ export function RequestSeatAllocationDialog({ emptyLeg, open, onOpenChange }: Re
   });
 
   const onSubmit = (data: SeatAllocationFormValues) => {
-    if (!user || !emptyLeg || !firestore) return;
+    if (!user || !emptyLeg) return;
 
     if (data.numberOfSeats < (emptyLeg.minSeatsPerRequest || 1)) {
         form.setError('numberOfSeats', { message: `Minimum ${emptyLeg.minSeatsPerRequest} seats required for this sector.` });
         return;
     }
 
-    // UPDATED: Save to new seatAllocationRequests collection
-    const seatRequestsRef = (firestore as any)._isMock ? { path: 'seatAllocationRequests' } as any : collection(firestore, 'seatAllocationRequests');
+    const isMock = !firestore || (firestore as any)._isMock;
+    const seatRequestsRef = isMock ? { path: 'seatAllocationRequests' } as any : collection(firestore!, 'seatAllocationRequests');
     
     addDocumentNonBlocking(seatRequestsRef, {
         requestId: `SR-${Date.now().toString().slice(-6)}`,

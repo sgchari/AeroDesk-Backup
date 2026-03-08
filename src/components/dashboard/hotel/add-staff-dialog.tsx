@@ -64,11 +64,12 @@ export function AddStaffDialog() {
   });
 
   const onSubmit = (data: StaffFormValues) => {
-    if (!currentUser || !currentUser.hotelPartnerId || !firestore) return;
+    if (!currentUser || !currentUser.hotelPartnerId) return;
 
-    const usersRef = (firestore as any)._isMock
+    const isMock = !firestore || (firestore as any)._isMock;
+    const usersRef = isMock
         ? { path: 'users' } as any
-        : collection(firestore, 'users');
+        : collection(firestore!, 'users');
     
     const newUser = {
         firstName: data.firstName,

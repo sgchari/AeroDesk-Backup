@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -63,12 +64,12 @@ export function InvitePersonnelDialog() {
   });
 
   const onSubmit = (data: InviteFormValues) => {
-    if (!currentUser || !currentUser.operatorId || !firestore) return;
+    if (!currentUser || !currentUser.operatorId) return;
 
-    // Handle mock collection reference
-    const usersRef = (firestore as any)._isMock
+    const isMock = !firestore || (firestore as any)._isMock;
+    const usersRef = isMock
         ? { path: 'users' } as any
-        : collection(firestore, 'users');
+        : collection(firestore!, 'users');
     
     const newUser = {
         firstName: data.firstName,

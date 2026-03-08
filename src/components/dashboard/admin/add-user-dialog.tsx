@@ -34,10 +34,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import type { UserRole } from '@/lib/types';
-import { useAuth, useFirestore, createDemoUser, createDemoCtd } from '@/firebase';
+import { useFirestore, createDemoUser, createDemoCtd } from '@/firebase';
 import { PlusCircle, Search, ShieldCheck } from 'lucide-react';
 import { VERIFIED_NSOP_REGISTRY } from '@/lib/data';
-import { Badge } from '@/components/ui/badge';
+import { collection } from 'firebase/firestore';
 
 const registerableRoles: UserRole[] = ['Customer', 'Operator', 'Travel Agency', 'Hotel Partner', 'CTD Admin', 'Admin'];
 
@@ -61,7 +61,7 @@ export function AddUserDialog() {
   const firestore = useFirestore();
   const [open, setOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const isDemoMode = !firestore || firestore._isMock;
+  const isMock = !firestore || (firestore as any)._isMock;
 
   const form = useForm<AddUserFormValues>({
     resolver: zodResolver(addUserSchema),
@@ -103,7 +103,7 @@ export function AddUserDialog() {
   };
   
   const onSubmit = async (data: AddUserFormValues) => {
-    if (isDemoMode) {
+    if (isMock) {
         let newUserId = `demo-user-${Date.now()}`;
         
         if (data.role === 'CTD Admin') {
@@ -113,7 +113,6 @@ export function AddUserDialog() {
         } else {
             const newUser = createDemoUser(data.name, data.email, data.role);
             if (data.role === 'Operator') {
-                // Pre-fill operator specific data if it was looked up
                 newUser.companyName = data.companyName || newUser.companyName;
                 newUser.nsopLicenseNumber = data.nsopLicense;
             }
