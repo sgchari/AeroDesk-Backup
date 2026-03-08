@@ -79,6 +79,7 @@ const NAV_ITEMS: Record<string, any[]> = {
   agency: [
     { href: '/dashboard', label: 'Agency Hub', icon: Home, color: 'text-accent' },
     { href: '/dashboard/travel-agency/available-seats', label: 'Seat Inventory', icon: Armchair, color: 'text-emerald-400' },
+    { href: '/dashboard/travel-agency/seat-requests', label: 'Seat Leads', icon: Users, color: 'text-blue-400' },
     { href: '/dashboard/travel-agency/charter-requests', label: 'Client Missions', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/travel-agency/analytics', label: 'Sales Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
     { href: '/dashboard/travel-agency/revenue-share', label: 'Commission Ledger', icon: Coins, color: 'text-accent' },
@@ -86,6 +87,8 @@ const NAV_ITEMS: Record<string, any[]> = {
   ],
   corporate: [
     { href: '/dashboard', label: 'Travel Desk', icon: Home, color: 'text-accent' },
+    { href: '/dashboard/ctd/available-seats', label: 'Available Seats', icon: Armchair, color: 'text-emerald-400' },
+    { href: '/dashboard/ctd/seat-requests', label: 'Seat Leads', icon: Users, color: 'text-sky-400' },
     { href: '/dashboard/ctd/requests', label: 'Employee Demand', icon: FileText, color: 'text-blue-400' },
     { href: '/dashboard/ctd/approvals', label: 'Governance Flow', icon: ShieldCheck, color: 'text-amber-400' },
     { href: '/dashboard/ctd/analytics', label: 'Spend Analysis', icon: BarChart2, color: 'text-fuchsia-400' },
