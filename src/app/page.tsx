@@ -19,7 +19,7 @@ import {
   Armchair,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { JetSeatQuickSearch } from '@/components/jet-seat-quick-search';
+import { BookingWidget } from '@/components/booking-widget';
 import { LandingHeader } from '@/components/landing-header';
 import { LandingFooter } from '@/components/landing-footer';
 
@@ -126,11 +126,7 @@ export default function Home() {
 
               <div className="relative z-10 py-12 px-4">
                 <div className="container p-0">
-                  <div className="text-center mb-8">
-                    <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-accent/60 mb-2">JetSeat Exchange</h2>
-                    <p className="text-xl font-bold text-white uppercase tracking-tight">Instant Seat Availability Search</p>
-                  </div>
-                  <JetSeatQuickSearch />
+                  <BookingWidget />
                 </div>
               </div>
 

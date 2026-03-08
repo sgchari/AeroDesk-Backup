@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +17,7 @@ import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dial
 import { useMemo } from "react";
 import { LiveRadarDashboardCard } from "@/components/dashboard/shared/live-radar-dashboard-card";
 import { cn } from "@/lib/utils";
+import { JetSeatQuickSearch } from '@/components/jet-seat-quick-search';
 
 export function TravelAgencyDashboard() {
   const firestore = useFirestore();
@@ -70,6 +70,14 @@ export function TravelAgencyDashboard() {
       >
         <CreateRfqDialog />
       </PageHeader>
+
+      <div className="mb-10">
+          <div className="text-left mb-6 px-1">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-accent/60 mb-2">JetSeat Exchange</h2>
+              <p className="text-xl font-bold text-white uppercase tracking-tight">Instant Seat Availability Search</p>
+          </div>
+          <JetSeatQuickSearch />
+      </div>
       
       <StatsGrid>
         <StatsCard title="Inventory Feed" href="/dashboard/travel-agency/available-seats" value={isLoading ? <Skeleton className="h-6 w-12" /> : stats.availableSeats.toString()} icon={Plane} description="Approved empty legs" />

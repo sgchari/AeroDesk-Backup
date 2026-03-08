@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useUser } from '@/hooks/use-user';
@@ -13,6 +12,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import type { CharterRFQ } from '@/lib/types';
 import { LiveRadarDashboardCard } from '@/components/dashboard/shared/live-radar-dashboard-card';
+import { JetSeatQuickSearch } from '@/components/jet-seat-quick-search';
 
 const quickLinks = [
     {
@@ -67,6 +67,14 @@ export function CustomerGateway() {
             >
                 <CreateRfqDialog />
             </PageHeader>
+
+            <div className="mb-10">
+                <div className="text-left mb-6 px-1">
+                    <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-accent/60 mb-2">JetSeat Exchange</h2>
+                    <p className="text-xl font-bold text-white uppercase tracking-tight">Instant Seat Availability Search</p>
+                </div>
+                <JetSeatQuickSearch />
+            </div>
 
             {liveMissions.length > 0 && (
                 <LiveRadarDashboardCard missions={liveMissions} />
