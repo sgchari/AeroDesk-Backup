@@ -1,7 +1,6 @@
-
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,11 +15,26 @@ import { cn } from '@/lib/utils';
 export function ManifestPanel({ charter, manifest, userRole }: { charter: CharterRFQ, manifest?: PassengerManifest, userRole?: string }) {
     const firestore = useFirestore();
     const { toast } = useToast();
-    const [passengers, setPassengers] = useState<Passenger[]>(manifest?.passengers || [{ fullName: '', dob: '', gender: '', nationality: '', idType: 'Passport', idNumber: '' }]);
+    
+    // State initialization with prop sync
+    const [passengers, setPassengers] = useState<Passenger[]>(
+        manifest?.passengers || [{ fullName: '', dob: '', gender: '', nationality: '', idType: 'Passport', idNumber: '' }]
+    );
+
+    // Sync state when manifest prop updates (crucial for async data loading)
+    useEffect(() => {
+        if (manifest?.passengers) {
+            setPassengers(manifest.passengers);
+        }
+    }, [manifest]);
 
     const isCustomer = userRole === 'Customer' || userRole === 'Requester';
     const isOperator = userRole === 'Operator';
-    const canEdit = isCustomer && (charter.status === 'awaitingManifest' || !manifest);
+    
+    // Manifest is immutable once mission is confirmed/live
+    const isLocked = ['manifestApproved', 'charterConfirmed', 'boarding', 'departed', 'live', 'enroute', 'arrived', 'flightCompleted'].includes(charter.status);
+    
+    const canEdit = isCustomer && !isLocked && (charter.status === 'awaitingManifest' || !manifest);
     const needsReview = isOperator && charter.status === 'manifestSubmitted';
 
     const handleAddPassenger = () => {
@@ -96,7 +110,7 @@ export function ManifestPanel({ charter, manifest, userRole }: { charter: Charte
     };
 
     return (
-        <Card className={cn("bg-card border-l-4", charter.status === 'manifestApproved' ? "border-l-green-500" : "border-l-accent")}>
+        <Card className={cn("bg-card border-l-4", isLocked ? "border-l-green-500" : "border-l-accent")}>
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle className="text-base flex items-center gap-2">
@@ -126,15 +140,15 @@ export function ManifestPanel({ charter, manifest, userRole }: { charter: Charte
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-1">
                                     <Label className="text-[10px]">Full Name</Label>
-                                    <Input value={p.fullName} onChange={(e) => updatePassenger(idx, 'fullName', e.target.value)} disabled={!canEdit} className="h-8 text-xs" />
+                                    <Input value={p.fullName} onChange={(e) => updatePassenger(idx, 'fullName', e.target.value)} disabled={!canEdit} className="h-8 text-xs bg-muted/10" />
                                 </div>
                                 <div className="space-y-1">
                                     <Label className="text-[10px]">Nationality</Label>
-                                    <Input value={p.nationality} onChange={(e) => updatePassenger(idx, 'nationality', e.target.value)} disabled={!canEdit} className="h-8 text-xs" />
+                                    <Input value={p.nationality} onChange={(e) => updatePassenger(idx, 'nationality', e.target.value)} disabled={!canEdit} className="h-8 text-xs bg-muted/10" />
                                 </div>
                                 <div className="space-y-1">
                                     <Label className="text-[10px]">ID / Passport Number</Label>
-                                    <Input value={p.idNumber} onChange={(e) => updatePassenger(idx, 'idNumber', e.target.value)} disabled={!canEdit} className="h-8 text-xs" />
+                                    <Input value={p.idNumber} onChange={(e) => updatePassenger(idx, 'idNumber', e.target.value)} disabled={!canEdit} className="h-8 text-xs bg-muted/10 font-code" />
                                 </div>
                             </div>
                         </div>
@@ -160,6 +174,15 @@ export function ManifestPanel({ charter, manifest, userRole }: { charter: Charte
                         <Button size="sm" className="flex-1 bg-green-600 text-white hover:bg-green-700 text-[10px] font-black uppercase" onClick={() => handleReview(true)}>
                             Approve Manifest
                         </Button>
+                    </div>
+                )}
+
+                {isLocked && (
+                    <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg flex items-start gap-3">
+                        <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <p className="text-[10px] text-muted-foreground italic">
+                            This manifest has been locked for operational dispatch. Changes are restricted.
+                        </p>
                     </div>
                 )}
             </CardContent>

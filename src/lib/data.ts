@@ -176,6 +176,7 @@ export const mockPayments: Payment[] = [
 
 export const mockPassengerManifests: PassengerManifest[] = [
     { id: 'MF-001', charterId: 'RFQ-IND-002', status: 'approved', passengers: [{ fullName: 'Tony Stark', nationality: 'Indian', idNumber: 'Z1234567', idType: 'Passport' }], createdAt: '2025-02-14T09:00:00Z', updatedAt: '2025-02-15T09:00:00Z' },
+    { id: 'MF-002', charterId: 'RFQ-LIVE-003', status: 'approved', passengers: [{ fullName: 'Tony Stark', nationality: 'Indian', idNumber: 'Z1234567', idType: 'Passport' }, { fullName: 'Pepper Potts', nationality: 'Indian', idNumber: 'Z7654321', idType: 'Passport' }], createdAt: '2025-03-01T11:00:00Z', updatedAt: '2025-03-02T10:00:00Z' },
 ];
 
 export const mockCrewMembers: CrewMember[] = [
@@ -245,6 +246,11 @@ export const mockFleetOptimizationSuggestions: FleetOptimizationSuggestion[] = [
 
 export const mockAuditLogs: AuditLog[] = [
     { id: 'audit-01', timestamp: '2025-02-10T10:00:00Z', user: 'Admin User', role: 'Platform Admin', action: 'OPERATOR_APPROVED', details: 'Approved FlyCo Charter registration', targetId: 'op-west-01' },
+];
+
+export const mockActivityLogs: ActivityLog[] = [
+    { id: 'log-live-01', charterId: 'RFQ-LIVE-003', actionType: 'MISSION_DISPATCHED', performedBy: 'Ops Desk', role: 'Operator', timestamp: '2025-03-06T09:00:00Z', previousStatus: 'boarding', newStatus: 'departed' },
+    { id: 'log-live-02', charterId: 'RFQ-LIVE-003', actionType: 'LIVE_SIGNAL_ACTIVE', performedBy: 'System', role: 'Automated', timestamp: '2025-03-06T09:15:00Z', previousStatus: 'departed', newStatus: 'live' },
 ];
 
 export const mockAlerts: SystemAlert[] = [
