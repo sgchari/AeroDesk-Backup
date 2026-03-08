@@ -9,7 +9,7 @@ import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { useUser } from "@/hooks/use-user";
 import { SeatAllocationRequest } from "@/lib/types";
 import { collection, query, where } from "firebase/firestore";
-import { Clock, CheckCircle, XCircle, ArrowRight, Plane, CreditCard, Activity, Users } from "lucide-react";
+import { Clock, CheckCircle, XCircle, ArrowRight, Plane, CreditCard, Activity, Users, Armchair } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 

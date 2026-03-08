@@ -15,7 +15,8 @@ import {
     AlertCircle, 
     BarChart3,
     Activity,
-    Armchair
+    Armchair,
+    Clock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/dashboard/shared/stats-card";
