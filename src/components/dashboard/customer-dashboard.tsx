@@ -1,4 +1,3 @@
-
 'use client';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { CreateRfqDialog } from "@/components/dashboard/customer/create-rfq-dialog";
@@ -15,6 +14,7 @@ import { collection, query, where, doc } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
+import { formatSector } from "@/lib/geo-utils";
 
 const getStatusInfo = (status: RfqStatus | string): { text: string; icon: React.ElementType; className: string } => {
     switch (status) {
@@ -63,8 +63,8 @@ const TripCard = ({ rfq }: { rfq: CharterRFQ }) => {
                         </Badge>
                         <span className="font-code text-[10px] text-muted-foreground">{rfq.id}</span>
                     </div>
-                    <CardTitle className="text-base group-hover:text-accent transition-colors truncate">
-                        {rfq.departure.split(' (')[0]} <ArrowRight className="inline h-3 w-3 mx-1 text-muted-foreground" /> {rfq.arrival.split(' (')[0]}
+                    <CardTitle className="text-base group-hover:text-accent transition-colors truncate uppercase font-bold tracking-tight">
+                        {formatSector(rfq.departure)} <ArrowRight className="inline h-3 w-3 mx-1 text-muted-foreground" /> {formatSector(rfq.arrival)}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow space-y-3 text-[11px]">
@@ -166,8 +166,8 @@ export function CustomerDashboard() {
                                             {req.requestStatus.replace(/_/g, ' ')}
                                         </Badge>
                                     </div>
-                                    <CardTitle className="text-base group-hover:text-accent transition-colors">
-                                        {req.origin} → {req.destination}
+                                    <CardTitle className="text-base group-hover:text-accent transition-colors uppercase font-bold tracking-tight">
+                                        {formatSector(req.origin)} → {formatSector(req.destination)}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-3 pb-5">

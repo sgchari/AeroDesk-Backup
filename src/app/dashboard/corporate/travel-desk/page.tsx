@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { formatSector } from "@/lib/geo-utils";
 
 export default function TravelDeskProcessingPage() {
     const { user } = useUser();
@@ -118,8 +119,8 @@ export default function TravelDeskProcessingPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="flex items-center gap-2 text-xs font-medium text-white">
-                                                    {req.origin} » {req.destination}
+                                                <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-tight">
+                                                    {formatSector(req.origin)} » {formatSector(req.destination)}
                                                 </div>
                                                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold mt-1">
                                                     <Clock className="h-3 w-3" /> {new Date(req.travelDate).toLocaleDateString()}

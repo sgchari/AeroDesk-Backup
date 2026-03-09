@@ -1,4 +1,3 @@
-
 "use client";
 
 import { PageHeader } from "@/components/dashboard/shared/page-header";
@@ -14,6 +13,7 @@ import { Check, X, ShieldCheck, Briefcase, FileText, Plane, Clock } from "lucide
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { SystemAdvisory } from "@/components/dashboard/operator/system-advisory";
+import { formatSector } from "@/lib/geo-utils";
 
 export default function CTDApprovalsPage() {
     const { user, isLoading: isUserLoading } = useUser();
@@ -90,9 +90,9 @@ export default function CTDApprovalsPage() {
                                                 <div className="text-[9px] text-muted-foreground uppercase font-code tracking-tighter">{rfq.id}</div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="flex items-center gap-2 text-xs font-medium">
+                                                <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-tight">
                                                     <Plane className="h-3.5 w-3.5 text-accent/60" />
-                                                    {rfq.departure} → {rfq.arrival}
+                                                    {formatSector(rfq.departure)} → {formatSector(rfq.arrival)}
                                                 </div>
                                                 <div className="text-[9px] text-muted-foreground flex items-center gap-1 mt-0.5">
                                                     <Clock className="h-2.5 w-2.5" /> {new Date(rfq.departureDate).toLocaleDateString()}

@@ -13,6 +13,7 @@ import type { EmployeeTravelRequest, TravelApproval, CorporateTravelPolicy } fro
 import { Check, X, ShieldCheck, AlertCircle, Clock, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { formatSector } from "@/lib/geo-utils";
 
 export default function CorporateApprovalsPage() {
     const { user } = useUser();
@@ -119,7 +120,9 @@ export default function CorporateApprovalsPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <p className="text-xs font-medium">{req.origin} » {req.destination}</p>
+                                                <p className="text-xs font-medium uppercase tracking-tight text-white">
+                                                    {formatSector(req.origin)} » {formatSector(req.destination)}
+                                                </p>
                                                 <p className="text-[9px] text-muted-foreground uppercase font-black">{new Date(req.travelDate).toLocaleDateString()}</p>
                                             </TableCell>
                                             <TableCell>

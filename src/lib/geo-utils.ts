@@ -22,6 +22,52 @@ export const hubGeographics: Record<string, GeoCoord & { type: 'backbone' | 'ope
     'Cochin': { lat: 9.9312, lng: 76.2673, type: 'operator', label: 'Coastal Corridor', operators: 1, partners: 3 },
 };
 
+/**
+ * Mapping of technical airport codes to readable city names for HNW and Corporate users.
+ */
+export const ICAO_TO_CITY: Record<string, string> = {
+    "VABB": "Mumbai",
+    "BOM": "Mumbai",
+    "VIDP": "Delhi",
+    "DEL": "Delhi",
+    "VOGO": "Goa",
+    "GOI": "Goa",
+    "VOBL": "Bengaluru",
+    "BLR": "Bengaluru",
+    "VOHS": "Hyderabad",
+    "HYD": "Hyderabad",
+    "VOMM": "Chennai",
+    "MAA": "Chennai",
+    "VECC": "Kolkata",
+    "CCU": "Kolkata",
+    "VIJP": "Jaipur",
+    "JAI": "Jaipur",
+    "VOHY": "Hyderabad",
+    "DXB": "Dubai",
+    "LHR": "London",
+    "SIN": "Singapore",
+    "JFK": "New York",
+    "BKK": "Bangkok",
+    "MLE": "Male"
+};
+
+/**
+ * Robustly formats a sector string by converting codes to city names.
+ * Supports: "VABB", "Mumbai (VABB)", or just "Mumbai"
+ */
+export function formatSector(icao: string): string {
+    if (!icao) return 'TBD';
+    
+    // If it contains parentheses like "Mumbai (VABB)", just extract the city
+    if (icao.includes('(')) {
+        return icao.split(' (')[0].trim();
+    }
+
+    // Otherwise lookup the code
+    const city = ICAO_TO_CITY[icao.toUpperCase()];
+    return city || icao;
+}
+
 export const indiaPath = "M310,230 L320,210 L350,200 L380,220 L410,190 L450,180 L480,120 L550,110 L620,130 L680,110 L720,140 L750,180 L780,210 L820,230 L850,300 L880,350 L850,420 L820,480 L780,550 L750,620 L720,680 L680,750 L650,820 L620,880 L580,920 L520,950 L480,920 L420,880 L380,820 L350,750 L320,680 L280,620 L250,550 L220,480 L180,420 L150,350 L120,300 L150,250 L180,220 L220,250 L250,280 L280,250 Z";
 
 export const hubCoordinates: Record<string, { x: number, y: number }> = {

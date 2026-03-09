@@ -34,6 +34,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from "@/lib/utils";
+import { formatSector } from "@/lib/geo-utils";
 
 export default function CorporateRequestsPage() {
     const { user } = useUser();
@@ -194,7 +195,9 @@ export default function CorporateRequestsPage() {
                                                 <span className="text-xs font-bold">{req.employeeName}</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-xs text-white/80">{req.origin} » {req.destination}</TableCell>
+                                        <TableCell className="text-xs text-white uppercase font-medium">
+                                            {formatSector(req.origin)} » {formatSector(req.destination)}
+                                        </TableCell>
                                         <TableCell>
                                             <Badge variant="outline" className="text-[8px] uppercase tracking-tighter border-white/10 h-4">
                                                 {req.travelType === 'CHARTER' ? 'Full Charter' : 'Jet Seat'}
