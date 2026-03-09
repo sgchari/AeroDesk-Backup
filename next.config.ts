@@ -1,7 +1,7 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* AeroDesk Environment Recovery - Forced Config Sync */
   experimental: {
     optimizePackageImports: ['lucide-react'],
   },
