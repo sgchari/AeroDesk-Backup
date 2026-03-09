@@ -84,7 +84,7 @@ export default function LoginPage() {
               {/* Official Login Form */}
               <form onSubmit={handleFormLogin} className="space-y-5 mb-8">
                 <div className="space-y-2">
-                    <Label htmlFor="email" className="text-[10px] uppercase font-black tracking-widest text-white/60">Corporate Email</lebel>
+                    <Label htmlFor="email" className="text-[10px] uppercase font-black tracking-widest text-white/60">Corporate Email</Label>
                     <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
                         <Input 
@@ -99,7 +99,7 @@ export default function LoginPage() {
                     </div>
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="password" className="text-[10px] uppercase font-black tracking-widest text-white/60">Terminal Key</lebel>
+                    <Label htmlFor="password" className="text-[10px] uppercase font-black tracking-widest text-white/60">Terminal Key</Label>
                     <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
                         <Input 
