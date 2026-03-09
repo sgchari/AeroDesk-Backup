@@ -10,7 +10,6 @@ import {
 import { mockStore } from '@/lib/mock-store';
 import { useUser } from '@/hooks/use-user';
 
-/** Utility type to add an 'id' field to a given type T. */
 type WithId<T> = T & { id: string };
 
 export interface UseDocResult<T> {
@@ -21,7 +20,7 @@ export interface UseDocResult<T> {
 
 /**
  * Real-time document hook with deep-equality protection.
- * Ensures referential stability for dashboard widgets.
+ * Ensures referential stability for dashboard widgets and prevents re-render loops.
  */
 export function useDoc<T = any>(
   memoizedDocRef: (DocumentReference<DocumentData> & {__memo?: boolean}) | null | undefined,
@@ -35,13 +34,6 @@ export function useDoc<T = any>(
   const mountedRef = useRef(true);
   const prevDataStringRef = useRef<string>('');
   
-  const isDemoMode = useMemo(() => {
-    if (!memoizedDocRef) return true;
-    const firestore = memoizedDocRef.firestore;
-    if (!firestore || !firestore.app || (firestore as any)._isMock) return true;
-    return false;
-  }, [memoizedDocRef]);
-
   useEffect(() => {
     mountedRef.current = true;
     return () => { mountedRef.current = false; };
@@ -56,6 +48,13 @@ export function useDoc<T = any>(
     }
     setIsLoading(false);
   }, []);
+
+  const isDemoMode = useMemo(() => {
+    if (!memoizedDocRef) return true;
+    const firestore = memoizedDocRef.firestore;
+    if (!firestore || (firestore as any)._isMock) return true;
+    return process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+  }, [memoizedDocRef]);
 
   useEffect(() => {
     if (!mountedRef.current || isUserLoading) return;
@@ -80,6 +79,7 @@ export function useDoc<T = any>(
     }
 
     if (isDemoMode && demoPath) {
+        setIsLoading(true);
         const fetchDemoData = () => {
             try {
                 const docData = mockStore.getDoc(demoPath) as WithId<T> | null;

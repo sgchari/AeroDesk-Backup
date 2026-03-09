@@ -21,7 +21,7 @@ export interface UseCollectionResult<T> {
 
 /**
  * Real-time collection hook with deep-equality protection.
- * Prevents re-render loops in dashboard environments.
+ * Prevents re-render loops in dashboard environments by using stable data strings.
  */
 export function useCollection<T = any>(
     memoizedQuery: (CollectionReference<DocumentData> | Query<DocumentData>) | null | undefined,
@@ -40,8 +40,6 @@ export function useCollection<T = any>(
     return () => { mountedRef.current = false; };
   }, []);
 
-  const isDemoMode = !memoizedQuery || (memoizedQuery.firestore as any)?._isMock || process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
-
   const updateDataIfChanged = useCallback((newData: WithId<T>[] | null) => {
     if (!mountedRef.current) return;
     const dataString = JSON.stringify(newData);
@@ -51,6 +49,8 @@ export function useCollection<T = any>(
     }
     setIsLoading(false);
   }, []);
+
+  const isDemoMode = !memoizedQuery || (memoizedQuery.firestore as any)?._isMock || process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
   useEffect(() => {
     if (!mountedRef.current || isUserLoading) return;
@@ -72,6 +72,7 @@ export function useCollection<T = any>(
     }
     
     if (isDemoMode && demoPath) {
+        setIsLoading(true);
         const fetchDemo = () => {
             const mockData = mockStore.getCollection(demoPath, user);
             updateDataIfChanged(mockData);

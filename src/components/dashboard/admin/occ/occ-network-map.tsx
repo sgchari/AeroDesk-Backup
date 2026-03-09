@@ -4,8 +4,8 @@ import React from 'react';
 import { Network, Layers } from 'lucide-react';
 
 /**
- * OCC Network Placeholder
- * Temporarily disabled to optimize dashboard load times.
+ * OCC Network Placeholder - Safe Mode
+ * Temporarily disabled to optimize dashboard load times and prevent worker crashes.
  */
 export function OCCNetworkMap() {
   return (
@@ -18,10 +18,10 @@ export function OCCNetworkMap() {
         <Network className="h-10 w-10 text-emerald-400" />
       </div>
 
-      <div className="text-center space-y-3 relative z-10">
+      <div className="text-center space-y-3 relative z-10 px-12">
         <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white">OCC Command Interface</h3>
-        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest px-8">
-          Interactive situational awareness layers are temporarily in standby mode. 
+        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest leading-relaxed">
+          Interactive situational awareness layers are in standby mode for environment stability. 
           Mission data processing continues in the operational feed.
         </p>
       </div>
@@ -30,10 +30,10 @@ export function OCCNetworkMap() {
         <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-xl p-3 space-y-2 min-w-[160px] opacity-50">
           <div className="flex items-center gap-2 border-b border-white/5 pb-1 mb-1">
             <Layers className="h-3 w-3 text-accent" />
-            <span className="text-[8px] font-black uppercase text-white">Layers Paused</span>
+            <span className="text-[8px] font-black uppercase text-white">Grid Standby</span>
           </div>
-          <div className="h-1.5 w-full bg-white/5 rounded-full" />
-          <div className="h-1.5 w-2/3 bg-white/5 rounded-full" />
+          <div className="h-1 w-full bg-white/5 rounded-full" />
+          <div className="h-1 w-2/3 bg-white/5 rounded-full" />
         </div>
       </div>
     </div>

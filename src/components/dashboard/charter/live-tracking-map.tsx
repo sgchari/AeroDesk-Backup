@@ -10,8 +10,8 @@ interface LiveTrackingMapProps {
 }
 
 /**
- * Live Tracking Placeholder
- * Lightweight version for environment recovery.
+ * Live Tracking Placeholder - Safe Mode
+ * Lightweight version for environment recovery. Prevents high-memory map execution.
  */
 export function LiveTrackingMap({ origin, destination }: LiveTrackingMapProps) {
     const originCity = origin.split(' (')[0];
@@ -39,7 +39,7 @@ export function LiveTrackingMap({ origin, destination }: LiveTrackingMapProps) {
                     <div className="w-32 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent relative">
                         <Plane className="h-4 w-4 text-accent absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 drop-shadow-[0_0_8px_rgba(255,255,189,0.5)]" />
                     </div>
-                    <Badge variant="outline" className="text-[7px] border-white/5 text-white/40">EN-ROUTE</Badge>
+                    <Badge variant="outline" className="text-[7px] border-white/5 text-white/40 uppercase">Safe-Mode Tracking</Badge>
                 </div>
                 <div className="text-center space-y-1">
                     <p className="text-[8px] text-muted-foreground uppercase font-black">Arrival</p>
@@ -49,7 +49,7 @@ export function LiveTrackingMap({ origin, destination }: LiveTrackingMapProps) {
 
             <div className="absolute bottom-3 right-3 z-20">
                 <p className="text-[7px] text-muted-foreground uppercase font-black tracking-widest">Telemetry Node</p>
-                <p className="text-[9px] font-bold text-accent uppercase tracking-tighter">AERO-DISPATCH-RESTORED</p>
+                <p className="text-[9px] font-bold text-accent uppercase tracking-tighter">AERO-RECOVERY-ACTIVE</p>
             </div>
         </div>
     );

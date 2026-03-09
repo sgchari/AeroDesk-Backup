@@ -4,8 +4,8 @@ import React from 'react';
 import { Radar } from 'lucide-react';
 
 /**
- * Radar Surface Placeholder
- * Temporarily disabled to reduce Turbopack compilation overhead.
+ * Radar Surface Placeholder - Safe Mode
+ * Temporarily disabled to reduce Turbopack compilation overhead during recovery.
  */
 export function RadarSurfaceMap({ positions, showHeatmap }: { positions: any[], showHeatmap: boolean }) {
   return (
@@ -16,10 +16,10 @@ export function RadarSurfaceMap({ positions, showHeatmap }: { positions: any[], 
         <Radar className="h-12 w-12 text-sky-400" />
       </div>
       
-      <div className="text-center space-y-2 relative z-10">
+      <div className="text-center space-y-2 relative z-10 px-8">
         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-sky-400">ADS-B Signal Stream</p>
         <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-          Synchronizing with global telemetry grid. Live positioning disabled during system recovery.
+          Live positioning disabled during system recovery. Data processing continues in background logs.
         </p>
       </div>
 
@@ -28,7 +28,7 @@ export function RadarSurfaceMap({ positions, showHeatmap }: { positions: any[], 
           <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
           <span className="text-[8px] font-black text-white/40 uppercase">Telemetry Pulse: Active</span>
         </div>
-        <p className="text-[8px] font-code text-sky-400/60 uppercase">Protocol: AERO-ADS-B-SYNC</p>
+        <p className="text-[8px] font-code text-sky-400/60 uppercase">Protocol: AERO-SAFE-BOOT</p>
       </div>
     </div>
   );
