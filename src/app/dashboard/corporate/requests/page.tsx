@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { PageHeader } from "@/components/dashboard/shared/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { useCollection, useUser, useFirestore, addDocumentNonBlocking } from "@/firebase";
+import { useCollection, useUser, useFirestore, addDocumentNonBlocking, useMemoFirebase } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { EmployeeTravelRequest, CostCenter } from "@/lib/types";
@@ -33,6 +33,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from "@/lib/utils";
 
 export default function CorporateRequestsPage() {
     const { user } = useUser();
@@ -43,13 +44,22 @@ export default function CorporateRequestsPage() {
 
     const { data: requests, isLoading } = useCollection<EmployeeTravelRequest>(
         useMemoFirebase(() => {
-            if (!user?.corporateId) return null;
-            return query(collection(firestore!, 'employeeTravelRequests'), where('corporateId', '==', user.corporateId));
+            if (!firestore || (firestore as any)._isMock || !user?.corporateId) return null;
+            return query(collection(firestore, 'employeeTravelRequests'), where('corporateId', '==', user.corporateId));
         }, [firestore, user?.corporateId]),
         'employeeTravelRequests'
     );
 
     const { data: centers } = useCollection<CostCenter>(null, 'costCenters');
+
+    const filteredRequests = useMemo(() => {
+        return requests?.filter(r => 
+            r.employeeName.toLowerCase().includes(search.toLowerCase()) ||
+            r.requestId.toLowerCase().includes(search.toLowerCase()) ||
+            r.origin.toLowerCase().includes(search.toLowerCase()) ||
+            r.destination.toLowerCase().includes(search.toLowerCase())
+        ) || [];
+    }, [requests, search]);
 
     const handleCreateRequest = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -163,7 +173,7 @@ export default function CorporateRequestsPage() {
                             />
                         </div>
                     </div>
-                    {requestsLoading ? <Skeleton className="h-64 w-full" /> : (
+                    {isLoading ? <Skeleton className="h-64 w-full" /> : (
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-white/5 hover:bg-transparent">

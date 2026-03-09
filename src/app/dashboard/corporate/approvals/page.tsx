@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCollection, useUser, useFirestore, updateDocumentNonBlocking, addDocumentNonBlocking } from "@/firebase";
+import { useCollection, useUser, useFirestore, updateDocumentNonBlocking, addDocumentNonBlocking, useMemoFirebase } from "@/firebase";
 import { collection, query, where, doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { EmployeeTravelRequest, TravelApproval, CorporateTravelPolicy } from "@/lib/types";
@@ -21,8 +21,8 @@ export default function CorporateApprovalsPage() {
 
     const { data: requests, isLoading: requestsLoading } = useCollection<EmployeeTravelRequest>(
         useMemoFirebase(() => {
-            if (!user?.corporateId) return null;
-            return query(collection(firestore!, 'employeeTravelRequests'), where('corporateId', '==', user.corporateId));
+            if (!firestore || (firestore as any)._isMock || !user?.corporateId) return null;
+            return query(collection(firestore, 'employeeTravelRequests'), where('corporateId', '==', user.corporateId));
         }, [firestore, user?.corporateId]),
         'employeeTravelRequests'
     );

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCollection, useUser, useFirestore, updateDocumentNonBlocking } from "@/firebase";
+import { useCollection, useUser, useFirestore, updateDocumentNonBlocking, useMemoFirebase } from "@/firebase";
 import { collection, query, where, doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { EmployeeTravelRequest, CorporateOrganization } from "@/lib/types";
@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 export default function TravelDeskProcessingPage() {
     const { user } = useUser();
@@ -36,8 +37,8 @@ export default function TravelDeskProcessingPage() {
 
     const { data: requests, isLoading } = useCollection<EmployeeTravelRequest>(
         useMemoFirebase(() => {
-            if (!user?.corporateId) return null;
-            return query(collection(firestore!, 'employeeTravelRequests'), where('corporateId', '==', user.corporateId));
+            if (!firestore || (firestore as any)._isMock || !user?.corporateId) return null;
+            return query(collection(firestore, 'employeeTravelRequests'), where('corporateId', '==', user.corporateId));
         }, [firestore, user?.corporateId]),
         'employeeTravelRequests'
     );
