@@ -73,7 +73,9 @@ export function setDocumentNonBlocking(docRef: DocumentReference, data: any, opt
 
     if (isDemoMode || firestoreIsMock || !docRef?.firestore) {
         if (!path) return;
-        const [collection, docId] = path.split('/');
+        const segments = path.split('/');
+        const collection = segments.length > 2 ? segments.slice(0, -1).join('/') : segments[0];
+        const docId = segments[segments.length - 1];
         mockStore.updateDoc(collection, docId, data);
         toast({ title: 'Demo Data Updated', description: 'Your changes have been saved for this session.' });
     } else {
@@ -117,9 +119,9 @@ export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) 
 
     if (isDemoMode || firestoreIsMock || !docRef?.firestore) {
         if (!path) return;
-        const pathSegments = path.split('/');
-        const collection = pathSegments.length > 2 ? `${pathSegments[0]}/${pathSegments[1]}/${pathSegments[2]}` : pathSegments[0];
-        const docId = pathSegments.length > 2 ? pathSegments[3] : pathSegments[1];
+        const segments = path.split('/');
+        const collection = segments.length > 2 ? segments.slice(0, -1).join('/') : segments[0];
+        const docId = segments[segments.length - 1];
 
         mockStore.updateDoc(collection, docId, data);
         toast({ title: 'Demo Data Updated', description: 'Your changes have been saved for this session.' });
@@ -142,9 +144,9 @@ export function deleteDocumentNonBlocking(docRef: DocumentReference) {
 
     if (isDemoMode || firestoreIsMock || !docRef?.firestore) {
         if (!path) return;
-        const pathSegments = path.split('/');
-        const collection = pathSegments.length > 2 ? `${pathSegments[0]}/${pathSegments[1]}/${pathSegments[2]}` : pathSegments[0];
-        const docId = pathSegments.length > 2 ? pathSegments[3] : pathSegments[1];
+        const segments = path.split('/');
+        const collection = segments.length > 2 ? segments.slice(0, -1).join('/') : segments[0];
+        const docId = segments[segments.length - 1];
         
         mockStore.deleteDoc(collection, docId);
         toast({ title: 'Demo Data Deleted', description: 'The item has been removed for this session.' });

@@ -25,6 +25,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   
   const authListenerAttached = useRef(false);
   const prevUserStringRef = useRef<string>('');
+  const isFetchingRef = useRef(false);
 
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
@@ -37,8 +38,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const fetchUser = useCallback(async (roleKeyOverride?: string) => {
-    if (!isDemoMode) return;
+    if (!isDemoMode || isFetchingRef.current) return;
 
+    isFetchingRef.current = true;
     setLoading(true);
     setError(null);
 
@@ -117,10 +119,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
             prevUserStringRef.current = 'null';
         }
     } catch(e: any) {
-        console.error("Simulation User Error:", e);
         setError(e);
     } finally {
         setLoading(false);
+        isFetchingRef.current = false;
     }
   }, [isDemoMode]);
 

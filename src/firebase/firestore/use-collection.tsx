@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   Query,
   DocumentData,
@@ -31,13 +31,17 @@ export function useCollection<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   
-  // Destructure from useUser (imported from @/hooks/use-user)
   const { user, isLoading: isUserLoading } = useUser();
   
   const mountedRef = useRef(true);
   const prevDataStringRef = useRef<string>('');
   
-  const isDemoMode = !memoizedTargetRefOrQuery || !memoizedTargetRefOrQuery.firestore?.app || (memoizedTargetRefOrQuery.firestore as any)._isMock;
+  const isDemoMode = useMemo(() => {
+    if (!memoizedTargetRefOrQuery) return true;
+    const firestore = memoizedTargetRefOrQuery.firestore;
+    if (!firestore || !firestore.app || (firestore as any)._isMock) return true;
+    return false;
+  }, [memoizedTargetRefOrQuery]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -47,7 +51,7 @@ export function useCollection<T = any>(
   const fetchDemoData = useCallback(() => {
     if (!mountedRef.current || !demoPath) return;
     
-    // Defer fetching until user identity is stable
+    // Defer fetching until user identity is stable to prevent race conditions
     if (isUserLoading) return;
 
     try {
@@ -68,10 +72,10 @@ export function useCollection<T = any>(
   }, [demoPath, user, isUserLoading]);
 
   useEffect(() => {
-    // Re-initialize loading state on critical dependency shifts to ensure freshness
-    if (mountedRef.current) {
-        setIsLoading(true);
-    }
+    if (!mountedRef.current) return;
+
+    // Reset loading state on significant dependency shifts
+    setIsLoading(true);
 
     if (!isDemoMode && memoizedTargetRefOrQuery) {
       const unsubscribe = onSnapshot(memoizedTargetRefOrQuery, 
@@ -95,17 +99,12 @@ export function useCollection<T = any>(
     }
     
     if (isDemoMode && demoPath) {
-        // Initial fetch call
         fetchDemoData();
-        
-        // Subscription to institutional mock store changes
         const unsubscribe = mockStore.subscribe(() => {
             fetchDemoData();
         });
-        
         return () => unsubscribe();
     } else {
-        // Resolve loading state for invalid or pending queries
         if (mountedRef.current) {
             setIsLoading(false);
         }

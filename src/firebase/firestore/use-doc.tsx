@@ -1,6 +1,6 @@
 'use client';
     
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   DocumentReference,
   DocumentData,
@@ -36,7 +36,12 @@ export function useDoc<T = any>(
   const mountedRef = useRef(true);
   const prevDataStringRef = useRef<string>('');
   
-  const isDemoMode = !memoizedDocRef || !memoizedDocRef.firestore?.app || (memoizedDocRef.firestore as any)._isMock;
+  const isDemoMode = useMemo(() => {
+    if (!memoizedDocRef) return true;
+    const firestore = memoizedDocRef.firestore;
+    if (!firestore || !firestore.app || (firestore as any)._isMock) return true;
+    return false;
+  }, [memoizedDocRef]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -66,9 +71,8 @@ export function useDoc<T = any>(
   }, [demoPath, isUserLoading]);
 
   useEffect(() => {
-    if (mountedRef.current) {
-        setIsLoading(true);
-    }
+    if (!mountedRef.current) return;
+    setIsLoading(true);
 
     if (!isDemoMode && memoizedDocRef) {
       const unsubscribe = onSnapshot(memoizedDocRef, 
