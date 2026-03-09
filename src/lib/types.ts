@@ -1,5 +1,5 @@
 export type PlatformRole = 'admin' | 'operator' | 'agency' | 'corporate' | 'individual' | 'hotel';
-export type FirmRole = 'admin' | 'manager' | 'finance' | 'operations' | 'approver' | 'viewer';
+export type FirmRole = 'admin' | 'manager' | 'finance' | 'operations' | 'approver' | 'viewer' | 'EMPLOYEE' | 'MANAGER' | 'COST_CENTER_OWNER' | 'FINANCE' | 'TRAVEL_DESK_ADMIN';
 
 export type User = {
   id: string;
@@ -29,6 +29,120 @@ export type User = {
   updatedAt: string;
   organizationType?: 'operator' | 'agency' | 'corporate' | 'hotel';
 };
+
+// --- CORPORATE AVIATION MANAGEMENT SYSTEM TYPES ---
+
+export type CorporateOrganization = {
+  id: string;
+  corporateId: string;
+  companyName: string;
+  industry: string;
+  annualAviationBudget: number;
+  usedBudget: number;
+  createdAt: string;
+};
+
+export type CorporateUser = {
+  id: string;
+  userId: string;
+  corporateId: string;
+  name: string;
+  role: 'EMPLOYEE' | 'MANAGER' | 'COST_CENTER_OWNER' | 'FINANCE' | 'TRAVEL_DESK_ADMIN';
+  department: string;
+  costCenterId: string;
+  email: string;
+};
+
+export type CostCenter = {
+  id: string;
+  costCenterId: string;
+  corporateId: string;
+  departmentName: string;
+  allocatedBudget: number;
+  usedBudget: number;
+};
+
+export type TravelType = 'CHARTER' | 'JET_SEATS';
+
+export type RequestStatus = 
+  | 'REQUEST_CREATED'
+  | 'MANAGER_APPROVED'
+  | 'COST_CENTER_APPROVED'
+  | 'FINANCE_APPROVED'
+  | 'TRAVEL_DESK_PROCESSING'
+  | 'RFQ_SUBMITTED'
+  | 'QUOTE_RECEIVED'
+  | 'PAYMENT_APPROVED'
+  | 'BOOKING_CONFIRMED'
+  | 'TRIP_IN_PROGRESS'
+  | 'TRIP_COMPLETED'
+  | 'REJECTED';
+
+export type EmployeeTravelRequest = {
+  id: string;
+  requestId: string;
+  employeeId: string;
+  employeeName: string;
+  corporateId: string;
+  travelType: TravelType;
+  origin: string;
+  destination: string;
+  travelDate: string;
+  passengerCount: number;
+  purposeOfTravel: string;
+  costCenterId: string;
+  requestStatus: RequestStatus;
+  estimatedBudget?: number;
+  createdAt: string;
+};
+
+export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+export type TravelApproval = {
+  id: string;
+  approvalId: string;
+  requestId: string;
+  approverRole: 'MANAGER' | 'COST_CENTER_OWNER' | 'FINANCE';
+  approverUserId: string;
+  approvalStatus: ApprovalStatus;
+  comments?: string;
+  createdAt: string;
+};
+
+export type CorporatePassengerManifest = {
+  id: string;
+  manifestId: string;
+  requestId: string;
+  passengers: Array<{
+    name: string;
+    idType: string;
+    idNumber: string;
+  }>;
+};
+
+export type CorporatePaymentStatus = 'PENDING' | 'SUBMITTED' | 'VERIFIED' | 'REJECTED';
+
+export type CorporatePayment = {
+  id: string;
+  paymentId: string;
+  corporateRequestId: string;
+  paymentReference: string;
+  paymentMethod: 'NEFT' | 'IMPS' | 'Bank Transfer';
+  paymentStatus: CorporatePaymentStatus;
+  amount: number;
+  createdAt: string;
+};
+
+export type CorporateTravelPolicy = {
+  id: string;
+  policyId: string;
+  corporateId: string;
+  rule: string;
+  thresholdAmount?: number;
+  requiresFinanceApproval: boolean;
+};
+
+// --- END CORPORATE AVIATION MANAGEMENT SYSTEM TYPES ---
 
 export type OrganizationUser = {
   id: string;
@@ -295,6 +409,7 @@ export type CharterRFQ = {
   specialRequirements?: string;
   pricePrediction?: CharterPricePrediction;
   aircraftId?: string;
+  corporateRequestId?: string;
 };
 
 export type AutopilotMatch = {

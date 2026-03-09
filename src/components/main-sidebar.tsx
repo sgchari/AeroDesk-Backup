@@ -31,7 +31,10 @@ import {
   UserCog,
   BriefcaseIcon,
   Sparkles,
-  Wrench
+  Wrench,
+  LayoutDashboard,
+  Wallet,
+  ClipboardList
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -86,14 +89,14 @@ const NAV_ITEMS: Record<string, any[]> = {
     { href: '/dashboard/manage-users', label: 'Team', icon: UserCog, color: 'text-amber-400' },
   ],
   corporate: [
-    { href: '/dashboard', label: 'Travel Desk', icon: Home, color: 'text-accent' },
-    { href: '/dashboard/ctd/available-seats', label: 'Available Seats', icon: Armchair, color: 'text-emerald-400' },
-    { href: '/dashboard/ctd/seat-requests', label: 'Seat Leads', icon: Users, color: 'text-sky-400' },
-    { href: '/dashboard/ctd/requests', label: 'Employee Demand', icon: FileText, color: 'text-blue-400' },
-    { href: '/dashboard/ctd/approvals', label: 'Governance Flow', icon: ShieldCheck, color: 'text-amber-400' },
-    { href: '/dashboard/ctd/analytics', label: 'Spend Analysis', icon: BarChart2, color: 'text-fuchsia-400' },
-    { href: '/dashboard/ctd/reports', label: 'Compliance Audit', icon: Table, color: 'text-sky-400' },
-    { href: '/dashboard/manage-users', label: 'Personnel Control', icon: UserCog, color: 'text-accent' },
+    { href: '/dashboard/corporate/command-center', label: 'Command Center', icon: LayoutDashboard, color: 'text-emerald-400 font-bold' },
+    { href: '/dashboard/corporate/travel-desk', label: 'Travel Desk', icon: Briefcase, color: 'text-sky-400' },
+    { href: '/dashboard/corporate/requests', label: 'Demand Queue', icon: ClipboardList, color: 'text-blue-400' },
+    { href: '/dashboard/corporate/approvals', label: 'Approval Hierarchy', icon: ShieldCheck, color: 'text-amber-400' },
+    { href: '/dashboard/corporate/budgets', label: 'Finance & Budget', icon: Wallet, color: 'text-green-400' },
+    { href: '/dashboard/corporate/analytics', label: 'Aviation Spend', icon: BarChart2, color: 'text-fuchsia-400' },
+    { href: '/dashboard/ctd/available-seats', label: 'Seat Inventory', icon: Armchair, color: 'text-accent' },
+    { href: '/dashboard/manage-users', label: 'Authorized Roster', icon: UserCog, color: 'text-slate-400' },
   ],
   hotel: [
     { href: '/dashboard', label: 'Property Portal', icon: Home, color: 'text-accent' },
@@ -124,7 +127,7 @@ export function MainSidebar() {
     let items = NAV_ITEMS[platformRole] || [];
     
     // Only show "Manage Users" if they are Admin or Manager in their firm
-    if (['admin', 'manager'].includes(user?.firmRole || '')) {
+    if (['admin', 'manager', 'TRAVEL_DESK_ADMIN'].includes(user?.firmRole || '')) {
         // Keep manage-users items
     } else {
         items = items.filter(i => i.href !== '/dashboard/manage-users');

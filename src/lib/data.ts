@@ -64,7 +64,15 @@ import type {
   FlightPassengerManifest,
   SeatReservation,
   OperatorPaymentDetails,
-  DashboardNotification
+  DashboardNotification,
+  CorporateOrganization,
+  CorporateUser,
+  CostCenter,
+  EmployeeTravelRequest,
+  TravelApproval,
+  CorporatePassengerManifest,
+  CorporatePayment,
+  CorporateTravelPolicy
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -92,6 +100,47 @@ export const mockUsers: User[] = [
       updatedAt: "2025-01-01T10:00:00Z" 
     }
 ];
+
+// --- CORPORATE AVIATION MOCK DATA ---
+
+export const mockCorporateOrganizations: CorporateOrganization[] = [
+  { id: 'corp-01', corporateId: 'CORP102', companyName: 'ABC Corporation', industry: 'Energy', annualAviationBudget: 100000000, usedBudget: 42000000, createdAt: '2025-01-01T10:00:00Z' },
+];
+
+export const mockCorporateUsers: CorporateUser[] = [
+  { id: 'cu-01', userId: 'EMP201', corporateId: 'CORP102', name: 'Rahul Mehta', role: 'EMPLOYEE', department: 'Sales', costCenterId: 'CC102', email: 'rahul@abc-corp.com' },
+  { id: 'cu-02', userId: 'MGR301', corporateId: 'CORP102', name: 'Sanjay Gupta', role: 'MANAGER', department: 'Sales', costCenterId: 'CC102', email: 'sanjay@abc-corp.com' },
+  { id: 'cu-03', userId: 'FIN401', corporateId: 'CORP102', name: 'Anita Desai', role: 'FINANCE', department: 'Finance', costCenterId: 'CC101', email: 'anita@abc-corp.com' },
+];
+
+export const mockCostCenters: CostCenter[] = [
+  { id: 'cc-01', costCenterId: 'CC102', corporateId: 'CORP102', departmentName: 'Sales', allocatedBudget: 20000000, usedBudget: 8000000 },
+  { id: 'cc-02', costCenterId: 'CC103', corporateId: 'CORP102', departmentName: 'R&D Operations', allocatedBudget: 35000000, usedBudget: 28000000 },
+];
+
+export const mockEmployeeTravelRequests: EmployeeTravelRequest[] = [
+  { id: 'etr-01', requestId: 'ETR102', employeeId: 'EMP201', employeeName: 'Rahul Mehta', corporateId: 'CORP102', travelType: 'CHARTER', origin: 'VABB', destination: 'VOGO', travelDate: '2025-03-15T10:00:00Z', passengerCount: 4, purposeOfTravel: 'Client Meeting', costCenterId: 'CC102', requestStatus: 'REQUEST_CREATED', estimatedBudget: 850000, createdAt: new Date().toISOString() },
+  { id: 'etr-02', requestId: 'ETR103', employeeId: 'EMP202', employeeName: 'Priya Rai', corporateId: 'CORP102', travelType: 'JET_SEATS', origin: 'VIDP', destination: 'VABB', travelDate: '2025-03-18T09:00:00Z', passengerCount: 2, purposeOfTravel: 'Quarterly Review', costCenterId: 'CC102', requestStatus: 'MANAGER_APPROVED', estimatedBudget: 90000, createdAt: new Date().toISOString() },
+];
+
+export const mockTravelApprovals: TravelApproval[] = [
+  { id: 'ap-01', approvalId: 'APR102', requestId: 'ETR102', approverRole: 'MANAGER', approverUserId: 'MGR301', approvalStatus: 'PENDING', createdAt: new Date().toISOString() },
+];
+
+export const mockCorporatePassengerManifests: CorporatePassengerManifest[] = [
+  { id: 'cman-01', manifestId: 'MAN102', requestId: 'ETR102', passengers: [{ name: 'Rahul Mehta', idType: 'Passport', idNumber: 'Z1234567' }] },
+];
+
+export const mockCorporatePayments: CorporatePayment[] = [
+  { id: 'cp-01', paymentId: 'PAY102', corporateRequestId: 'ETR102', paymentReference: 'UTR123456789', paymentMethod: 'Bank Transfer', paymentStatus: 'SUBMITTED', amount: 850000, createdAt: new Date().toISOString() },
+];
+
+export const mockCorporateTravelPolicies: CorporateTravelPolicy[] = [
+  { id: 'pol-01', policyId: 'POL102', corporateId: 'CORP102', rule: 'Charters above 20 lakh require CFO approval', thresholdAmount: 2000000, requiresFinanceApproval: true },
+  { id: 'pol-02', policyId: 'POL103', corporateId: 'CORP102', rule: 'International travel requires VP justification', requiresFinanceApproval: false },
+];
+
+// --- END CORPORATE AVIATION MOCK DATA ---
 
 export const mockOperators: Operator[] = [
     { id: 'op-west-01', companyName: 'FlyCo Charter', nsopLicenseNumber: 'NSOP/FLYCO/2021', officialEmail: 'ops@flyco.aero', registeredAddress: 'Hangar 1, Juhu Aerodrome, Mumbai', contactNumber: '+91 22 2822 2202', profileStatus: 'active', adminUserId: 'demo_super_user', status: 'Approved', gstin: '27AAAAA0000A1Z5', stateCode: '27', legalEntityName: 'FlyCo Aviation West Pvt Ltd', city: 'Mumbai', zone: 'West', fleetCount: 12, createdAt: '2025-01-10T09:00:00Z', updatedAt: '2025-01-10T09:00:00Z' },

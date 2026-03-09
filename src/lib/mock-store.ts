@@ -60,7 +60,15 @@ import {
   mockFlightPassengerManifests,
   mockSeatReservations,
   mockOperatorPaymentDetails,
-  mockNotifications
+  mockNotifications,
+  mockCorporateOrganizations,
+  mockCorporateUsers,
+  mockCostCenters,
+  mockEmployeeTravelRequests,
+  mockTravelApprovals,
+  mockCorporatePassengerManifests,
+  mockCorporatePayments,
+  mockCorporateTravelPolicies
 } from './data';
 import { User } from './types';
 
@@ -130,6 +138,17 @@ let db: any = {
   maintenanceSchedule: deepCopy(mockMaintenanceSchedule),
   defectReports: deepCopy(mockDefectReports),
   maintenanceWorkOrders: deepCopy(mockMaintenanceWorkOrders),
+  
+  // CORPORATE AVIATION COLLECTIONS
+  corporateOrganizations: deepCopy(mockCorporateOrganizations),
+  corporateUsers: deepCopy(mockCorporateUsers),
+  costCenters: deepCopy(mockCostCenters),
+  employeeTravelRequests: deepCopy(mockEmployeeTravelRequests),
+  travelApprovals: deepCopy(mockTravelApprovals),
+  corporatePassengerManifests: deepCopy(mockCorporatePassengerManifests),
+  corporatePayments: deepCopy(mockCorporatePayments),
+  corporateTravelPolicies: deepCopy(mockCorporateTravelPolicies),
+  
   readCount: 0
 };
 
