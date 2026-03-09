@@ -7,7 +7,7 @@ import { StatsCard } from "@/components/dashboard/shared/stats-card";
 import { useCollection } from "@/firebase";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { CharterRFQ } from "@/lib/types";
-import { GanttChartSquare, FileText, CheckCircle2, Clock, MapPin, Activity } from "lucide-react";
+import { GanttChartSquare, FileText, CheckCircle2, Clock, MapPin, Activity, ShieldCheck } from "lucide-react";
 import { useMemo } from "react";
 import { 
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend 
@@ -50,7 +50,7 @@ export default function CharterRequestReportsPage() {
                         <CardTitle>Sector Intensity Index</CardTitle>
                         <CardDescription>Most frequented corridor sector demand.</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-[350px]">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={routeData}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
