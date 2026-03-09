@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Header } from '@/components/header';
@@ -10,6 +9,7 @@ import Image from 'next/image';
 import { DemoBanner } from '@/components/demo-banner';
 import { useUser } from '@/hooks/use-user';
 import { RoleSwitcherModal } from '@/components/role-switcher-modal';
+import { DemoInstructions } from '@/components/dashboard/shared/demo-instructions';
 
 export default function DashboardLayout({
   children,
@@ -47,6 +47,13 @@ export default function DashboardLayout({
           <SidebarInset className="bg-transparent overflow-x-hidden">
             <Header />
             <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-8 lg:p-8 min-w-0">
+              
+              {showDemoLayer && (
+                  <div className="mb-6">
+                      <DemoInstructions />
+                  </div>
+              )}
+
               <div className="flex-1 w-full animate-in fade-in duration-500">
                 {children}
               </div>

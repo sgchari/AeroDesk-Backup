@@ -1038,3 +1038,17 @@ export type MaintenanceWorkOrder = {
   completionTime?: string;
   status: 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
 };
+
+export type DemoAccessSettings = {
+    id: string;
+    accessKey: string;
+    demoPassword: string;
+};
+
+export type DemoAccessLog = {
+    id: string;
+    accessId: string;
+    roleAccessed: string;
+    ipAddress: string;
+    accessTime: string;
+};

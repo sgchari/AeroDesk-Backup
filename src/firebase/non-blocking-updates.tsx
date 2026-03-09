@@ -1,4 +1,3 @@
-
 'use client';
     
 import {
@@ -17,22 +16,47 @@ import { UserRole } from '@/lib/types';
 const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
 const checkActionProtection = (path: string, type: 'write' | 'delete') => {
-    const isSuperUser = typeof window !== 'undefined' && localStorage.getItem('demoUserId') === 'demo_super_user';
-    if (!isSuperUser) return false;
+    const isDemoUser = typeof window !== 'undefined' && (
+        localStorage.getItem('demoUserId')?.includes('demo') || 
+        localStorage.getItem('demoUserId') === 'demo_super_user'
+    );
+    
+    if (!isDemoUser) return false;
 
-    // Destructive actions blocked for Demo Super User
-    const restrictedPaths = ['invoices', 'operators', 'platformChargeRules', 'commissionRules'];
-    const isRestricted = restrictedPaths.some(p => path.startsWith(p));
+    // Destructive actions blocked for Demo accounts
+    const restrictedPaths = [
+        'invoices', 
+        'operators', 
+        'platformChargeRules', 
+        'commissionRules', 
+        'corporateOrganizations',
+        'hotelPartners',
+        'distributors',
+        'systemSettings'
+    ];
+    
+    const isRestrictedPath = restrictedPaths.some(p => path.startsWith(p));
     const isDelete = type === 'delete';
 
-    if (isRestricted || isDelete) {
+    // Blocking destructive admin/governance edits
+    if (isRestrictedPath && isDelete) {
         toast({ 
             title: 'Action Restricted', 
-            description: 'This action is disabled in demo mode.', 
+            description: 'Deleting core entities is disabled in demo mode.', 
             variant: 'destructive' 
         });
         return true;
     }
+
+    if (path.startsWith('platformAdmins') || path.startsWith('systemLogs')) {
+        toast({ 
+            title: 'Integrity Protocol', 
+            description: 'Modification of system governance records is disabled.', 
+            variant: 'destructive' 
+        });
+        return true;
+    }
+
     return false;
 };
 

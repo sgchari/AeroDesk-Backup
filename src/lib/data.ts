@@ -74,7 +74,8 @@ import type {
   CorporatePayment,
   CorporateTravelPolicy,
   UserActivityLog,
-  AdminAuditLog
+  AdminAuditLog,
+  DemoAccessSettings
 } from './types';
 
 export const VERIFIED_NSOP_REGISTRY = [
@@ -101,7 +102,106 @@ export const mockUsers: User[] = [
       avatar: 'https://picsum.photos/seed/user1/256/256',
       createdAt: "2025-01-01T10:00:00Z", 
       updatedAt: "2025-01-01T10:00:00Z" 
+    },
+    { 
+      id: 'admin-demo', 
+      email: 'admin-demo@aerodesk.global', 
+      password: 'password123',
+      firstName: 'Admin', 
+      lastName: 'Demo', 
+      role: 'Admin', 
+      platformRole: 'admin', 
+      firmRole: 'admin',
+      status: 'active', 
+      demoMode: true,
+      avatar: 'https://picsum.photos/seed/admin/256/256',
+      createdAt: "2025-01-01T10:00:00Z", 
+      updatedAt: "2025-01-01T10:00:00Z" 
+    },
+    { 
+      id: 'operator-demo', 
+      email: 'operator-demo@aerodesk.global', 
+      password: 'password123',
+      firstName: 'Operator', 
+      lastName: 'Demo', 
+      role: 'Operator', 
+      platformRole: 'operator', 
+      firmRole: 'admin',
+      status: 'active', 
+      demoMode: true,
+      operatorId: 'op-west-01',
+      avatar: 'https://picsum.photos/seed/op/256/256',
+      createdAt: "2025-01-01T10:00:00Z", 
+      updatedAt: "2025-01-01T10:00:00Z" 
+    },
+    { 
+      id: 'agency-demo', 
+      email: 'agency-demo@aerodesk.global', 
+      password: 'password123',
+      firstName: 'Agency', 
+      lastName: 'Demo', 
+      role: 'Travel Agency', 
+      platformRole: 'agency', 
+      firmRole: 'admin',
+      status: 'active', 
+      demoMode: true,
+      agencyId: 'ag-west-01',
+      avatar: 'https://picsum.photos/seed/agency/256/256',
+      createdAt: "2025-01-01T10:00:00Z", 
+      updatedAt: "2025-01-01T10:00:00Z" 
+    },
+    { 
+      id: 'corporate-demo', 
+      email: 'corporate-demo@aerodesk.global', 
+      password: 'password123',
+      firstName: 'Corporate', 
+      lastName: 'Demo', 
+      role: 'CTD Admin', 
+      platformRole: 'corporate', 
+      firmRole: 'admin',
+      status: 'active', 
+      demoMode: true,
+      corporateId: 'corp-west-01',
+      ctdId: 'corp-west-01',
+      avatar: 'https://picsum.photos/seed/corp/256/256',
+      createdAt: "2025-01-01T10:00:00Z", 
+      updatedAt: "2025-01-01T10:00:00Z" 
+    },
+    { 
+      id: 'customer-demo', 
+      email: 'customer-demo@aerodesk.global', 
+      password: 'password123',
+      firstName: 'Customer', 
+      lastName: 'Demo', 
+      role: 'Customer', 
+      platformRole: 'individual', 
+      firmRole: 'viewer',
+      status: 'active', 
+      demoMode: true,
+      avatar: 'https://picsum.photos/seed/cust/256/256',
+      createdAt: "2025-01-01T10:00:00Z", 
+      updatedAt: "2025-01-01T10:00:00Z" 
+    },
+    { 
+      id: 'hotel-demo', 
+      email: 'hotel-demo@aerodesk.global', 
+      password: 'password123',
+      firstName: 'Hotel', 
+      lastName: 'Demo', 
+      role: 'Hotel Partner', 
+      platformRole: 'hotel', 
+      firmRole: 'admin',
+      status: 'active', 
+      demoMode: true,
+      hotelPartnerId: 'hotel-01',
+      avatar: 'https://picsum.photos/seed/hotel/256/256',
+      createdAt: "2025-01-01T10:00:00Z", 
+      updatedAt: "2025-01-01T10:00:00Z" 
     }
+];
+
+export const mockDemoAccessSettings: DemoAccessSettings[] = [
+    { id: 'settings-01', accessKey: 'AERODESK_DEMO', demoPassword: 'AeroDesk2026' }
 ];
 
 export const mockCorporateOrganizations: CorporateOrganization[] = [

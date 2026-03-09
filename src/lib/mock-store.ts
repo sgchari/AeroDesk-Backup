@@ -19,7 +19,8 @@ import {
   mockTravelAgencies,
   mockUserActivityLogs,
   mockAdminAuditLogs,
-  mockSeatAllocationRequests
+  mockSeatAllocationRequests,
+  mockDemoAccessSettings
 } from './data';
 import { User } from './types';
 
@@ -48,6 +49,8 @@ let db: any = {
   travelApprovals: deepCopy(mockTravelApprovals),
   userActivityLogs: deepCopy(mockUserActivityLogs),
   adminAuditLogs: deepCopy(mockAdminAuditLogs),
+  demoAccessSettings: deepCopy(mockDemoAccessSettings),
+  demoAccessLogs: [],
   readCount: 0
 };
 

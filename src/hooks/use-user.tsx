@@ -47,7 +47,23 @@ export function UserProvider({ children }: { children: ReactNode }) {
         const currentRoleKey = roleKeyOverride || (typeof window !== 'undefined' ? localStorage.getItem('activeDemoRole') : null);
         
         if (demoUserId) {
-            const foundUser = mockUsers.find(u => u.id === demoUserId);
+            // Check for explicit demo role account first (e.g. 'admin-demo')
+            let foundUser = mockUsers.find(u => u.id === demoUserId);
+            
+            // If ID matches a generic key from landing page like 'admin', map to proper user
+            if (!foundUser) {
+                const idMap: Record<string, string> = {
+                    'admin': 'admin-demo',
+                    'operator': 'operator-demo',
+                    'agency': 'agency-demo',
+                    'corporate': 'corporate-demo',
+                    'customer': 'customer-demo',
+                    'hotel': 'hotel-demo'
+                };
+                const realId = idMap[demoUserId] || demoUserId;
+                foundUser = mockUsers.find(u => u.id === realId);
+            }
+
             if (foundUser) {
                 let mappedUser = { ...foundUser };
                 
