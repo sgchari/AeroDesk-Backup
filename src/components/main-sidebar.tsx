@@ -34,7 +34,9 @@ import {
   Wrench,
   LayoutDashboard,
   Wallet,
-  ClipboardList
+  ClipboardList,
+  AlertCircle,
+  History
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -50,23 +52,42 @@ import {
   SidebarMenuButton,
   SidebarMenuSkeleton,
   useSidebar,
-  SidebarFooter
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
-const NAV_ITEMS: Record<string, any[]> = {
-  admin: [
-    { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-accent' },
+const ADMIN_NAV = [
+  { group: "Platform Hub", items: [
+    { href: '/dashboard/admin', label: 'Admin Overview', icon: Home, color: 'text-accent' },
     { href: '/dashboard/admin/occ', label: 'OCC Terminal', icon: Radio, color: 'text-emerald-400 font-bold' },
-    { href: '/dashboard/admin/global-radar', label: 'Global Radar', icon: Radar, color: 'text-sky-400' },
-    { href: '/dashboard/admin/cpi', label: 'Price Index (CPI)', icon: TrendingUp, color: 'text-accent' },
-    { href: '/dashboard/admin/monitoring', label: 'Network Health', icon: Activity, color: 'text-rose-400' },
-    { href: '/dashboard/admin/revenue-share', label: 'Yield Engine', icon: Zap, color: 'text-accent' },
-    { href: '/dashboard/admin/users', label: 'Identity Governance', icon: Users, color: 'text-violet-400' },
-    { href: '/dashboard/admin/operators', label: 'NSOP Registry', icon: Plane, color: 'text-sky-400' },
-    { href: '/dashboard/admin/audit-trail', label: 'Immutable Logs', icon: FileText, color: 'text-amber-400' },
+    { href: '/dashboard/admin/monitoring', label: 'System Health', icon: Activity, color: 'text-rose-400' },
+    { href: '/dashboard/admin/alerts', label: 'System Alerts', icon: AlertCircle, color: 'text-rose-500' },
+  ]},
+  { group: "Entity Management", items: [
+    { href: '/dashboard/admin/users', label: 'Users', icon: Users, color: 'text-violet-400' },
+    { href: '/dashboard/admin/operators', label: 'Operators', icon: Plane, color: 'text-sky-400' },
+    { href: '/dashboard/admin/agencies', label: 'Travel Agencies', icon: Briefcase, color: 'text-emerald-400' },
+    { href: '/dashboard/admin/hotel-partners', label: 'Hotel Partners', icon: Building, color: 'text-amber-400' },
+    { href: '/dashboard/admin/corporates', label: 'Corporate Desks', icon: LayoutDashboard, color: 'text-blue-400' },
+  ]},
+  { group: "Analytical Reports", items: [
+    { href: '/dashboard/admin/reports/charters', label: 'Charter Analytics', icon: GanttChartSquare, color: 'text-amber-400' },
+    { href: '/dashboard/admin/reports/jet-seats', label: 'Seat Marketplace', icon: Armchair, color: 'text-sky-400' },
+    { href: '/dashboard/admin/reports/revenue', label: 'Revenue Reports', icon: Coins, color: 'text-green-400' },
+    { href: '/dashboard/admin/reports/usage', label: 'Usage Analytics', icon: BarChart2, color: 'text-fuchsia-400' },
+  ]},
+  { group: "Governance", items: [
+    { href: '/dashboard/admin/logs', label: 'Activity Logs', icon: History, color: 'text-slate-400' },
+    { href: '/dashboard/admin/audit-trail', label: 'Admin Audit', icon: FileText, color: 'text-amber-400' },
     { href: '/dashboard/admin/billing', label: 'Settlement Hub', icon: CreditCard, color: 'text-green-400' },
-  ],
+    { href: '/dashboard/admin/settings', label: 'Platform Settings', icon: Settings, color: 'text-slate-400' },
+  ]}
+];
+
+const NAV_ITEMS: Record<string, any[]> = {
   operator: [
     { href: '/dashboard', label: 'Overview', icon: Home, color: 'text-accent' },
     { href: '/dashboard/operator/operations', label: 'Operations Center', icon: Radio, color: 'text-emerald-400 font-bold' },
@@ -123,18 +144,6 @@ export function MainSidebar() {
   const { isMobile, setOpenMobile } = useSidebar();
 
   const platformRole = user?.platformRole || 'individual';
-  const currentNavItems = useMemo(() => {
-    let items = NAV_ITEMS[platformRole] || [];
-    
-    // Only show "Manage Users" if they are Admin or Manager in their firm
-    if (['admin', 'manager', 'TRAVEL_DESK_ADMIN'].includes(user?.firmRole || '')) {
-        // Keep manage-users items
-    } else {
-        items = items.filter(i => i.href !== '/dashboard/manage-users');
-    }
-    
-    return items;
-  }, [platformRole, user]);
 
   const handleLinkClick = () => {
     if (isMobile) setOpenMobile(false);
@@ -146,6 +155,8 @@ export function MainSidebar() {
     router.push('/');
   };
 
+  if (isLoading) return <div className="space-y-2 p-2"><SidebarMenuSkeleton /><SidebarMenuSkeleton /></div>;
+
   return (
     <>
       <SidebarHeader className="flex h-20 items-center border-b border-white/5 px-4 mb-2">
@@ -155,9 +166,43 @@ export function MainSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="px-2">
-        {isLoading ? <div className="space-y-2 p-2"><SidebarMenuSkeleton /><SidebarMenuSkeleton /></div> : (
+        {platformRole === 'admin' ? (
+          ADMIN_NAV.map((group) => (
+            <SidebarGroup key={group.group}>
+              <SidebarGroupLabel className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60 px-4 py-2">
+                {group.group}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {group.items.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <SidebarMenuItem key={item.href}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive}
+                          tooltip={item.label}
+                          onClick={handleLinkClick}
+                          className={cn(
+                            "transition-all duration-200 hover:bg-white/5",
+                            isActive && "bg-white/5 font-bold text-white border-l-2 border-accent"
+                          )}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className={cn(item.color, "h-4 w-4")} />
+                            <span className="text-xs">{item.label}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))
+        ) : (
           <SidebarMenu className="gap-1">
-            {currentNavItems.map(({ href, label, icon: Icon, color }) => {
+            {(NAV_ITEMS[platformRole] || []).map(({ href, label, icon: Icon, color }) => {
               const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
               return (
                 <SidebarMenuItem key={href}>
@@ -183,7 +228,7 @@ export function MainSidebar() {
         )}
       </SidebarContent>
 
-      {!isLoading && user && (
+      {user && (
         <SidebarFooter className="p-4 border-t border-white/5">
           <SidebarMenu>
             <SidebarMenuItem>

@@ -10,7 +10,7 @@ export type User = {
   role: string;
   platformRole: PlatformRole;
   firmRole: FirmRole;
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'suspended' | 'blocked';
   demoMode?: boolean;
   allowedRoles?: string[];
   phoneNumber?: string;
@@ -31,7 +31,40 @@ export type User = {
   organizationType?: 'operator' | 'agency' | 'corporate' | 'hotel';
 };
 
-// --- CORPORATE AVIATION MANAGEMENT SYSTEM TYPES ---
+// --- ADMIN PORTAL TYPES ---
+
+export type SystemAlert = {
+  id: string;
+  alertId: string;
+  type: 'PAYMENT_DISPUTE' | 'OPERATIONAL_DELAY' | 'COMPLIANCE_ERROR' | 'SYSTEM_MAINTENANCE' | string;
+  message: string;
+  status: 'active' | 'resolved';
+  severity: 'low' | 'medium' | 'high';
+  createdAt: string;
+};
+
+export type UserActivityLog = {
+  id: string;
+  logId: string;
+  userId: string;
+  userName?: string;
+  action: string;
+  entityId: string;
+  entityType: string;
+  timestamp: string;
+};
+
+export type AdminAuditLog = {
+  id: string;
+  adminId: string;
+  adminName: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  timestamp: string;
+};
+
+// --- END ADMIN PORTAL TYPES ---
 
 export type CorporateOrganization = {
   id: string;
@@ -40,6 +73,8 @@ export type CorporateOrganization = {
   industry: string;
   annualAviationBudget: number;
   usedBudget: number;
+  contactEmail?: string;
+  status: 'ACTIVE' | 'PENDING_SETUP' | 'SUSPENDED' | 'BLOCKED';
   createdAt: string;
 };
 
@@ -143,8 +178,6 @@ export type CorporateTravelPolicy = {
   requiresFinanceApproval: boolean;
 };
 
-// --- END CORPORATE AVIATION MANAGEMENT SYSTEM TYPES ---
-
 export type OrganizationUser = {
   id: string;
   userId: string;
@@ -157,8 +190,6 @@ export type OrganizationUser = {
   status: 'ACTIVE' | 'INACTIVE';
   createdAt: string;
 };
-
-// --- SEAT ALLOCATION WORKFLOW TYPES ---
 
 export type SeatRequestStatus = 
   | 'REQUEST_SUBMITTED'
@@ -259,8 +290,6 @@ export type DashboardNotification = {
   createdAt: string;
 };
 
-// --- END SEAT ALLOCATION WORKFLOW TYPES ---
-
 export type FleetUtilization = {
   id: string;
   operatorId: string;
@@ -332,7 +361,7 @@ export type CrewMember = {
   licenseNumber: string;
   phone: string;
   email: string;
-  status: 'ACTIVE' | 'ON_DUTY' | 'OFF_DUTY' | 'LEAVE' | 'AVAILABLE';
+  status: 'Available' | 'On Duty' | 'Training' | 'Medical Leave' | 'ACTIVE' | 'ON_DUTY' | 'OFF_DUTY' | 'LEAVE' | 'AVAILABLE';
   assignedAircraftRegistration?: string;
   role?: string;
 };
@@ -342,7 +371,7 @@ export type CrewAssignment = {
   assignmentId: string;
   charterRequestId: string;
   aircraftId: string;
-  crewMembers: string[]; // Array of crewIds
+  crewMembers: string[]; 
   status: 'ASSIGNED' | 'CONFIRMED' | 'COMPLETED';
 };
 
@@ -423,20 +452,23 @@ export type AutopilotMatch = {
 
 export type Operator = {
   id: string;
+  operatorId?: string;
   companyName: string;
   nsopLicenseNumber: string;
+  nsopLicense?: string;
   officialEmail?: string;
   registeredAddress?: string;
   contactNumber?: string;
   profileStatus?: 'active' | 'pendingReview' | 'suspended';
   adminUserId?: string;
-  status: 'Pending Approval' | 'Approved' | 'Suspended' | 'Rejected';
+  status: 'PENDING_APPROVAL' | 'ACTIVE' | 'SUSPENDED' | 'BLOCKED' | 'Pending Approval' | 'Approved' | 'Rejected' | 'Suspended';
   gstin?: string;
   stateCode?: string;
   legalEntityName?: string;
   city?: string;
   zone?: 'North' | 'South' | 'East' | 'West' | 'Central';
   fleetCount?: number;
+  contactEmail?: string;
   createdAt: string;
   updatedAt: string;
   officailEmail?: string;
@@ -539,9 +571,12 @@ export type Property = {
     hotelPartnerId: string;
     name: string;
     city: string;
-    status: 'Active' | 'Inactive';
+    status: 'ACTIVE' | 'INACTIVE' | 'Active' | 'Inactive' | 'SUSPENDED' | 'BLOCKED';
     imageUrl?: string;
     propertyType?: string;
+    hotelName?: string;
+    starRating?: number;
+    contactEmail?: string;
 };
 
 export type RoomCategory = {
@@ -583,7 +618,11 @@ export type AccommodationRequest = {
 export type TravelAgency = {
     id: string;
     companyName: string;
-    status: 'Active' | 'Inactive';
+    status: 'ACTIVE' | 'INACTIVE' | 'Active' | 'Inactive' | 'SUSPENDED' | 'BLOCKED';
+    gstNumber?: string;
+    contactEmail?: string;
+    phone?: string;
+    address?: string;
     createdAt: string;
     updatedAt: string;
 };
@@ -591,18 +630,11 @@ export type TravelAgency = {
 export type HotelPartner = {
     id: string;
     companyName: string;
-    status: 'Active' | 'Inactive';
+    status: 'ACTIVE' | 'INACTIVE' | 'Active' | 'Inactive' | 'SUSPENDED' | 'BLOCKED';
     createdAt: string;
     updatedAt: string;
-};
-
-export type SystemAlert = {
-    id: string;
-    type: 'system' | 'operational' | 'security' | 'maintenance' | 'crew' | 'charter';
-    message: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
-    timestamp: string;
-    status: 'active' | 'resolved';
+    hotelName?: string;
+    contactEmail?: string;
 };
 
 export type SystemLog = {

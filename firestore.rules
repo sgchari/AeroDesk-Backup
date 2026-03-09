@@ -1,4 +1,3 @@
-
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -6,45 +5,64 @@ service cloud.firestore {
     // Helper functions for optimized lookups
     function isSignedIn() { return request.auth != null; }
     function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
-    function isPlatformAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/platformAdmins/$(request.auth.uid)); }
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/platformAdmins/$(request.auth.uid)); }
+
+    // Admin-Only Modules
+    match /platformChargeRules/{ruleId} {
+      allow read, write: if isAdmin();
+    }
+    match /adminAuditLogs/{logId} {
+      allow read, write: if isAdmin();
+    }
+    match /systemAlerts/{alertId} {
+      allow read, write: if isAdmin();
+    }
+    match /userActivityLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if isSignedIn(); // Users can write their own activity
+    }
 
     // Scoped Data Access: Enforce ownership at the root of the path
     match /users/{userId}/{allPaths=**} {
-      allow read, write: if isOwner(userId) || isPlatformAdmin();
+      allow read, write: if isOwner(userId) || isAdmin();
     }
 
     match /operators/{operatorId}/{allPaths=**} {
-      allow read, write: if isOwner(operatorId) || isPlatformAdmin();
+      allow read, write: if isOwner(operatorId) || isAdmin();
     }
 
-    match /agencies/{agencyId}/{allPaths=**} {
-      allow read, write: if isOwner(agencyId) || isPlatformAdmin();
+    match /travelAgencies/{agencyId}/{allPaths=**} {
+      allow read, write: if isOwner(agencyId) || isAdmin();
     }
 
-    match /corporates/{corporateId}/{allPaths=**} {
-      allow read, write: if isOwner(corporateId) || isPlatformAdmin();
+    match /corporateOrganizations/{corpId}/{allPaths=**} {
+      allow read, write: if isOwner(corpId) || isAdmin();
     }
 
     match /hotelPartners/{hotelPartnerId}/{allPaths=**} {
-      allow read, write: if isOwner(hotelPartnerId) || isPlatformAdmin();
+      allow read, write: if isOwner(hotelPartnerId) || isAdmin();
     }
 
-    // Reports: Pre-aggregated read access
-    match /reports/{reportId} {
-      allow read: if isSignedIn() && (reportId.startsWith(request.auth.uid) || isPlatformAdmin());
-      allow write: if false; // Only system-level updates
+    // Marketplace collections
+    match /charterRequests/{requestId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
     }
 
-    // Empty Legs: Marketplace visibility
+    match /seatAllocationRequests/{requestId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
     match /emptyLegFlights/{flightId} {
       allow read: if isSignedIn();
-      allow write: if isPlatformAdmin() || (isSignedIn() && request.resource.data.operatorId == request.auth.uid);
+      allow write: if isAdmin() || (isSignedIn() && request.resource.data.operatorId == request.auth.uid);
     }
 
     // Platform Admins: Role mapping
     match /platformAdmins/{adminId} {
-      allow read: if isOwner(adminId) || isPlatformAdmin();
-      allow write: if isPlatformAdmin();
+      allow read: if isOwner(adminId) || isAdmin();
+      allow write: if isAdmin();
     }
   }
 }
