@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Query,
   DocumentData,
@@ -19,74 +19,34 @@ export interface UseCollectionResult<T> {
   error: FirestoreError | Error | null;
 }
 
-/**
- * Institutional Hook for managing real-time data collections.
- * Optimized with deep equality checks and robust loading state management.
- */
 export function useCollection<T = any>(
-    memoizedTargetRefOrQuery: ((CollectionReference<DocumentData> | Query<DocumentData>) & {__memo?: boolean})  | null | undefined,
+    memoizedQuery: (CollectionReference<DocumentData> | Query<DocumentData>) | null | undefined,
     demoPath?: string
 ): UseCollectionResult<T> {
   const [data, setData] = useState<WithId<T>[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
-  
-  const { user, isLoading: isUserLoading } = useUser();
-  
+  const { user } = useUser();
   const mountedRef = useRef(true);
-  const prevDataStringRef = useRef<string>('');
-  
-  const isDemoMode = useMemo(() => {
-    if (!memoizedTargetRefOrQuery) return true;
-    const firestore = memoizedTargetRefOrQuery.firestore;
-    if (!firestore || !firestore.app || (firestore as any)._isMock) return true;
-    return false;
-  }, [memoizedTargetRefOrQuery]);
 
   useEffect(() => {
     mountedRef.current = true;
     return () => { mountedRef.current = false; };
   }, []);
 
-  const fetchDemoData = useCallback(() => {
-    if (!mountedRef.current || !demoPath) return;
-    
-    // Defer fetching until user identity is stable to prevent race conditions
-    if (isUserLoading) return;
-
-    try {
-        const mockData = mockStore.getCollection(demoPath, user) as WithId<T>[];
-        const currentString = JSON.stringify(mockData);
-        
-        if (currentString !== prevDataStringRef.current) {
-            setData(mockData);
-            prevDataStringRef.current = currentString;
-        }
-    } catch (e: any) {
-        if (mountedRef.current) setError(e);
-    } finally {
-        if (mountedRef.current) {
-            setIsLoading(false);
-        }
-    }
-  }, [demoPath, user, isUserLoading]);
-
   useEffect(() => {
     if (!mountedRef.current) return;
+    
+    // Determine mode
+    const isDemo = !memoizedQuery || (memoizedQuery.firestore as any)?._isMock || process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
-    // Reset loading state on significant dependency shifts
-    setIsLoading(true);
-
-    if (!isDemoMode && memoizedTargetRefOrQuery) {
-      const unsubscribe = onSnapshot(memoizedTargetRefOrQuery, 
+    if (!isDemo && memoizedQuery) {
+      setIsLoading(true);
+      const unsubscribe = onSnapshot(memoizedQuery, 
         (snapshot) => {
           if (!mountedRef.current) return;
           const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<T>));
-          const currentString = JSON.stringify(items);
-          if (currentString !== prevDataStringRef.current) {
-            setData(items);
-            prevDataStringRef.current = currentString;
-          }
+          setData(items);
           setIsLoading(false);
         },
         (err) => {
@@ -98,19 +58,22 @@ export function useCollection<T = any>(
       return () => unsubscribe();
     }
     
-    if (isDemoMode && demoPath) {
-        fetchDemoData();
-        const unsubscribe = mockStore.subscribe(() => {
-            fetchDemoData();
-        });
-        return () => unsubscribe();
-    } else {
-        if (mountedRef.current) {
+    if (isDemo && demoPath) {
+        setIsLoading(true);
+        const fetchDemo = () => {
+            if (!mountedRef.current) return;
+            const mockData = mockStore.getCollection(demoPath, user);
+            setData(mockData);
             setIsLoading(false);
-        }
+        };
+        
+        fetchDemo();
+        const unsub = mockStore.subscribe(fetchDemo);
+        return () => unsub();
     }
 
-  }, [isDemoMode, demoPath, memoizedTargetRefOrQuery, fetchDemoData]);
+    setIsLoading(false);
+  }, [memoizedQuery, demoPath, user]);
 
   return { data, isLoading, error };
 }

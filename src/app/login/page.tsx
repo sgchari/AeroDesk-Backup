@@ -12,8 +12,7 @@ import type { User } from '@/lib/types';
 import { LandingHeader } from '@/components/landing-header';
 import { LandingFooter } from '@/components/landing-footer';
 import { useUser } from '@/hooks/use-user';
-import { Badge } from '@/components/ui/badge';
-import { ShieldCheck, User as UserIcon, Lock, Mail, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -35,7 +34,6 @@ export default function LoginPage() {
     setError(null);
     setIsLoggingIn(true);
 
-    // Institutional Mock Auth Logic
     setTimeout(() => {
         const foundUser = mockUsers.find(u => u.email === email && u.password === password);
         if (foundUser) {
@@ -50,7 +48,6 @@ export default function LoginPage() {
 
   return (
     <div className="w-full relative min-h-screen">
-      {/* Background Layer */}
       <div className="fixed inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&q=80&w=2070"
@@ -81,7 +78,6 @@ export default function LoginPage() {
             </CardHeader>
             
             <CardContent className="pt-8">
-              {/* Official Login Form */}
               <form onSubmit={handleFormLogin} className="space-y-5 mb-8">
                 <div className="space-y-2">
                     <Label htmlFor="email" className="text-[10px] uppercase font-black tracking-widest text-white/60">Corporate Email</Label>
@@ -145,21 +141,11 @@ export default function LoginPage() {
                     onClick={() => handleDemoLogin(user)}>
                       <div className="flex flex-col items-start gap-1">
                         <p className="text-xs font-black uppercase tracking-wider">Initialize Simulation</p>
-                        <p className="text-[9px] text-white/40 italic lowercase">{user.email} • {user.password}</p>
+                        <p className="text-[9px] text-white/40 italic lowercase">{user.email}</p>
                       </div>
                       <ShieldCheck className="h-5 w-5 opacity-40 group-hover:text-accent group-hover:opacity-100 transition-all" />
                   </Button>
                 ))}
-              </div>
-              
-              <div className="mt-8 pt-6 border-t border-white/10 text-center space-y-4">
-                <div className="flex items-center justify-center gap-2 text-[10px] text-white/40 font-bold uppercase tracking-widest">
-                    <ShieldCheck className="h-3 w-3 text-primary" />
-                    Encrypted Protocol Active
-                </div>
-                <p className="text-[11px] text-white/60 leading-relaxed max-w-xs mx-auto">
-                    Access is strictly restricted to verified aviation stakeholders and authorized corporate coordination desks.
-                </p>
               </div>
             </CardContent>
           </Card>
