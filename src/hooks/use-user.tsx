@@ -108,7 +108,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     prevUserStringRef.current = userString;
                 }
             } else {
-                localStorage.removeItem('demoUserId');
+                if (typeof window !== 'undefined') localStorage.removeItem('demoUserId');
                 setUser(null);
                 prevUserStringRef.current = 'null';
             }
@@ -164,15 +164,17 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const login = (uid: string) => {
     if (isDemoMode) {
-        localStorage.setItem('demoUserId', uid);
+        if (typeof window !== 'undefined') localStorage.setItem('demoUserId', uid);
         fetchUser();
     }
   };
 
   const logout = () => {
     if (isDemoMode) {
-        localStorage.removeItem('demoUserId');
-        localStorage.removeItem('activeDemoRole');
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('demoUserId');
+            localStorage.removeItem('activeDemoRole');
+        }
         setActiveDemoRole(null);
         setUser(null);
         prevUserStringRef.current = 'null';
@@ -182,7 +184,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   const setDemoRole = (roleKey: string) => {
-    localStorage.setItem('activeDemoRole', roleKey);
+    if (typeof window !== 'undefined') localStorage.setItem('activeDemoRole', roleKey);
     setActiveDemoRole(roleKey);
     fetchUser(roleKey); 
   };

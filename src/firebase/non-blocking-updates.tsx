@@ -16,7 +16,9 @@ import { UserRole } from '@/lib/types';
 const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
 const checkActionProtection = (path: string, type: 'write' | 'delete') => {
-    const isDemoUser = typeof window !== 'undefined' && (
+    if (typeof window === 'undefined') return false;
+
+    const isDemoUser = (
         localStorage.getItem('demoUserId')?.includes('demo') || 
         localStorage.getItem('demoUserId') === 'demo_super_user'
     );
@@ -35,7 +37,7 @@ const checkActionProtection = (path: string, type: 'write' | 'delete') => {
         'systemSettings'
     ];
     
-    const isRestrictedPath = restrictedPaths.some(p => path.startsWith(p));
+    const isRestrictedPath = restrictedPaths.some(p => path && path.startsWith(p));
     const isDelete = type === 'delete';
 
     // Blocking destructive admin/governance edits
@@ -48,7 +50,7 @@ const checkActionProtection = (path: string, type: 'write' | 'delete') => {
         return true;
     }
 
-    if (path.startsWith('platformAdmins') || path.startsWith('systemLogs')) {
+    if (path && (path.startsWith('platformAdmins') || path.startsWith('systemLogs'))) {
         toast({ 
             title: 'Integrity Protocol', 
             description: 'Modification of system governance records is disabled.', 
@@ -64,11 +66,14 @@ const checkActionProtection = (path: string, type: 'write' | 'delete') => {
  * Commits document updates to either the mock store (Demo) or Cloud Firestore (Production).
  */
 export function setDocumentNonBlocking(docRef: DocumentReference, data: any, options: SetOptions) {
-    if (checkActionProtection(docRef.path, 'write')) return;
+    const path = docRef?.path;
+    if (path && checkActionProtection(path, 'write')) return;
 
-    if (isDemoMode || (docRef.firestore as any)._isMock) {
-        if (!docRef.path) return;
-        const [collection, docId] = docRef.path.split('/');
+    const firestoreIsMock = docRef?.firestore && (docRef.firestore as any)._isMock;
+
+    if (isDemoMode || firestoreIsMock || !docRef?.firestore) {
+        if (!path) return;
+        const [collection, docId] = path.split('/');
         mockStore.updateDoc(collection, docId, data);
         toast({ title: 'Demo Data Updated', description: 'Your changes have been saved for this session.' });
     } else {
@@ -83,11 +88,14 @@ export function setDocumentNonBlocking(docRef: DocumentReference, data: any, opt
  * Adds a new document to the registry.
  */
 export function addDocumentNonBlocking(colRef: CollectionReference, data: any) {
-  if (checkActionProtection(colRef.path, 'write')) return Promise.resolve();
+  const path = colRef?.path;
+  if (path && checkActionProtection(path, 'write')) return Promise.resolve();
 
-  if (isDemoMode || (colRef.firestore as any)._isMock) {
-      if (!colRef.path) return Promise.resolve();
-      mockStore.addDoc(colRef.path, data);
+  const firestoreIsMock = colRef?.firestore && (colRef.firestore as any)._isMock;
+
+  if (isDemoMode || firestoreIsMock || !colRef?.firestore) {
+      if (!path) return Promise.resolve();
+      mockStore.addDoc(path, data);
       toast({ title: 'Demo Data Added', description: 'Your new item has been saved for this session.' });
       return Promise.resolve();
   } else {
@@ -102,11 +110,14 @@ export function addDocumentNonBlocking(colRef: CollectionReference, data: any) {
  * Updates an existing document in the database.
  */
 export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) {
-    if (checkActionProtection(docRef.path, 'write')) return;
+    const path = docRef?.path;
+    if (path && checkActionProtection(path, 'write')) return;
 
-    if (isDemoMode || (docRef.firestore as any)._isMock) {
-        if (!docRef.path) return;
-        const pathSegments = docRef.path.split('/');
+    const firestoreIsMock = docRef?.firestore && (docRef.firestore as any)._isMock;
+
+    if (isDemoMode || firestoreIsMock || !docRef?.firestore) {
+        if (!path) return;
+        const pathSegments = path.split('/');
         const collection = pathSegments.length > 2 ? `${pathSegments[0]}/${pathSegments[1]}/${pathSegments[2]}` : pathSegments[0];
         const docId = pathSegments.length > 2 ? pathSegments[3] : pathSegments[1];
 
@@ -124,11 +135,14 @@ export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) 
  * Removes a document from the production or simulation store.
  */
 export function deleteDocumentNonBlocking(docRef: DocumentReference) {
-    if (checkActionProtection(docRef.path, 'delete')) return;
+    const path = docRef?.path;
+    if (path && checkActionProtection(path, 'delete')) return;
 
-    if (isDemoMode || (docRef.firestore as any)._isMock) {
-        if (!docRef.path) return;
-        const pathSegments = docRef.path.split('/');
+    const firestoreIsMock = docRef?.firestore && (docRef.firestore as any)._isMock;
+
+    if (isDemoMode || firestoreIsMock || !docRef?.firestore) {
+        if (!path) return;
+        const pathSegments = path.split('/');
         const collection = pathSegments.length > 2 ? `${pathSegments[0]}/${pathSegments[1]}/${pathSegments[2]}` : pathSegments[0];
         const docId = pathSegments.length > 2 ? pathSegments[3] : pathSegments[1];
         
