@@ -87,6 +87,7 @@ export const mockUsers: User[] = [
     { 
       id: 'demo_super_user', 
       email: 'demo@aerodesk.global', 
+      password: 'password123',
       firstName: 'AeroDesk', 
       lastName: 'Super User', 
       role: 'demo_super_user', 
