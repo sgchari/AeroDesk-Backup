@@ -38,7 +38,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const fetchUser = useCallback(async (roleKeyOverride?: string) => {
-    if (!isDemoMode || isFetchingRef.current) return;
+    if (!isDemoMode) return;
+    if (isFetchingRef.current && !roleKeyOverride) return;
 
     isFetchingRef.current = true;
     setLoading(true);
@@ -49,10 +50,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         const currentRoleKey = roleKeyOverride || (typeof window !== 'undefined' ? localStorage.getItem('activeDemoRole') : null);
         
         if (demoUserId) {
-            // Check for explicit demo role account first (e.g. 'admin-demo')
             let foundUser = mockUsers.find(u => u.id === demoUserId);
             
-            // If ID matches a generic key from landing page like 'admin', map to proper user
             if (!foundUser) {
                 const idMap: Record<string, string> = {
                     'admin': 'admin-demo',
@@ -69,7 +68,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
             if (foundUser) {
                 let mappedUser = { ...foundUser };
                 
-                // Demo Super User Mapping Logic
                 if (mappedUser.role === 'demo_super_user' && currentRoleKey) {
                     const mapping: Record<string, {role: string, platform: PlatformRole, firmIds: any}> = {
                         'customer': { role: 'Customer', platform: 'individual', firmIds: {} },
@@ -90,7 +88,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     }
                 }
 
-                // Firm Name Enrichment
                 let firmName = mappedUser.company || "";
                 if (mappedUser.corporateId) {
                     firmName = mockCorporates.find(d => d.id === mappedUser.corporateId)?.companyName || "Stark Industries";
