@@ -179,7 +179,7 @@ export const createDemoUser = (name: string, email: string, role: UserRole, ctdI
             collectionName = 'operators';
             newUser.companyName = `${newUser.firstName}'s Company`;
             break;
-        case 'Authorized Distributor': 
+        case 'Travel Agency': 
             collectionName = 'distributors';
             newUser.companyName = `${newUser.firstName}'s Agency`;
             break;

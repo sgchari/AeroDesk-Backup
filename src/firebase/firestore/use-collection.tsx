@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   Query,
   DocumentData,
@@ -20,8 +20,8 @@ export interface UseCollectionResult<T> {
 }
 
 /**
- * Real-time collection hook with deep-equality protection.
- * Prevents re-render loops in dashboard environments by using stable data strings.
+ * Real-time collection hook with robust identity protection.
+ * Prevents re-render loops by using stable data strings and memoized state.
  */
 export function useCollection<T = any>(
     memoizedQuery: (CollectionReference<DocumentData> | Query<DocumentData>) | null | undefined,
@@ -31,7 +31,7 @@ export function useCollection<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   
-  const { user, isUserLoading } = useUser();
+  const { user, isLoading: isUserLoading } = useUser();
   const mountedRef = useRef(true);
   const prevDataStringRef = useRef<string>('');
 
@@ -50,11 +50,18 @@ export function useCollection<T = any>(
     setIsLoading(false);
   }, []);
 
-  const isDemoMode = !memoizedQuery || (memoizedQuery.firestore as any)?._isMock || process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+  const isDemoMode = useMemo(() => {
+    // If no query or explicitly in demo environment, use simulation store
+    if (!memoizedQuery) return true;
+    const fs = (memoizedQuery as any).firestore;
+    if (fs && fs._isMock) return true;
+    return process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+  }, [memoizedQuery]);
 
   useEffect(() => {
     if (!mountedRef.current || isUserLoading) return;
     
+    // LIVE MODE: Real-time Firestore Sync
     if (!isDemoMode && memoizedQuery) {
       setIsLoading(true);
       const unsubscribe = onSnapshot(memoizedQuery, 
@@ -71,6 +78,7 @@ export function useCollection<T = any>(
       return () => unsubscribe();
     }
     
+    // DEMO MODE: Simulation Store Sync
     if (isDemoMode && demoPath) {
         setIsLoading(true);
         const fetchDemo = () => {

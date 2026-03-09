@@ -23,6 +23,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
   
   const authListenerAttached = useRef(false);
+  const prevUserRef = useRef<string>('');
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
   const fetchUser = useCallback(async (uid?: string, roleKey?: string) => {
@@ -35,12 +36,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
         
         if (!demoUserId) {
             setUser(null);
+            prevUserRef.current = '';
             return;
         }
 
         let foundUser = mockUsers.find(u => u.id === demoUserId);
         
-        // Fallback for role-based demo IDs
         if (!foundUser) {
             const idMap: Record<string, string> = {
                 'admin': 'admin-demo',
@@ -78,9 +79,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
             else if (mappedUser.agencyId) firmName = mockAgencies.find(a => a.id === mappedUser.agencyId)?.companyName || "Sky Distributors";
             else if (mappedUser.hotelPartnerId) firmName = mockHotelPartners.find(h => h.id === mappedUser.hotelPartnerId)?.companyName || "Grand Hotels Group";
 
-            setUser({ ...mappedUser, company: firmName } as AppUser);
+            const finalUser = { ...mappedUser, company: firmName } as AppUser;
+            const finalUserString = JSON.stringify(finalUser);
+
+            if (finalUserString !== prevUserRef.current) {
+                setUser(finalUser);
+                prevUserRef.current = finalUserString;
+            }
         } else {
             setUser(null);
+            prevUserRef.current = '';
         }
     } catch(e: any) {
         setError(e);
@@ -104,7 +112,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
             try {
                 const userDoc = await getDoc(doc(getFirestore(), 'users', fbUser.uid));
                 if (userDoc.exists()) {
-                    setUser({ id: fbUser.uid, ...userDoc.data() } as AppUser);
+                    const userData = { id: fbUser.uid, ...userDoc.data() } as AppUser;
+                    const userDataString = JSON.stringify(userData);
+                    if (userDataString !== prevUserRef.current) {
+                        setUser(userData);
+                        prevUserRef.current = userDataString;
+                    }
                 } else {
                     setUser({ id: fbUser.uid, email: fbUser.email || '', firstName: 'User', role: 'Customer' } as any);
                 }
@@ -113,6 +126,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             }
         } else {
             setUser(null);
+            prevUserRef.current = '';
         }
         setLoading(false);
     });
@@ -131,6 +145,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem('activeDemoRole');
     }
     setUser(null);
+    prevUserRef.current = '';
     if (!isDemoMode) getAuth().signOut();
   };
 

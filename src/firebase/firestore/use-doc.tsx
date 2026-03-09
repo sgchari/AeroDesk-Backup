@@ -30,7 +30,7 @@ export function useDoc<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   
-  const { isUserLoading } = useUser();
+  const { isLoading: isUserLoading } = useUser();
   const mountedRef = useRef(true);
   const prevDataStringRef = useRef<string>('');
   
