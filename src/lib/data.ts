@@ -130,7 +130,7 @@ export const mockAdminAuditLogs: AdminAuditLog[] = [
 
 export const mockSystemAlerts: SystemAlert[] = [
   { id: 'alt-01', alertId: 'ALT102', type: 'PAYMENT_DISPUTE', message: 'Payment verification pending for seat booking SR102', status: 'active', severity: 'high', createdAt: new Date().toISOString() },
-  { id: 'alt-02', alertId: 'ALT103', type: 'COMPLIANCE_ERROR', message: 'Operator VT-FLY NSOP license expired', status: 'active', severity: 'critical', createdAt: new Date().toISOString() },
+  { id: 'alt-02', alertId: 'ALT103', type: 'COMPLIANCE_ERROR', message: 'Operator VT-FLY NSOP license expired', status: 'active', severity: 'high', createdAt: new Date().toISOString() },
 ];
 
 export const mockSystemLogs: SystemLog[] = [
