@@ -41,8 +41,19 @@ export default function RootLayout({
       >
         <UserProvider>
           <FirebaseClientProvider>
-            {children}
-            <Toaster />
+            {isShutdown ? (
+              <div className="min-h-screen flex items-center justify-center p-4">
+                <div className="text-center space-y-4">
+                  <h1 className="text-4xl font-black text-white uppercase tracking-tighter">Terminal Offline</h1>
+                  <p className="text-muted-foreground uppercase text-xs tracking-widest font-bold">Institutional coordination services are currently suspended.</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                {children}
+                <Toaster />
+              </>
+            )}
           </FirebaseClientProvider>
         </UserProvider>
       </body>

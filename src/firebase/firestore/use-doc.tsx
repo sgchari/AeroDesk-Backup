@@ -20,8 +20,8 @@ export interface UseDocResult<T> {
 }
 
 /**
- * React hook to subscribe to a single document in real-time.
- * Optimized for dashboard stability and performance.
+ * Real-time document hook with deep-equality protection.
+ * Ensures referential stability for dashboard widgets.
  */
 export function useDoc<T = any>(
   memoizedDocRef: (DocumentReference<DocumentData> & {__memo?: boolean}) | null | undefined,
@@ -31,8 +31,7 @@ export function useDoc<T = any>(
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
   
-  const { isLoading: isUserLoading } = useUser();
-  
+  const { isUserLoading } = useUser();
   const mountedRef = useRef(true);
   const prevDataStringRef = useRef<string>('');
   
@@ -48,48 +47,28 @@ export function useDoc<T = any>(
     return () => { mountedRef.current = false; };
   }, []);
 
-  const fetchDemoData = useCallback(() => {
-    if (!mountedRef.current || !demoPath) return;
-    
-    if (isUserLoading) return;
-
-    try {
-        const docData = mockStore.getDoc(demoPath) as WithId<T> | null;
-        const currentString = JSON.stringify(docData);
-        
-        if (currentString !== prevDataStringRef.current) {
-            setData(docData);
-            prevDataStringRef.current = currentString;
-        }
-    } catch (e: any) {
-        if (mountedRef.current) setError(e);
-    } finally {
-        if (mountedRef.current) {
-            setIsLoading(false);
-        }
+  const updateDataIfChanged = useCallback((newData: WithId<T> | null) => {
+    if (!mountedRef.current) return;
+    const dataString = JSON.stringify(newData);
+    if (dataString !== prevDataStringRef.current) {
+      setData(newData);
+      prevDataStringRef.current = dataString;
     }
-  }, [demoPath, isUserLoading]);
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
-    if (!mountedRef.current) return;
-    setIsLoading(true);
+    if (!mountedRef.current || isUserLoading) return;
 
     if (!isDemoMode && memoizedDocRef) {
+      setIsLoading(true);
       const unsubscribe = onSnapshot(memoizedDocRef, 
         (docSnap) => {
-          if (!mountedRef.current) return;
           if (docSnap.exists()) {
-            const item = { id: docSnap.id, ...docSnap.data() } as WithId<T>;
-            const currentString = JSON.stringify(item);
-            if (currentString !== prevDataStringRef.current) {
-                setData(item);
-                prevDataStringRef.current = currentString;
-            }
+            updateDataIfChanged({ id: docSnap.id, ...docSnap.data() } as WithId<T>);
           } else {
-            setData(null);
-            prevDataStringRef.current = 'null';
+            updateDataIfChanged(null);
           }
-          setIsLoading(false);
         },
         (err) => {
           if (!mountedRef.current) return;
@@ -101,18 +80,23 @@ export function useDoc<T = any>(
     }
 
     if (isDemoMode && demoPath) {
+        const fetchDemoData = () => {
+            try {
+                const docData = mockStore.getDoc(demoPath) as WithId<T> | null;
+                updateDataIfChanged(docData);
+            } catch (e: any) {
+                if (mountedRef.current) setError(e);
+                setIsLoading(false);
+            }
+        };
+        
         fetchDemoData();
-        const unsubscribe = mockStore.subscribe(() => {
-            fetchDemoData();
-        });
+        const unsubscribe = mockStore.subscribe(fetchDemoData);
         return () => unsubscribe();
-    } else {
-        if (mountedRef.current) {
-            setIsLoading(false);
-        }
     }
 
-  }, [isDemoMode, demoPath, memoizedDocRef, fetchDemoData]);
+    setIsLoading(false);
+  }, [isDemoMode, demoPath, memoizedDocRef, isUserLoading, updateDataIfChanged]);
 
   return { data, isLoading, error };
 }

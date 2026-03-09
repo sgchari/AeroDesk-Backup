@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Query,
   DocumentData,
@@ -19,6 +19,10 @@ export interface UseCollectionResult<T> {
   error: FirestoreError | Error | null;
 }
 
+/**
+ * Real-time collection hook with deep-equality protection.
+ * Prevents re-render loops in dashboard environments.
+ */
 export function useCollection<T = any>(
     memoizedQuery: (CollectionReference<DocumentData> | Query<DocumentData>) | null | undefined,
     demoPath?: string
@@ -26,28 +30,37 @@ export function useCollection<T = any>(
   const [data, setData] = useState<WithId<T>[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
-  const { user } = useUser();
+  
+  const { user, isUserLoading } = useUser();
   const mountedRef = useRef(true);
+  const prevDataStringRef = useRef<string>('');
 
   useEffect(() => {
     mountedRef.current = true;
     return () => { mountedRef.current = false; };
   }, []);
 
-  useEffect(() => {
-    if (!mountedRef.current) return;
-    
-    // Determine mode
-    const isDemo = !memoizedQuery || (memoizedQuery.firestore as any)?._isMock || process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+  const isDemoMode = !memoizedQuery || (memoizedQuery.firestore as any)?._isMock || process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
 
-    if (!isDemo && memoizedQuery) {
+  const updateDataIfChanged = useCallback((newData: WithId<T>[] | null) => {
+    if (!mountedRef.current) return;
+    const dataString = JSON.stringify(newData);
+    if (dataString !== prevDataStringRef.current) {
+      setData(newData);
+      prevDataStringRef.current = dataString;
+    }
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (!mountedRef.current || isUserLoading) return;
+    
+    if (!isDemoMode && memoizedQuery) {
       setIsLoading(true);
       const unsubscribe = onSnapshot(memoizedQuery, 
         (snapshot) => {
-          if (!mountedRef.current) return;
           const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<T>));
-          setData(items);
-          setIsLoading(false);
+          updateDataIfChanged(items);
         },
         (err) => {
           if (!mountedRef.current) return;
@@ -58,13 +71,10 @@ export function useCollection<T = any>(
       return () => unsubscribe();
     }
     
-    if (isDemo && demoPath) {
-        setIsLoading(true);
+    if (isDemoMode && demoPath) {
         const fetchDemo = () => {
-            if (!mountedRef.current) return;
             const mockData = mockStore.getCollection(demoPath, user);
-            setData(mockData);
-            setIsLoading(false);
+            updateDataIfChanged(mockData);
         };
         
         fetchDemo();
@@ -73,7 +83,7 @@ export function useCollection<T = any>(
     }
 
     setIsLoading(false);
-  }, [memoizedQuery, demoPath, user]);
+  }, [memoizedQuery, demoPath, user, isUserLoading, isDemoMode, updateDataIfChanged]);
 
   return { data, isLoading, error };
 }
