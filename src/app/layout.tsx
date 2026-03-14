@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   // System shutdown flag - Set to false to restore functionality
-  const isShutdown = false;
+  const isShutdown = true;
 
   return (
     <html lang="en" className="dark">
